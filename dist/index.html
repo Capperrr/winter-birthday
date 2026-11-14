@@ -12,8 +12,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;family=Caveat:wght@400&amp;family=Noto+Serif+SC:wght@400;500&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=gift-25">
-  <script src="app.js?v=gift-25" defer></script>
+  <link rel="stylesheet" href="style.css?v=shared-air">
+  <script src="app.js?v=shared-air" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -63,7 +63,7 @@
       </section>
 
       <section class="page-panel about-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
-        <div class="about-heading"><p class="page-eyebrow">LITTLE PIECES OF YOU</p><h2>About you<span class="heading-dot">.</span></h2></div>
+        <div class="about-heading"><p class="page-eyebrow">TO MY TWENTY-FIVE-YEAR-OLD SELF</p><h2>Dear me<span class="heading-dot">.</span></h2></div>
         <div class="notes-board" role="group" aria-label="22 张带有不同折痕的便利贴，拼成数字 25">
           <div class="note-digit" role="group" aria-label="数字 2"><button type="button" class="sticky-note butter" data-note-id="1" style="--rotation:-2.3deg;--offset-x:-0.8px;--offset-y:-0.1px;--paper-texture:url('assets/paper/note-01.svg');--curl-size:11%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:5.8px;--paper-light:108deg;--paper-origin:41%;--paper-radius:3px 2px 6px 2px" aria-label="第 1 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">01</span></button>
 <button type="button" class="sticky-note sage" data-note-id="2" style="--rotation:1.5deg;--offset-x:0.2px;--offset-y:1.4px;--paper-texture:url('assets/paper/note-02.svg');--curl-size:9%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:5.2px;--paper-light:149deg;--paper-origin:62%;--paper-radius:2px 2px 3px 2px" aria-label="第 2 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">02</span></button>
@@ -96,11 +96,11 @@
 <button type="button" class="sticky-note butter" data-note-id="21" style="--rotation:2.75deg;--offset-x:1.3px;--offset-y:-1.7px;--paper-texture:url('assets/paper/note-21.svg');--curl-size:12%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:3.5px;--paper-light:131deg;--paper-origin:35%;--paper-radius:2px 1px 3px 6px" aria-label="第 21 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">21</span></button>
 <button type="button" class="sticky-note sage" data-note-id="22" style="--rotation:4.38deg;--offset-x:1.7px;--offset-y:0.9px;--paper-texture:url('assets/paper/note-22.svg');--curl-size:9%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:4.6px;--paper-light:171deg;--paper-origin:39%;--paper-radius:3px 4px 5px 4px" aria-label="第 22 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">22</span></button></div>
         </div>
-        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的你</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">点击一张，贴上我想对你说的话。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
+        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
       </section>
 
       <section class="page-panel destination-panel" id="panel-destination" role="tabpanel" aria-labelledby="tab-destination" tabindex="0" hidden>
-        <div class="destination-stage">
+        <div class="destination-stage" id="envelope-stage" inert>
           <p class="letter-kicker">A LETTER, JUST FOR YOU</p>
           <div class="envelope-scene">
             <div class="letter-glow" aria-hidden="true"></div>
@@ -111,11 +111,38 @@
               <svg class="pressed-flower" viewBox="0 0 90 150" fill="none" aria-hidden="true"><path d="M35 146C29 103 42 64 53 20M35 133C50 97 61 83 79 73M34 115C17 94 15 81 17 58" stroke="#7c9273" stroke-width="1.5"/><path d="M40 91C42 80 54 70 61 71c-4 13-11 19-21 20ZM35 114c-12-4-20-11-20-20 13 3 18 8 20 20ZM46 60c-4-12-4-19 2-24 5 11 5 17-2 24ZM57 98c3-11 10-15 17-14-3 11-7 15-17 14Z" fill="#93a185" fill-opacity=".7"/><g fill="#dad4e2" stroke="#aaa2ba" stroke-width=".5"><ellipse cx="53" cy="17" rx="4" ry="9" transform="rotate(-31 53 17)"/><ellipse cx="58" cy="20" rx="4" ry="9" transform="rotate(35 58 20)"/><ellipse cx="49" cy="24" rx="4" ry="8" transform="rotate(-65 49 24)"/><ellipse cx="57" cy="27" rx="4" ry="8" transform="rotate(65 57 27)"/><ellipse cx="17" cy="55" rx="4" ry="7"/><ellipse cx="12" cy="59" rx="3" ry="7" transform="rotate(-60 12 59)"/><ellipse cx="21" cy="61" rx="3" ry="7" transform="rotate(50 21 61)"/></g><circle cx="54" cy="24" r="3" fill="#b7ae80"/><circle cx="17" cy="60" r="2" fill="#b7ae80"/></svg>
               <div class="envelope-address"><h2><span class="recipient-name">25岁的周琬婷</span><span class="recipient-greeting">生日快乐</span></h2><p>From me, with all my love.</p></div>
               <span class="envelope-fiber" aria-hidden="true"></span>
+              <button type="button" class="open-envelope" id="open-envelope" aria-label="打开写给25岁的周琬婷的生日信" aria-describedby="envelope-help"><span class="sr-only">打开这封信</span></button>
             </div>
           </div>
           <p class="destination-love-note">把祝福藏进山野，把这封信交给你。</p>
+          <p class="envelope-help" id="envelope-help">轻轻点开这封信 <span aria-hidden="true">↗</span></p>
           <span class="letter-postscript">WITH LOVE, ALWAYS</span>
         </div>
+        <section class="letter-page" id="letter-page" aria-labelledby="letter-page-title" hidden>
+          <header class="letter-page-header">
+            <div><p class="page-eyebrow">THE AIR WE SHARED</p><h2 id="letter-page-title" tabindex="-1">一起呼吸过空气的两个国家</h2></div>
+            <button type="button" class="back-to-envelope" id="back-to-envelope"><span aria-hidden="true">↶</span> 回到信封</button>
+          </header>
+          <div class="memory-layout">
+            <div class="country-selector" role="group" aria-label="选择一个国家，读纸条">
+              <button type="button" class="country-button" id="country-uk" data-country="uk" aria-pressed="false" aria-controls="memory-uk"><span class="flag-frame"><img src="assets/flag-uk.svg" width="120" height="60" alt="英国国旗"></span><span class="country-name">UnitedKindom</span></button>
+              <button type="button" class="country-button" id="country-china" data-country="china" aria-pressed="false" aria-controls="memory-china"><span class="flag-frame"><img src="assets/flag-china.svg" width="120" height="80" alt="中国国旗"></span><span class="country-name">CHINA</span></button>
+              <p class="country-hint">选一个地方，<br>读一段想对你说的话。</p>
+            </div>
+            <div class="memory-wall" id="memory-wall" aria-live="polite" aria-atomic="true">
+              <article class="memory-note china-note" id="memory-china" aria-labelledby="memory-china-title" hidden>
+                <span class="masking-tape" aria-hidden="true"></span><p class="memory-place" id="memory-china-title">CHINA</p>
+                <p class="memory-letter-text" id="china-letter-text">跟你在这片土地上走了很久，有一天，我突然举起手机，镜头对着你最爱的天空，分享给你的那一刻，我确定我爱上你了。</p>
+                <p class="memory-signature">From me, to you.</p>
+              </article>
+              <article class="memory-note uk-note" id="memory-uk" aria-labelledby="memory-uk-title" hidden>
+                <span class="masking-tape" aria-hidden="true"></span><p class="memory-place" id="memory-uk-title">UnitedKindom</p>
+                <p class="memory-letter-text" id="uk-letter-text">我自认为我是超级珍惜时间之人，我太怕时间流逝，我太怕我什么也没做，所以我每天给自己塞满了日程，但当你在我旁边的时候，什么都没做的我竟然觉得自己赚了</p>
+                <p class="memory-signature">From me, to you.</p>
+              </article>
+            </div>
+          </div>
+        </section>
       </section>
     </div>
 
@@ -126,12 +153,20 @@
     <p id="view-status" class="sr-only" role="status" aria-live="polite"></p>
   </main>
 
+  <dialog class="birthday-dialog" id="birthday-dialog" aria-labelledby="birthday-title">
+    <div class="birthday-dialog-glow" aria-hidden="true"></div>
+    <span class="birthday-spark" aria-hidden="true">✧</span>
+    <p class="birthday-overline">A LITTLE WISH FOR YOU</p>
+    <h2 id="birthday-title">生日快乐，<br>我最珍惜的人</h2>
+    <div class="birthday-actions"><button type="button" id="birthday-okay-one" autofocus>好的</button><button type="button" id="birthday-okay-two">好的</button></div>
+  </dialog>
+
   <dialog class="note-editor" id="note-editor" aria-labelledby="editor-title" aria-describedby="editor-help">
     <form id="note-form">
-      <header class="editor-header"><span class="editor-eyebrow">A LITTLE PIECE OF YOU</span><button type="button" class="editor-close" id="editor-close" aria-label="关闭便利贴编辑器">×</button></header>
+      <header class="editor-header"><span class="editor-eyebrow">A LITTLE NOTE TO MYSELF</span><button type="button" class="editor-close" id="editor-close" aria-label="关闭便利贴编辑器">×</button></header>
       <h2 id="editor-title">第 01 张便利贴</h2>
       <label for="note-input" class="sr-only">便利贴文字</label>
-      <textarea id="note-input" maxlength="180" rows="6" placeholder="一个关于你的回忆，或者一句想对你说的话……"></textarea>
+      <textarea id="note-input" maxlength="180" rows="6" placeholder="25岁的我，想对自己说……"></textarea>
       <div class="editor-meta"><span id="editor-help">文字仅保存在这台设备的浏览器中。</span><span id="character-count" aria-live="off">0 / 180</span></div>
       <div class="editor-actions"><button type="button" class="editor-cancel" id="editor-cancel">再想一想</button><button class="editor-save" type="submit">保存这张便利贴 <span aria-hidden="true">↗</span></button></div>
     </form>
