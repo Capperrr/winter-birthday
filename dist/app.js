@@ -1,39 +1,30 @@
 (() => {
-  const root = document.documentElement;
-  const button = document.getElementById('theme-toggle');
-  const icon = document.getElementById('theme-icon');
-  const media = window.matchMedia('(prefers-color-scheme: dark)');
-  let chosenTheme = null;
-  try { chosenTheme = localStorage.getItem('winter-theme'); } catch (_) {}
-  function applyTheme(theme) {
-    const dark = theme === 'dark';
-    root.dataset.theme = dark ? 'dark' : 'light';
-    button.setAttribute('aria-pressed', String(dark));
-    button.setAttribute('aria-label', dark ? '切换为浅色主题' : '切换为深色主题');
-    icon.textContent = dark ? '☼' : '◐';
-    document.querySelector('meta[name="theme-color"]').content = dark ? '#112129' : '#edf3f5';
+  const cover = document.getElementById('main');
+  const button = document.getElementById('view-toggle');
+  const label = document.getElementById('view-label');
+  const status = document.getElementById('view-status');
+  const copy = document.querySelectorAll('.scene-copy');
+  let scenery = false;
+
+  function setScenery(active) {
+    scenery = active;
+    cover.dataset.view = active ? 'scenery' : 'cover';
+    button.setAttribute('aria-pressed', String(active));
+    button.setAttribute('aria-label', active ? '返回封面，显示文字' : '隐藏文字，只看风景');
+    label.textContent = active ? '返回封面' : '只看风景';
+    copy.forEach(element => {
+      element.inert = active;
+      if (active) element.setAttribute('aria-hidden', 'true');
+      else element.removeAttribute('aria-hidden');
+    });
+    status.textContent = active ? '正在欣赏风景。按 Escape 键或点击返回封面，可重新显示文字。' : '已返回 WINTER 封面。';
   }
-  applyTheme(chosenTheme || (media.matches ? 'dark' : 'light'));
-  button.addEventListener('click', () => {
-    chosenTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    applyTheme(chosenTheme);
-    try { localStorage.setItem('winter-theme', chosenTheme); } catch (_) {}
-  });
-  media.addEventListener('change', event => {
-    if (!chosenTheme) applyTheme(event.matches ? 'dark' : 'light');
-  });
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const copyButton = document.getElementById('copy-github');
-  const status = document.getElementById('copy-status');
-  let statusTimer;
-  copyButton.addEventListener('click', async () => {
-    clearTimeout(statusTimer);
-    try {
-      await navigator.clipboard.writeText('https://github.com/Capperrr');
-      status.textContent = '已复制 GitHub 链接。';
-    } catch (_) {
-      status.textContent = 'GitHub 链接：https://github.com/Capperrr';
+
+  button.addEventListener('click', () => setScenery(!scenery));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && scenery) {
+      setScenery(false);
+      button.focus();
     }
-    statusTimer = setTimeout(() => { status.textContent = ''; }, 7000);
   });
 })();

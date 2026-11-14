@@ -1,9 +1,17 @@
-# WINTER
+# WINTER — 山野之间
 
-WINTER 的中文个人主页，展示个人介绍、公开 GitHub 项目与联系入口。
+A single-screen forest and Swiss Alpine cover for WINTER. No additional about, project, or contact sections.
 
-Buildless HTML/CSS/JavaScript. Deployment assets are in `dist/`.
+Buildless HTML/CSS/JavaScript; deployable assets live in `dist/`. The cover adapts to desktop and mobile screens. “只看风景” hides the typography and returns with the same button or the Escape key. Keyboard access and reduced-motion preferences are supported.
 
-Supports responsive layouts, light/dark themes, keyboard navigation, reduced motion, and copying the GitHub profile URL.
+## Photography
 
-No personal biography, location, qualifications, or private contact details are assumed. Profile and project links use the connected public GitHub account `Capperrr`.
+Grindelwald, Switzerland, by Polina Kocheva on Unsplash.
+
+- Original: https://unsplash.com/photos/6IEGjAhBnfU
+- Source image: https://images.unsplash.com/photo-1628062204131-71026a7e174d
+- License: https://unsplash.com/license
+
+Downloaded and served locally as optimized WebP, with a smaller mobile variant. The place label describes the photograph, not the owner's location.
+
+Typography: Cormorant Garamond and DM Sans via Google Fonts, with local serif and system sans-serif fallbacks.
