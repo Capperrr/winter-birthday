@@ -9,6 +9,7 @@
   const sceneCopy = document.querySelectorAll('.scene-copy');
   const sceneFooter = document.getElementById('scene-footer');
   const scenePhoto = document.getElementById('scene-photo');
+  const dreamPhoto = document.getElementById('dream-photo');
   const editor = document.getElementById('note-editor');
   let scenery = false;
 
@@ -38,11 +39,12 @@
       if (selected) navigation.style.setProperty('--active-index', String(index));
     });
     panels.forEach(panel => { panel.hidden = panel.id !== 'panel-' + page; });
-    sceneFooter.hidden = page === 'about';
+    sceneFooter.hidden = page !== 'home';
     sceneryButton.disabled = page !== 'home';
-    scenePhoto.setAttribute('aria-hidden', String(page === 'about'));
-    document.querySelector('meta[name="theme-color"]').content = page === 'about' ? '#eae7d9' : '#193b31';
-    document.title = page === 'about' ? 'About me — WINTER' : page === 'destination' ? 'Destination — WINTER' : 'WINTER — 山野之间';
+    scenePhoto.setAttribute('aria-hidden', String(page !== 'home'));
+    dreamPhoto.setAttribute('aria-hidden', String(page !== 'destination'));
+    document.querySelector('meta[name="theme-color"]').content = page === 'about' ? '#eae7d9' : page === 'destination' ? '#a0acb9' : '#193b31';
+    document.title = page === 'about' ? '写给你的25岁 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
     if (updateHistory && location.hash !== '#' + page) history.pushState(null, '', '#' + page);
   }
 
