@@ -4,59 +4,116 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#193b31">
-  <meta name="description" content="WINTER 的个人空间。在森林、草甸与阿尔卑斯山之间，向山野走去，和生活相遇。">
+  <meta name="description" content="I'm WINTER. 一个关于山野、生活和自己的个人空间。">
   <title>WINTER — 山野之间</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/swiss-alps.webp" as="image" media="(min-width: 761px)">
   <link rel="preload" href="assets/swiss-alps-small.webp" as="image" media="(max-width: 760px)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="app.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;family=Caveat:wght@400&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=25">
+  <script src="app.js?v=25" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#cover-title">跳到封面文字</a>
-  <main class="cover" id="main" data-view="cover" aria-labelledby="cover-title">
-    <picture class="landscape">
+  <a class="skip-link" href="#page-content">跳到主要内容</a>
+  <main class="app-shell" id="main" data-page="home" data-view="cover" aria-label="WINTER 的个人空间">
+    <picture class="landscape" id="scene-photo">
       <source media="(max-width: 760px)" srcset="assets/swiss-alps-small.webp">
-      <img src="assets/swiss-alps.webp" alt="瑞士格林德瓦的夏日：冰蓝色山峰下，松林环绕着一片柔软的绿色草甸。" width="2000" height="1335" fetchpriority="high" decoding="async">
+      <img src="assets/swiss-alps.webp" alt="瑞士格林德瓦的夏日：冰蓝色雪峰、松林与绿色草甸。" width="2000" height="1335" fetchpriority="high" decoding="async">
     </picture>
     <div class="landscape-shade" aria-hidden="true"></div>
     <div class="cover-edge" aria-hidden="true"></div>
 
-    <header class="cover-header">
-      <a class="brand scene-copy" href="#main" aria-label="WINTER 首页">
+    <header class="site-header">
+      <a class="brand scene-copy" href="#home" aria-label="WINTER 首页">
         <svg class="brand-symbol" viewBox="0 0 38 32" fill="none" aria-hidden="true"><path d="m2 27 10-17 7 10 6-15 11 22H2Z"/><path d="m9 16 3 4 3-3m7-5 3 4 3-5"/></svg>
-        <span>WINTER<span class="brand-period">.</span></span>
+        <span>WINTER.</span>
       </a>
-      <span class="header-note scene-copy">A PERSONAL SPACE</span>
+      <nav class="glass-nav scene-copy" id="page-tabs" role="tablist" aria-label="页面导航" style="--active-index:1">
+        <span class="glass-lens" aria-hidden="true"></span>
+        <button type="button" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="false" tabindex="-1" data-page="about">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6" r="2.8"/><path d="M4.5 16v-1.3c0-2.4 2.2-4 5.5-4s5.5 1.6 5.5 4V16"/></svg><span>About me</span>
+        </button>
+        <button type="button" role="tab" id="tab-home" aria-controls="panel-home" aria-selected="true" tabindex="0" data-page="home">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m3 9 7-6 7 6v7.5H12v-5H8v5H3V9Z"/></svg><span>Home</span>
+        </button>
+        <button type="button" role="tab" id="tab-destination" aria-controls="panel-destination" aria-selected="false" tabindex="-1" data-page="destination">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m13.2 6.8-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8Z"/></svg><span>Destination</span>
+        </button>
+      </nav>
       <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false" aria-label="隐藏文字，只看风景">
-        <svg id="view-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg>
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg>
         <span id="view-label">只看风景</span>
       </button>
     </header>
 
-    <div class="cover-copy scene-copy">
-      <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> MY LITTLE WILDERNESS</p>
-      <h1 id="cover-title" tabindex="-1">WINTER</h1>
-      <div class="cover-caption">
-        <span class="caption-line" aria-hidden="true"></span>
-        <p>向山野走去，和生活相遇。</p>
-      </div>
+    <div class="page-content" id="page-content" tabindex="-1">
+      <section class="page-panel home-panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
+        <div class="cover-copy scene-copy">
+          <h1 class="cover-title"><span class="intro">I'm</span><span class="name">WINTER</span></h1>
+          <div class="cover-caption"><span class="caption-line" aria-hidden="true"></span><p>向山野走去，和生活相遇。</p></div>
+        </div>
+      </section>
+
+      <section class="page-panel about-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
+        <div class="about-heading"><p class="page-eyebrow">LITTLE PIECES OF ME</p><h2>About me<span class="heading-dot">.</span></h2></div>
+        <div class="notes-board" aria-label="22 张微微褶皱的便利贴，拼成数字 25">
+          <div class="note-digit" aria-label="数字 2"><button type="button" class="sticky-note butter" data-note-id="1" style="--rotation:-3deg" aria-label="第 1 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">01</span></button>
+<button type="button" class="sticky-note sage" data-note-id="2" style="--rotation:1.5deg" aria-label="第 2 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">02</span></button>
+<button type="button" class="sticky-note butter" data-note-id="3" style="--rotation:-1deg" aria-label="第 3 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">03</span></button>
+<span class="note-space" aria-hidden="true"></span>
+<span class="note-space" aria-hidden="true"></span>
+<button type="button" class="sticky-note linen" data-note-id="4" style="--rotation:2.5deg" aria-label="第 4 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">04</span></button>
+<button type="button" class="sticky-note butter" data-note-id="5" style="--rotation:-2deg" aria-label="第 5 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">05</span></button>
+<button type="button" class="sticky-note sage" data-note-id="6" style="--rotation:1deg" aria-label="第 6 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">06</span></button>
+<button type="button" class="sticky-note butter" data-note-id="7" style="--rotation:-1.8deg" aria-label="第 7 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">07</span></button>
+<button type="button" class="sticky-note sage" data-note-id="8" style="--rotation:3deg" aria-label="第 8 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">08</span></button>
+<span class="note-space" aria-hidden="true"></span>
+<span class="note-space" aria-hidden="true"></span>
+<button type="button" class="sticky-note linen" data-note-id="9" style="--rotation:-0.6deg" aria-label="第 9 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">09</span></button>
+<button type="button" class="sticky-note butter" data-note-id="10" style="--rotation:1.8deg" aria-label="第 10 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">10</span></button>
+<button type="button" class="sticky-note sage" data-note-id="11" style="--rotation:-2.5deg" aria-label="第 11 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">11</span></button></div>
+          <div class="note-digit" aria-label="数字 5"><button type="button" class="sticky-note butter" data-note-id="12" style="--rotation:-3deg" aria-label="第 12 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">12</span></button>
+<button type="button" class="sticky-note sage" data-note-id="13" style="--rotation:1.5deg" aria-label="第 13 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">13</span></button>
+<button type="button" class="sticky-note butter" data-note-id="14" style="--rotation:-1deg" aria-label="第 14 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">14</span></button>
+<button type="button" class="sticky-note linen" data-note-id="15" style="--rotation:2.5deg" aria-label="第 15 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">15</span></button>
+<span class="note-space" aria-hidden="true"></span>
+<span class="note-space" aria-hidden="true"></span>
+<button type="button" class="sticky-note butter" data-note-id="16" style="--rotation:-2deg" aria-label="第 16 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">16</span></button>
+<button type="button" class="sticky-note sage" data-note-id="17" style="--rotation:1deg" aria-label="第 17 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">17</span></button>
+<button type="button" class="sticky-note butter" data-note-id="18" style="--rotation:-1.8deg" aria-label="第 18 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">18</span></button>
+<span class="note-space" aria-hidden="true"></span>
+<span class="note-space" aria-hidden="true"></span>
+<button type="button" class="sticky-note sage" data-note-id="19" style="--rotation:3deg" aria-label="第 19 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">19</span></button>
+<button type="button" class="sticky-note linen" data-note-id="20" style="--rotation:-0.6deg" aria-label="第 20 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">20</span></button>
+<button type="button" class="sticky-note butter" data-note-id="21" style="--rotation:1.8deg" aria-label="第 21 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">21</span></button>
+<button type="button" class="sticky-note sage" data-note-id="22" style="--rotation:-2.5deg" aria-label="第 22 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">22</span></button></div>
+        </div>
+        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>关于 25 岁的我</p><p class="notes-instruction">点击一张，慢慢写下自己。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
+      </section>
+
+      <section class="page-panel destination-panel" id="panel-destination" role="tabpanel" aria-labelledby="tab-destination" tabindex="0" hidden>
+        <div class="destination-copy"><p class="page-eyebrow">A PLACE I'D LOVE TO BE</p><h2>The Swiss Alps<span>.</span></h2><p class="destination-subtitle">先把向往，留给瑞士的山。</p><span class="destination-note">山峰、草甸，和一段慢下来的时光。</span></div>
+      </section>
     </div>
 
-    <footer class="cover-footer scene-copy">
-      <div class="footer-mood">
-        <svg class="compass" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="20"/><path d="M24 1v7m23 16h-7M24 47v-7M1 24h7"/><path d="m29 14-3 12-12 3 3-12 12-3Z"/><path d="m29 14-12 3 9 9 3-12Z" fill="currentColor"/></svg>
-        <span>TAKE A BREATH.<br><span>STAY A WHILE.</span></span>
-      </div>
-      <a class="photo-credit" href="https://unsplash.com/photos/6IEGjAhBnfU" target="_blank" rel="noopener noreferrer" aria-label="封面摄影：Polina Kocheva，瑞士格林德瓦。在 Unsplash 查看原图（新窗口）">
-        <span class="photo-place"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 6.4c0 3.5-5 7.1-5 7.1S3 9.9 3 6.4a5 5 0 1 1 10 0Z"/><circle cx="8" cy="6" r="1.5"/></svg>GRINDELWALD, SWITZERLAND <span aria-hidden="true">↗</span></span>
-        <span class="photo-author">Photo by Polina Kocheva / Unsplash</span>
-      </a>
+    <footer class="cover-footer scene-copy" id="scene-footer">
+      <div class="footer-mood"><svg class="compass" viewBox="0 0 48 48" fill="none" aria-hidden="true"><circle cx="24" cy="24" r="20"/><path d="M24 1v7m23 16h-7M24 47v-7M1 24h7"/><path d="m29 14-3 12-12 3 3-12 12-3Z"/><path d="m29 14-12 3 9 9 3-12Z" fill="currentColor"/></svg><span>TAKE A BREATH.<br><span>STAY A WHILE.</span></span></div>
+      <a class="photo-credit" href="https://unsplash.com/photos/6IEGjAhBnfU" target="_blank" rel="noopener noreferrer" aria-label="封面摄影：Polina Kocheva，瑞士格林德瓦。在 Unsplash 查看原图（新窗口）"><span class="photo-place">GRINDELWALD, SWITZERLAND <span aria-hidden="true">↗</span></span><span class="photo-author">Photo by Polina Kocheva / Unsplash</span></a>
     </footer>
     <p id="view-status" class="sr-only" role="status" aria-live="polite"></p>
   </main>
+
+  <dialog class="note-editor" id="note-editor" aria-labelledby="editor-title" aria-describedby="editor-help">
+    <form id="note-form">
+      <header class="editor-header"><span class="editor-eyebrow">A LITTLE PIECE OF ME</span><button type="button" class="editor-close" id="editor-close" aria-label="关闭便利贴编辑器">×</button></header>
+      <h2 id="editor-title">第 01 张便利贴</h2>
+      <label for="note-input" class="sr-only">便利贴文字</label>
+      <textarea id="note-input" maxlength="180" rows="6" placeholder="一点爱好、一个回忆，或者此刻的心情……"></textarea>
+      <div class="editor-meta"><span id="editor-help">文字仅保存在这台设备的浏览器中。</span><span id="character-count" aria-live="off">0 / 180</span></div>
+      <div class="editor-actions"><button type="button" class="editor-cancel" id="editor-cancel">再想一想</button><button class="editor-save" type="submit">保存这张便利贴 <span aria-hidden="true">↗</span></button></div>
+    </form>
+  </dialog>
 </body>
 </html>
