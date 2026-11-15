@@ -101,3 +101,52 @@
 @media (max-width:350px) { .journey-page { padding-inline:14px; }.journey-heading h2 { font-size:17px; }.journey-eyebrow { letter-spacing:1px; font-size:6px; }.journey-layout { grid-template-rows:210px auto auto; }.journey-letter { padding:25px 22px; }.journey-stops button { font-size:7px; }.journey-photo-caption { left:16px; right:16px; }.journey-swipe-hint { font-size:6px; } }
 @media (max-height:700px) and (min-width:761px) { .journey-page { padding-top:7px; gap:15px; padding-bottom:19px; }.journey-letter { padding:23px 28px; }.journey-chapter { margin-bottom:12px; }.journey-letter h3 { font-size:26px; }.journey-question { margin-top:15px; }.journey-signature { margin-top:11px; }.journey-navigation { padding-top:13px; } }
 @media (prefers-reduced-motion:reduce) { .journey-page *, .journey-invitation * { animation:none!important; transition:none!important; } }
+
+/* Journey only: daylight-paper palette; no change to the birthday or country scenes. */
+.app-shell[data-destination='journey'] {
+  background-color:#f3f0eb;
+  background-image:
+    radial-gradient(ellipse 68% 67% at 88% 4%,#dbe2edc7 0%,#dbe2ed00 74%),
+    radial-gradient(ellipse 68% 67% at 4% 100%,#f1dcd0b0 0%,#f1dcd000 78%),
+    radial-gradient(ellipse 66% 45% at 35% 48%,#ffffff85 0%,#ffffff00 82%),
+    linear-gradient(132deg,#faf6ef 0%,#eceef0 53%,#f6eee7 100%);
+  color:#444f5a;
+  --nav-material:#fffdfac7;--nav-border:#a6aeb763;
+  --nav-ink:#526273;--nav-active:#283d51;--nav-selected:#b5c7d873;
+}
+.app-shell[data-destination='journey'] .brand {color:#465568}
+.app-shell[data-destination='journey'] .motion-toggle {color:#556679;border-color:#a7b5c873;background:#fffdf78c}
+.app-shell[data-destination='journey'] .glass-nav {box-shadow:0 8px 25px #6d7b8920}
+.app-shell[data-destination='journey'] .glass-nav button:hover {background:#bfcddd38}
+.journey-eyebrow {color:#7c8b9d}
+.journey-heading h2 {color:#3b4d5e}
+.journey-return {color:#586a7a;border-bottom-color:#9ba6af74}
+.journey-return:hover {color:#263e54}
+.journey-layout {filter:drop-shadow(0 12px 20px #54647622)}
+.journey-letter {border:1px solid #e2dbd1;border-left:none;background:url('assets/paper/note-16.svg') center / 100% 100%,#f5f0e7;color:#465461}
+.journey-letter h3 {color:#344858}
+.journey-period,.journey-fact {color:#788795}
+.journey-prose {color:#4c5865}
+.journey-question > span {color:#8190a0}
+.journey-question p {color:#5b6875}
+.journey-write {color:#536b81}
+.journey-write:hover {color:#29455f}
+.journey-signature {color:#7c8fa0}
+.journey-navigation-top p {color:#596b7a}
+.journey-drag-help {color:#8392a0}
+.journey-arrows > span {color:#64788c}
+.journey-arrows button {color:#41566b;border-color:#8a9cac88;background:#ffffff61}
+.journey-arrows button:hover:not(:disabled) {background:#e3e9eea6}
+.journey-track-base {background:#a7b2be9c}
+.journey-track-ink {background:#839cb0}
+#journey-position {color:#657e93}
+#journey-position::-webkit-slider-thumb {border-color:#f7f7f4;background:#8ca1b4;box-shadow:0 0 0 5px #a8b9c53b,0 1px 5px #596a7a56}
+#journey-position::-moz-range-thumb {border-color:#f7f7f4;background:#8ca1b4;box-shadow:0 0 0 5px #a8b9c53b}
+.journey-stops button {color:#778898}
+.journey-stops button > span {color:#8898a6}
+.journey-stops button[aria-current='step'] {color:#30485d;font-weight:600}
+.journey-stops button[aria-current='step'] > span {color:#4f687c}
+.journey-bottomline {color:#788997;border-top-color:#8d9fac52}
+.journey-bottomline > button {color:#657b8d}
+.journey-bottomline > button:hover {color:#314c65}
+@media (max-width:760px) {.journey-letter {border:1px solid #e2dbd1}}
