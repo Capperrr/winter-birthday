@@ -15,6 +15,8 @@
   const save = document.getElementById('winter-wallpaper-save');
   const reset = document.getElementById('winter-phone-reset');
   const close = document.getElementById('winter-phone-close');
+  const power = document.getElementById('winter-phone-power');
+  const powerGuide = document.getElementById('phone-power-guide');
   if (!finale || !start || !phone || !shutter) return;
   let revealTimer=0, notifyTimer=0, flashTimer=0, lastShot='', lastFocused=null, shotBusy=false;
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -24,7 +26,7 @@
   function scheduleStart(){
     hideStart();
     if(!isCelebrated())return;
-    revealTimer=window.setTimeout(()=>{ if(isCelebrated())start.hidden=false; },reduced?.matches?200:5700);
+    revealTimer=window.setTimeout(()=>{ if(isCelebrated())start.hidden=false; },reduced?.matches?0:160);
   }
   start.hidden=true;
   if (surprise){
@@ -110,7 +112,9 @@
     clearTimeout(notifyTimer);clearTimeout(flashTimer);
     lastFocused=document.activeElement;
     lastShot='';shotBusy=false;
-    shell.dataset.mode='camera';shell.classList.remove('is-snapping');
+    shell.dataset.mode='camera';shell.classList.remove('is-snapping','is-powered-off');
+    if(powerGuide)powerGuide.hidden=true;
+    if(power)power.disabled=false;
     camera.hidden=false;lock.hidden=true;notification.hidden=true;save.hidden=true;reset.hidden=true;
     phone.showModal();
     shutter.disabled=true;
@@ -137,6 +141,7 @@
         save.href=lastShot;save.hidden=false;
       }
       reset.hidden=false;
+      if(powerGuide)powerGuide.hidden=false;
       notification.hidden=true;
       notifyTimer=window.setTimeout(()=>{if(phone.open){notification.hidden=false;}},reduced?.matches?100:1100);
       shotBusy=false;
@@ -146,6 +151,7 @@
     clearTimeout(notifyTimer);clearTimeout(flashTimer);
     shotBusy=false;shutter.disabled=false;
     shell.dataset.mode='camera';camera.hidden=false;lock.hidden=true;
+    shell.classList.remove('is-powered-off');if(powerGuide)powerGuide.hidden=true;
     notification.hidden=true;save.hidden=true;reset.hidden=true;
     shutter.focus({preventScroll:true});
   }
@@ -154,6 +160,19 @@
     if(phone.open)phone.close();
     lastFocused?.focus?.({preventScroll:true});
   }
+  if(power)power.addEventListener('click',()=>{
+    if(lock.hidden || !phone.open || shell.classList.contains('is-powered-off'))return;
+    power.disabled=true;
+    shell.classList.add('is-powered-off');
+    if(powerGuide)powerGuide.hidden=true;
+    // Switch off the handset first; then the black screen becomes a universe.
+    window.setTimeout(()=>{
+      if(!phone.open)return;
+      closePhone();
+      shell.classList.remove('is-powered-off');
+      document.dispatchEvent(new CustomEvent('winter:cosmos-open'));
+    },reduced?.matches?110:560);
+  });
   start.addEventListener('click',openPhone);
   shutter.addEventListener('click',snap);
   reset?.addEventListener('click',resetShot);
