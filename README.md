@@ -12,6 +12,18 @@ The opened letter is a new, scrollable view with the envelope's cream paper colo
 
 Buildless HTML/CSS/JavaScript; deployable assets live in `dist/`. Responsive layouts, accessible tab controls, keyboard navigation, native dialogs and reduced-motion preferences are supported. Navigation supports `#home`, `#about`, `#destination` and `#letter`, including browser back/forward. “只看风景” remains available on Home.
 
+## Motion treatment
+
+This update follows the user-requested [Ai-Design-Skill animation-systems](https://github.com/MuhammadimYusoff/Ai-Design-Skill/blob/main/agent-skills/web-design/animation-systems/SKILL.md), with its [ambient-section-particles](https://github.com/MuhammadimYusoff/Ai-Design-Skill/blob/main/agent-skills/web-design/ambient-section-particles/SKILL.md) guidance for the small light layer. The skill files were read from their public source; no global plugin, framework or animation dependency was installed.
+
+The existing images, copy, page structure, country stories, note IDs/storage and `app.js` interaction flow are retained. `motion.css` and `motion.js` provide the separate enhancement layer. The small header icon pauses the new atmosphere and remembers that preference independently from the note contents.
+
+Motion tokens: 160 ms hover/press feedback, 240 ms small popovers, 480–600 ms entrances, and 950 ms for the main title. The easing is `cubic-bezier(.22,.72,.22,1)`. The home title appears before its supporting copy; paper notes enter with 26 ms spacing on desktop and 17 ms on mobile. Translations are small (8–12 px for entrances; a maximum of 4 px horizontally and 3 px vertically for mouse-driven scenery). The paper's authored rotation uses `transform`, while entrance movement uses the independent `translate` property.
+
+The envelope atmosphere contains at most eight small lights at the outer edges. Visible density is based on container area. CSS animates only opacity and transforms/individual transform properties; pointer movement shares a single queued frame and uses cached bounds. There is no permanent JavaScript animation loop. Motion pauses while a dialog is open, the document is hidden or the Site is out of view. Observer subscriptions, listeners and pending frames are cleaned on page exit; back/forward cache restores resume the same layer without adding duplicates.
+
+System `prefers-reduced-motion` disables the added effects, and touch/coarse-pointer input does not drive parallax. Motion preferences use `winter-ambient-motion-paused`, preserving `winter-about-notes-v1` untouched. Validation covers the original interaction sequence and separate motion lifecycle/state checks; browser rendering and live performance profiling were unavailable in this environment.
+
 ## Photography
 
 Grindelwald, Switzerland, by Polina Kocheva on Unsplash.

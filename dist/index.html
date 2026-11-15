@@ -13,7 +13,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;family=Caveat:wght@400&amp;family=Noto+Serif+SC:wght@400;500&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=shared-air">
+  <link rel="stylesheet" href="motion.css?v=gentle-1">
   <script src="app.js?v=shared-air" defer></script>
+  <script src="motion.js?v=gentle-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -47,10 +49,16 @@
           <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="m13.2 6.8-1.8 4.6-4.6 1.8 1.8-4.6 4.6-1.8Z"/></svg><span>Destination</span>
         </button>
       </nav>
+      <div class="header-actions">
+      <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false" aria-label="暂停氛围动效" title="暂停氛围动效" hidden>
+        <svg class="motion-pause-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5v10M13 5v10"/></svg>
+        <svg class="motion-play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6V4Z"/></svg>
+      </button>
       <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false" aria-label="隐藏文字，只看风景">
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg>
         <span id="view-label">只看风景</span>
       </button>
+      </div>
     </header>
 
     <div class="page-content" id="page-content" tabindex="-1">

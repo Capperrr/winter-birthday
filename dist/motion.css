@@ -1,0 +1,75 @@
+/* Ai-Design-Skill / animation-systems: small, composited, interruptible motion. */
+:root {
+  --motion-micro: 160ms;
+  --motion-ui: 240ms;
+  --motion-reveal: 600ms;
+  --motion-hero: 950ms;
+  --motion-ease: cubic-bezier(.22, .72, .22, 1);
+}
+
+.motion-toggle { display: grid; place-items: center; width: 34px; height: 34px; padding: 8px; flex-shrink: 0; border: 1px solid #d8dfa845; border-radius: 50%; background: #14362e24; color: #d0d9aa; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background var(--motion-micro) ease, transform var(--motion-micro) ease; }
+.motion-toggle:hover { background: #244b3d7a; }
+.motion-toggle:active { transform: scale(.94); }
+.motion-toggle svg { width: 16px; height: 16px; }
+.motion-pause-icon { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+.motion-play-icon { display: none; fill: currentColor; }
+.motion-toggle[aria-pressed='true'] .motion-pause-icon { display: none; }
+.motion-toggle[aria-pressed='true'] .motion-play-icon { display: block; }
+.app-shell:not([data-page='home']) .header-actions .view-toggle { display: none; }
+.app-shell[data-page='about'] .motion-toggle, .app-shell[data-destination='letter'] .motion-toggle { color: #6c7c54; border-color: #aab3916e; background: #faf7e54a; }
+.app-shell[data-page='destination']:not([data-destination='letter']) .motion-toggle { color: #526b58; border-color: #eef2dd91; background: #f0f4e338; }
+
+/* Individual translate/scale keep the authored paper rotations and envelope flip intact. */
+.app-shell[data-motion='on'][data-page='home'] .cover-title .intro { animation: winter-reveal var(--motion-reveal) var(--motion-ease) 50ms backwards; }
+.app-shell[data-motion='on'][data-page='home'] .cover-title .name { animation: winter-reveal var(--motion-hero) var(--motion-ease) 140ms backwards; }
+.app-shell[data-motion='on'][data-page='home'] .cover-caption { animation: winter-reveal var(--motion-reveal) var(--motion-ease) 310ms backwards; }
+.app-shell[data-motion='on'][data-page='home'] .gift-dedication { animation: winter-reveal var(--motion-reveal) var(--motion-ease) 400ms backwards; }
+.app-shell[data-motion='on'][data-page='home'] .landscape img { animation: winter-landscape-settle 8s var(--motion-ease) backwards; }
+.app-shell[data-motion='on'][data-motion-scene='home'] .landscape,
+.app-shell[data-motion='on'][data-motion-scene='envelope'] .dream-landscape { transform: translate3d(var(--scene-x, 0px), var(--scene-y, 0px), 0) scale(1.012); transition: opacity 600ms ease, transform 900ms var(--motion-ease); }
+
+.app-shell[data-motion='on'][data-page='about'] .about-heading { animation: winter-reveal 480ms var(--motion-ease) backwards; }
+.app-shell[data-motion='on'][data-page='about'] .sticky-note { animation: winter-paper-place 480ms var(--motion-ease) backwards; animation-delay: calc(60ms + var(--motion-order, 0) * 26ms); }
+.app-shell[data-motion='on'][data-page='about'] .notes-footnote { animation: winter-reveal 550ms var(--motion-ease) 440ms backwards; }
+.note-editor[data-motion='on'][open] { animation: winter-small-card 240ms var(--motion-ease) backwards; }
+.app-shell[data-motion='on'] .sticky-note:active { scale: .985; }
+
+.app-shell[data-motion='on'] .glass-nav::after { content: ''; position: absolute; inset: 0; z-index: 0; border-radius: inherit; opacity: 0; background: linear-gradient(105deg, transparent 18%, #fffef526 43%, #ffffff3b 50%, transparent 73%); pointer-events: none; }
+.app-shell[data-motion='on'] .glass-nav:is(:hover, :focus-within)::after { animation: winter-glass-light 650ms ease-out both; }
+.app-shell[data-motion='on'] .glass-nav button { transition-duration: var(--motion-micro); }
+.app-shell[data-motion='on'][data-destination='envelope'] .letter-glow { animation: winter-warmth 9s ease-in-out infinite; }
+.app-shell[data-motion='on'][data-destination='letter'] .letter-page-header { animation: winter-reveal 580ms var(--motion-ease) 80ms backwards; }
+.app-shell[data-motion='on'][data-destination='letter'] .country-button { animation: winter-reveal 500ms var(--motion-ease) 180ms backwards; }
+.app-shell[data-motion='on'][data-destination='letter'] .country-button:nth-child(2) { animation-delay: 250ms; }
+.app-shell[data-motion='on'] .memory-note:not([hidden]) .masking-tape { animation: winter-tape-settle 380ms var(--motion-ease) 80ms backwards; }
+
+.motion-atmosphere { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 500ms ease; }
+.motion-atmosphere span { position: absolute; left: var(--light-x); top: var(--light-y); width: var(--light-size); height: var(--light-size); border-radius: 50%; background: #f3df9b; box-shadow: 0 0 8px #f4d59c70; opacity: 0; pointer-events: none; }
+.app-shell[data-motion='on'][data-motion-scene='envelope'] .motion-atmosphere { opacity: 1; }
+.app-shell[data-motion='on'][data-motion-scene='envelope'] .motion-atmosphere span { animation: winter-firefly var(--light-duration) ease-in-out var(--light-delay) infinite; }
+
+.app-shell[data-motion-paused='true'] .landscape img,
+.app-shell[data-motion-paused='true'] .letter-glow,
+.app-shell[data-motion-paused='true'] .motion-atmosphere span { animation-play-state: paused !important; }
+
+@keyframes winter-reveal { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
+@keyframes winter-paper-place { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@keyframes winter-small-card { from { opacity: 0; scale: .98; translate: 0 5px; } to { opacity: 1; scale: 1; translate: 0 0; } }
+@keyframes winter-landscape-settle { from { scale: 1.025; } to { scale: 1; } }
+@keyframes winter-glass-light { 0% { opacity: 0; translate: -15% 0; } 40% { opacity: 1; } 100% { opacity: 0; translate: 15% 0; } }
+@keyframes winter-warmth { 0%,100% { opacity: .55; } 50% { opacity: .95; } }
+@keyframes winter-tape-settle { from { opacity: .4; scale: .96; } to { opacity: .9; scale: 1; } }
+@keyframes winter-firefly { 0% { opacity: 0; translate: 0 8px; } 25% { opacity: .34; } 65% { opacity: .2; } 100% { opacity: 0; translate: var(--light-drift) -28px; } }
+
+@media (max-width: 760px) {
+  .motion-toggle { width: 30px; height: 32px; padding: 7px; }
+  .motion-toggle svg { width: 14px; height: 14px; }
+  .app-shell[data-motion='on'][data-page='about'] .sticky-note { animation-delay: calc(40ms + var(--motion-order, 0) * 17ms); }
+  .app-shell[data-motion='on'][data-page='home'] .cover-title .name { animation-duration: 750ms; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-atmosphere { display: none !important; }
+  .motion-toggle { display: none !important; }
+  .app-shell[data-motion] *, .app-shell[data-motion] *::before, .app-shell[data-motion] *::after { animation: none !important; transition: none !important; }
+  .app-shell[data-motion] .landscape, .app-shell[data-motion] .dream-landscape { transform: none !important; }
+}
