@@ -22,13 +22,14 @@
   <link rel="stylesheet" href="journey.css?v=personal-photos-2">
   <link rel="stylesheet" href="music.css?v=mainland-1">
   <link rel="stylesheet" href="personal-album.css?v=first-1">
-  <script src="app.js?v=afterword-1" defer></script>
+  <link rel="stylesheet" href="interactive-finale.css?v=full-1">
+  <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=ritual-2" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
-  <script src="journey.js?v=afterword-1" defer></script>
+  <script src="journey.js?v=finale-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="music.js?v=pretty-default-1" defer></script>
-  <script src="personal-album.js?v=first-1" defer></script>
+  <script src="interactive-finale.js?v=full-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -116,9 +117,8 @@
 
       <section class="page-panel about-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
         <div class="album-corner-mark" aria-hidden="true"><span>THE WINTER COLLECTION</span><span>VOL. 25 · A NEW CHAPTER</span></div>
-        <figure class="keepsake-photo photo-alps" aria-hidden="true"><img src="assets/swiss-alps-small.webp" width="960" height="641" alt="" decoding="async"><figcaption>to all the paths ahead</figcaption></figure>
-        <figure class="keepsake-photo photo-lake" aria-hidden="true"><img src="assets/memory-natural-small.webp" width="960" height="640" alt="" decoding="async"><figcaption>the world you love</figcaption></figure>
         <div class="about-heading"><p class="page-eyebrow">TO MY TWENTY-FIVE-YEAR-OLD SELF</p><h2>Dear me<span class="heading-dot">.</span></h2><svg class="album-flourish" viewBox="0 0 180 23" fill="none" aria-hidden="true"><path d="M8 13h44m76 0h44M57 13c17 0 22-11 33-11s16 11 33 11M70 15c10 0 13 5 20 5s10-5 20-5" stroke="currentColor" stroke-width=".8"/><path d="m90 7 3 5-3 5-3-5 3-5Z" fill="currentColor"/><path d="m41 13-7-5-1 5 6 3m107-3 7-5 1 5-6 3" stroke="currentColor" stroke-width=".7"/></svg></div>
+        <div class="keepsake-mosaic" aria-label="25 张便利贴和你珍藏的照片">
         <div class="notes-board" role="group" aria-label="22 张带有不同折痕的便利贴，拼成数字 25">
           <div class="note-digit" role="group" aria-label="数字 2"><button type="button" class="sticky-note butter" data-note-id="1" style="--paper-scale:0.983;--rotation:-2.3deg;--offset-x:-0.8px;--offset-y:-0.1px;--paper-texture:url('assets/paper/note-01.svg');--curl-size:11%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:5.8px;--paper-light:108deg;--paper-origin:41%;--paper-radius:3px 2px 6px 2px" aria-label="第 1 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">01</span></button>
 <button type="button" class="sticky-note sage" data-note-id="2" style="--paper-scale:1.017;--rotation:1.5deg;--offset-x:0.2px;--offset-y:1.4px;--paper-texture:url('assets/paper/note-02.svg');--curl-size:9%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:5.2px;--paper-light:149deg;--paper-origin:62%;--paper-radius:2px 2px 3px 2px" aria-label="第 2 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">02</span></button>
@@ -151,47 +151,17 @@
 <button type="button" class="sticky-note butter" data-note-id="21" style="--paper-scale:1.021;--rotation:2.75deg;--offset-x:1.3px;--offset-y:-1.7px;--paper-texture:url('assets/paper/note-21.svg');--curl-size:12%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:3.5px;--paper-light:131deg;--paper-origin:35%;--paper-radius:2px 1px 3px 6px" aria-label="第 21 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">21</span></button>
 <button type="button" class="sticky-note sage" data-note-id="22" style="--paper-scale:0.992;--rotation:4.38deg;--offset-x:1.7px;--offset-y:0.9px;--paper-texture:url('assets/paper/note-22.svg');--curl-size:9%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:4.6px;--paper-light:171deg;--paper-origin:39%;--paper-radius:3px 4px 5px 4px" aria-label="第 22 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">22</span></button></div>
         </div>
-        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p><button class="about-photo-reveal" id="about-photo-reveal" type="button" aria-controls="about-photo-wall">再往下看，七个关于你的瞬间 <span aria-hidden="true">↓</span></button></div>
-        <section class="about-photo-wall" id="about-photo-wall" aria-labelledby="about-photo-wall-title">
-          <header class="about-photo-intro">
-            <span class="photo-intro-index">AN ALBUM OF LITTLE MOMENTS · 01—07</span>
-            <h3 id="about-photo-wall-title">喜欢你鲜活的每一种模样。</h3>
-            <p>Pieces of you, the way I slowly came to know you.</p>
-            <span>七个瞬间，一点一点拼成我眼中的你。</span>
-          </header>
-          <div class="pinned-photo-board" role="group" aria-label="七张钉在暖色记忆板上的拍立得照片">
-            <figure class="winter-polaroid polaroid-01" style="--lean:-5deg;--drop:0;--tile-x:0%;--tile-y:0%">
-              <div class="polaroid-image" role="img" aria-label="海边背影，迎着风走在沙滩上"></div>
-              <figcaption><strong>Free spirit</strong><span>自由的灵魂</span></figcaption>
-            </figure>
-            <figure class="winter-polaroid polaroid-02" style="--lean:3deg;--drop:1;--tile-x:33.3333%;--tile-y:0%">
-              <div class="polaroid-image" role="img" aria-label="室内暖光下的安静近景"></div>
-              <figcaption><strong>Gentle gaze</strong><span>温柔的目光</span></figcaption>
-            </figure>
-            <figure class="winter-polaroid polaroid-03" style="--lean:-2deg;--drop:2;--tile-x:66.6667%;--tile-y:0%">
-              <div class="polaroid-image" role="img" aria-label="暖色灯光下安静地坐着"></div>
-              <figcaption><strong>Quiet glow</strong><span>静静闪光</span></figcaption>
-            </figure>
-            <figure class="winter-polaroid polaroid-04" style="--lean:5deg;--drop:3;--tile-x:100%;--tile-y:0%">
-              <div class="polaroid-image" role="img" aria-label="蓝色海天之间的草坡留影"></div>
-              <figcaption><strong>Open heart</strong><span>坦然真诚</span></figcaption>
-            </figure>
-            <figure class="winter-polaroid polaroid-05" style="--lean:4deg;--drop:4;--tile-x:0%;--tile-y:100%">
-              <div class="polaroid-image" role="img" aria-label="绚丽花朵与蝴蝶间的侧脸"></div>
-              <figcaption><strong>Radiance</strong><span>明媚耀眼</span></figcaption>
-            </figure>
-            <figure class="winter-polaroid polaroid-06" style="--lean:-4deg;--drop:5;--tile-x:33.3333%;--tile-y:100%">
-              <div class="polaroid-image" role="img" aria-label="蓝天下戴着墨镜与针织帽的照片"></div>
-              <figcaption><strong>Fearlessly you</strong><span>自在做自己</span></figcaption>
-            </figure>
-            <figure class="winter-polaroid polaroid-07" style="--lean:2deg;--drop:6;--tile-x:66.6667%;--tile-y:100%">
-              <div class="polaroid-image" role="img" aria-label="草坡上背着海鹦玩偶望向大海"></div>
-              <figcaption><strong>Wanderlust</strong><span>热爱探索</span></figcaption>
-            </figure>
-          </div>
-          <p class="about-photo-postscript">There is so much of the world in you, and so much of you I have yet to know. <span>— G.</span></p>
-        </section>
+          <div class="portrait-rail rail-left" role="group" aria-label="左侧的四张拍立得照片"><button class="portrait-pin pin-1" type="button" data-portrait="0" style="--tile-x:0.0000%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：海边的风和背影，Free spirit 自由的灵魂"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Free spirit</b><small>自由的灵魂</small></span></button><button class="portrait-pin pin-2" type="button" data-portrait="1" style="--tile-x:33.3333%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：暖光下的日常，Gentle gaze 温柔的目光"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Gentle gaze</b><small>温柔的目光</small></span></button><button class="portrait-pin pin-3" type="button" data-portrait="2" style="--tile-x:66.6667%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：夜晚暖色里的你，Quiet glow 安静发光"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Quiet glow</b><small>安静发光</small></span></button><button class="portrait-pin pin-4" type="button" data-portrait="3" style="--tile-x:100.0000%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：蓝色海天的草坡，Open heart 清澈真诚"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Open heart</b><small>清澈真诚</small></span></button></div>
+          <div class="portrait-rail rail-right" role="group" aria-label="右侧的三张拍立得照片"><button class="portrait-pin pin-5" type="button" data-portrait="4" style="--tile-x:0.0000%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：鲜花与蝴蝶，Radiance 明媚耀眼"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Radiance</b><small>明媚耀眼</small></span></button><button class="portrait-pin pin-6" type="button" data-portrait="5" style="--tile-x:33.3333%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：蓝天下的酷女孩，Fearlessly you 自在做自己"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Fearlessly you</b><small>自在做自己</small></span></button><button class="portrait-pin pin-7" type="button" data-portrait="6" style="--tile-x:66.6667%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：背着海鹦玩偶看海，Wanderlust 热爱探索"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Wanderlust</b><small>热爱探索</small></span></button></div>
+        </div>
+        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
 
+        <dialog id="portrait-lightbox" class="portrait-lightbox" aria-labelledby="portrait-lightbox-title" aria-modal="true">
+          <div class="portrait-lightbox-head"><span>SEVEN LITTLE MOMENTS · WINTER</span><button type="button" id="portrait-close" aria-label="关闭照片">×</button></div>
+          <div class="portrait-lightbox-print"><div id="portrait-large-image" class="portrait-large-image" role="img" aria-label="放大的照片"></div><p id="portrait-lightbox-title" class="portrait-lightbox-title">Free spirit</p><p id="portrait-lightbox-zh" class="portrait-lightbox-zh">自由的灵魂</p></div>
+          <div class="portrait-lightbox-controls"><button id="portrait-prev" type="button">← 上一张</button><span id="portrait-counter">01 / 07</span><button id="portrait-next" type="button">下一张 →</button></div>
+          <p class="portrait-lightbox-hint">点开每个瞬间，总还有想慢慢讲的故事。</p>
+        </dialog>
       </section>
 
       <section class="page-panel destination-panel" id="panel-destination" role="tabpanel" aria-labelledby="tab-destination" tabindex="0" hidden>
@@ -296,9 +266,40 @@
       <span>What stayed with me was never the place, but you.</span>
       <strong>真正留在我心里的，从来不是那个地方，而是你。</strong>
     </div>
+    <button type="button" class="afterword-continue" id="afterword-continue">下一页 · 让我们的故事拼在一起 <span aria-hidden="true">↗</span></button>
     <button type="button" class="afterword-home" id="afterword-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button>
   </div>
   <span class="afterword-footer-mark" aria-hidden="true">FOR WINTER · WITH LOVE</span>
+</section>
+<section class="birthday-finale" id="birthday-finale" aria-labelledby="birthday-finale-title" hidden>
+  <div class="finale-paper-noise" aria-hidden="true"></div>
+  <header class="finale-top"><span>THE LITTLE THINGS THAT BROUGHT US TOGETHER · NO. 25</span><button type="button" id="finale-back">← 回到那封信</button></header>
+  <div class="finale-story">
+    <p class="finale-index">A TINY PIECE OF FATE · OUR BIRTHDAY PAGE</p>
+    <h2 id="birthday-finale-title">原来我们会这样相遇。</h2>
+    <p class="finale-help" id="finale-help" role="status" aria-live="polite">照片被时光撕成了两半。<strong>拖动或点击两边的照片，让我们重新站到一起。</strong></p>
+    <div class="finale-newspaper" id="finale-newspaper" data-joined="false" aria-label="互动撕页合照：拼合两半照片">
+      <span class="news-headline" aria-hidden="true">THE WINTER CHRONICLE</span>
+      <span class="news-date" aria-hidden="true">A STORY IN TWO PIECES · 25</span>
+      <div class="finale-polaroid-mat">
+        <div class="finale-photo-pieces" id="finale-pieces">
+          <button type="button" id="finale-piece-left" class="finale-piece left-piece" aria-label="左半张照片，拖到一起或点按拼合"><span aria-hidden="true">Ⅰ</span></button>
+          <button type="button" id="finale-piece-right" class="finale-piece right-piece" aria-label="右半张照片，拖到一起或点按拼合"><span aria-hidden="true">Ⅱ</span></button>
+          <div class="finale-photo-whole" role="img" aria-label="AI 创意生成的两位小朋友一起庆祝 25 岁生日" aria-hidden="true"></div>
+        </div>
+        <div class="finale-caption"><span>THEN & NOW · SIDE BY SIDE</span><span>这一次，我们在同一张照片里。</span></div>
+      </div>
+      <p class="news-footline" aria-hidden="true">Some encounters feel written in the stars · for winter, with love</p>
+    </div>
+    <div class="finale-surprise" id="finale-surprise" aria-live="polite" hidden>
+      <p>WITH ALL MY HEART</p>
+      <h3>我很荣幸<br>能够参与你的<span>25岁</span></h3>
+      <span class="finale-english">How lucky I am to be here for your 25th birthday.</span>
+      <div class="finale-actions"><button type="button" id="finale-replay">再拼一次 <span aria-hidden="true">↻</span></button><button type="button" id="finale-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button></div>
+    </div>
+  </div>
+  <div class="finale-balloons" id="finale-balloons" aria-hidden="true"></div>
+  <canvas id="finale-confetti" class="finale-confetti" aria-hidden="true"></canvas>
 </section>
 <section class="journey-page" id="journey-page" aria-labelledby="journey-title" data-stop="0" hidden>
   <header class="journey-heading">
@@ -316,7 +317,7 @@
       </div>
       <div class="journey-photo-fallback" id="journey-photo-fallback" hidden><span aria-hidden="true">✧</span><p>这里的风景，等你慢慢讲给我听。</p></div>
       <span class="journey-photo-number" id="journey-photo-number" aria-hidden="true">01</span>
-      <figcaption class="journey-photo-caption"><p id="journey-photo-caption">达州 · 城市资料影像</p><span class="journey-swipe-hint">轻扫画面，慢慢走 <span aria-hidden="true">↔</span></span></figcaption>
+      <figcaption class="journey-photo-caption"><p id="journey-photo-caption">达州 · 城市资料影像</p></figcaption>
     </figure>
     <article class="journey-letter" aria-labelledby="journey-place-title">
       <div class="journey-letter-body" id="journey-letter-body" tabindex="0" aria-label="这一站的来信">
@@ -333,11 +334,11 @@
       <p class="journey-saved-preview" id="journey-saved-preview" hidden></p>
     </article>
     <section class="journey-navigation" aria-label="沿着时光探索五段旅程">
-      <div class="journey-navigation-top"><p>沿着时光，慢慢走 <span class="journey-drag-help">· 拖动圆点，停在你想讲的地方</span></p><div class="journey-arrows"><button type="button" id="journey-previous" aria-label="上一站" disabled>←</button><span id="journey-count">01 / 05</span><button type="button" id="journey-next" aria-label="下一站">→</button></div></div>
+      <div class="journey-navigation-top"><p>旅程进度 <span class="journey-drag-help">· 拖动圆点，停在你想讲的地方</span></p><div class="journey-arrows"><button type="button" id="journey-previous" aria-label="上一站" disabled>←</button><span id="journey-count">01 / 05</span><button type="button" id="journey-next" aria-label="下一站">→</button></div></div>
       <div class="journey-track" id="journey-track"><span class="journey-track-base" aria-hidden="true"></span><span class="journey-track-ink" aria-hidden="true"></span><input id="journey-position" type="range" min="0" max="400" step="any" value="0" aria-label="选择人生旅程中的一站" aria-valuetext="第1站，达州日常" aria-describedby="journey-range-help"></div>
       <p class="sr-only" id="journey-range-help">可以拖动，也可以使用左右方向键逐站移动，Home 到第一站，End 到最后一站。</p>
       <div class="journey-stops" id="journey-stops"><button type="button" data-journey-stop="0" style="--stop-position:0" aria-current="step"><span>01</span>达州日常</button><button type="button" data-journey-stop="1" style="--stop-position:.25"><span>02</span>初中和高中</button><button type="button" data-journey-stop="2" style="--stop-position:.5"><span>03</span>南岸</button><button type="button" data-journey-stop="3" style="--stop-position:.75"><span>04</span>南安普顿</button><button type="button" data-journey-stop="4" style="--stop-position:1"><span>05</span>相遇</button></div>
-      <button type="button" class="journey-afterword-trigger" id="journey-afterword-trigger" hidden>接下来，我还有一些话想对你说 <span aria-hidden="true">↗</span></button>
+      <button type="button" class="journey-afterword-trigger" id="journey-afterword-trigger" hidden>最后一站之后 · 还有一封信想对你说 <span aria-hidden="true">↗</span></button>
       <div class="journey-bottomline"><span id="journey-ending">那些我还没参与的日子，想听你慢慢讲。</span><button type="button" id="journey-credits-open" aria-haspopup="dialog">影像：Nyx Ning · CC BY-SA 3.0</button></div>
     </section>
   </div>
