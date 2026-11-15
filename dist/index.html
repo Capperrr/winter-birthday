@@ -15,9 +15,10 @@
   <link rel="stylesheet" href="style.css?v=shared-air">
   <link rel="stylesheet" href="motion.css?v=gentle-1">
   <link rel="stylesheet" href="celebration.css?v=unfolded-1">
-  <link rel="stylesheet" href="cake-scene.css?v=three-tier-1">
+  <link rel="stylesheet" href="cake-scene.css?v=alpine-night-1">
   <link rel="stylesheet" href="memory-notes.css?v=three-pages-1">
-  <script src="app.js?v=three-tier-1" defer></script>
+  <link rel="stylesheet" href="nature-atlas.css?v=landscapes-1">
+  <script src="app.js?v=gwen-nature-1" defer></script>
   <script src="cake-scene.js?v=three-tier-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
@@ -36,6 +37,9 @@
       <img src="assets/destination-dream.webp" alt="梦里的山野：暮色雪峰、雾蓝色松林、花草和微光，月亮在淡紫色的天空里。" width="1586" height="992" decoding="async">
     </picture>
     <div class="dream-shade" aria-hidden="true"></div>
+    <picture class="nature-backdrop cake-backdrop" aria-hidden="true"><source media="(max-width: 760px)" srcset="assets/cake-alpine-night-small.webp"><img src="assets/cake-alpine-night.webp" width="1536" height="1024" alt="" decoding="async"></picture>
+    <picture class="nature-backdrop memory-backdrop" aria-hidden="true"><source media="(max-width: 760px)" srcset="assets/memory-natural-small.webp"><img src="assets/memory-natural.webp" width="1536" height="1024" alt="" decoding="async"></picture>
+    <picture class="nature-backdrop about-backdrop" aria-hidden="true"><source media="(max-width: 760px)" srcset="assets/about-botanical-portrait.webp"><img src="assets/about-botanical.webp" width="1536" height="1024" alt="" decoding="async"></picture>
     <div class="cover-edge" aria-hidden="true"></div>
 
     <header class="site-header">
@@ -72,12 +76,15 @@
         <div class="cover-copy scene-copy">
           <h1 class="cover-title"><span class="intro">For you,</span><span class="name">WINTER</span></h1>
           <div class="cover-caption"><span class="caption-line" aria-hidden="true"></span><p>向山野走去，和生活相遇。</p></div>
-          <p class="gift-dedication">这片小小的山野，是我为你准备的。<span>MADE FOR YOU, WITH LOVE</span></p>
+          <p class="gift-dedication">这片小小的山野，是我为你准备的。<span>MADE FOR WINTER, WITH LOVE — GWEN</span></p>
         </div>
       </section>
 
       <section class="page-panel about-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
-        <div class="about-heading"><p class="page-eyebrow">TO MY TWENTY-FIVE-YEAR-OLD SELF</p><h2>Dear me<span class="heading-dot">.</span></h2></div>
+        <div class="album-corner-mark" aria-hidden="true"><span>THE WINTER COLLECTION</span><span>VOL. 25 · A NEW CHAPTER</span></div>
+        <figure class="keepsake-photo photo-alps" aria-hidden="true"><img src="assets/swiss-alps-small.webp" width="960" height="641" alt="" decoding="async"><figcaption>to all the paths ahead</figcaption></figure>
+        <figure class="keepsake-photo photo-lake" aria-hidden="true"><img src="assets/memory-natural-small.webp" width="960" height="640" alt="" decoding="async"><figcaption>the world you love</figcaption></figure>
+        <div class="about-heading"><p class="page-eyebrow">TO MY TWENTY-FIVE-YEAR-OLD SELF</p><h2>Dear me<span class="heading-dot">.</span></h2><svg class="album-flourish" viewBox="0 0 180 23" fill="none" aria-hidden="true"><path d="M8 13h44m76 0h44M57 13c17 0 22-11 33-11s16 11 33 11M70 15c10 0 13 5 20 5s10-5 20-5" stroke="currentColor" stroke-width=".8"/><path d="m90 7 3 5-3 5-3-5 3-5Z" fill="currentColor"/><path d="m41 13-7-5-1 5 6 3m107-3 7-5 1 5-6 3" stroke="currentColor" stroke-width=".7"/></svg></div>
         <div class="notes-board" role="group" aria-label="22 张带有不同折痕的便利贴，拼成数字 25">
           <div class="note-digit" role="group" aria-label="数字 2"><button type="button" class="sticky-note butter" data-note-id="1" style="--rotation:-2.3deg;--offset-x:-0.8px;--offset-y:-0.1px;--paper-texture:url('assets/paper/note-01.svg');--curl-size:11%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:5.8px;--paper-light:108deg;--paper-origin:41%;--paper-radius:3px 2px 6px 2px" aria-label="第 1 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">01</span></button>
 <button type="button" class="sticky-note sage" data-note-id="2" style="--rotation:1.5deg;--offset-x:0.2px;--offset-y:1.4px;--paper-texture:url('assets/paper/note-02.svg');--curl-size:9%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:5.2px;--paper-light:149deg;--paper-origin:62%;--paper-radius:2px 2px 3px 2px" aria-label="第 2 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">02</span></button>
@@ -123,7 +130,7 @@
               <span class="envelope-label" aria-hidden="true">FOR YOU, WINTER</span>
               <div class="wax-seal" aria-hidden="true"><span>25</span></div>
               <svg class="pressed-flower" viewBox="0 0 90 150" fill="none" aria-hidden="true"><path d="M35 146C29 103 42 64 53 20M35 133C50 97 61 83 79 73M34 115C17 94 15 81 17 58" stroke="#7c9273" stroke-width="1.5"/><path d="M40 91C42 80 54 70 61 71c-4 13-11 19-21 20ZM35 114c-12-4-20-11-20-20 13 3 18 8 20 20ZM46 60c-4-12-4-19 2-24 5 11 5 17-2 24ZM57 98c3-11 10-15 17-14-3 11-7 15-17 14Z" fill="#93a185" fill-opacity=".7"/><g fill="#dad4e2" stroke="#aaa2ba" stroke-width=".5"><ellipse cx="53" cy="17" rx="4" ry="9" transform="rotate(-31 53 17)"/><ellipse cx="58" cy="20" rx="4" ry="9" transform="rotate(35 58 20)"/><ellipse cx="49" cy="24" rx="4" ry="8" transform="rotate(-65 49 24)"/><ellipse cx="57" cy="27" rx="4" ry="8" transform="rotate(65 57 27)"/><ellipse cx="17" cy="55" rx="4" ry="7"/><ellipse cx="12" cy="59" rx="3" ry="7" transform="rotate(-60 12 59)"/><ellipse cx="21" cy="61" rx="3" ry="7" transform="rotate(50 21 61)"/></g><circle cx="54" cy="24" r="3" fill="#b7ae80"/><circle cx="17" cy="60" r="2" fill="#b7ae80"/></svg>
-              <div class="envelope-address"><h2><span class="recipient-name">25岁的周琬婷</span><span class="recipient-greeting">生日快乐</span></h2><p>From me, with all my love.</p></div>
+              <div class="envelope-address"><h2><span class="recipient-name">25岁的周琬婷</span><span class="recipient-greeting">生日快乐</span></h2><p>From Gwen, with all my love.</p></div>
               <span class="envelope-fiber" aria-hidden="true"></span>
               <svg class="envelope-twine" viewBox="0 0 540 342" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="rope-horizontal" d="M-4 116C96 120 141 110 270 116s185 2 276-2" stroke="#8f8d73" stroke-width="3.2"/><path class="rope-horizontal" d="M-4 115C96 119 141 109 270 115s185 2 276-2" stroke="#d9d1b6" stroke-width=".9"/><path class="rope-vertical" d="M123-3c-5 57 5 92 0 154s4 143-1 195" stroke="#8f8d73" stroke-width="3.2"/><path class="rope-vertical" d="M122-3c-5 57 5 92 0 154s4 143-1 195" stroke="#d9d1b6" stroke-width=".9"/></g></svg>
               <button type="button" class="open-envelope string-knot" id="open-envelope" aria-label="点击绳结，展开写给周琬婷的生日信" aria-describedby="envelope-help"><svg viewBox="0 0 120 80" aria-hidden="true"><g fill="none" stroke="#8b886c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path class="bow-loop-left" pathLength="1" d="M60 37C39 8 14 13 22 33c6 15 28 11 38 4Z"/><path class="bow-loop-right" pathLength="1" d="M60 37c18-31 47-24 38-3-6 13-27 11-38 3Z"/><path class="bow-tail-left" d="M59 39C44 48 41 60 30 67"/><path class="bow-tail-right" d="M63 39c15 5 18 19 31 23"/><path d="m54 37 7-5 7 7-8 6-6-8Z" fill="#aaa388"/></g><g fill="none" stroke="#e5ddc1" stroke-width=".85"><path class="bow-loop-left" pathLength="1" d="M60 36C39 7 14 12 22 32c6 15 28 11 38 4Z"/><path class="bow-loop-right" pathLength="1" d="M60 36c18-31 47-24 38-3-6 13-27 11-38 3Z"/></g></svg><span class="sr-only">解开绳结</span></button>
@@ -131,10 +138,9 @@
           </div>
           <p class="destination-love-note">把祝福藏进山野，把这封信交给你。</p>
           <p class="envelope-help" id="envelope-help">点一下绳结，拆开我送你的礼物 <span aria-hidden="true">↗</span></p>
-          <span class="letter-postscript">WITH LOVE, ALWAYS</span>
+          <span class="letter-postscript">WITH LOVE, ALWAYS · GWEN</span>
         </div>
 <section class="cake-page" id="cake-page" data-cake-state="unlit" aria-labelledby="grand-cake-title" hidden>
-  <div class="cake-night" aria-hidden="true"><span class="cake-moon"></span><svg class="cake-mountains" viewBox="0 0 1400 430" preserveAspectRatio="none"><path d="M0 225 135 118l113 118 128-183 186 173 111-88 168 144 144-173 159 143 114-108 142 130v156H0Z" fill="#284644"/><path d="m248 236 128-183 186 173-139-85-44-47-48 70-83 72Zm737-127 159 143-109-62-50-81Z" fill="#78958b" opacity=".23"/><path d="M0 305 95 268l127 51 107-38 159 80 143-47 169 42 148-71 128 35 153-59 171 54v115H0Z" fill="#1a3437"/><path d="M0 386c290-65 385 31 626 2s493-48 774 8v34H0v-44Z" fill="#142e31"/></svg></div>
   <div class="grand-cake-intro" id="grand-cake-intro"><p>A WISH, JUST FOR YOU</p><h2 id="grand-cake-title">For your twenty-fifth.</h2></div>
   <div class="grand-cake-tableau" id="grand-cake-tableau">
     <div class="grand-cake-halo" aria-hidden="true"></div>
@@ -178,12 +184,12 @@
               <article class="memory-note china-note" id="memory-china" role="button" tabindex="0" aria-label="中国的纸条，第1张，共3张，点击翻页" aria-describedby="china-letter-text china-note-counter" hidden>
                 <span class="masking-tape" aria-hidden="true"></span><p class="memory-place" id="memory-china-title">CHINA</p>
                 <p class="memory-letter-text" id="china-letter-text">跟你在这片土地上走了很久，有一天，我突然举起手机，镜头对着你最爱的天空，分享给你的那一刻，我确定我爱上你了。</p>
-                <p class="memory-signature">From me, to you.</p><p class="memory-note-counter" id="china-note-counter">1 / 3 · 轻点纸条继续</p>
+                <p class="memory-signature">With love, Gwen.</p><p class="memory-note-counter" id="china-note-counter">1 / 3 · 轻点纸条继续</p>
               </article>
               <article class="memory-note uk-note" id="memory-uk" role="button" tabindex="0" aria-label="英国的纸条，第1张，共3张，点击翻页" aria-describedby="uk-letter-text uk-note-counter" hidden>
                 <span class="masking-tape" aria-hidden="true"></span><p class="memory-place" id="memory-uk-title">UnitedKindom</p>
                 <p class="memory-letter-text" id="uk-letter-text">我自认为我是超级珍惜时间之人，我太怕时间流逝，我太怕我什么也没做，所以我每天给自己塞满了日程，但当你在我旁边的时候，什么都没做的我竟然觉得自己赚了</p>
-                <p class="memory-signature">From me, to you.</p><p class="memory-note-counter" id="uk-note-counter">1 / 3 · 轻点纸条继续</p>
+                <p class="memory-signature">With love, Gwen.</p><p class="memory-note-counter" id="uk-note-counter">1 / 3 · 轻点纸条继续</p>
               </article>
             </div>
           </div>
@@ -193,7 +199,7 @@
           <picture class="unlock-nature"><source media="(max-width: 760px)" srcset="assets/birthday-snow-small.webp"><img src="assets/birthday-snow.webp" alt="淡极光与晨光下，一片安静的雪地被松林和远山环抱。" width="1586" height="992"></picture>
           <div class="unlock-mist" aria-hidden="true"></div><div class="torn-paper torn-paper-top" aria-hidden="true"></div><div class="torn-paper torn-paper-bottom" aria-hidden="true"></div>
           <div class="unlock-center"><p class="unlock-overline">A LITTLE BIRTHDAY SECRET</p><form id="birthday-unlock-form" autocomplete="off"><div class="happy-line"><label for="birthday-word">happy</label><input id="birthday-word" name="birthday-word" type="text" inputmode="text" enterkeyhint="go" maxlength="16" size="8" placeholder="________" spellcheck="false" autocapitalize="characters" aria-label="填写 happy 后面的生日单词" aria-describedby="unlock-help unlock-error"><button type="submit" class="unlock-submit" aria-label="解开生日祝福，打开我们的回忆">↗</button></div><h2 class="unlock-name" id="unlock-page-title" tabindex="-1">WINTERRRR</h2><p class="unlock-help" id="unlock-help">补全这句生日祝福，按 Enter 打开。大小写都可以。</p><p class="unlock-error" id="unlock-error" role="status" aria-live="polite"></p></form></div>
-          <button type="button" class="birthday-cake" id="birthday-cake" aria-label="点击生日蛋糕，收下一句祝福"><svg class="birthday-cake-art" viewBox="0 0 300 290" aria-hidden="true"><g fill="none" stroke="#74674f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M48 220c2 38 202 39 205-1M56 148l-2 70c8 38 190 36 194-1l-2-68" fill="#eee4cd" fill-opacity=".6"/><path d="M53 150c-3-41 194-44 194-1-1 39-192 39-194 1Z" fill="#f5eddc"/><path d="M57 158c4 1 8 19 14 20 7 0 5-13 13-12 6 1 3 13 11 14 9 1 9-10 15-8 5 2 4 14 13 14 8 0 8-11 14-10 6 0 6 11 14 10 7-1 5-13 13-12 8 0 5 13 13 12 9-2 9-15 16-15 6 0 6 11 13 7 7-2 7-15 14-14 8 2 9 6 13-7"/><path d="M70 217q69 19 162 0m-148-26 1 1m37 12 1 1m49-7 1 1m34-9 1 1M44 247q108 14 214-1"/></g><g class="dimensional-candles" font-family="Georgia,serif" font-size="89" font-weight="bold" text-anchor="middle"><text x="129" y="124" stroke="#977d59" stroke-width="5" fill="#bb9e70">2</text><text x="193" y="124" stroke="#977d59" stroke-width="5" fill="#bb9e70">5</text><text x="125" y="120" stroke="#c6aa7c" stroke-width="1.5" fill="#f0d5a2">2</text><text x="189" y="120" stroke="#c6aa7c" stroke-width="1.5" fill="#f0d5a2">5</text></g><g stroke="#82765b" stroke-width="2" stroke-linecap="round"><path d="M125 61v-8m65 8v-8"/></g><g class="candle-flame flame-one" style="transform-origin:125px 55px"><path d="M125 28c-13 14-11 23 0 25 12-2 11-12 0-25Z" fill="#d9b77b"/><path d="M125 40q-6 9 0 11 7-2 0-11" fill="#f6e5b9"/></g><g class="candle-flame flame-two" style="transform-origin:190px 55px"><path d="M190 29c-12 14-11 22 0 24 12-2 11-12 0-24Z" fill="#d9b77b"/><path d="M190 41q-6 8 0 10 7-2 0-10" fill="#f6e5b9"/></g><g stroke="#b7a487" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="m38 72-12-3m29-9-8-10m191 11 10-9m-1 26 15 1m-214 32-10 6m199-19 11 6"/></g></svg><span class="cake-click-hint">点点蛋糕，还有一句祝福 <span aria-hidden="true">↗</span></span></button>
+          <button type="button" class="birthday-cake" id="birthday-cake" aria-label="点击生日蛋糕，收下一句祝福"><svg class="birthday-cake-art" viewBox="0 0 300 290" aria-hidden="true"><g fill="none" stroke="#74674f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M48 220c2 38 202 39 205-1M56 148l-2 70c8 38 190 36 194-1l-2-68" fill="#eee4cd" fill-opacity=".6"/><path d="M53 150c-3-41 194-44 194-1-1 39-192 39-194 1Z" fill="#f5eddc"/><path d="M57 158c4 1 8 19 14 20 7 0 5-13 13-12 6 1 3 13 11 14 9 1 9-10 15-8 5 2 4 14 13 14 8 0 8-11 14-10 6 0 6 11 14 10 7-1 5-13 13-12 8 0 5 13 13 12 9-2 9-15 16-15 6 0 6 11 13 7 7-2 7-15 14-14 8 2 9 6 13-7"/><path d="M70 217q69 19 162 0m-148-26 1 1m37 12 1 1m49-7 1 1m34-9 1 1M44 247q108 14 214-1"/></g><g class="dimensional-candles" font-family="Georgia,serif" font-size="89" font-weight="bold" text-anchor="middle"><text x="129" y="124" stroke="#977d59" stroke-width="5" fill="#bb9e70">2</text><text x="193" y="124" stroke="#977d59" stroke-width="5" fill="#bb9e70">5</text><text x="125" y="120" stroke="#c6aa7c" stroke-width="1.5" fill="#f0d5a2">2</text><text x="189" y="120" stroke="#c6aa7c" stroke-width="1.5" fill="#f0d5a2">5</text></g><g stroke="#82765b" stroke-width="2" stroke-linecap="round"><path d="M125 61v-8m65 8v-8"/></g><g class="candle-flame flame-one" style="transform-origin:125px 55px"><path d="M125 28c-13 14-11 23 0 25 12-2 11-12 0-25Z" fill="#d9b77b"/><path d="M125 40q-6 9 0 11 7-2 0-11" fill="#f6e5b9"/></g><g class="candle-flame flame-two" style="transform-origin:190px 55px"><path d="M190 29c-12 14-11 22 0 24 12-2 11-12 0-24Z" fill="#d9b77b"/><path d="M190 41q-6 8 0 10 7-2 0-10" fill="#f6e5b9"/></g><g stroke="#b7a487" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="m38 72-12-3m29-9-8-10m191 11 10-9m-1 26 15 1m-214 32-10 6m199-19 11 6"/></g></svg><span class="cake-click-hint"><svg class="hint-hand" viewBox="0 0 20 23" aria-hidden="true"><path d="M7 12V3a1.5 1.5 0 0 1 3 0v7-2a1.5 1.5 0 0 1 3 0v2-1a1.5 1.5 0 0 1 3 0v3-1a1.5 1.5 0 0 1 3 0v4c0 4-2 6-6 6-3 0-5-2-6-4l-4-5a1.5 1.5 0 0 1 2-2l3 2"/></svg><span class="hint-copy">点我，收下祝福<small>蛋糕里藏了一句话</small></span></span></button>
           <img class="holding-hands" src="assets/holding-hands.svg?v=two-girls" alt="两个发型相同的手绘女生牵着手站在一起。" width="300" height="260">
         </section>
       </section>
@@ -210,9 +216,9 @@
   <dialog class="birthday-dialog" id="birthday-dialog" aria-labelledby="birthday-title">
     <div class="birthday-dialog-glow" aria-hidden="true"></div>
     <span class="birthday-spark" aria-hidden="true">✧</span>
-    <p class="birthday-overline">A LITTLE WISH FOR YOU</p>
+    <p class="birthday-overline">A LITTLE WISH FROM GWEN</p>
     <h2 id="birthday-title">生日快乐，<br>我最珍惜的人</h2>
-    <div class="birthday-actions"><button type="button" id="birthday-okay-one" autofocus>好的</button><button type="button" id="birthday-okay-two">好的</button></div>
+    <div class="birthday-actions"><button type="button" id="birthday-okay-one" autofocus>谢谢你</button></div>
   </dialog>
 
   <dialog class="cake-dialog" id="cake-dialog" aria-labelledby="cake-dialog-title">

@@ -1,0 +1,132 @@
+/* Real landscapes and the small details of a gift from Gwen. */
+.nature-backdrop { position: absolute; inset: 0; z-index: -2; display: block; overflow: hidden; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 700ms ease, visibility 700ms; }
+.nature-backdrop img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.nature-backdrop::after { content: ''; position: absolute; inset: 0; }
+.app-shell[data-destination='cake'] .cake-backdrop,
+.app-shell[data-destination='letter'] .memory-backdrop,
+.app-shell[data-page='about'] .about-backdrop { opacity: 1; visibility: visible; }
+.app-shell[data-destination='cake'], .app-shell[data-destination='letter'], .app-shell[data-page='about'] { background-image: none; }
+
+/* The sky stays visible from the first candle to the final fireworks. */
+.cake-backdrop img { object-position: 50% 54%; }
+.cake-backdrop::after { background: linear-gradient(180deg,#06162038,transparent 36%,#071e1f1a 74%,#071d242b); }
+.grand-cake-photo { filter: drop-shadow(0 18px 25px #04181f80); }
+.grand-cake-intro > p { color: #d4dcc6; text-shadow: 0 2px 10px #071720; }
+.grand-cake-intro h2 { color: #f0ecda; text-shadow: 0 2px 18px #06151d; }
+.grand-lighter { color: #eeead6; }
+.grand-lighter > span { text-shadow: 0 2px 8px #031a20; }
+.cake-thanks-overline { color: #ced8c1; }
+.cake-thanks-lines p { color: #f1efdd; text-shadow: 0 2px 18px #031823; }
+.cake-continue { color: #f4efdb; border-color: #f2e9c77a; background: #203d426e; }
+.app-shell[data-destination='cake'] .glass-nav { background: linear-gradient(145deg,#eef0e7a3,#cfdbcf96); border-color: #f3f3ddaa; }
+
+/* Taped letters over a living landscape, with paper kept easy to read. */
+.memory-backdrop img { object-position: 50% 53%; }
+.memory-backdrop::after { background: linear-gradient(180deg,#f1f3e5c7 0%,#eef0df42 24%,#e8eddf0d 51%,#18392e29 100%); }
+.app-shell[data-destination='letter'] .brand { color: #304e3c; }
+.app-shell[data-destination='letter'] .glass-nav { background: linear-gradient(145deg,#faf6e9cc,#e5ecd9ad); border-color: #fffdf0d9; }
+.letter-page { position: relative; padding-top: 27px; padding-bottom: 23px; }
+.letter-page-header h2 { color: #2c4c3c; text-shadow: 0 1px 14px #f9f6e5cf; }
+.letter-page-header .page-eyebrow { color: #496450; text-shadow: 0 1px 8px #f9f6e5; }
+.back-to-envelope { padding: 10px 13px; border: 1px solid #f9f5dfb3; border-radius: 30px; background: #f3f1dfb8; color: #4b6249; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.memory-layout { gap: clamp(30px,5vw,62px); grid-template-columns: 162px minmax(0,560px); margin-top: 31px; }
+.country-selector { padding: 14px 12px 17px; border: 1px solid #fff7dfb3; border-radius: 12px; background: linear-gradient(150deg,#f6f2e3e6,#ebe8d1c9); box-shadow: 0 10px 40px #183a3224, inset 0 1px #fffdf1; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.country-hint { color: #6b795d; }
+.memory-note { box-shadow: 1px 2px 2px #fff6d854, 4px 17px 32px -12px #112f33ad; }
+.memory-signature { color: #798562; }
+.puppy-parade { border-radius: 0 0 30px 30px; }
+.puppy-parade::before { content: ''; position: absolute; z-index: -1; inset: 39px 0 0; background: linear-gradient(180deg,#e6e7cc00,#e9e7d2bb 43%); border-radius: 50% 50% 5px 5px; }
+
+/* A tactile botanical album, built around the same 22 editable papers. */
+.about-backdrop img { object-position: 50% 50%; }
+.about-backdrop::after { background: linear-gradient(90deg,#f2eedd00,#f4f0e329 34%,#f4f0e329 67%,#f2eedd00); }
+.about-panel { position: relative; isolation: isolate; --note-size: min(9.4vw,9.6svh,86px); padding: 7px 35px 20px; }
+.about-heading { position: relative; z-index: 2; margin-bottom: clamp(14px,2svh,23px); }
+.about-heading .page-eyebrow { color: #7f8061; letter-spacing: 3px; font-size: 7px; margin-bottom: 9px; }
+.about-heading h2 { color: #40553e; font-size: clamp(36px,4vw,51px); font-weight: 400; letter-spacing: -.7px; text-shadow: 0 1px #fffdf5; }
+.album-flourish { display: block; width: 119px; height: 16px; margin: 9px auto 0; color: #a79464; }
+.notes-board { position: relative; isolation: isolate; flex-shrink: 0; gap: clamp(20px,3vw,41px); padding: 15px 20px 18px; border: 1px solid #b4a26e66; border-radius: 4px; background: linear-gradient(135deg,#fffdf165,#f3edda88 48%,#fffcf26e); box-shadow: 0 1px 2px #fffdf4 inset, 0 12px 36px -21px #7468488c; }
+.notes-board::before { content: ''; position: absolute; z-index: -1; inset: -7px; border: 1px solid #b4a26e45; border-radius: 7px; box-shadow: 0 2px 0 #fff9e980 inset; pointer-events: none; }
+.notes-board::after { content: ''; position: absolute; inset: 5px; border: 1px solid #fffdf278; border-radius: 2px; pointer-events: none; }
+.sticky-note { box-shadow: 1px 1px 1px #6e65451a,2px var(--paper-lift,5px) 10px -4px #655e3d7a,-1px -.5px 0 #fffbd44a inset; }
+.notes-footnote { position: relative; z-index: 2; margin-top: 18px; }
+.notes-footnote > p:first-child { color: #6f7355; font-size: 9px; letter-spacing: 1.4px; }
+.notes-footnote .birthday-thanks { color: #465b3f; text-shadow: 0 1px #fffdf1; margin-top: 11px; }
+.notes-instruction { color: #7a7b60; }
+.album-corner-mark { position: absolute; top: 34px; left: 5.5%; display: flex; flex-direction: column; gap: 9px; color: #8e8767; font-size: 6px; letter-spacing: 2.1px; line-height: 1.6; }
+.album-corner-mark::before { content: ''; width: 26px; height: 1px; margin-bottom: 3px; background: #a9935f8c; }
+.keepsake-photo { position: absolute; z-index: -1; margin: 0; padding: 9px 9px 13px; width: clamp(120px,13.5vw,195px); border: 1px solid #dfd7bc; background: #f8f2e2; box-shadow: 3px 10px 24px -10px #695d3d69; pointer-events: none; }
+.keepsake-photo::before { content: ''; position: absolute; z-index: 1; top: -13px; left: 30%; width: 43%; height: 25px; rotate: -4deg; background: #d5d3b196; border: 1px solid #c9c39e38; }
+.keepsake-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; filter: saturate(.74); }
+.keepsake-photo figcaption { margin-top: 9px; color: #89836a; font: 16px/1.3 'Caveat',cursive; text-align: center; }
+.photo-alps { top: 25%; left: 4.2%; rotate: -10deg; }
+.photo-alps img { object-position: 32% 50%; }
+.photo-lake { top: 41%; right: 4%; rotate: 9deg; width: clamp(115px,12.5vw,175px); }
+.photo-lake img { aspect-ratio: 1 / 1; object-position: 72% 30%; }
+
+/* A single warm answer, and a cake invitation that can be noticed. */
+.birthday-actions { grid-template-columns: minmax(0,1fr); width: min(230px,100%); margin-inline: auto; }
+.birthday-actions button { min-height: 47px; }
+.cake-click-hint { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 37px; margin-top: -1px; padding: 8px 12px; border: 1px solid #a8ad7e9c; border-radius: 24px; background: linear-gradient(145deg,#f8f0ddeb,#e5e9cfe8); color: #4c6747; box-shadow: 0 4px 15px #6d765529,0 1px #fffdf0 inset; font-size: 10px; font-weight: 500; line-height: 1.5; letter-spacing: .4px; }
+.cake-click-hint .hint-hand { flex-shrink: 0; width: 17px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cake-click-hint .hint-copy { margin: 0; }
+.cake-click-hint small { display: block; margin-top: 1px; color: #7a8565; font-size: 8px; font-weight: 400; letter-spacing: .2px; }
+.birthday-cake:hover .cake-click-hint, .birthday-cake:focus-visible .cake-click-hint { background: #edf0d7; border-color: #7a8e65; box-shadow: 0 5px 17px #6d76553d; }
+.app-shell[data-motion='on'][data-destination='unlock']:not([data-motion-paused='true']) .cake-click-hint { animation: invitation-breathe 2500ms ease-in-out 3; }
+@keyframes invitation-breathe { 0%,100% { translate: 0 0; box-shadow: 0 4px 15px #6d765529; } 50% { translate: 0 -3px; box-shadow: 0 5px 20px #7f96604f; } }
+
+@media (max-width:1100px) {
+  .keepsake-photo { display: none; }
+  .album-corner-mark { left: 4%; top: 26px; font-size: 5px; letter-spacing: 1.1px; }
+}
+@media (max-width:760px) {
+  .cake-backdrop img { object-position: 51% 50%; }
+  .memory-backdrop img { object-position: 49% 50%; }
+  .memory-backdrop::after { background: linear-gradient(180deg,#edf1e4d9,#edf1e454 31%,#e7eddf12 60%,#173b2c33); }
+  .letter-page { padding: 17px 18px 24px; }
+  .letter-page-header { gap: 12px; }
+  .letter-page-header h2 { font-size: 21px; }
+  .letter-page-header .page-eyebrow { font-size: 7px; }
+  .back-to-envelope { padding: 7px 12px; margin-top: 0; font-size: 9px; }
+  .memory-layout { grid-template-columns: minmax(0,1fr); gap: 17px; margin-top: 19px; }
+  .country-selector { flex-direction: row; justify-content: center; gap: 14px; width: min(100%,340px); margin-inline: auto; padding: 10px 13px; }
+  .country-button { width: 119px; gap: 4px; padding: 7px 8px 8px; }
+  .country-hint { display: none; }
+  .flag-frame { height: 47px; width: 78px; }
+  .memory-wall { padding-top: 15px; }
+  .memory-note { padding: 28px 25px 22px; }
+  .about-panel { --note-size: min(12vw,8.7svh,54px); --note-gap: 4px; padding: 6px 13px 14px; }
+  .about-heading { margin-bottom: 19px; }
+  .about-heading .page-eyebrow { font-size: 6px; letter-spacing: 1.9px; }
+  .about-heading h2 { font-size: 39px; }
+  .album-flourish { width: 101px; margin-top: 8px; }
+  .notes-board { gap: 17px; padding: 12px 9px 13px; }
+  .notes-board::before { inset: -5px; }
+  .notes-footnote { margin-top: 19px; }
+  .notes-footnote .birthday-thanks { max-width: 310px; font-size: 10px; margin: 11px auto 2px; }
+  .album-corner-mark { display: none; }
+  .cake-click-hint { min-height: 40px; max-width: 147px; padding: 6px 9px; gap: 5px; font-size: 9px; letter-spacing: .1px; }
+  .cake-click-hint small { font-size: 7px; }
+  .cake-click-hint .hint-hand { width: 14px; height: 17px; }
+}
+@media (max-width:350px) {
+  .about-panel { --note-size: 11.7vw; --note-gap: 3px; }
+  .notes-board { gap: 12px; padding-inline: 7px; }
+  .about-heading h2 { font-size: 33px; }
+  .letter-page { padding-inline: 14px; }
+  .letter-page-header h2 { font-size: 18px; }
+}
+@media (max-height:700px) and (min-width:761px) {
+  .about-panel { --note-size: 8.5svh; --note-gap: 4px; padding-bottom: 12px; }
+  .about-heading { margin-bottom: 12px; }
+  .about-heading h2 { font-size: 33px; }
+  .about-heading .page-eyebrow { margin-bottom: 7px; }
+  .album-flourish { margin-top: 5px; height: 12px; }
+  .notes-board { padding-block: 10px 13px; }
+  .notes-footnote { margin-top: 12px; }
+  .notes-footnote .birthday-thanks { margin-top: 7px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .nature-backdrop { transition: none; }
+  .cake-click-hint { animation: none !important; }
+}

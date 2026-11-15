@@ -142,7 +142,6 @@
     });
   }
   document.getElementById('birthday-okay-one').addEventListener('click', acceptBirthday);
-  document.getElementById('birthday-okay-two').addEventListener('click', acceptBirthday);
   birthdayDialog.addEventListener('cancel', event => { event.preventDefault(); acceptBirthday(); });
 
   function finishUnfolding() {

@@ -5,10 +5,7 @@
 .app-shell[data-destination='cake'] .brand { color: #d7dfc8; }
 .app-shell[data-destination='cake'] .glass-nav { background: linear-gradient(145deg,#e8eddf75,#c5d2c243); border-color: #e5ebd585; }
 .app-shell[data-destination='cake'] .motion-toggle { color: #d7dfc8; border-color: #c9d6b957; background: #33524955; }
-.cake-page { position: relative; isolation: isolate; width: 100%; height: 100%; overflow: hidden; color: #e1e5d0; background: radial-gradient(ellipse at 50% 40%,#395b5461,transparent 55%),linear-gradient(#243f42,#193337 68%,#183137); }
-.cake-night { position: absolute; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; background-image: radial-gradient(circle at 17% 15%,#dae2c96b 0 1px,transparent 1.7px),radial-gradient(circle at 69% 11%,#dae2c97a 0 1px,transparent 1.6px),radial-gradient(circle at 32% 29%,#dae2c94d 0 .7px,transparent 1.4px),radial-gradient(circle at 86% 38%,#dae2c945 0 .7px,transparent 1.5px); }
-.cake-moon { position: absolute; top: 8%; right: 14%; width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(at 35% 30%,#e8e8cf,#c8d6bd 70%,#a1b6a3); box-shadow: 0 0 40px #d9e4c51a; opacity: .64; }
-.cake-mountains { position: absolute; inset: auto 0 0; width: 100%; height: 60%; opacity: .72; }
+.cake-page { position: relative; isolation: isolate; width: 100%; height: 100%; overflow: hidden; color: #e1e5d0; background: transparent; }
 .grand-cake-intro { position: absolute; inset: 3% 20px auto; z-index: 3; text-align: center; transition: opacity 650ms ease, translate 650ms ease; }
 .grand-cake-intro > p { margin: 0 0 10px; color: #aabd9e; font-size: 7px; font-weight: 500; letter-spacing: 3px; }
 .grand-cake-intro h2 { margin: 0; color: #dfe4cc; font-family: var(--serif); font-size: clamp(25px,3vw,43px); font-weight: 400; letter-spacing: .2px; line-height: 1.1; }
@@ -80,7 +77,6 @@
   .cake-continue { bottom: 7%; gap: 16px; font-size: 9px; padding-inline: 17px; }
   .grand-blow-dialog { padding: 26px 25px; }
   .grand-blow-dialog h2 { font-size: 19px; }
-  .cake-moon { width: 28px; height: 28px; right: 13%; }
 }
 @media (max-height:650px) and (min-width:761px) { .grand-cake-intro { top: 1%; }.grand-cake-intro h2 {font-size:30px}.grand-cake-tableau {top:15%;bottom:0}.grand-cake-object {height:60svh;width:auto}.grand-lighter {bottom:10%;right:auto}.grand-lighter > svg{width:49px}.cake-thanks-lines p{font-size:25px;margin-bottom:11px}.cake-thanks {gap:16px;padding-bottom:45px} }
 @media (prefers-reduced-motion:reduce) { .cake-page *, .cake-page *::before, .cake-page *::after { animation:none!important;transition:none!important; } }
