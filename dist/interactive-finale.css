@@ -180,3 +180,10 @@
 .finale-newspaper {border-radius:2px;box-shadow:0 10px 27px #7d61543a}
 .finale-newspaper::before {border-style:dashed;border-color:#a890734d}
 .finale-photo-pieces {filter:drop-shadow(0 4px 3px #6d596342)}
+
+/* Each torn half keeps its face and cake area while softening the outer squared corners. */
+.finale-piece {
+ -webkit-mask-image:radial-gradient(ellipse 79% 71% at 50% 47%,#000 77%,transparent 98%);
+ mask-image:radial-gradient(ellipse 79% 71% at 50% 47%,#000 77%,transparent 98%);
+}
+@media(prefers-reduced-motion:reduce){.finale-piece,.finale-photo-whole{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}}
