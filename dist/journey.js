@@ -16,6 +16,7 @@
   const noteButton = byId('journey-write');
   const credits = byId('journey-credit-dialog');
   const stopButtons = Array.from(page.querySelectorAll('[data-journey-stop]'));
+  const afterwordTrigger = byId('journey-afterword-trigger');
   const photos = Array.from(page.querySelectorAll('[data-photo-key]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const storageKey = 'winter-journey-notes-v1';
@@ -83,7 +84,9 @@
     setText('journey-ending',index === stops.length-1 ? '后来还有很多路，想和你一起走。' : '那些我还没参与的日子，想听你慢慢讲。');
     setText('journey-credits-open','影像：' + stop.credit);
     previous.disabled = index === 0;
-    next.disabled = index === stops.length-1;
+    next.disabled = false;
+    next.setAttribute('aria-label',index===stops.length-1?'继续阅读相遇之后的后记':'前往下一站');
+    afterwordTrigger.hidden = index !== stops.length-1;
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
     photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected)); });
     range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
@@ -163,7 +166,13 @@
 
   stopButtons.forEach(button => listen(button,'click',() => selectStop(Number(button.dataset.journeyStop))));
   listen(previous,'click',() => selectStop(index-1));
-  listen(next,'click',() => selectStop(index+1));
+  listen(next,'click',() => {
+    if(index === stops.length-1) {if(active && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));}
+    else selectStop(index+1);
+  });
+  listen(afterwordTrigger,'click',() => {
+    if(active && index===stops.length-1 && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));
+  });
   listen(range,'input',() => {
     if (!active || disposed || noteDialog.open || credits.open) return;
     cancelSpring(); releaseSwipe(); velocity = 0;
