@@ -130,14 +130,17 @@
 @media(max-width:400px){.finale-top{font-size:6px}.finale-caption{font-size:9px}.finale-caption span:last-child{font-size:8px}}
 /* Global press and tap affordance; no generic hover noises on touchscreen. */
 .app-shell button:not(:disabled),.app-shell a[href],.portrait-lightbox button{touch-action:manipulation;-webkit-tap-highlight-color:#a8858244}
+/* Drag handles must override the generic tap-only rule, especially on iOS Safari. */
+.app-shell[data-destination='cake'] .grand-lighter,.app-shell[data-destination='cake'] .grand-lighter * {touch-action:none!important;-webkit-user-select:none!important;user-select:none!important}
+.app-shell[data-destination='cake'] .cake-page {overscroll-behavior:contain}
+.app-shell[data-destination='cake'] .grand-lighter:active {scale:1!important}
+
 .app-shell button:focus-visible,.portrait-lightbox button:focus-visible{outline:2px solid #d8a783;outline-offset:3px}
 .app-shell button.is-interacting:not(:disabled),.portrait-lightbox button.is-interacting:not(:disabled){filter:brightness(1.12);transition:filter .1s ease}
 .app-shell button:not(.sticky-note):not(.portrait-pin):not(.finale-piece):active,.portrait-lightbox button:active{scale:.96}
 .app-shell button:not(.sticky-note):not(.portrait-pin):not(.finale-piece),.portrait-lightbox button{transition-property:filter,background-color,box-shadow,scale;transition-duration:.15s}
 .touch-ripple{position:absolute;z-index:10;left:var(--ripple-x);top:var(--ripple-y);width:16px;height:16px;border:1px solid currentColor;border-radius:50%;opacity:.6;pointer-events:none;transform:translate(-50%,-50%) scale(0);animation:ripple-tap .52s ease-out both}
 @keyframes ripple-tap{to{opacity:0;transform:translate(-50%,-50%) scale(4.2)}}
-#fx-audio-toggle{position:relative;display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid #ded4c172;border-radius:50%;background:#ffffff19;color:inherit;cursor:pointer}
-#fx-audio-toggle[data-enabled="false"]{opacity:.5}#fx-audio-toggle svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 @media(prefers-reduced-motion:reduce){.portrait-pin,.finale-piece,.finale-photo-whole{transition:none!important}.finale-surprise,.journey-navigation .journey-afterword-trigger,.afterword-continue{animation:none!important}.touch-ripple{display:none}.finale-balloon{animation-duration:.01ms!important}}
 .app-shell[data-motion="off"] .portrait-pin,.app-shell[data-motion="off"] .finale-piece,.app-shell[data-motion="off"] .finale-photo-whole{transition:none!important}
 .app-shell[data-motion="off"] .finale-surprise,.app-shell[data-motion="off"] .journey-navigation .journey-afterword-trigger,.app-shell[data-motion="off"] .afterword-continue{animation:none!important}
