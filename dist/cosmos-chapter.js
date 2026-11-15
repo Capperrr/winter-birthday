@@ -59,8 +59,9 @@
  });
  function openPhoto(i){
    selected=(i+photos.length)%photos.length;
-   tileStyle(previewPhoto,selected);
-   previewPhoto.setAttribute('aria-label','放大照片：'+photos[selected][1]);
+   previewPhoto.src='assets/memory-wall/memory-'+String(selected+1).padStart(2,'0')+'.webp';
+   previewPhoto.alt='照片 '+(selected+1)+'：'+photos[selected][1];
+   for(const delta of [-1,1]){const neighbor=new Image();neighbor.src='assets/memory-wall/memory-'+String((selected+delta+photos.length)%photos.length+1).padStart(2,'0')+'.webp';}
    previewCaption.textContent=photos[selected][0]+' · '+photos[selected][1];
    lastFocus=document.activeElement;preview.hidden=false;
    document.getElementById('cosmos-lightbox-close').focus({preventScroll:true});
