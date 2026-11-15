@@ -15,26 +15,18 @@ const photo={
 };
 const photos=[{src:photo.dazhou},{src:photo.school},{src:photo.university},{src:photo.southampton},{src:photo.shenzhen,alt:photo.shenzhenAlt}];
 const stages=[
-  {label:'达州 · 生活的地方',place:'四川 · 达州西外',where:'DAZHOU · CHINA',kicker:'CHAPTER 01 · THE CITY',title:'这里，是你熟悉的日常。',words:'天府新城、罗浮广场。
-在认识我以前，这些街区已经陪你走过很多日子。',credit:'达州城市资料影像 · Nyx Ning / CC BY-SA 3.0',href:'https://commons.wikimedia.org/',note:'达州城市资料影像，非天府新城或罗浮广场的精确实景。',hotspots:[['天府新城','家附近生活圈；具体建筑位置尚待确认。'],['罗浮广场','同样是家附近的商圈。等你以后亲自带我去看。']]},
-  {label:'达州 · 高中',place:'四川 · 新达一中',where:'SCHOOL DAYS · DAZHOU',kicker:'CHAPTER 02 · SCHOOL DAYS',title:'你的高中时代。',words:'我不知道你每天走过哪一条校园路。
-但我知道，你曾在这里慢慢长大。',credit:'达州城市环境资料图 · 学校实景待补充',href:'https://www.dazhou.gov.cn/',note:'尚未获得可核验的学校校园照片，暂以达州城市环境作为背景；绝不冒充校门。',hotspots:[['校园的一段路','不知道你最喜欢哪里，我想有一天听你讲。'],['那时的自己','留下问题：你会想把怎样的高中生活介绍给我？']]},
-  {label:'重庆 · 本科',place:'重庆工商大学 · 南岸校区',where:'CHONGQING · CHINA',kicker:'CHAPTER 03 · UNIVERSITY',title:'后来，你去了重庆。',words:'商务英语、南岸校区，还有很好的英语成绩。
-但我更想知道，除了课本，你在那里喜欢过什么风景。',credit:'南岸校区正门实景 · 不可思议的诚 / CC BY-SA 4.0',href:'https://commons.wikimedia.org/wiki/File:%E9%87%8D%E5%BA%86%E5%B7%A5%E5%95%86%E5%A4%A7%E5%AD%A6_%E5%8D%97%E5%B2%B8%E6%A0%A1%E5%8C%BA%E6%AD%A3%E9%97%A8.jpg',note:'真实院校的公共区域摄影，不暗示照片拍摄于她就读年份。',hotspots:[['校园风景','她在重庆工商大学南岸校区读本科，专业是商务英语。'],['通往远方','学英语也热爱生活与旅行；接下来，她去了英国。']]},
-  {label:'英国 · 硕士',place:'University of Southampton',where:'SOUTHAMPTON · UK',kicker:'CHAPTER 04 · ACROSS THE SEA',title:'然后，是更远的世界。',words:'雅思 7.5，英语一直很好。
-可我最想听的，是你在南安普顿看到的天空和那些普通的日子。',credit:'Highfield 校区影像 · Roger Davies / CC BY-SA 2.0',href:'https://commons.wikimedia.org/wiki/File:Highfield_Campus_at_the_University_of_Southampton_-_geograph.org.uk_-_3168891.jpg',note:'照片是南安普顿大学主校区公共空间，尚未确认她实际就读的具体楼宇。',hotspots:[['英国的天气','我没有在那里陪你淋过雨，却想知道你喜欢那里的哪一种天气。'],['旅行的心情','你热爱旅行，硕士生活也不应该只有课堂。']]},
-  {label:'深圳 · 工作与相识',place:'深圳 · 南山 · 天利中央广场二期 C 座',where:'SHENZHEN · CHINA',kicker:'CHAPTER 05 · WHEN OUR STORIES MET',title:'最后，走到我认识你的地方。',words:'在这里，你工作了大约两年。
-也是从这里开始，我终于走进你的故事。',credit:'楼宇参考：天利名城第三方资料照片 · 建筑外观待核实',href:'https://www.tianlimingcheng.cn/',note:'C座及九楼地址已核实；建筑外观取自第三方参考，非精确入口复刻。',hotspots:[['确认 C 座','你工作的启德教育南山办公室位于天利中央广场二期 C 座九楼。'],['走近入口','按“走进大堂”继续。']]}
+  {label:'达州 · 生活的地方',place:'四川 · 达州西外',where:'DAZHOU · CHINA',kicker:'CHAPTER 01 · THE CITY',title:'这里，是你熟悉的日常。',words:'天府新城、罗浮广场。\n在认识我以前，这些街区已经陪你走过很多日子。',credit:'达州城市资料影像 · Nyx Ning / CC BY-SA 3.0',href:'https://commons.wikimedia.org/',note:'达州城市资料影像，非天府新城或罗浮广场的精确实景。',hotspots:[['天府新城','家附近生活圈；具体建筑位置尚待确认。'],['罗浮广场','同样是家附近的商圈。等你以后亲自带我去看。']]},
+  {label:'达州 · 高中',place:'四川 · 新达一中',where:'SCHOOL DAYS · DAZHOU',kicker:'CHAPTER 02 · SCHOOL DAYS',title:'你的高中时代。',words:'我不知道你每天走过哪一条校园路。\n但我知道，你曾在这里慢慢长大。',credit:'达州城市环境资料图 · 学校实景待补充',href:'https://www.dazhou.gov.cn/',note:'尚未获得可核验的学校校园照片，暂以达州城市环境作为背景；绝不冒充校门。',hotspots:[['校园的一段路','不知道你最喜欢哪里，我想有一天听你讲。'],['那时的自己','留下问题：你会想把怎样的高中生活介绍给我？']]},
+  {label:'重庆 · 本科',place:'重庆工商大学 · 南岸校区',where:'CHONGQING · CHINA',kicker:'CHAPTER 03 · UNIVERSITY',title:'后来，你去了重庆。',words:'商务英语、南岸校区，还有很好的英语成绩。\n但我更想知道，除了课本，你在那里喜欢过什么风景。',credit:'南岸校区正门实景 · 不可思议的诚 / CC BY-SA 4.0',href:'https://commons.wikimedia.org/wiki/File:%E9%87%8D%E5%BA%86%E5%B7%A5%E5%95%86%E5%A4%A7%E5%AD%A6_%E5%8D%97%E5%B2%B8%E6%A0%A1%E5%8C%BA%E6%AD%A3%E9%97%A8.jpg',note:'真实院校的公共区域摄影，不暗示照片拍摄于她就读年份。',hotspots:[['校园风景','她在重庆工商大学南岸校区读本科，专业是商务英语。'],['通往远方','学英语也热爱生活与旅行；接下来，她去了英国。']]},
+  {label:'英国 · 硕士',place:'University of Southampton',where:'SOUTHAMPTON · UK',kicker:'CHAPTER 04 · ACROSS THE SEA',title:'然后，是更远的世界。',words:'雅思 7.5，英语一直很好。\n可我最想听的，是你在南安普顿看到的天空和那些普通的日子。',credit:'Highfield 校区影像 · Roger Davies / CC BY-SA 2.0',href:'https://commons.wikimedia.org/wiki/File:Highfield_Campus_at_the_University_of_Southampton_-_geograph.org.uk_-_3168891.jpg',note:'照片是南安普顿大学主校区公共空间，尚未确认她实际就读的具体楼宇。',hotspots:[['英国的天气','我没有在那里陪你淋过雨，却想知道你喜欢那里的哪一种天气。'],['旅行的心情','你热爱旅行，硕士生活也不应该只有课堂。']]},
+  {label:'深圳 · 工作与相识',place:'深圳 · 南山 · 天利中央广场二期 C 座',where:'SHENZHEN · CHINA',kicker:'CHAPTER 05 · WHEN OUR STORIES MET',title:'最后，走到我认识你的地方。',words:'在这里，你工作了大约两年。\n也是从这里开始，我终于走进你的故事。',credit:'楼宇参考：天利名城第三方资料照片 · 建筑外观待核实',href:'https://www.tianlimingcheng.cn/',note:'C座及九楼地址已核实；建筑外观取自第三方参考，非精确入口复刻。',hotspots:[['确认 C 座','你工作的启德教育南山办公室位于天利中央广场二期 C 座九楼。'],['走近入口','按“走进大堂”继续。']]}
 ];
 const shenzhen=[
  {title:'最后，走到我认识你的地方。',kicker:'CHAPTER 05 · SHENZHEN',place:'天利中央广场二期 · C 座',words:'沿着深圳南山的街道，找到她工作过的那栋楼。',photo:photo.shenzhen,alt:photo.shenzhenAlt,note:'外观参考来自第三方楼宇资料；入口位置与形态仍需实地照片确认。',credit:'天利名城实景资料 · 第三方楼宇网站',href:'https://www.tianlimingcheng.cn/',hotspots:[['天利中央广场二期','南山区海德三道195号，C座。'],['启德教育 · 九楼','楼上才是她工作的地方，别把启德招牌放在一楼。']]},
  {title:'走近 C 座玻璃门。',kicker:'SHENZHEN · THE ENTRANCE',place:'天利中央商务广场 · C 座入口',words:'门外是深圳，门里有一个我还没遇见你时的世界。',photo:photo.shenzhen,alt:photo.shenzhenAlt,note:'基于大楼环境的视觉参考；不是C座入口精确摄影复原。',credit:'楼宇外景资料 · 第三方参考',href:'https://www.tianlimingcheng.cn/',hotspots:[['认出 C 座','这里要进入的是C座，不是B座。'],['玻璃门','通过镜头推进过渡到大堂，而非在灰盒空间自由乱走。']]},
- {title:'电梯在大厅的那一边。',kicker:'SHENZHEN · THE LOBBY',place:'C 座 · 大堂',words:'走进大堂，先找到楼层信息。
-启德教育，在九楼。',photo:photo.interior,note:'大堂使用通用办公室摄影作为艺术化示意，不是C座内部实拍。',credit:'通用办公室实景风格示意 · Unsplash',href:'https://unsplash.com/',hotspots:[['查看楼层索引','EIC EDUCATION · 9F'],['电梯在哪里？','现在可以呼叫电梯，亲手按下九楼。']]},
- {title:'九楼。',kicker:'SHENZHEN · THE ELEVATOR',place:'C 座 · 电梯间',words:'我不知道你曾经按下这个按钮多少次。
-今天，让我陪你按一次。',photo:photo.interior,note:'电梯交互是艺术化重建，未采集真实电梯内景。',credit:'办公室空间摄影示意 · Unsplash',href:'https://unsplash.com/',hotspots:[]},
- {title:'这里，就是启德九楼。',kicker:'SHENZHEN · NINTH FLOOR',place:'启德教育 · 9F',words:'你在这里工作，也在这里认识了 Gwen。
-这是我终于能够走近的那段生活。',photo:photo.reception,note:'九楼内部没有可验证的真实照片；此为可信办公室风格示意，非实景复刻。',credit:'办公空间风格示意 · Unsplash',href:'https://unsplash.com/',hotspots:[['启德教育 · 九楼','这个地址是真实的；空间布局仍需要图片参考才能精确重建。'],['留给你的信','一封给25岁 Winter 的生日信，藏在这一站的最后。']]}
+ {title:'电梯在大厅的那一边。',kicker:'SHENZHEN · THE LOBBY',place:'C 座 · 大堂',words:'走进大堂，先找到楼层信息。\n启德教育，在九楼。',photo:photo.interior,note:'大堂使用通用办公室摄影作为艺术化示意，不是C座内部实拍。',credit:'通用办公室实景风格示意 · Unsplash',href:'https://unsplash.com/',hotspots:[['查看楼层索引','EIC EDUCATION · 9F'],['电梯在哪里？','现在可以呼叫电梯，亲手按下九楼。']]},
+ {title:'九楼。',kicker:'SHENZHEN · THE ELEVATOR',place:'C 座 · 电梯间',words:'我不知道你曾经按下这个按钮多少次。\n今天，让我陪你按一次。',photo:photo.interior,note:'电梯交互是艺术化重建，未采集真实电梯内景。',credit:'办公室空间摄影示意 · Unsplash',href:'https://unsplash.com/',hotspots:[]},
+ {title:'这里，就是启德九楼。',kicker:'SHENZHEN · NINTH FLOOR',place:'启德教育 · 9F',words:'你在这里工作，也在这里认识了 Gwen。\n这是我终于能够走近的那段生活。',photo:photo.reception,note:'九楼内部没有可验证的真实照片；此为可信办公室风格示意，非实景复刻。',credit:'办公空间风格示意 · Unsplash',href:'https://unsplash.com/',hotspots:[['启德教育 · 九楼','这个地址是真实的；空间布局仍需要图片参考才能精确重建。'],['留给你的信','一封给25岁 Winter 的生日信，藏在这一站的最后。']]}
 ];
 let chapter=0,sub=0,letter=false,detail=-1,busy=false,soundOn=false,audio=null;
 let stored;try{stored=JSON.parse(sessionStorage.getItem(STORAGE)||'null')}catch{}
