@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="music.css?v=gentle-eight-1">
   <link rel="stylesheet" href="personal-album.css?v=forest-epilogue-1">
   <link rel="stylesheet" href="interactive-finale.css?v=paper-silhouette-1">
+  <link rel="stylesheet" href="gwen-handwriting-phone.css?v=hand-phone-1">
   <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
@@ -30,6 +31,7 @@
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
+  <script src="gwen-handwriting-phone.js?v=hand-phone-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -157,6 +159,10 @@
         </div>
           <div class="portrait-rail rail-left" role="group" aria-label="左侧的四张拍立得照片"><button class="portrait-pin pin-1" type="button" data-portrait="0" style="--tile-x:0.0000%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：海边的风和背影，Free spirit 自由的灵魂"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Free spirit</b><small>自由的灵魂</small></span></button><button class="portrait-pin pin-2" type="button" data-portrait="1" style="--tile-x:33.3333%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：暖光下的日常，Gentle gaze 温柔的目光"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Gentle gaze</b><small>温柔的目光</small></span></button><button class="portrait-pin pin-3" type="button" data-portrait="2" style="--tile-x:66.6667%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：夜晚暖色里的你，Quiet glow 安静发光"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Quiet glow</b><small>安静发光</small></span></button><button class="portrait-pin pin-4" type="button" data-portrait="3" style="--tile-x:100.0000%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：蓝色海天的草坡，Open heart 清澈真诚"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Open heart</b><small>清澈真诚</small></span></button></div>
           <div class="portrait-rail rail-right" role="group" aria-label="右侧的三张拍立得照片"><button class="portrait-pin pin-5" type="button" data-portrait="4" style="--tile-x:0.0000%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：鲜花与蝴蝶，Radiance 明媚耀眼"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Radiance</b><small>明媚耀眼</small></span></button><button class="portrait-pin pin-6" type="button" data-portrait="5" style="--tile-x:33.3333%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：蓝天下的酷女孩，Fearlessly you 自在做自己"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Fearlessly you</b><small>自在做自己</small></span></button><button class="portrait-pin pin-7" type="button" data-portrait="6" style="--tile-x:66.6667%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：背着海鹦玩偶看海，Wanderlust 热爱探索"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Wanderlust</b><small>热爱探索</small></span></button></div>
+          <div class="gwen-note-signatures" aria-label="Gwen 的亲笔小纸条">
+            <img src="assets/handwriting/gwen-happy-birthday.png" alt="Happy Birthday · Gwen 亲笔" width="590" height="194" decoding="async">
+            <img src="assets/handwriting/gwen-love.png" alt="I love u. · Gwen 亲笔" width="376" height="142" decoding="async">
+          </div>
         </div>
         <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
 
@@ -270,6 +276,7 @@
       <span>What stayed with me was never the place, but you.</span>
       <strong>真正留在我心里的，从来不是那个地方，而是你。</strong>
     </div>
+    <div class="gwen-afterword-ink"><img src="assets/handwriting/gwen-encounter.png" alt="原来我们会这样相遇。——Gwen 亲笔" width="1023" height="174" loading="lazy" decoding="async"></div>
     <button type="button" class="afterword-continue" id="afterword-continue">下一页 · 让我们的故事拼在一起 <span aria-hidden="true">↗</span></button>
     <button type="button" class="afterword-home" id="afterword-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button>
   </div>
@@ -297,14 +304,56 @@
     </div>
     <div class="finale-surprise" id="finale-surprise" aria-live="polite" hidden>
       <p>WITH ALL MY HEART</p>
-      <h3>我很荣幸<br>能够参与你的<span>25岁</span></h3>
+      <h3 class="sr-only">我很荣幸，能够参与你的25岁。</h3>
+      <img class="gwen-final-birthday" src="assets/handwriting/gwen-birthday.png" width="1330" height="218" alt="我很荣幸，能够参与你的25岁。Gwen 的亲笔手写" decoding="async">
       <span class="finale-english">How lucky I am to be here for your 25th birthday.</span>
-      <div class="finale-actions"><button type="button" id="finale-replay">再拼一次 <span aria-hidden="true">↻</span></button><button type="button" id="finale-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button></div>
+      <div class="finale-actions"><button type="button" id="finale-replay">再拼一次 <span aria-hidden="true">↻</span></button><button type="button" id="finale-phone-start" class="finale-phone-start">拿起手机 · 拍下这一刻 <span aria-hidden="true">▢</span></button><button type="button" id="finale-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button></div>
     </div>
   </div>
   <div class="finale-balloons" id="finale-balloons" aria-hidden="true"></div>
   <canvas id="finale-confetti" class="finale-confetti" aria-hidden="true"></canvas>
 </section>
+<dialog id="winter-phone-dialog" class="winter-phone-dialog" aria-labelledby="winter-phone-title" aria-modal="true">
+ <div class="winter-phone-stage">
+  <h2 id="winter-phone-title" class="sr-only">拿起手机，拍下生日照片并生成锁屏</h2>
+  <div class="winter-phone-shell" id="winter-phone-shell" data-mode="camera">
+    <div class="winter-phone-glass">
+      <div class="winter-phone-island" aria-hidden="true"><i></i><b></b></div>
+      <div class="winter-phone-status"><span id="phone-status-time">00:00</span><span aria-hidden="true">●●● ▰</span></div>
+      <div class="winter-camera-screen" id="winter-camera-screen">
+        <div class="winter-camera-heading">PHOTO · OUR 25TH MOMENT</div>
+        <div class="winter-camera-viewfinder">
+          <img src="assets/finale-childhood-crisp.avif" onerror="this.src='assets/finale-childhood.webp'" alt="两位小女孩一起庆祝生日的创意合照" decoding="async">
+          <div class="winter-camera-reticle" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <div class="winter-camera-photo-caption">我很荣幸，能够参与你的25岁。</div>
+        </div>
+        <div class="winter-camera-controls"><span>PHOTO</span><button id="winter-shutter" type="button" aria-label="按下快门，拍摄生日合照"><span></span></button><span>1×</span></div>
+        <p class="winter-camera-hint">轻点白色快门，留住这一刻</p>
+      </div>
+      <div class="winter-phone-lockscreen" id="winter-phone-lockscreen" hidden>
+        <img class="winter-lock-wallpaper" id="winter-lock-wallpaper" alt="刚才拍摄的生日壁纸">
+        <div class="winter-lock-shade" aria-hidden="true"></div>
+        <div class="winter-lock-top">
+          <div class="winter-lock-date">12月15日 星期二</div>
+          <div class="winter-lock-time">00:00</div>
+        </div>
+        <div class="winter-lock-notification" id="winter-lock-notification" role="status" aria-live="polite" hidden>
+          <div class="winter-lock-notify-head"><span class="winter-message-icon" aria-hidden="true">✉</span><strong>信息</strong><span>现在</span></div>
+          <div class="winter-lock-from">Gwen</div>
+          <div class="winter-lock-text">生日快乐，以后的每一个生日都想陪你过。</div>
+        </div>
+        <div class="winter-lock-bottom"><span aria-hidden="true">◉</span><span class="winter-lock-homebar"></span><span aria-hidden="true">⌾</span></div>
+      </div>
+      <div class="winter-phone-flash" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="winter-phone-tools">
+    <button id="winter-phone-reset" type="button" hidden>重拍 ↺</button>
+    <a id="winter-wallpaper-save" href="#" download="WINTER-25-wallpaper.png" hidden>保存这张壁纸 <span aria-hidden="true">↓</span></a>
+    <button id="winter-phone-close" type="button">返回生日页 ×</button>
+  </div>
+ </div>
+</dialog>
 <section class="journey-page" id="journey-page" aria-labelledby="journey-title" data-stop="0" hidden>
   <header class="journey-heading">
     <div><p class="journey-eyebrow">THE WAY TO YOU · GWEN'S FIELD NOTES</p><h2 id="journey-title" tabindex="-1">你走过的路，带我再走一遍。</h2></div>
