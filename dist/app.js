@@ -221,11 +221,7 @@
     showPage('letter', true);
     letterTitle.focus({ preventScroll: true });
   });
-  document.getElementById('open-journey').addEventListener('click', () => {
-    if (currentRoute !== 'letter') return;
-    showPage('journey', true);
-    journeyTitle.focus({ preventScroll: true });
-  });
+  // The single journey entry is now a normal link to the guided journey.
   document.getElementById('journey-return').addEventListener('click', () => {
     if (currentRoute !== 'journey') return;
     showPage('letter', true);
