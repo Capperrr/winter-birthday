@@ -21,12 +21,14 @@
   <link rel="stylesheet" href="keepsake.css?v=handmade-2">
   <link rel="stylesheet" href="journey.css?v=personal-photos-2">
   <link rel="stylesheet" href="music.css?v=mainland-1">
-  <script src="app.js?v=journey-1" defer></script>
+  <link rel="stylesheet" href="personal-album.css?v=first-1">
+  <script src="app.js?v=afterword-1" defer></script>
   <script src="cake-scene.js?v=ritual-2" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
-  <script src="journey.js?v=personal-photos-2" defer></script>
+  <script src="journey.js?v=afterword-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="music.js?v=pretty-default-1" defer></script>
+  <script src="personal-album.js?v=first-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -149,7 +151,47 @@
 <button type="button" class="sticky-note butter" data-note-id="21" style="--paper-scale:1.021;--rotation:2.75deg;--offset-x:1.3px;--offset-y:-1.7px;--paper-texture:url('assets/paper/note-21.svg');--curl-size:12%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:3.5px;--paper-light:131deg;--paper-origin:35%;--paper-radius:2px 1px 3px 6px" aria-label="第 21 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">21</span></button>
 <button type="button" class="sticky-note sage" data-note-id="22" style="--paper-scale:0.992;--rotation:4.38deg;--offset-x:1.7px;--offset-y:0.9px;--paper-texture:url('assets/paper/note-22.svg');--curl-size:9%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:4.6px;--paper-light:171deg;--paper-origin:39%;--paper-radius:3px 4px 5px 4px" aria-label="第 22 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">22</span></button></div>
         </div>
-        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
+        <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p><button class="about-photo-reveal" id="about-photo-reveal" type="button" aria-controls="about-photo-wall">再往下看，七个关于你的瞬间 <span aria-hidden="true">↓</span></button></div>
+        <section class="about-photo-wall" id="about-photo-wall" aria-labelledby="about-photo-wall-title">
+          <header class="about-photo-intro">
+            <span class="photo-intro-index">AN ALBUM OF LITTLE MOMENTS · 01—07</span>
+            <h3 id="about-photo-wall-title">喜欢你鲜活的每一种模样。</h3>
+            <p>Pieces of you, the way I slowly came to know you.</p>
+            <span>七个瞬间，一点一点拼成我眼中的你。</span>
+          </header>
+          <div class="pinned-photo-board" role="group" aria-label="七张钉在暖色记忆板上的拍立得照片">
+            <figure class="winter-polaroid polaroid-01" style="--lean:-5deg;--drop:0;--tile-x:0%;--tile-y:0%">
+              <div class="polaroid-image" role="img" aria-label="海边背影，迎着风走在沙滩上"></div>
+              <figcaption><strong>Free spirit</strong><span>自由的灵魂</span></figcaption>
+            </figure>
+            <figure class="winter-polaroid polaroid-02" style="--lean:3deg;--drop:1;--tile-x:33.3333%;--tile-y:0%">
+              <div class="polaroid-image" role="img" aria-label="室内暖光下的安静近景"></div>
+              <figcaption><strong>Gentle gaze</strong><span>温柔的目光</span></figcaption>
+            </figure>
+            <figure class="winter-polaroid polaroid-03" style="--lean:-2deg;--drop:2;--tile-x:66.6667%;--tile-y:0%">
+              <div class="polaroid-image" role="img" aria-label="暖色灯光下安静地坐着"></div>
+              <figcaption><strong>Quiet glow</strong><span>静静闪光</span></figcaption>
+            </figure>
+            <figure class="winter-polaroid polaroid-04" style="--lean:5deg;--drop:3;--tile-x:100%;--tile-y:0%">
+              <div class="polaroid-image" role="img" aria-label="蓝色海天之间的草坡留影"></div>
+              <figcaption><strong>Open heart</strong><span>坦然真诚</span></figcaption>
+            </figure>
+            <figure class="winter-polaroid polaroid-05" style="--lean:4deg;--drop:4;--tile-x:0%;--tile-y:100%">
+              <div class="polaroid-image" role="img" aria-label="绚丽花朵与蝴蝶间的侧脸"></div>
+              <figcaption><strong>Radiance</strong><span>明媚耀眼</span></figcaption>
+            </figure>
+            <figure class="winter-polaroid polaroid-06" style="--lean:-4deg;--drop:5;--tile-x:33.3333%;--tile-y:100%">
+              <div class="polaroid-image" role="img" aria-label="蓝天下戴着墨镜与针织帽的照片"></div>
+              <figcaption><strong>Fearlessly you</strong><span>自在做自己</span></figcaption>
+            </figure>
+            <figure class="winter-polaroid polaroid-07" style="--lean:2deg;--drop:6;--tile-x:66.6667%;--tile-y:100%">
+              <div class="polaroid-image" role="img" aria-label="草坡上背着海鹦玩偶望向大海"></div>
+              <figcaption><strong>Wanderlust</strong><span>热爱探索</span></figcaption>
+            </figure>
+          </div>
+          <p class="about-photo-postscript">There is so much of the world in you, and so much of you I have yet to know. <span>— G.</span></p>
+        </section>
+
       </section>
 
       <section class="page-panel destination-panel" id="panel-destination" role="tabpanel" aria-labelledby="tab-destination" tabindex="0" hidden>
@@ -193,9 +235,10 @@
       <p>Thank you for being here.</p>
       <p>Thank you for staying by my side.</p>
     </div>
+    <p class="cake-story-hint"><span>Make a wish, then keep going.</span><small>许完愿，故事还没结束。<br>再往下走，还有一些想慢慢告诉你的话。</small></p>
   </div>
   <canvas id="cake-fireworks" class="cake-fireworks" aria-hidden="true"></canvas>
-  <button type="button" class="cake-continue" id="cake-continue" hidden>再点一下，看看我们的故事 <span aria-hidden="true">↗</span></button>
+  <button type="button" class="cake-continue" id="cake-continue" hidden>继续下一页 · 两国回忆 <span aria-hidden="true">↗</span></button>
   <p class="cake-scene-status sr-only" id="cake-scene-status" role="status" aria-live="polite"></p>
   <dialog class="grand-blow-dialog" id="grand-blow-dialog" aria-labelledby="grand-blow-title">
     <span aria-hidden="true" class="blow-spark">✧</span><h2 id="grand-blow-title">尊贵的小寿星winter请吹一下蜡烛</h2><button type="button" id="grand-blow-confirm">好的，我知道啦</button>
@@ -229,6 +272,34 @@
           <div class="puppy-parade" role="img" aria-label="两只小狗正一前一后地奔跑"><span class="puppy-runner puppy-one"><svg class="running-puppy" viewBox="0 0 150 98" aria-hidden="true"><g class="puppy-body"><g class="puppy-leg puppy-leg-back" style="transform-origin:43px 58px"><path d="m44 57-9 21 14 3"/></g><g class="puppy-leg puppy-leg-front puppy-far" style="transform-origin:91px 57px"><path d="m90 57 8 19 13 2"/></g><path class="puppy-tail" d="M33 43C15 44 12 29 19 22c2 14 10 11 18 14"/><path class="puppy-fill" d="M31 40c7-15 43-20 62-7 13 9 11 26 0 32-18 11-48 9-61-2-8-6-8-17-1-23Z"/><g class="puppy-leg puppy-leg-front" style="transform-origin:88px 60px"><path d="m88 59 4 22 14 1"/></g><g class="puppy-leg puppy-leg-back puppy-near" style="transform-origin:45px 60px"><path d="m45 59-2 22 13 2"/></g><path class="puppy-fill" d="M93 29c0-17 16-27 30-19 11 5 13 18 7 25 8 3 11 10 3 13-5 2-10-1-15 1-12 5-26-4-25-20Z"/><path class="puppy-ear" d="M100 15C87 13 83 25 88 36c5 8 12 3 12-4l3-14"/><path d="m124 26 .1 .1" class="puppy-eye"/><path d="M136 35q5 2 1 5-5-1-1-5Z" class="puppy-nose"/><path d="m125 44 5 1"/><path class="puppy-patch" d="M51 32c-14 12-10 28 1 32 10 1 16-7 15-17-2-9-7-15-16-15Z"/><path d="M26 88q44 4 92-1" class="puppy-ground"/></g></svg></span><span class="puppy-runner puppy-two"><svg class="running-puppy" viewBox="0 0 150 98" aria-hidden="true"><g class="puppy-body"><g class="puppy-leg puppy-leg-back" style="transform-origin:43px 58px"><path d="m44 57-9 21 14 3"/></g><g class="puppy-leg puppy-leg-front puppy-far" style="transform-origin:91px 57px"><path d="m90 57 8 19 13 2"/></g><path class="puppy-tail" d="M33 43C15 44 12 29 19 22c2 14 10 11 18 14"/><path class="puppy-fill" d="M31 40c7-15 43-20 62-7 13 9 11 26 0 32-18 11-48 9-61-2-8-6-8-17-1-23Z"/><g class="puppy-leg puppy-leg-front" style="transform-origin:88px 60px"><path d="m88 59 4 22 14 1"/></g><g class="puppy-leg puppy-leg-back puppy-near" style="transform-origin:45px 60px"><path d="m45 59-2 22 13 2"/></g><path class="puppy-fill" d="M93 29c0-17 16-27 30-19 11 5 13 18 7 25 8 3 11 10 3 13-5 2-10-1-15 1-12 5-26-4-25-20Z"/><path class="puppy-ear" d="M100 15C87 13 83 25 88 36c5 8 12 3 12-4l3-14"/><path d="m124 26 .1 .1" class="puppy-eye"/><path d="M136 35q5 2 1 5-5-1-1-5Z" class="puppy-nose"/><path d="m125 44 5 1"/><path class="puppy-patch" d="M51 32c-14 12-10 28 1 32 10 1 16-7 15-17-2-9-7-15-16-15Z"/><path d="M26 88q44 4 92-1" class="puppy-ground"/></g></svg></span></div>
         <section class="journey-invitation" aria-labelledby="journey-invitation-title"><div><p>THE STORY BEFORE US</p><h3 id="journey-invitation-title">你走过的路，想陪你再走一遍。</h3><p>从达州到南安普顿，再走到我们相遇的地方。</p></div><button type="button" id="open-journey">带 Gwen 出发 <span aria-hidden="true">↗</span></button></section>
         </section>
+<section class="journey-afterword" id="journey-afterword" aria-labelledby="afterword-title" tabindex="-1" hidden>
+  <div class="afterword-stars" aria-hidden="true"></div>
+  <header class="afterword-topbar">
+    <span>AFTER THE LAST STOP · AN UNEXPECTED ENCOUNTER</span>
+    <button id="afterword-back" class="afterword-back" type="button">← 回到相遇</button>
+  </header>
+  <div class="afterword-copy">
+    <span class="afterword-overline">A LITTLE NOTE ABOUT FATE</span>
+    <h2 id="afterword-title">偏偏，在那里遇见了你。</h2>
+    <p class="afterword-line" style="--line:0">我知道，启德对你来说，</p>
+    <p class="afterword-line" style="--line:1">的确只是工作单位，也是一个工作的地方。</p>
+    <p class="afterword-line afterword-emphasis" style="--line:2">可对我来说，那里是我遇见你的地方。</p>
+    <p class="afterword-line" style="--line:3">在那里，我遇到了特别的人，</p>
+    <p class="afterword-line" style="--line:4">也发生了一段特别的故事。</p>
+    <p class="afterword-line afterword-paragraph" style="--line:5">我并不会在那里待很久。</p>
+    <p class="afterword-line" style="--line:6">它只是一次普通的停留，</p>
+    <p class="afterword-line" style="--line:7">甚至算不上人生列车上的一个站点。</p>
+    <p class="afterword-line afterword-paragraph" style="--line:8">可越是这样想，我就越觉得幸运。</p>
+    <p class="afterword-line" style="--line:9">原来冥冥之中的缘分，</p>
+    <p class="afterword-line" style="--line:10">会这样轻轻地，把两个人带到彼此面前。</p>
+    <div class="afterword-final" style="--line:11">
+      <span>What stayed with me was never the place, but you.</span>
+      <strong>真正留在我心里的，从来不是那个地方，而是你。</strong>
+    </div>
+    <button type="button" class="afterword-home" id="afterword-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button>
+  </div>
+  <span class="afterword-footer-mark" aria-hidden="true">FOR WINTER · WITH LOVE</span>
+</section>
 <section class="journey-page" id="journey-page" aria-labelledby="journey-title" data-stop="0" hidden>
   <header class="journey-heading">
     <div><p class="journey-eyebrow">THE WAY TO YOU · GWEN'S FIELD NOTES</p><h2 id="journey-title" tabindex="-1">你走过的路，带我再走一遍。</h2></div>
@@ -266,6 +337,7 @@
       <div class="journey-track" id="journey-track"><span class="journey-track-base" aria-hidden="true"></span><span class="journey-track-ink" aria-hidden="true"></span><input id="journey-position" type="range" min="0" max="400" step="any" value="0" aria-label="选择人生旅程中的一站" aria-valuetext="第1站，达州日常" aria-describedby="journey-range-help"></div>
       <p class="sr-only" id="journey-range-help">可以拖动，也可以使用左右方向键逐站移动，Home 到第一站，End 到最后一站。</p>
       <div class="journey-stops" id="journey-stops"><button type="button" data-journey-stop="0" style="--stop-position:0" aria-current="step"><span>01</span>达州日常</button><button type="button" data-journey-stop="1" style="--stop-position:.25"><span>02</span>初中和高中</button><button type="button" data-journey-stop="2" style="--stop-position:.5"><span>03</span>南岸</button><button type="button" data-journey-stop="3" style="--stop-position:.75"><span>04</span>南安普顿</button><button type="button" data-journey-stop="4" style="--stop-position:1"><span>05</span>相遇</button></div>
+      <button type="button" class="journey-afterword-trigger" id="journey-afterword-trigger" hidden>接下来，我还有一些话想对你说 <span aria-hidden="true">↗</span></button>
       <div class="journey-bottomline"><span id="journey-ending">那些我还没参与的日子，想听你慢慢讲。</span><button type="button" id="journey-credits-open" aria-haspopup="dialog">影像：Nyx Ning · CC BY-SA 3.0</button></div>
     </section>
   </div>
