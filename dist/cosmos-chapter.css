@@ -100,3 +100,8 @@ img.cosmos-lightbox-photo {
 @media(prefers-reduced-motion:reduce){
  #winter-cosmos-dialog[open] .cosmos-root{animation:none}
 }
+
+.cosmos-nasa-figure{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;margin:0 auto 27px;padding:8px 8px 12px;background:#f3efe41c;border:1px solid #d6c7b536}
+.cosmos-nasa-figure img{display:block;width:auto;max-width:100%;height:auto;max-height:310px;object-fit:contain}
+.cosmos-nasa-figure figcaption{color:#aab4c1;font:10px/1.4 var(--sans);letter-spacing:1.2px}
+.cosmos-nasa-figure.is-unavailable{display:none}
