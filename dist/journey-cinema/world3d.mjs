@@ -111,7 +111,7 @@ export class WinterWorld3D{
   const size=Math.floor(Math.min(c.height*.45,c.width/(text.length*.95)));ctx.font='600 '+Math.max(26,size)+'px "PingFang SC","Microsoft Yahei",sans-serif';ctx.fillText(text,c.width/2,c.height/2);
   const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;
   const m=this.plane(parent,w,h,x,y,z,new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}),rotate);
-  if(action>=0)m.userData.interact=action;return m;
+  if(action>=0){m.userData.interact=action;this.interactables.push(m)}return m;
  }
  tileGround(palette){
   const roadMat=this.material(palette.road,.85,.1),stoneMat=this.material(palette.stone,.83,.04);
