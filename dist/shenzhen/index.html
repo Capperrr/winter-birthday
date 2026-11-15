@@ -3,7 +3,7 @@
 <body>
   <main id="game" aria-label="深圳三维探索样章">
     <canvas id="world" tabindex="0" aria-label="三维游戏画面：WASD或左侧摇杆移动，拖动画面观察，E键或调查按钮与近处物件交互。"></canvas>
-    <header class="game-hud" id="hud" hidden><div class="hud-place"><p>WINTER · SHENZHEN</p><h1 id="place-name">深圳街道</h1><span class="prototype-tag">机制样章 · 美术待实景校准</span></div><nav aria-label="游戏选项"><button id="help-button" type="button">操作</button><button id="sound-button" type="button" aria-pressed="false">声音 开</button><button id="pause-button" type="button">暂停</button><a href="../#home" id="exit-link">退出</a></nav></header>
+    <header class="game-hud" id="hud" hidden><div class="hud-place"><p>WINTER · SHENZHEN</p><h1 id="place-name">深圳街道</h1><span class="prototype-tag">机制样章 · 美术待实景校准</span></div><nav aria-label="游戏选项"><button id="help-button" type="button">操作</button><button id="sound-button" type="button" aria-pressed="false">声音 开</button><button id="pause-button" type="button">暂停</button><button id="replay-story" type="button" hidden>再走一遍</button><a href="../#home" id="exit-link">退出</a></nav></header>
     <section class="objective" id="objective-panel" hidden aria-label="当前目标"><span class="objective-line"></span><p id="objective">沿街走近导向牌，确认 C 座入口。</p><ol class="scene-progress" aria-label="关卡进程"><li data-stage="street" aria-current="step">街道</li><li data-stage="lobby">大堂</li><li data-stage="elevator">电梯</li><li data-stage="corridor">九楼</li></ol></section>
     <div id="reticle" class="reticle" hidden aria-hidden="true"></div>
     <div class="context" id="context" hidden><span id="target-label">走近导向牌</span><button type="button" id="interact-button" disabled><span id="action-label">调查</span><kbd>E</kbd></button></div>
