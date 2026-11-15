@@ -20,7 +20,7 @@
     her: { title:'her', id:'1764940884' },
     winter: { title:'this is what winter feels like', id:'1724478152' }
   };
-  let currentSong = 'moon';
+  let currentSong = 'pretty';
   let playing = false;
   const localSources = new Map();
   const audio = new Audio();
