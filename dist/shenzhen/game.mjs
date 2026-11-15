@@ -13,14 +13,17 @@ export async function startGame({rendererFactory=options=>new THREE.WebGLRendere
   const manager=new THREE.LoadingManager(),failedAssets=[];
   let renderer;
   try{renderer=rendererFactory({canvas,antialias:true,alpha:false,powerPreference:'low-power'});}catch(error){throw new Error('WebGL 2 unavailable: '+error.message);}
-  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.03;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.91;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-  const camera=new THREE.PerspectiveCamera(62,1,.06,180);camera.rotation.order='YXZ';
+  const camera=new THREE.PerspectiveCamera(56,1,.06,180);camera.rotation.order='YXZ';
   const world=worldFactory({manager});world.scene.add(camera);
   let playing=false,paused=false,disposed=false,ready=false,contextLost=false;
   let raf=null,last=null,clock=0,toastUntil=0,saveClock=0,footClock=0,pickClock=0;
   let inspection=null,focus=null,lastHit=null,lastTarget='',lastObjective='',lastZone='';
-  let yaw=core.yaw,targetYaw=core.yaw,pitch=core.pitch,targetPitch=core.pitch;
+  // Keep the opening composition focused at pedestrian level, not at empty sky.
+  // Returning players keep their saved viewpoint, within the restrained bounds.
+  const framePitch=Math.max(-.43,Math.min(.40,core.pitch));
+  let yaw=core.yaw,targetYaw=core.yaw,pitch=framePitch,targetPitch=framePitch;
   let touchVisible=coarse.matches,quality='auto',lastSaved='',slowFrames=0,pixelLimit=coarse.matches?1.25:1.5;
   const raycaster=new THREE.Raycaster();raycaster.far=10;
   const center=new THREE.Vector2(0,0),direction=new THREE.Vector3(),pointVec=new THREE.Vector3();
@@ -138,12 +141,12 @@ export async function startGame({rendererFactory=options=>new THREE.WebGLRendere
     targetYaw+=movement.turn*1.65*dt;
     if(focus&&focus.until>clock){const p=focus.door?[0,core.lift.y+1.65,-11.8]:core.point(focus.id);if(p){targetYaw=Math.atan2(-(p[0]-core.player.x),-(p[2]-core.player.z));targetPitch=Math.atan2(p[1]-(core.player.y+1.62),Math.hypot(p[0]-core.player.x,p[2]-core.player.z));}}
     else focus=null;
-    yaw+=angle(targetYaw,yaw)*damp(18,dt);pitch+=(targetPitch-pitch)*damp(17,dt);pitch=Math.max(-.72,Math.min(.72,pitch));core.yaw=yaw;core.pitch=pitch;
+    yaw+=angle(targetYaw,yaw)*damp(18,dt);pitch+=(targetPitch-pitch)*damp(17,dt);pitch=Math.max(-.43,Math.min(.40,pitch));core.yaw=yaw;core.pitch=pitch;
     core.update(dt,inspection?{}:movement);handleEvents();
     const moving=Math.hypot(core.velocity.x,core.velocity.z),bob=reduced.matches?0:Math.sin(core.time*9)*.012*Math.min(1,moving);
     const dolly=focus&&!reduced.matches ? .10 : 0,dx=core.player.x-Math.sin(yaw)*dolly,dz=core.player.z-Math.cos(yaw)*dolly;
     const safe=core.canOccupy(dx,dz);camera.position.x+=( (safe?dx:core.player.x)-camera.position.x)*damp(30,dt);camera.position.z+=( (safe?dz:core.player.z)-camera.position.z)*damp(30,dt);
-    camera.position.y=core.player.y+1.62+bob;camera.rotation.set(pitch,yaw,0,'YXZ');const fov=focus?55:62;camera.fov+=(fov-camera.fov)*damp(6,dt);camera.updateProjectionMatrix();
+    camera.position.y=core.player.y+1.62+bob;camera.rotation.set(pitch,yaw,0,'YXZ');const fov=focus?50:56;camera.fov+=(fov-camera.fov)*damp(6,dt);camera.updateProjectionMatrix();
     world.update(dt,core,camera,input.hand);world.scene.updateMatrixWorld(true);
     pickClock+=dt;if(pickClock>.055){updateTarget();pickClock=0;}
     updateHUD();renderer.render(world.scene,camera);
