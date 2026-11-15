@@ -1,0 +1,9 @@
+.shenzhen-invitation { display:flex; align-items:center; justify-content:space-between; gap:28px; width:min(100%,820px); margin:24px auto 16px; padding:28px 30px; border:1px solid #e1dfc98a; background:#203e3ee8; color:#e7e7d2; }
+.shenzhen-invitation p:first-child { margin:0 0 10px; font-size:7px; letter-spacing:2px; color:#bdcbb2; }
+.shenzhen-invitation h3 { margin:0; font:400 21px/1.7 var(--cn-serif); letter-spacing:.8px; }
+.shenzhen-invitation p:last-child { margin:10px 0 0; font-size:10px; line-height:1.9; color:#c5cfb9; }
+.shenzhen-invitation>a { display:inline-flex; align-items:center; justify-content:space-between; gap:22px; flex-shrink:0; min-height:48px; padding:12px 18px; border:1px solid #c8d0b68c; border-radius:3px; color:#ecedd5; text-decoration:none; font-size:11px; letter-spacing:.6px; transition:background 160ms ease; }
+.shenzhen-invitation>a:hover { background:#b4c4a322; }
+.shenzhen-invitation>a:focus-visible { outline:2px solid #e8ddbb; outline-offset:5px; }
+@media(max-width:760px) { .shenzhen-invitation { flex-direction:column; align-items:start; gap:19px; padding:24px 22px; }.shenzhen-invitation h3 { font-size:19px; }.shenzhen-invitation>a { align-self:end; } }
+@media(prefers-reduced-motion:reduce) { .shenzhen-invitation>a { transition:none; } }

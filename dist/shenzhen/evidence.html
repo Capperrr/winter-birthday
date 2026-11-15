@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#19363b"><title>深圳样章 · 验收记录</title><link rel="icon" href="../favicon.svg"><link rel="stylesheet" href="evidence.css"></head>
+<body><main><nav><a href="./">↶ 回到深圳样章</a><a href="../#home">生日网页</a></nav><p class="eyebrow">SHENZHEN · VERIFICATION RECORD</p><h1>能检查的，写清楚。<br>没实测的，也写清楚。</h1><p class="lead">本轮已实现四个连续的三维空间与完整关卡门槛，提供可运行的代码和自动化证据。当前版本是空间机制样章，尚未通过浏览器画面和 iPad 实机验收，不能标记为十项验收全部通过。</p>
+<section><h2>当前验证范围</h2><p>自动检查使用真实 Three.js 场景、相机、网格与射线，沿路线逐帧驱动角色移动；控制器检查使用模拟 DOM 与无 GPU 渲染适配器。它们能验证路线、遮挡判定和状态逻辑，不能证明 WebGL 画面、真实触屏手感或实际帧率。</p><p>本次执行环境未提供可用的浏览器预览工具，因此没有浏览器截图，也未进行 iPad Safari 实机测试。以下区分代码检查与实机验收。</p></section>
+<section><h2>十项验收状态</h2><div class="table-scroll"><table><thead><tr><th>要求</th><th>已有证据</th><th>待完成</th></tr></thead><tbody>
+<tr><td>1. 街道自由移动</td><td>连续胶囊碰撞与逐帧行走模拟通过</td><td>浏览器画面与手感</td></tr>
+<tr><td>2. 必须走近建筑</td><td>距离、场景与视线门槛；远距离调查被拒绝</td><td>浏览器热区体验</td></tr>
+<tr><td>3. 正确入口进大堂</td><td>导向牌 → C 座开门 → 步行通过；闭门碰撞通过</td><td>视觉连续性实测</td></tr>
+<tr><td>4. 查到 9F 信息</td><td>索引调查前不能呼梯</td><td>真实文字可读性</td></tr>
+<tr><td>5. 亲手操作 9F</td><td>需完全进轿厢；真实网格射线及按钮下压/回弹通过</td><td>鼠标与触屏点击</td></tr>
+<tr><td>6. 关门 / 上升 / 到达 / 开门</td><td>门扇坐标、28.8 米垂直运动、2–9 楼数字、事件顺序通过</td><td>实际动画与性能</td></tr>
+<tr><td>7. 九楼环境解谜</td><td>便笺 → 叶片拾取/取消/重拾 → 凹槽 → 开信通过</td><td>拖动物件实际手感</td></tr>
+<tr><td>8. iPad 全流程</td><td>双指移动/转向、指针捕获/取消的输入模拟通过</td><td class="pending">iPad Safari 实机未验证</td></tr>
+<tr><td>9. 返回生日网页</td><td>独立入口；22 张便签及原模块未改；原路由与相册逻辑回归通过</td><td>浏览器完整生日流程</td></tr>
+<tr><td>10. 不能直接切章节跳关</td><td>无地点切换控件；跳过仅在按 9F 后开放，仍需走出并解谜</td><td>浏览器完整通关复核</td></tr>
+</tbody></table></div></section>
+<section><h2>运行同一组检查</h2><p>在 GitHub 功能分支检出后，使用 Node.js 运行；无需安装 npm 依赖：</p><pre><code>node tests/shenzhen.test.mjs
+node tests/shenzhen-input.test.mjs
+node tests/shenzhen-runtime.test.mjs
+node tests/journey.test.cjs
+node tests/routes.test.cjs</code></pre><p><a href="simulation-evidence.json">打开完整路线与网格射线记录 JSON ↗</a>。记录包含 195 个网格、约 13,099 个三角形，以及每次调查的位置、阶段、状态和电梯事件。这里的证据不是浏览器截图。</p></section>
+<section><h2>真实建筑美术仍待校准</h2><p>地点和目的楼层按 Gwen 提供的信息设置。楼宇外观、室内尺寸、动线和黄铜叶片机关是可替换的机制重建，不是天利中央广场实际建筑的测绘复原；机关为虚构玩法。未使用瑞士照片冒充深圳。</p><p>写实制作仍需 C 座街景/入口照片、大堂与楼层索引、电梯按钮与门、9F 走廊参考和合法使用的建筑模型。当前本地材质为 Poly Haven CC0 通用表面，Three.js 为 MIT 授权。<a href="ASSET-LICENSES.txt">素材许可 ↗</a></p></section>
+<footer><a href="https://github.com/Capperrr/winter-birthday/tree/feature/shenzhen-9f-slice">功能分支 ↗</a><a href="https://github.com/Capperrr/winter-birthday/tree/backup/journey-album-2026-11-15">完整旧相册备份 ↗</a></footer>
+</main></body></html>

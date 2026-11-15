@@ -1,0 +1,5 @@
+Three.js 0.169.0: MIT, upstream license in vendor/THREE-LICENSE.txt. Downloaded from https://registry.npmjs.org/three/-/three-0.169.0.tgz .
+
+Poly Haven textures: CC0 1.0; https://polyhaven.com/license . Asset-specific original download URLs and pages in textures/metadata.json. Individual contributor metadata could not be retrieved (API 403); no author names are invented. Resized and converted to WebP.
+
+Only albedo maps use sRGB. GL normal and roughness maps are data textures (NoColorSpace), not sRGB. These generic material textures are not documentation of the actual Tianli Central Plaza building.

@@ -1,0 +1,515 @@
+{
+  "kind": "automated-simulation-and-real-three-raycast",
+  "notBrowserScreenshot": true,
+  "browserValidated": false,
+  "iPadHardwareValidated": false,
+  "status": "mechanics-implemented-awaiting-browser-and-device-acceptance",
+  "threeRevision": "169",
+  "meshCount": 195,
+  "triangleEstimate": 13099,
+  "worldHeightMeters": 28.8,
+  "actions": [
+    {
+      "action": "c-entry",
+      "result": false,
+      "zone": "street",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 1.6367184499327334
+      },
+      "flags": {
+        "signRead": false,
+        "enteredLobby": false,
+        "directoryRead": false,
+        "calledLift": false,
+        "ninePressed": false,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "idle",
+        "elapsed": 0,
+        "y": 0,
+        "door": 0,
+        "floor": 1
+      }
+    },
+    {
+      "action": "street-sign",
+      "result": true,
+      "zone": "street",
+      "position": {
+        "x": -3.2137964196494604,
+        "y": 0,
+        "z": 8.799885854196866
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": false,
+        "directoryRead": false,
+        "calledLift": false,
+        "ninePressed": false,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "idle",
+        "elapsed": 0,
+        "y": 0,
+        "door": 0,
+        "floor": 1
+      }
+    },
+    {
+      "action": "c-entry",
+      "result": true,
+      "zone": "street",
+      "position": {
+        "x": -0.000052353728487069217,
+        "y": 0,
+        "z": 1.6356727504514312
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": false,
+        "directoryRead": false,
+        "calledLift": false,
+        "ninePressed": false,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "idle",
+        "elapsed": 0,
+        "y": 0,
+        "door": 0,
+        "floor": 1
+      }
+    },
+    {
+      "action": "call-lift",
+      "result": false,
+      "zone": "lobby",
+      "position": {
+        "x": 1.7146531888579095,
+        "y": 0,
+        "z": -10.30062990085884
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": false,
+        "calledLift": false,
+        "ninePressed": false,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "idle",
+        "elapsed": 0,
+        "y": 0,
+        "door": 0,
+        "floor": 1
+      }
+    },
+    {
+      "action": "directory",
+      "result": true,
+      "zone": "lobby",
+      "position": {
+        "x": -4.260075913696194,
+        "y": 0,
+        "z": -4.490218626304838
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": false,
+        "ninePressed": false,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "idle",
+        "elapsed": 0,
+        "y": 0,
+        "door": 0,
+        "floor": 1
+      }
+    },
+    {
+      "action": "call-lift",
+      "result": true,
+      "zone": "lobby",
+      "position": {
+        "x": 1.7066757745501793,
+        "y": 0,
+        "z": -10.314280834312267
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": false,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "boarding",
+        "elapsed": 0,
+        "y": 0,
+        "door": 0,
+        "floor": 1
+      }
+    },
+    {
+      "action": "nine",
+      "result": true,
+      "zone": "elevator",
+      "position": {
+        "x": -0.007363837438321288,
+        "y": 0,
+        "z": -13.563850033095898
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": false,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "closing",
+        "elapsed": 0,
+        "y": 0,
+        "door": 1,
+        "floor": 1
+      }
+    },
+    {
+      "action": "letter",
+      "result": false,
+      "zone": "corridor",
+      "position": {
+        "x": 1.323080462386592,
+        "y": 28.8,
+        "z": -4.686756506049667
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    },
+    {
+      "action": "socket",
+      "result": false,
+      "zone": "corridor",
+      "position": {
+        "x": 1.323080462386592,
+        "y": 28.8,
+        "z": -4.686756506049667
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": false,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    },
+    {
+      "action": "corridor-note",
+      "result": true,
+      "zone": "corridor",
+      "position": {
+        "x": -1.8600241489953202,
+        "y": 28.8,
+        "z": -9.408585872732134
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": true,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    },
+    {
+      "action": "leaf",
+      "result": true,
+      "zone": "corridor",
+      "position": {
+        "x": -1.6490462880458985,
+        "y": 28.8,
+        "z": -5.985145520106446
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": true,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    },
+    {
+      "action": "leaf",
+      "result": true,
+      "zone": "corridor",
+      "position": {
+        "x": -1.6490462880458985,
+        "y": 28.8,
+        "z": -5.985145520106446
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": true,
+        "leafPlaced": false,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    },
+    {
+      "action": "socket",
+      "result": true,
+      "zone": "corridor",
+      "position": {
+        "x": 0.6638980289272403,
+        "y": 28.8,
+        "z": -4.692300343033556
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": true,
+        "leafPlaced": true,
+        "letterRead": false
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    },
+    {
+      "action": "letter",
+      "result": true,
+      "zone": "corridor",
+      "position": {
+        "x": 1.330924466242676,
+        "y": 28.8,
+        "z": -4.699858888748802
+      },
+      "flags": {
+        "signRead": true,
+        "enteredLobby": true,
+        "directoryRead": true,
+        "calledLift": true,
+        "ninePressed": true,
+        "arrived": true,
+        "corridorClue": true,
+        "leafPlaced": true,
+        "letterRead": true
+      },
+      "lift": {
+        "phase": "arrived",
+        "elapsed": 0,
+        "y": 28.8,
+        "door": 1,
+        "floor": 9
+      }
+    }
+  ],
+  "journal": [
+    {
+      "type": "sign:read"
+    },
+    {
+      "type": "entry:opening"
+    },
+    {
+      "type": "lobby:entered"
+    },
+    {
+      "type": "zone:changed",
+      "zone": "lobby"
+    },
+    {
+      "type": "directory:read",
+      "floor": 9
+    },
+    {
+      "type": "lift:called"
+    },
+    {
+      "type": "zone:changed",
+      "zone": "elevator"
+    },
+    {
+      "type": "lift:nine-pressed"
+    },
+    {
+      "type": "lift:doors-closed"
+    },
+    {
+      "type": "lift:floor",
+      "floor": 2
+    },
+    {
+      "type": "lift:floor",
+      "floor": 3
+    },
+    {
+      "type": "lift:floor",
+      "floor": 4
+    },
+    {
+      "type": "lift:floor",
+      "floor": 5
+    },
+    {
+      "type": "lift:floor",
+      "floor": 6
+    },
+    {
+      "type": "lift:floor",
+      "floor": 7
+    },
+    {
+      "type": "lift:floor",
+      "floor": 8
+    },
+    {
+      "type": "lift:floor",
+      "floor": 9
+    },
+    {
+      "type": "lift:arrived"
+    },
+    {
+      "type": "lift:doors-open"
+    },
+    {
+      "type": "zone:changed",
+      "zone": "corridor"
+    },
+    {
+      "type": "puzzle:clue-read"
+    },
+    {
+      "type": "item:picked",
+      "item": "leaf"
+    },
+    {
+      "type": "item:returned",
+      "item": "leaf"
+    },
+    {
+      "type": "item:picked",
+      "item": "leaf"
+    },
+    {
+      "type": "puzzle:solved"
+    },
+    {
+      "type": "letter:opened"
+    }
+  ],
+  "assertions": [
+    "Continuous capsule movement used for every location; no test teleports",
+    "Entry/sign and lobby/directory gates enforced",
+    "First-hit Three.js rays tested for every interaction",
+    "Physical 9F press and return transforms tested",
+    "Closed door, full vertical ride, floor 2–9, arrival and opening tested",
+    "Skip only after pressing 9F; puzzle still locked",
+    "Nine-floor clue, pickup/cancel/re-pick, socket and letter sequence tested",
+    "Checkpoint restoration and invalid-save sanitization tested"
+  ],
+  "pending": [
+    "Actual browser/WebGL rendering and visual screenshots",
+    "iPad Safari multitouch on physical device",
+    "Real-building art/floorplan calibration"
+  ]
+}
