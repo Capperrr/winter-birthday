@@ -14,19 +14,28 @@
   const birthdayDialog = document.getElementById('birthday-dialog');
   const envelopeStage = document.getElementById('envelope-stage');
   const envelopeButton = document.getElementById('open-envelope');
+  const envelopeCard = document.getElementById('gift-envelope');
+  const unfoldSheet = document.getElementById('unfold-sheet');
   const letterPage = document.getElementById('letter-page');
   const letterTitle = document.getElementById('letter-page-title');
+  const unlockPage = document.getElementById('unlock-page');
+  const unlockTitle = document.getElementById('unlock-page-title');
+  const unlockWord = document.getElementById('birthday-word');
+  const unlockError = document.getElementById('unlock-error');
+  const cakeDialog = document.getElementById('cake-dialog');
+  const cakeButton = document.getElementById('birthday-cake');
   const countryButtons = Array.from(document.querySelectorAll('[data-country]'));
   const memoryWall = document.getElementById('memory-wall');
-  const memories = {
-    china: document.getElementById('memory-china'),
-    uk: document.getElementById('memory-uk')
-  };
+  const memories = { china: document.getElementById('memory-china'), uk: document.getElementById('memory-uk') };
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const unlockKey = 'winter-birthday-word-solved';
+  let memoryUnlocked = false;
+  try { memoryUnlocked = sessionStorage.getItem(unlockKey) === 'true'; } catch (_) {}
   let scenery = false;
   let currentRoute = null;
   let birthdayAccepted = false;
   let openingTimer = null;
+  let openingAnimation = null;
 
   function setScenery(active, announce = true) {
     scenery = active && shell.dataset.page === 'home';
@@ -42,16 +51,23 @@
     if (announce) sceneryStatus.textContent = scenery ? '正在欣赏风景。按 Escape 键或点击返回封面，可重新显示文字。' : '已返回 WINTER 封面。';
   }
 
-  function showPage(route, updateHistory = false) {
-    if (!['home', 'about', 'destination', 'letter'].includes(route)) route = 'home';
+  function clearOpening() {
+    if (openingTimer !== null) clearTimeout(openingTimer);
+    openingTimer = null;
+    if (openingAnimation) openingAnimation.cancel();
+    openingAnimation = null;
+    unfoldSheet.hidden = true;
+  }
+
+  function showPage(requestedRoute, updateHistory = false) {
+    let route = ['home', 'about', 'destination', 'unlock', 'letter'].includes(requestedRoute) ? requestedRoute : 'home';
+    if (route === 'letter' && !memoryUnlocked) route = 'unlock';
     const previousRoute = currentRoute;
-    const page = route === 'letter' ? 'destination' : route;
-    if (openingTimer !== null) {
-      clearTimeout(openingTimer);
-      openingTimer = null;
-    }
+    const page = ['unlock', 'letter'].includes(route) ? 'destination' : route;
+    clearOpening();
     if (editor.open) editor.close();
     if (route !== 'destination' && birthdayDialog.open) birthdayDialog.close();
+    if (route !== 'unlock' && cakeDialog.open) cakeDialog.close();
     setScenery(false, false);
     shell.dataset.page = page;
     currentRoute = route;
@@ -68,6 +84,7 @@
     dreamPhoto.setAttribute('aria-hidden', String(route !== 'destination'));
     envelopeStage.hidden = route !== 'destination';
     letterPage.hidden = route !== 'letter';
+    unlockPage.hidden = route !== 'unlock';
     envelopeButton.disabled = true;
 
     if (route === 'letter') {
@@ -75,8 +92,18 @@
       shell.dataset.destination = 'letter';
       envelopeStage.inert = true;
       if (previousRoute !== 'letter') letterPage.scrollTop = 0;
+      if (!memoryWall.dataset.country) selectCountry('china');
+    } else if (route === 'unlock') {
+      birthdayAccepted = true;
+      shell.dataset.destination = 'unlock';
+      envelopeStage.inert = true;
+      if (previousRoute !== 'unlock') {
+        unlockWord.value = '';
+        unlockWord.setAttribute('aria-invalid', 'false');
+        unlockError.textContent = '';
+      }
     } else if (route === 'destination') {
-      if (!['destination', 'letter'].includes(previousRoute) || (updateHistory && previousRoute === 'destination')) birthdayAccepted = false;
+      if (!['destination', 'unlock', 'letter'].includes(previousRoute) || (updateHistory && previousRoute === 'destination')) birthdayAccepted = false;
       shell.dataset.destination = birthdayAccepted ? 'envelope' : 'greeting';
       envelopeStage.inert = !birthdayAccepted;
       envelopeButton.disabled = !birthdayAccepted;
@@ -86,9 +113,10 @@
       shell.dataset.destination = 'idle';
       envelopeStage.inert = true;
     }
-    document.querySelector('meta[name="theme-color"]').content = route === 'letter' ? '#ede6ce' : page === 'about' ? '#eae7d9' : page === 'destination' ? '#a0acb9' : '#193b31';
-    document.title = route === 'letter' ? '一起呼吸过空气的两个国家 — WINTER' : page === 'about' ? '写给25岁的自己 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
+    document.querySelector('meta[name="theme-color"]').content = ['unlock', 'letter'].includes(route) ? '#eee7d4' : page === 'about' ? '#eae7d9' : page === 'destination' ? '#a0acb9' : '#193b31';
+    document.title = route === 'letter' ? '两个国家，都有和你一起的时光 — WINTER' : route === 'unlock' ? 'Happy ____ WINTERRRR' : page === 'about' ? '写给25岁的自己 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
     if (updateHistory && location.hash !== '#' + route) history.pushState(null, '', '#' + route);
+    else if (requestedRoute === 'letter' && route === 'unlock' && location.hash !== '#unlock') history.replaceState(null, '', '#unlock');
   }
 
   function acceptBirthday() {
@@ -102,28 +130,72 @@
       if (currentRoute === 'destination' && shell.dataset.destination === 'envelope') envelopeButton.focus({ preventScroll: true });
     });
   }
-
   document.getElementById('birthday-okay-one').addEventListener('click', acceptBirthday);
   document.getElementById('birthday-okay-two').addEventListener('click', acceptBirthday);
-  birthdayDialog.addEventListener('cancel', event => {
-    event.preventDefault();
-    acceptBirthday();
-  });
+  birthdayDialog.addEventListener('cancel', event => { event.preventDefault(); acceptBirthday(); });
+
+  function finishUnfolding() {
+    showPage('unlock', true);
+    unlockTitle.focus({ preventScroll: true });
+  }
   envelopeButton.addEventListener('click', () => {
-    if (currentRoute !== 'destination' || !birthdayAccepted || openingTimer !== null) return;
-    shell.dataset.destination = 'opening';
+    if (currentRoute !== 'destination' || !birthdayAccepted || shell.dataset.destination !== 'envelope' || openingTimer !== null) return;
     envelopeButton.disabled = true;
+    if (reducedMotion.matches) { finishUnfolding(); return; }
+    const frame = shell.getBoundingClientRect();
+    const card = envelopeCard.getBoundingClientRect();
+    const x = card.left - frame.left;
+    const y = card.top - frame.top;
+    const scaleX = card.width / (frame.width || 1);
+    const scaleY = card.height / (frame.height || 1);
+    shell.dataset.destination = 'untying';
     openingTimer = setTimeout(() => {
       openingTimer = null;
-      if (currentRoute !== 'destination' || shell.dataset.destination !== 'opening') return;
-      showPage('letter', true);
-      letterTitle.focus({ preventScroll: true });
-    }, reducedMotion.matches ? 0 : 850);
+      if (currentRoute !== 'destination' || shell.dataset.destination !== 'untying') return;
+      shell.dataset.destination = 'opening';
+      openingTimer = setTimeout(() => {
+        openingTimer = null;
+        if (currentRoute !== 'destination' || shell.dataset.destination !== 'opening') return;
+        unfoldSheet.hidden = false;
+        const start = 'translate(' + x + 'px,' + y + 'px) scale(' + scaleX + ',' + scaleY + ') rotate(-3deg)';
+        if (typeof unfoldSheet.animate === 'function') {
+          openingAnimation = unfoldSheet.animate([{ transform: start, opacity: 1, borderRadius: '5px' }, { transform: 'translate(0,0) scale(1,1) rotate(0deg)', opacity: 1, borderRadius: '10px' }], { duration: 900, easing: 'cubic-bezier(.22,.72,.22,1)', fill: 'forwards' });
+        }
+        openingTimer = setTimeout(() => {
+          openingTimer = null;
+          if (currentRoute === 'destination' && shell.dataset.destination === 'opening') finishUnfolding();
+        }, 930);
+      }, 420);
+    }, 620);
   });
   document.getElementById('back-to-envelope').addEventListener('click', () => {
     showPage('destination', true);
     envelopeButton.focus({ preventScroll: true });
   });
+
+  document.getElementById('birthday-unlock-form').addEventListener('submit', event => {
+    event.preventDefault();
+    if (currentRoute !== 'unlock') return;
+    if (unlockWord.value.trim().toLowerCase() !== 'birthday') {
+      unlockWord.setAttribute('aria-invalid', 'true');
+      unlockError.textContent = '提示：happy 后面，是生日的那个英文单词。';
+      unlockWord.focus();
+      return;
+    }
+    unlockWord.setAttribute('aria-invalid', 'false');
+    memoryUnlocked = true;
+    try { sessionStorage.setItem(unlockKey, 'true'); } catch (_) {}
+    showPage('letter', true);
+    letterTitle.focus({ preventScroll: true });
+  });
+  unlockWord.addEventListener('input', () => {
+    unlockWord.setAttribute('aria-invalid', 'false');
+    unlockError.textContent = '';
+  });
+  cakeButton.addEventListener('click', () => { if (currentRoute === 'unlock' && !cakeDialog.open) cakeDialog.showModal(); });
+  document.getElementById('cake-dialog-close').addEventListener('click', () => cakeDialog.close());
+  cakeDialog.addEventListener('cancel', event => { event.preventDefault(); cakeDialog.close(); });
+  cakeDialog.addEventListener('close', () => { if (currentRoute === 'unlock') cakeButton.focus({ preventScroll: true }); });
 
   function selectCountry(country) {
     const valid = Object.hasOwn(memories, country);
@@ -152,10 +224,7 @@
   window.addEventListener('hashchange', () => showPage(location.hash.slice(1)));
   sceneryButton.addEventListener('click', () => setScenery(!scenery));
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && scenery) {
-      setScenery(false);
-      sceneryButton.focus();
-    }
+    if (event.key === 'Escape' && scenery) { setScenery(false); sceneryButton.focus(); }
   });
 
   const storageKey = 'winter-about-notes-v1';
