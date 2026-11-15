@@ -83,7 +83,7 @@
     c.fillStyle='#9d8877';c.font='16px Georgia,serif';c.fillText('A STORY IN TWO PIECES · 25',360,244);
     c.strokeStyle='#b6a48c';c.lineWidth=2;c.beginPath();c.moveTo(82,224);c.lineTo(638,224);c.stroke();
     // Snapshot of the local childhood celebration image (same artwork as the joined page).
-    const photo=(await loadImage('assets/finale-childhood-crisp.avif')) || (await loadImage('assets/finale-childhood.webp'));
+    const photo=(await loadImage('assets/finale-duo-cutout.avif')) || (await loadImage('assets/finale-childhood-crisp.avif')) || (await loadImage('assets/finale-childhood.webp'));
     if(photo){
       c.save();roundRect(c,80,287,560,480,5);c.clip();drawImageCover(c,photo,80,287,560,480);c.restore();
     } else {
