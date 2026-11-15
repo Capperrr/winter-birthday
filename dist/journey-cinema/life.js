@@ -2,13 +2,13 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const STORAGE='winter-guided-journey-v2';
-const base='https://raw.githubusercontent.com/Capperrr/winter-birthday/main/dist/assets/';
+const base='../assets/';
 const photo={
   dazhou:base+'journey-dazhou.webp',
   school:base+'journey-dazhou.webp',
   university:base+'journey-chongqing.webp',
   southampton:base+'journey-southampton.webp',
-  shenzhen:'https://raw.dongdongzu.com/external/images/tianlimingcheng/111.png',
+  shenzhen:'https://img.chenyidz.com/danzhandian/loupan/tianlimingcheng/222.jpg',
   shenzhenAlt:'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1700&q=85',
   interior:'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1700&q=85',
   reception:'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1700&q=85'
@@ -22,8 +22,8 @@ const stages=[
   {label:'深圳 · 工作与相识',place:'深圳 · 南山 · 天利中央广场二期 C 座',where:'SHENZHEN · CHINA',kicker:'CHAPTER 05 · WHEN OUR STORIES MET',title:'最后，走到我认识你的地方。',words:'在这里，你工作了大约两年。\n也是从这里开始，我终于走进你的故事。',credit:'楼宇参考：天利名城第三方资料照片 · 建筑外观待核实',href:'https://www.tianlimingcheng.cn/',note:'C座及九楼地址已核实；建筑外观取自第三方参考，非精确入口复刻。',hotspots:[['确认 C 座','你工作的启德教育南山办公室位于天利中央广场二期 C 座九楼。'],['走近入口','按“走进大堂”继续。']]}
 ];
 const shenzhen=[
- {title:'最后，走到我认识你的地方。',kicker:'CHAPTER 05 · SHENZHEN',place:'天利中央广场二期 · C 座',words:'沿着深圳南山的街道，找到她工作过的那栋楼。',photo:photo.shenzhen,alt:photo.shenzhenAlt,note:'外观参考来自第三方楼宇资料；入口位置与形态仍需实地照片确认。',credit:'天利名城实景资料 · 第三方楼宇网站',href:'https://www.tianlimingcheng.cn/',hotspots:[['天利中央广场二期','南山区海德三道195号，C座。'],['启德教育 · 九楼','楼上才是她工作的地方，别把启德招牌放在一楼。']]},
- {title:'走近 C 座玻璃门。',kicker:'SHENZHEN · THE ENTRANCE',place:'天利中央商务广场 · C 座入口',words:'门外是深圳，门里有一个我还没遇见你时的世界。',photo:photo.shenzhen,alt:photo.shenzhenAlt,note:'基于大楼环境的视觉参考；不是C座入口精确摄影复原。',credit:'楼宇外景资料 · 第三方参考',href:'https://www.tianlimingcheng.cn/',hotspots:[['认出 C 座','这里要进入的是C座，不是B座。'],['玻璃门','通过镜头推进过渡到大堂，而非在灰盒空间自由乱走。']]},
+ {title:'最后，走到我认识你的地方。',kicker:'CHAPTER 05 · SHENZHEN',place:'天利中央广场二期 · C 座',words:'沿着深圳南山的街道，找到她工作过的那栋楼。',photo:photo.shenzhen,alt:photo.shenzhenAlt,note:'外观参考来自第三方楼宇资料；入口位置与形态仍需实地照片确认。',credit:'天利中央广场楼宇外景参考 · 招商资料',href:'https://tianlimingcheng.chenyidz.com/',hotspots:[['天利中央广场二期','南山区海德三道195号，C座。'],['启德教育 · 九楼','楼上才是她工作的地方，别把启德招牌放在一楼。']]},
+ {title:'走近 C 座玻璃门。',kicker:'SHENZHEN · THE ENTRANCE',place:'天利中央商务广场 · C 座入口',words:'门外是深圳，门里有一个我还没遇见你时的世界。',photo:photo.shenzhen,alt:photo.shenzhenAlt,note:'基于大楼环境的视觉参考；不是C座入口精确摄影复原。',credit:'天利中央广场楼宇外景参考 · 招商资料',href:'https://tianlimingcheng.chenyidz.com/',hotspots:[['认出 C 座','这里要进入的是C座，不是B座。'],['玻璃门','通过镜头推进过渡到大堂，而非在灰盒空间自由乱走。']]},
  {title:'电梯在大厅的那一边。',kicker:'SHENZHEN · THE LOBBY',place:'C 座 · 大堂',words:'走进大堂，先找到楼层信息。\n启德教育，在九楼。',photo:photo.interior,note:'大堂使用通用办公室摄影作为艺术化示意，不是C座内部实拍。',credit:'通用办公室实景风格示意 · Unsplash',href:'https://unsplash.com/',hotspots:[['查看楼层索引','EIC EDUCATION · 9F'],['电梯在哪里？','现在可以呼叫电梯，亲手按下九楼。']]},
  {title:'九楼。',kicker:'SHENZHEN · THE ELEVATOR',place:'C 座 · 电梯间',words:'我不知道你曾经按下这个按钮多少次。\n今天，让我陪你按一次。',photo:photo.interior,note:'电梯交互是艺术化重建，未采集真实电梯内景。',credit:'办公室空间摄影示意 · Unsplash',href:'https://unsplash.com/',hotspots:[]},
  {title:'这里，就是启德九楼。',kicker:'SHENZHEN · NINTH FLOOR',place:'启德教育 · 9F',words:'你在这里工作，也在这里认识了 Gwen。\n这是我终于能够走近的那段生活。',photo:photo.reception,note:'九楼内部没有可验证的真实照片；此为可信办公室风格示意，非实景复刻。',credit:'办公空间风格示意 · Unsplash',href:'https://unsplash.com/',hotspots:[['启德教育 · 九楼','这个地址是真实的；空间布局仍需要图片参考才能精确重建。'],['留给你的信','一封给25岁 Winter 的生日信，藏在这一站的最后。']]}
@@ -40,15 +40,16 @@ function setImage(src,alt){
  const next=$('photo-new'),old=$('photo-old');
  const fallback=alt||photo.shenzhenAlt;
  let done=false;
+ const requestId=++photoSwitch;
  const img=new Image();img.referrerPolicy='no-referrer';
  img.onload=()=>{
-  if(done)return;done=true;
+  if(done||requestId!==photoSwitch)return;done=true;
   const previous=next.style.backgroundImage;
   old.style.backgroundImage=previous;old.style.opacity='1';
   next.style.opacity='0';next.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
   requestAnimationFrame(()=>requestAnimationFrame(()=>{next.style.opacity='1';old.style.opacity='0'}));
  };
- img.onerror=()=>{if(!done&&fallback&&fallback!==src){setImage(fallback,null)}else if(!done){done=true;next.style.backgroundImage='linear-gradient(125deg,#24414b,#82959b 49%,#354c4e)';next.style.opacity='1'}};
+ img.onerror=()=>{if(done||requestId!==photoSwitch)return;if(fallback&&fallback!==src){setImage(fallback,null)}else{done=true;next.style.backgroundImage='linear-gradient(125deg,#24414b,#82959b 49%,#354c4e)';next.style.opacity='1'}};
  img.src=src;
 }
 function chapterData(){return chapter<4?stages[chapter]:shenzhen[sub]}
