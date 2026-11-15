@@ -1,0 +1,261 @@
+(() => {
+  const page = document.getElementById('journey-page');
+  const shell = document.getElementById('main');
+  if (!page || page.dataset.journeyReady === 'true') return;
+  page.dataset.journeyReady = 'true';
+  const byId = id => document.getElementById(id);
+  const range = byId('journey-position');
+  const frame = byId('journey-frame');
+  const body = byId('journey-letter-body');
+  const previous = byId('journey-previous');
+  const next = byId('journey-next');
+  const status = byId('journey-status');
+  const nearby = byId('journey-nearby');
+  const noteDialog = byId('journey-note-dialog');
+  const noteInput = byId('journey-note-input');
+  const noteFeedback = byId('journey-note-feedback');
+  const noteButton = byId('journey-write');
+  const credits = byId('journey-credit-dialog');
+  const stopButtons = Array.from(page.querySelectorAll('[data-journey-stop]'));
+  const spotButtons = Array.from(page.querySelectorAll('[data-journey-spot]'));
+  const photos = Array.from(page.querySelectorAll('[data-photo-key]'));
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const storageKey = 'winter-journey-notes-v1';
+  const stops = [
+    { key:'dazhou', label:'达州日常', chapter:'FAMILIAR DAYS', period:'熟悉的日常 · 四川达州', title:'从你熟悉的街区开始', fact:'西外 · 天府新城与罗浮广场', photo:'dazhou', caption:'达州 · 城市资料影像', credit:'Nyx Ning · CC BY-SA 3.0', prose:'在认识你以前，这座城就已经陪着你。我把天府新城、罗浮广场这些名字记下来，想有一天，跟着你走一走，听你讲那些熟悉的日常。', question:'' },
+    { key:'school', label:'高中', chapter:'BEFORE WE MET', period:'高中 · 四川达州', title:'新达一中', fact:'你读过高中的地方', photo:'dazhou', caption:'达州 · 城市资料影像', credit:'Nyx Ning · CC BY-SA 3.0', prose:'这段路，我没有陪你走过。先把「新达一中」留在这里，等你愿意的时候，带我认识那时的你。那些很小、却一直记得的事，我也想好好听。', question:'如果能带我回去一天，你最想让我认识什么样的你？' },
+    { key:'chongqing', label:'南岸', chapter:'A WIDER WORLD', period:'本科 · 重庆', title:'重庆工商大学', fact:'南岸校区 · 商务英语', photo:'chongqing', caption:'重庆工商大学 · 南岸校区正门', credit:'不可思议的诚 · CC BY-SA 4.0', prose:'商务英语、南岸校区，是我知道的线索。我想沿着这些线索，慢慢认识还没遇见我的你。你喜欢过的风景、记得的小事，都值得被认真听见。', question:'南岸的日子里，有没有一段路、一件小事，你想留给我听？' },
+    { key:'southampton', label:'南安普顿', chapter:'ACROSS THE SEA', period:'硕士 · 英国南安普顿', title:'南安普顿大学', fact:'University of Southampton · 英语很好，雅思 7.5', photo:'southampton', caption:'南安普顿大学 · Highfield 校区影像', credit:'Roger Davies · CC BY-SA 2.0', prose:'后来，你走到了南安普顿。你的英语很好，雅思 7.5；也知道你会认真热爱生活，带着好奇心去旅行。读书之外的那些日子，想听你慢慢讲。', question:'在南安普顿，哪一片天空、哪一个平常的日子，最让你想念？' },
+    { key:'qide', label:'相遇', chapter:'WHERE OUR STORY BEGAN', period:'工作与相遇 · 毕业后的两年', title:'启德', fact:'你工作、也和 Gwen 相识的地方', photo:'together', caption:'瑞士山野 · 留给以后的我们', credit:'Polina Kocheva · Unsplash', prose:'走到这里，终于是我也在场的一页。毕业后的那两年，你在启德工作；也是在这里，我认识了你。前面的那些路，想慢慢听你讲。从相遇这一页开始，想和你一起往后走。', question:'如果把我们相遇的日子留在这一页，你最想写下哪一个瞬间？' }
+  ];
+  const spots = {
+    tianfu: { key:'dazhou-tianfu', title:'天府新城', question:'如果带我去天府新城，你想先让我看见什么？' },
+    luofu: { key:'dazhou-luofu', title:'罗浮广场', question:'如果一起走到罗浮广场，你想讲给我哪一件日常小事？' }
+  };
+  const allowedKeys = ['dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
+  const notes = Object.create(null);
+  const brokenPhotos = new Set();
+  const removers = [];
+  let active = false;
+  let disposed = false;
+  let index = 0;
+  let spot = 'tianfu';
+  let position = 0;
+  let goal = 0;
+  let velocity = 0;
+  let springFrame = null;
+  let lastSpring = null;
+  let swipeFrame = null;
+  let swipe = null;
+  let textAnimation = null;
+  let editing = null;
+
+  try {
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    if (stored && typeof stored === 'object') allowedKeys.forEach(key => { if (Object.hasOwn(stored,key) && typeof stored[key] === 'string') notes[key] = stored[key].slice(0,500); });
+  } catch (_) {}
+
+  function listen(target, event, handler, options) { target.addEventListener(event,handler,options); removers.push(() => target.removeEventListener(event,handler,options)); }
+  function calm() { return reduced.matches || shell.dataset.motion === 'off'; }
+  function notePlace() { return index === 0 ? spots[spot] : { key:stops[index].key, title:stops[index].title, question:stops[index].question }; }
+  function setText(id, text) { byId(id).textContent = text; }
+  function cancelText() { if (textAnimation) textAnimation.cancel(); textAnimation = null; }
+  function updateNotePreview() {
+    const answer = notes[notePlace().key] || '';
+    setText('journey-write-label', answer ? '看看这一站，留给 Gwen 的话' : '把这一段，慢慢讲给 Gwen');
+    const preview = byId('journey-saved-preview');
+    preview.hidden = !answer;
+    preview.textContent = answer ? '你留在这里的话：' + answer.replace(/\s+/g,' ').slice(0,42) + (answer.length > 42 ? '…' : '') : '';
+  }
+  function updatePhotoFallback() { byId('journey-photo-fallback').hidden = !brokenPhotos.has(stops[index].photo); }
+  function renderStop(value, animate = true, announce = true) {
+    index = Math.max(0,Math.min(stops.length - 1,Math.round(value)));
+    const stop = stops[index];
+    cancelText();
+    body.scrollTop = 0;
+    page.dataset.stop = String(index);
+    setText('journey-chapter', String(index+1).padStart(2,'0') + ' / 05 · ' + stop.chapter);
+    setText('journey-period',stop.period);
+    setText('journey-place-title',stop.title);
+    setText('journey-fact',stop.fact);
+    setText('journey-prose',stop.prose);
+    setText('journey-question',notePlace().question);
+    setText('journey-photo-caption',stop.caption);
+    setText('journey-photo-number',String(index+1).padStart(2,'0'));
+    setText('journey-count',String(index+1).padStart(2,'0') + ' / 05');
+    setText('journey-ending',index === stops.length-1 ? '后来还有很多路，想和你一起走。' : '那些我还没参与的日子，想听你慢慢讲。');
+    setText('journey-credits-open','影像：' + stop.credit);
+    nearby.hidden = index !== 0;
+    previous.disabled = index === 0;
+    next.disabled = index === stops.length-1;
+    stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
+    photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected)); });
+    range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
+    updatePhotoFallback(); updateNotePreview();
+    if (announce) status.textContent = '第' + (index+1) + '站，共5站。' + stop.period + '，' + stop.title + '。';
+    if (animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
+  }
+  function paint(value) {
+    position = Math.max(0,Math.min(stops.length-1,value));
+    page.style.setProperty('--journey-progress',String(position/(stops.length-1)));
+    range.value = String(position*100);
+  }
+  function cancelSpring() { if (springFrame !== null) cancelAnimationFrame(springFrame); springFrame = null; lastSpring = null; }
+  function spring(now) {
+    springFrame = null;
+    if (!active || disposed || document.hidden) { lastSpring = null; return; }
+    if (calm()) { paint(goal); velocity = 0; return; }
+    const dt = lastSpring === null ? 1/60 : Math.min(.032,Math.max(.001,(now-lastSpring)/1000));
+    lastSpring = now;
+    velocity += ((goal-position)*190-velocity*28)*dt;
+    paint(position+velocity*dt);
+    if (Math.abs(goal-position) < .0006 && Math.abs(velocity) < .006) { paint(goal); velocity = 0; lastSpring = null; return; }
+    springFrame = requestAnimationFrame(spring);
+  }
+  function selectStop(value, animate = true) {
+    if (!active || disposed || noteDialog.open || credits.open) return;
+    releaseSwipe();
+    const target = Math.max(0,Math.min(stops.length-1,Math.round(value)));
+    cancelSpring();
+    if (target !== index) renderStop(target,animate);
+    goal = target;
+    if (!animate || calm() || document.hidden || Math.abs(position-goal) < .0001) { paint(goal); velocity = 0; return; }
+    springFrame = requestAnimationFrame(spring);
+  }
+  function releaseSwipe() {
+    const previousSwipe = swipe; swipe = null;
+    if (swipeFrame !== null) cancelAnimationFrame(swipeFrame);
+    swipeFrame = null;
+    page.dataset.swiping = 'false';
+    page.style.setProperty('--journey-photo-x','0px');
+    try { if (previousSwipe && frame.hasPointerCapture?.(previousSwipe.id)) frame.releasePointerCapture(previousSwipe.id); } catch (_) {}
+  }
+  function stopMotion() { cancelSpring(); releaseSwipe(); cancelText(); velocity = 0; goal = index; paint(index); }
+  function swipeStart(event) {
+    if (!active || disposed || swipe || noteDialog.open || credits.open || event.isPrimary === false || (event.button !== undefined && event.button !== 0) || event.target.closest?.('a,button,input,textarea')) return;
+    cancelSpring(); goal = index; paint(index);
+    swipe = { id:event.pointerId, x:event.clientX, y:event.clientY, lastX:event.clientX, width:frame.getBoundingClientRect().width, horizontal:false };
+  }
+  function swipeMove(event) {
+    if (!swipe || event.pointerId !== swipe.id || !active) return;
+    const dx = event.clientX-swipe.x, dy = event.clientY-swipe.y;
+    if (!swipe.horizontal) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { releaseSwipe(); return; }
+      if (Math.abs(dx) < 10 || Math.abs(dx) < Math.abs(dy)*1.2) return;
+      swipe.horizontal = true; page.dataset.swiping = 'true';
+      try { frame.setPointerCapture?.(event.pointerId); } catch (_) {}
+    }
+    swipe.lastX = event.clientX;
+    if (swipeFrame === null) swipeFrame = requestAnimationFrame(() => { swipeFrame = null; if (active && swipe) page.style.setProperty('--journey-photo-x', Math.max(-14,Math.min(14,(swipe.lastX-swipe.x)*.1)) + 'px'); });
+  }
+  function swipeEnd(event) {
+    if (!swipe || event.pointerId !== swipe.id) return;
+    const dx = (event.clientX ?? swipe.lastX)-swipe.x;
+    const threshold = Math.min(70,Math.max(38,swipe.width*.12));
+    const target = swipe.horizontal && Math.abs(dx) > threshold ? index + (dx < 0 ? 1 : -1) : index;
+    releaseSwipe(); selectStop(target);
+  }
+  function closeNotes() { if (noteDialog.open) noteDialog.close(); }
+  function closeCredits() { if (credits.open) credits.close(); }
+  function activate(value) {
+    if (disposed || Boolean(value) === active) return;
+    active = Boolean(value);
+    stopMotion();
+    if (active) renderStop(index,false,false);
+    else { editing = null; closeNotes(); closeCredits(); }
+  }
+
+  stopButtons.forEach(button => listen(button,'click',() => selectStop(Number(button.dataset.journeyStop))));
+  listen(previous,'click',() => selectStop(index-1));
+  listen(next,'click',() => selectStop(index+1));
+  listen(range,'input',() => {
+    if (!active || disposed || noteDialog.open || credits.open) return;
+    cancelSpring(); releaseSwipe(); velocity = 0;
+    const value = Number(range.value)/100;
+    if (!Number.isFinite(value)) return;
+    paint(value); goal = Math.round(position);
+    if (Math.abs(position-index) > .58) renderStop(goal,true,false);
+  });
+  listen(range,'change',() => selectStop(Math.round(position)));
+  listen(range,'pointercancel',() => { if (active) selectStop(Math.round(position)); });
+  listen(range,'keydown',event => {
+    if (!active || noteDialog.open || credits.open) return;
+    let target;
+    if (['ArrowRight','ArrowUp','PageDown'].includes(event.key)) target = index+1;
+    else if (['ArrowLeft','ArrowDown','PageUp'].includes(event.key)) target = index-1;
+    else if (event.key === 'Home') target = 0;
+    else if (event.key === 'End') target = stops.length-1;
+    else return;
+    event.preventDefault(); selectStop(target);
+  });
+  listen(frame,'pointerdown',swipeStart);
+  listen(window,'pointermove',swipeMove,{passive:true});
+  listen(window,'pointerup',swipeEnd);
+  listen(window,'pointercancel',event => { if (swipe?.id === event.pointerId) releaseSwipe(); });
+  listen(frame,'lostpointercapture',() => { if (swipe) releaseSwipe(); });
+  listen(frame,'dragstart',event => event.preventDefault());
+  spotButtons.forEach(button => listen(button,'click',() => {
+    if (!active || index !== 0 || !Object.hasOwn(spots,button.dataset.journeySpot)) return;
+    spot = button.dataset.journeySpot;
+    spotButtons.forEach(item => item.setAttribute('aria-pressed',String(item === button)));
+    setText('journey-question',spots[spot].question); updateNotePreview();
+  }));
+  listen(noteButton,'click',() => {
+    if (!active || disposed || noteDialog.open || credits.open) return;
+    stopMotion();
+    editing = notePlace();
+    setText('journey-note-title',editing.title);
+    setText('journey-note-question',editing.question);
+    noteInput.value = notes[editing.key] || '';
+    setText('journey-note-count',noteInput.value.length + ' / 500');
+    noteFeedback.textContent = '';
+    noteDialog.showModal(); noteInput.focus();
+  });
+  listen(noteInput,'input',() => setText('journey-note-count',noteInput.value.length + ' / 500'));
+  listen(byId('journey-note-form'),'submit',event => {
+    event.preventDefault();
+    if (!active || !editing || !noteDialog.open) return;
+    const value = noteInput.value.trim().slice(0,500);
+    if (value) notes[editing.key] = value; else delete notes[editing.key];
+    updateNotePreview();
+    try {
+      localStorage.setItem(storageKey,JSON.stringify(notes));
+      status.textContent = editing.title + (value ? '的话，已留在当前浏览器。' : '的纸条已留白。');
+      closeNotes();
+    } catch (_) {
+      noteFeedback.textContent = '文字已留在这一页，但当前浏览器无法保存；刷新后可能丢失。';
+    }
+  });
+  listen(byId('journey-note-close'),'click',closeNotes);
+  listen(byId('journey-note-cancel'),'click',closeNotes);
+  listen(noteDialog,'cancel',event => { event.preventDefault(); closeNotes(); });
+  listen(noteDialog,'close',() => { editing = null; if (active) noteButton.focus({preventScroll:true}); });
+  listen(byId('journey-credits-open'),'click',() => { if (active && !noteDialog.open && !credits.open) { stopMotion(); credits.showModal(); } });
+  listen(byId('journey-credits-close'),'click',closeCredits);
+  listen(credits,'cancel',event => { event.preventDefault(); closeCredits(); });
+  listen(credits,'close',() => { if (active) byId('journey-credits-open').focus({preventScroll:true}); });
+  [noteDialog,credits].forEach(dialog => listen(dialog,'click',event => {
+    if (event.target !== dialog) return;
+    const r = dialog.getBoundingClientRect();
+    if (event.clientX < r.left || event.clientX > r.left+r.width || event.clientY < r.top || event.clientY > r.top+r.height) dialog.close();
+  }));
+  photos.forEach(photo => {
+    const img = photo.querySelector('img');
+    listen(img,'error',() => { brokenPhotos.add(photo.dataset.photoKey); if (active) updatePhotoFallback(); });
+    listen(img,'load',() => { brokenPhotos.delete(photo.dataset.photoKey); if (active) updatePhotoFallback(); });
+    if (img.complete && img.naturalWidth === 0) brokenPhotos.add(photo.dataset.photoKey);
+  });
+  listen(document,'winter:journey-route',event => activate(Boolean(event.detail?.active)));
+  listen(document,'visibilitychange',() => { if (document.hidden && active) stopMotion(); });
+  listen(window,'resize',() => { if (active) stopMotion(); },{passive:true});
+  const preferenceChanged = () => { if (active && calm()) stopMotion(); };
+  listen(reduced,'change',preferenceChanged);
+  const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(preferenceChanged) : null;
+  motionObserver?.observe(shell,{attributes:true,attributeFilter:['data-motion']});
+  listen(window,'pagehide',event => {
+    stopMotion();
+    if (!event.persisted) { active = false; disposed = true; editing = null; closeNotes(); closeCredits(); motionObserver?.disconnect(); removers.forEach(remove => remove()); }
+  });
+  listen(window,'pageshow',() => { if (active) { paint(index); updatePhotoFallback(); } });
+  if (shell.dataset.destination === 'journey') activate(true);
+})();

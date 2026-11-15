@@ -17,7 +17,7 @@
 .motion-toggle[aria-pressed='true'] .motion-play-icon { display: block; }
 .app-shell:not([data-page='home']) .header-actions .view-toggle { display: none; }
 .app-shell[data-page='about'] .motion-toggle, .app-shell[data-destination='letter'] .motion-toggle { color: #6c7c54; border-color: #aab3916e; background: #faf7e54a; }
-.app-shell[data-page='destination']:not([data-destination='letter']):not([data-destination='cake']) .motion-toggle { color: #526b58; border-color: #eef2dd91; background: #f0f4e338; }
+.app-shell[data-page='destination']:not([data-destination='letter']):not([data-destination='cake']):not([data-destination='journey']) .motion-toggle { color: #526b58; border-color: #eef2dd91; background: #f0f4e338; }
 
 /* Individual translate/scale keep the authored paper rotations and envelope flip intact. */
 .app-shell[data-motion='on'][data-page='home'] .cover-title .intro { animation: winter-reveal var(--motion-reveal) var(--motion-ease) 50ms backwards; }

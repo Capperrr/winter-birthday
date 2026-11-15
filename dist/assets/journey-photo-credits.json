@@ -1,0 +1,41 @@
+[
+  {
+    "id": "dazhou",
+    "file": "journey-dazhou.webp",
+    "mobile_file": "journey-dazhou-small.webp",
+    "title": "四川 达州市-廊桥 - panoramio.jpg",
+    "author": "Nyx Ning",
+    "source_url": "https://commons.wikimedia.org/wiki/File:%E5%9B%9B%E5%B7%9D_%E8%BE%BE%E5%B7%9E%E5%B8%82-%E5%BB%8A%E6%A1%A5_-_panoramio.jpg",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+    "modifications": "Resized and converted to WebP; display may crop to fit.",
+    "depicts": "达州市廊桥，2011年城市影像；不是天府新城、罗浮广场或新达一中的实景。",
+    "caption": "达州城市影像 · 廊桥，2011"
+  },
+  {
+    "id": "chongqing",
+    "file": "journey-chongqing.webp",
+    "mobile_file": "journey-chongqing-small.webp",
+    "title": "重庆工商大学 南岸校区正门.jpg",
+    "author": "不可思议的诚",
+    "source_url": "https://commons.wikimedia.org/wiki/File:%E9%87%8D%E5%BA%86%E5%B7%A5%E5%95%86%E5%A4%A7%E5%AD%A6_%E5%8D%97%E5%B2%B8%E6%A0%A1%E5%8C%BA%E6%AD%A3%E9%97%A8.jpg",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+    "modifications": "Resized and converted to WebP; display may crop to fit.",
+    "depicts": "重庆工商大学南岸校区正门，2017年8月。",
+    "caption": "重庆工商大学 · 南岸校区正门"
+  },
+  {
+    "id": "southampton",
+    "file": "journey-southampton.webp",
+    "mobile_file": "journey-southampton-small.webp",
+    "title": "Highfield Campus at the University of Southampton - geograph.org.uk - 3168891.jpg",
+    "author": "Roger Davies",
+    "source_url": "https://commons.wikimedia.org/wiki/File:Highfield_Campus_at_the_University_of_Southampton_-_geograph.org.uk_-_3168891.jpg",
+    "license": "CC BY-SA 2.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/2.0",
+    "modifications": "Resized and converted to WebP; display may crop to fit.",
+    "depicts": "英国南安普顿大学 Highfield 校区公共空间。",
+    "caption": "南安普顿大学 · Highfield 校区"
+  }
+]
