@@ -31,8 +31,34 @@ const shenzhen=[
 let chapter=0,sub=0,letter=false,detail=-1,busy=false,soundOn=false,audio=null;
 let stored;try{stored=JSON.parse(sessionStorage.getItem(STORAGE)||'null')}catch{}
 if(stored && Number.isInteger(stored.chapter)&&stored.chapter>=0&&stored.chapter<=4){chapter=stored.chapter;sub=chapter===4?Math.max(0,Math.min(4,stored.sub|0)):0;letter=!!stored.letter&&chapter===4&&sub===4;}
-let photoSwitch=0,toastTimer;
+let photoSwitch=0,toastTimer,world=null,mode3d=true;
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+async function mount3D(){
+ try{
+  const {WinterWorld3D}=await import('./world3d.mjs?v=4');
+  world=new WinterWorld3D($('stage'));
+  world.setStage(chapter,sub);
+  $('experience').classList.add('three-active');
+  $('view-mode').setAttribute('aria-pressed','true');
+  $('view-mode').textContent='3D 探索：开';
+ }catch(error){
+  console.error('3D scene unavailable; retaining accessible photographic journey:',error);
+  mode3d=false;
+  $('experience').classList.remove('three-active');
+  $('view-mode').setAttribute('aria-pressed','false');
+  $('view-mode').textContent='3D 探索：不可用';
+  toast('设备暂时无法渲染3D，已切回摄影式旅程。');
+ }
+}
+function toggle3D(){
+ if(!world)return toast('3D 场景尚未准备好');
+ mode3d=!mode3d;
+ world.canvas.hidden=!mode3d;
+ world.pad.hidden=!mode3d;
+ $('experience').classList.toggle('three-active',mode3d);
+ $('view-mode').setAttribute('aria-pressed',String(mode3d));
+ $('view-mode').textContent=mode3d?'3D 探索：开':'3D 探索：关';
+}
 function save(){try{sessionStorage.setItem(STORAGE,JSON.stringify({chapter,sub,letter}))}catch{}}
 function beep(freq=490,duration=.045){if(!soundOn)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();audio.resume();const oscillator=audio.createOscillator(),gain=audio.createGain();oscillator.type='sine';oscillator.frequency.value=freq;gain.gain.value=.016;gain.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+duration);oscillator.connect(gain).connect(audio.destination);oscillator.start();oscillator.stop(audio.currentTime+duration)}catch{}}
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,3000)}
@@ -55,6 +81,7 @@ function setImage(src,alt){
 function chapterData(){return chapter<4?stages[chapter]:shenzhen[sub]}
 function paint(){
  const data=chapterData();detail=-1;busy=false;
+ if(world)world.setStage(chapter,sub);
  $('fraction').textContent=String(chapter+1).padStart(2,'0');
  $('kicker').textContent=data.kicker;
  $('scene-title').textContent=data.title;
@@ -107,6 +134,7 @@ function previous(){
 }
 function restart(){chapter=0;sub=0;letter=false;beep(600);paint()}
 $('next').addEventListener('click',advance);$('previous').addEventListener('click',previous);$('replay').addEventListener('click',restart);
+$('view-mode').addEventListener('click',toggle3D);
 $('sound').addEventListener('click',()=>{soundOn=!soundOn;$('sound').textContent=soundOn?'声音开启':'声音关闭';$('sound').setAttribute('aria-pressed',String(soundOn));beep(520)});
 $('floor-nine').addEventListener('click',()=>{
  if(busy||chapter!==4||sub!==3)return;
@@ -116,8 +144,8 @@ $('floor-nine').addEventListener('click',()=>{
 });
 document.addEventListener('keydown',event=>{
  if(event.target.closest('button,a,textarea,input'))return;
- if(event.key==='ArrowRight'||event.key==='Enter'){event.preventDefault();advance()}
- if(event.key==='ArrowLeft'){event.preventDefault();previous()}
+ if(event.key==='Enter'){event.preventDefault();advance()}
+ if(event.key==='Backspace'){event.preventDefault();previous()}
 });
 $('stage').addEventListener('pointermove',event=>{
  if(reduced.matches)return;
@@ -126,5 +154,7 @@ $('stage').addEventListener('pointermove',event=>{
  $('stage').style.setProperty('--pan-x',Math.max(-10,Math.min(10,-x*14))+'px');
  $('stage').style.setProperty('--pan-y',Math.max(-7,Math.min(7,-y*10))+'px');
 });
-const initial=chapter;paint();if(initial!==0)toast('已恢复这次旅程的进度 · 点击“重新旅行”从达州开始');
+const initial=chapter;paint();
+if(initial!==0)toast('已恢复这次旅程的进度 · 点击“重新旅行”从达州开始');
+mount3D();
 })();

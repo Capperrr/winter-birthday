@@ -25,3 +25,38 @@ button,a{font:inherit;-webkit-tap-highlight-color:transparent}button{cursor:poin
 @media(max-width:770px){.topbar{top:max(14px,env(safe-area-inset-top));left:18px;right:18px}.brand-icon{width:31px;height:31px;font-size:16px}.brand div>span{font-size:9px}.brand small{display:none}.header-actions{gap:6px}.text-btn{font-size:10px;padding:10px}.chapter-number{left:20px;top:20%;font-size:19px}.scene-info{left:20px;top:27%;max-width:calc(100vw - 40px)}.scene-info .kicker{font-size:9px}.scene-info h1{font-size:clamp(27px,6vw,42px);max-width:90vw}.narration{font-size:13px;line-height:1.85;max-width:86vw}.gold-line{margin:14px 0}.place{font-size:10px;margin-bottom:10px}.hotspot-wrap{right:20px;left:20px;top:auto;bottom:195px;display:flex;flex-wrap:wrap;gap:6px;max-width:none;z-index:9}.hotspot{min-height:44px;padding:8px 12px;font-size:11px;flex:1 1 auto}.bottom{left:20px;right:20px;bottom:25px;display:flex;flex-direction:column;align-items:stretch;gap:15px}.meta{font-size:9px;max-width:none}.truth-label{font-size:9px;margin:5px 0}.credit{font-size:9px}.navigation{justify-content:space-between}.previous,.next{min-height:48px;font-size:12px;padding:12px}.next{min-width:160px}.photo-light{background:linear-gradient(180deg,#07181c8f,#07181cc7 33%,#07181c6e 59%,#07181ce3)}.floor-indicator{right:20px;top:43%;width:150px;min-height:210px;padding:16px}.floor-indicator strong{font-size:57px}.letter-screen{top:125px;bottom:150px}.paper{padding:22px}.paper p{font-size:12px}}
 @media(max-height:660px) and (min-width:771px){.scene-info{top:27%}.chapter-number{top:18%}.bottom{bottom:18px}.hotspot-wrap{top:40%}}
 @media(prefers-reduced-motion:reduce){.photo-layer,.progress-line,.hotspot,.next,.elevator-doors>div{transition:none!important}.photo-layer{transform:none!important}}
+
+/* Full real-time WebGL layer: photographic context stays behind an actual
+   perspective 3D scene. 3D can be disabled for comparison or accessibility. */
+.three-world{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:none;outline:none;cursor:crosshair}
+.stage .photo-layer{z-index:0}
+.stage .photo-light{z-index:2;opacity:.55;pointer-events:none}
+.stage .vignette{z-index:3}
+.stage .grain{z-index:4;opacity:.06}
+.experience.three-active .stage .photo-light{background:linear-gradient(90deg,rgba(7,20,24,.36),rgba(9,25,27,.13) 56%,rgba(6,16,20,.03));opacity:.75}
+.experience.three-active .stage .photo-layer{filter:saturate(.8) contrast(.92);opacity:.53!important}
+.experience:not(.three-active) .stage .photo-layer{opacity:1}
+.world-pad{position:absolute;z-index:15;left:38px;bottom:144px;width:138px;height:132px;display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:16px 43px 43px 27px;align-items:center;justify-content:center;gap:0;user-select:none;-webkit-user-select:none;touch-action:none}
+.world-pad>span{grid-row:1;grid-column:1/4;letter-spacing:.18em;font-size:9px;color:#d8d9d0;text-align:center}
+.world-pad button{width:40px;height:40px;background:#0e2c32b8;border:1px solid #d8e1d28c;color:#f6f7ec;font-size:22px;display:grid;place-items:center;touch-action:none;border-radius:4px;backdrop-filter:blur(10px);padding:0}
+.world-pad button:active{background:#e0d0a2;color:#192e2f}
+.world-pad .world-n{grid-column:2;grid-row:2}.world-pad .world-l{grid-column:1;grid-row:3}.world-pad .world-s{grid-column:2;grid-row:3}.world-pad .world-r{grid-column:3;grid-row:3}
+.world-hint{position:absolute;bottom:142px;left:50%;transform:translateX(-50%);z-index:12;margin:0;color:#e0e8e3;font-size:10px;text-shadow:0 2px 8px #06191c;background:#122d329e;padding:7px 12px;pointer-events:none}
+.experience:not(.three-active) .world-pad,.experience:not(.three-active) .world-hint{display:none}
+.experience.three-active .scene-info{pointer-events:none}
+.experience.three-active .scene-detail{pointer-events:auto}
+.experience.three-active .hotspot-wrap{right:30px;top:auto;bottom:145px}
+.experience.three-active .hotspot{background:#0e2932ca}
+.experience.three-active .floor-indicator{right:14%;top:34%;z-index:16}
+.experience.three-active .letter-screen{z-index:16}
+@media(max-width:770px){
+ .world-pad{left:12px;bottom:180px;transform:scale(.86);transform-origin:left bottom}
+ .world-hint{left:50%;bottom:160px;font-size:9px;width:max-content;max-width:calc(100% - 40px)}
+ .experience.three-active .hotspot-wrap{right:20px;left:auto;max-width:43vw;top:50%;bottom:auto;display:grid}
+ .experience.three-active .hotspot{font-size:10px;padding:7px 10px}
+ .experience.three-active .scene-info{top:25%}
+ .experience.three-active .narration{max-width:72vw}
+ #view-mode{display:none}
+}
+@media(max-height:720px) and (min-width:771px){.world-pad{bottom:117px}.world-hint{bottom:117px}.experience.three-active .hotspot-wrap{bottom:110px}}
+@media(prefers-reduced-motion:reduce){.world-pad button{transition:none!important}}
