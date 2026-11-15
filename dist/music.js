@@ -5,150 +5,120 @@
   const close = document.getElementById('winter-music-close');
   const frame = document.getElementById('winter-music-frame');
   const status = document.getElementById('winter-music-status');
-  if (!button || !panel || !close || !frame || !status) return;
-
-  // Use the artist's published SoundCloud player, not a rehosted copyrighted MP3.
-  // This single iframe stays mounted as the birthday site's hash routes change.
-  // Tracks are embedded from JVKE's published SoundCloud profile.
-  const tracks = {
-    moon: { title:'moon and back', url:'https://soundcloud.com/itsjvke/moon-and-back' },
-    pretty: { title:'pretty', url:'https://soundcloud.com/itsjvke/pretty' },
-    her: { title:'her', url:'https://soundcloud.com/itsjvke/her' },
-    winter: { title:'this is what winter feels like', url:'https://soundcloud.com/itsjvke/this-is-what-winter-feels-like' }
-  };
-  const songButtons = Array.from(document.querySelectorAll('[data-winter-song]'));
   const title = document.getElementById('winter-music-title');
-  const songLink = document.getElementById('winter-music-credit');
+  const officialLink = document.getElementById('winter-music-credit');
+  const filePicker = document.getElementById('winter-local-file');
+  const fileStatus = document.getElementById('winter-local-file-status');
+  const trackButtons = Array.from(document.querySelectorAll('[data-winter-song]'));
+  if (!button || !panel || !close || !frame || !status || !title || !officialLink || !filePicker || !fileStatus) return;
+
+  // Verified Apple Music song IDs. Apple embeds provide an authorised preview
+  // without login and may provide full playback to entitled subscribers.
+  const tracks = {
+    moon: { title:'moon and back', id:'1640157153' },
+    pretty: { title:'pretty', id:'1796262634' },
+    her: { title:'her', id:'1764940884' },
+    winter: { title:'this is what winter feels like', id:'1724478152' }
+  };
   let currentSong = 'moon';
-  let widget = null;
-  let ready = false;
   let playing = false;
-  let hasPlayed = false;
-  let closedByUser = false;
+  let selectedFileFor = '';
+  const localSources = new Map();
+  const audio = new Audio();
+  audio.preload = 'metadata';
+  audio.loop = true;
+  audio.volume = 0.36;
   let disposed = false;
 
   function announce(message) { status.textContent = message; }
-  function refreshSong() {
-    const track = tracks[currentSong];
-    title.textContent = track.title;
-    songLink.href = track.url;
-    songLink.textContent = '在 SoundCloud 收听《' + track.title + '》';
-    frame.title = 'JVKE · ' + track.title + '，SoundCloud 官方播放器';
-    songButtons.forEach(el => el.setAttribute('aria-pressed',String(el.dataset.winterSong===currentSong)));
-  }
-  function chooseSong(id) {
-    if (!Object.hasOwn(tracks,id) || disposed) return;
-    currentSong = id;
-    playing = false;
-    hasPlayed = true;
-    sync(); refreshSong(); showPanel();
-    if (widget && ready) {
-      try {
-        widget.load(tracks[id].url,{
-          auto_play:true, hide_related:true, show_comments:false,
-          show_user:true, show_reposts:false, show_teaser:false, visual:false,
-          callback:()=>{try{widget.setVolume(38)}catch(_){}}
-        });
-      } catch (_) {
-        ready=false; widget=null;
-        frame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(tracks[id].url)
-          + '&color=%237a998b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false';
-        attachWidget();
-      }
-    } else {
-      frame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(tracks[id].url)
-        + '&color=%237a998b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false';
-    }
-    announce('已选择《'+tracks[id].title+'》。iPad 如未播放，请点击下方播放器里的播放键。');
-  }
   function sync() {
     button.dataset.playing = String(playing);
-    button.setAttribute('aria-pressed',String(playing));
-    button.setAttribute('aria-label',playing ? '暂停背景音乐' : '播放背景音乐');
-    button.title = playing ? '暂停音乐' : '播放音乐';
+    button.setAttribute('aria-pressed', String(playing));
+    button.setAttribute('aria-label', playing ? '暂停本机背景音乐' : '打开背景音乐与歌曲选择');
+    button.title = playing ? '暂停本机音乐' : '打开背景音乐';
   }
   function showPanel() {
     panel.hidden = false;
     button.setAttribute('aria-expanded','true');
-    closedByUser = false;
+    loadPreview();
   }
   function hidePanel() {
     panel.hidden = true;
     button.setAttribute('aria-expanded','false');
-    closedByUser = true;
     button.focus({preventScroll:true});
   }
-  function attachWidget() {
-    if (disposed || widget || !window.SC || !window.SC.Widget) return;
-    try {
-      widget = window.SC.Widget(frame);
-      widget.bind(window.SC.Widget.Events.READY, () => {
-        ready = true;
-        try { widget.setVolume(38); } catch (_) {}
-        announce('音乐播放器已经就绪。轻点音符播放；如 iPad 限制，请在展开的播放器中点击播放。');
-      });
-      widget.bind(window.SC.Widget.Events.PLAY, () => {
-        playing = true; hasPlayed = true; sync();
-        announce('正在播放 JVKE 的《'+tracks[currentSong].title+'》。');
-      });
-      widget.bind(window.SC.Widget.Events.PAUSE, () => {
-        playing = false; sync(); announce('音乐已暂停。');
-      });
-      widget.bind(window.SC.Widget.Events.FINISH, () => {
-        playing = false; sync();
-        // Loop only after the visitor initiated playback.
-        if (hasPlayed && !disposed) {
-          try { widget.seekTo(0); widget.play(); } catch (_) {}
-        }
-      });
-      widget.bind(window.SC.Widget.Events.ERROR, () => {
-        announce('官方播放器暂时不可用。可以打开下方官方歌曲链接收听。');
-        showPanel();
-      });
-    } catch (_) { widget = null; showPanel(); }
+  function loadPreview() {
+    // Delayed until the panel opens, so mainland visitors do not wait for
+    // blocked overseas media before seeing the birthday home page.
+    const track = tracks[currentSong];
+    const url = 'https://embed.music.apple.com/us/song/' + track.id;
+    if (frame.getAttribute('src') !== url) frame.src = url;
   }
-
-  frame.src = 'https://w.soundcloud.com/player/?url='
-    + encodeURIComponent(tracks[currentSong].url)
-    + '&color=%237a998b&auto_play=false&hide_related=true'
-    + '&show_comments=false&show_user=true&show_reposts=false'
-    + '&show_teaser=false&visual=false';
-
-  function loadApi() {
-    if (window.SC?.Widget) { attachWidget(); return; }
-    const script = document.createElement('script');
-    script.src = 'https://w.soundcloud.com/player/api.js';
-    script.async = true;
-    script.onload = attachWidget;
-    script.onerror = () => {
-      announce('无法加载音乐控制。请点开播放器后手动播放，或使用歌曲官方链接。');
+  function refresh() {
+    const track = tracks[currentSong];
+    title.textContent = track.title;
+    officialLink.href = 'https://music.apple.com/us/song/' + track.id;
+    officialLink.textContent = 'Apple Music 打开《' + track.title + '》';
+    frame.title = 'Apple Music · JVKE · ' + track.title;
+    trackButtons.forEach(el => el.setAttribute('aria-pressed', String(el.dataset.winterSong === currentSong)));
+    const hasFile = localSources.has(currentSong);
+    fileStatus.textContent = hasFile
+      ? '已在这台设备选择《' + track.title + '》的音乐文件；右上角音符可以播放和暂停。'
+      : '这首歌尚未选择本机音乐文件；可使用上方 Apple Music 试听。';
+    filePicker.value = '';
+  }
+  function chooseSong(id) {
+    if (!Object.hasOwn(tracks,id) || disposed) return;
+    audio.pause();
+    playing = false;
+    currentSong = id;
+    if (localSources.has(id)) audio.src = localSources.get(id);
+    else { audio.removeAttribute('src'); audio.load(); }
+    refresh(); sync(); showPanel();
+    announce('已选择《' + tracks[id].title + '》。可点击官方试听或选择本机文件。');
+  }
+  async function playLocal() {
+    if (!localSources.has(currentSong)) {
       showPanel();
-    };
-    document.head.appendChild(script);
+      announce('请点 Apple Music 播放器里的播放键，或选择你有权使用的本机音频文件。');
+      return;
+    }
+    if (audio.paused) {
+      audio.src = localSources.get(currentSong);
+      try { await audio.play(); } catch (_) { showPanel(); announce('浏览器没有开始播放。请重新点击播放键。'); }
+    } else {
+      audio.pause();
+    }
   }
-  refreshSong();
-  loadApi();
-  songButtons.forEach(el => el.addEventListener('click',()=>chooseSong(el.dataset.winterSong)));
 
+  audio.addEventListener('play', () => { playing = true; sync(); announce('正在播放本机音乐。'); });
+  audio.addEventListener('pause', () => { playing = false; sync(); });
+  audio.addEventListener('error', () => { playing = false; sync(); showPanel(); announce('无法读取选中的音频格式，请更换文件。'); });
   button.addEventListener('click', () => {
     if (disposed) return;
-    if (!ready || !widget) {
-      showPanel();
-      announce('请点击展开的官方播放器中的播放按钮。');
-      return;
-    }
-    if (playing) {
-      try { widget.pause(); } catch (_) { showPanel(); }
-      return;
-    }
-    // User-gesture playback. In iPad Safari this may still require a tap
-    // on SoundCloud's own play control, available in the expandable panel.
-    try {
-      widget.play();
-      announce('正在尝试播放。如没有声音，请点开播放器并点击里面的播放按钮。');
-    } catch (_) { showPanel(); }
-    if (!hasPlayed && !closedByUser) showPanel();
+    if (localSources.has(currentSong)) { void playLocal(); return; }
+    if (panel.hidden) showPanel();
+    else hidePanel();
   });
+  filePicker.addEventListener('change', () => {
+    const file = filePicker.files && filePicker.files[0];
+    if (!file || disposed) return;
+    if (!file.type.startsWith('audio/') && !/\.(mp3|m4a|wav|aac|ogg)$/i.test(file.name)) {
+      fileStatus.textContent = '请选择 MP3、M4A、WAV 等音频文件。';
+      return;
+    }
+    audio.pause();
+    const previous = localSources.get(currentSong);
+    if (previous) URL.revokeObjectURL(previous);
+    const url = URL.createObjectURL(file);
+    localSources.set(currentSong,url);
+    selectedFileFor = currentSong;
+    audio.src = url;
+    refresh();
+    fileStatus.textContent = '已选择《' + tracks[currentSong].title + '》的本机音频，正在尝试播放。';
+    void playLocal();
+  });
+  trackButtons.forEach(el => el.addEventListener('click', () => chooseSong(el.dataset.winterSong)));
   close.addEventListener('click', hidePanel);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !panel.hidden) hidePanel();
@@ -156,7 +126,10 @@
   window.addEventListener('pagehide', event => {
     if (event.persisted) return;
     disposed = true;
-    try { widget?.pause(); } catch (_) {}
+    audio.pause();
+    localSources.forEach(url => URL.revokeObjectURL(url));
+    localSources.clear();
   });
+  refresh();
   sync();
 })();
