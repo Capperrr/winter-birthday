@@ -26,65 +26,16 @@
   ];
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   let portraitIndex = 0, lastPin = null;
-  let fxEnabled = true, audioContext = null, soundToggle;
+  // Interaction feedback remains visual only; background music is controlled separately.
   let celebrated = false, animationId = 0, particles = [], lastFrame = 0, effectEnd = 0, activeDrag = null;
   const pieces = {left:false,right:false};
   const palette = ['#ef889c','#eeb868','#8db8a5','#b5a0d1','#95bed4','#f1d5a1','#e5aabb'];
   function quietMotion(){ return reduced.matches || shell?.dataset.motion === 'off'; }
-  function audio() {
-    if (!fxEnabled) return null;
-    try {
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if (!Ctx) return null;
-      if (!audioContext) audioContext = new Ctx();
-      if (audioContext.state === 'suspended') audioContext.resume().catch(()=>{});
-      return audioContext;
-    } catch (_) { return null; }
-  }
-  function tone(freq, duration=.075, volume=.016, type='sine', when=0) {
-    const ctx=audio();if(!ctx)return;
-    try {
-      const o=ctx.createOscillator(),g=ctx.createGain(),start=ctx.currentTime+when;
-      o.type=type;o.frequency.setValueAtTime(freq,start);
-      o.frequency.exponentialRampToValueAtTime(Math.max(100,freq*.78),start+duration);
-      g.gain.setValueAtTime(.0001,start);
-      g.gain.exponentialRampToValueAtTime(Math.max(.0001,volume),start+.012);
-      g.gain.exponentialRampToValueAtTime(.0001,start+duration);
-      o.connect(g);g.connect(ctx.destination);o.start(start);o.stop(start+duration+.025);
-    } catch (_) {}
-  }
-  const fx = {
-    tap(){tone(480,.042,.011,'triangle')},
-    open(){tone(520,.07,.015,'sine');tone(780,.11,.009,'sine',.06)},
-    pick(){tone(270,.085,.023,'triangle')},
-    snap(){tone(420,.09,.023,'sine');tone(660,.13,.021,'sine',.1);tone(990,.2,.018,'sine',.24)},
-    burst(){[480,640,800,1040].forEach((n,i)=>tone(n,.19,.016,'sine',i*.115))}
-  };
-  window.winterInteractionFx=fx;
-
-  // A quiet, optional tactile cue on genuine user gestures.
-  const actions = document.querySelector('.header-actions');
-  if (actions) {
-    soundToggle=document.createElement('button');
-    soundToggle.type='button';soundToggle.id='fx-audio-toggle';
-    soundToggle.title='关闭交互音效';soundToggle.setAttribute('aria-label','关闭交互音效');
-    soundToggle.setAttribute('aria-pressed','true');soundToggle.dataset.enabled='true';
-    soundToggle.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 8 6 11H3v4h3l4 3V8Z"/><path d="M14 9c1 1 1.5 2 1.5 3s-.5 2-1.5 3M17 6c2 1.5 3 3.5 3 6s-1 4.5-3 6"/></svg>';
-    actions.insertBefore(soundToggle,actions.firstChild);
-    soundToggle.addEventListener('click',()=>{
-      fxEnabled=!fxEnabled;soundToggle.dataset.enabled=String(fxEnabled);
-      soundToggle.setAttribute('aria-pressed',String(fxEnabled));
-      soundToggle.title=fxEnabled?'关闭交互音效':'打开交互音效';
-      soundToggle.setAttribute('aria-label',soundToggle.title);
-      if (fxEnabled)fx.open();
-    });
-  }
   document.addEventListener('pointerdown',event=>{
     const target=event.target?.closest?.('button:not(:disabled),a[href]');
     if (!target) return;
     target.classList.add('is-interacting');
-    if (target!==soundToggle) fx.tap();
-    if (target.tagName==='BUTTON' && !target.matches('.finale-piece') && !quietMotion()) {
+    if (target.tagName==='BUTTON' && !target.matches('.finale-piece, .grand-lighter, .candle-ignition-target') && !quietMotion()) {
       const rect=target.getBoundingClientRect();
       const ripple=document.createElement('span');ripple.className='touch-ripple';
       ripple.style.setProperty('--ripple-x',(event.clientX-rect.left)+'px');
@@ -110,7 +61,7 @@
     counter.textContent=String(portraitIndex+1).padStart(2,'0')+' / 07';
     if (!dialog.open) {
       lastPin=focusOnClose||pins[i];
-      dialog.showModal();fx.open();
+      dialog.showModal();
       document.getElementById('portrait-close')?.focus({preventScroll:true});
     }
   }
@@ -146,7 +97,7 @@
     pieces[which]=true;
     const button=which==='left'?left:right;
     button.classList.add('is-found');button.setAttribute('aria-pressed','true');button.style.removeProperty('--piece-dx');button.style.removeProperty('--piece-dy');
-    fx.pick();
+    
     if(pieces.left&&pieces.right) {
       celebrate();
     } else {
@@ -176,7 +127,7 @@
     el.addEventListener('click',()=>choosePiece(which));
   }
   document.getElementById('finale-replay')?.addEventListener('click',()=>{
-    resetFinale();fx.open();
+    resetFinale();
     left.focus({preventScroll:true});
   });
   document.addEventListener('winter:finale-enter',()=>{resetFinale()});
@@ -250,7 +201,7 @@
   function celebrate(){
     if(celebrated)return;
     celebrated=true;
-    fx.snap();
+    
     newspaper.dataset.joined='true';
     help.innerHTML='拼好了。<strong>原来有些缘分，真的会把我们带到彼此面前。</strong>';
     left.disabled=right.disabled=true;
@@ -258,7 +209,7 @@
     const ms=quietMotion()?0:720;
     window.setTimeout(()=>{
       if(shell.dataset.destination!=='finale'||!celebrated)return;
-      fx.burst();spawnBalloons();startConfetti();
+      spawnBalloons();startConfetti();
       surprise.scrollIntoView({behavior:quietMotion()?'instant':'smooth',block:'nearest'});
     },ms);
   }
