@@ -1,0 +1,88 @@
+/* A discreet music control shared by every page; uses the artist's official stream. */
+.winter-music-toggle {
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;flex:0 0 42px;padding:0;border:1px solid #d8dfa862;
+  border-radius:50%;background:#173b3457;color:#e8e8cf;
+  box-shadow:0 3px 16px #102b2c18;backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);transition:background .2s,color .2s,border-color .2s;
+}
+.winter-music-toggle:hover {background:#32524791}
+.winter-music-toggle svg {height:19px;width:19px;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round}
+.winter-music-toggle[data-playing="true"]::after {
+  content:"";position:absolute;right:2px;top:2px;width:6px;height:6px;
+  border-radius:50%;background:#c9dbbc;box-shadow:0 0 0 2px #183c35;
+}
+.winter-music-panel {
+  position:absolute;z-index:25;top:76px;right:clamp(18px,4vw,82px);
+  width:min(345px,calc(100% - 32px));padding:15px 15px 14px;
+  color:#3d4f4b;background:#f9f6edfa;border:1px solid #ffffff;
+  border-radius:13px;box-shadow:0 15px 60px #132f3342,0 3px 15px #293c3924;
+}
+.winter-music-panel[hidden] {display:none}
+.winter-music-panel-head {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.winter-music-overline {margin:0 0 5px;font:600 8px/1.6 var(--sans);letter-spacing:2px;color:#8c9783}
+.winter-music-title {margin:0;font:400 16px/1.55 var(--serif);color:#43574a}
+.winter-music-byline {margin:1px 0 0;color:#7b8977;font-size:9px}
+.winter-music-close {display:flex;align-items:center;justify-content:center;min-width:35px;min-height:35px;padding:0;background:transparent;color:#64776b;border:1px solid #a5b6a05c;border-radius:50%;font-size:18px}
+.winter-music-player {width:100%;height:118px;border:0;border-radius:6px;background:#e9ece6}
+.winter-music-hint {margin:9px 1px 0;color:#829087;font:400 9px/1.75 var(--sans)}
+.winter-music-credit {display:inline-block;margin-top:8px;color:#607966;text-decoration:underline;text-underline-offset:2px;font-size:9px}
+.app-shell[data-page="about"] .winter-music-toggle,
+.app-shell[data-destination="journey"] .winter-music-toggle,
+.app-shell[data-destination="letter"] .winter-music-toggle,
+.app-shell[data-destination="envelope"] .winter-music-toggle {
+  color:#405e59;border-color:#a2b1a76b;background:#fbfaf7ad;
+}
+.app-shell[data-destination="journey"] .winter-music-toggle[data-playing="true"]::after {background:#597f92;box-shadow:0 0 0 2px #fff}
+@media(max-width:760px){
+  .winter-music-toggle {width:38px;height:38px;flex-basis:38px}
+  .winter-music-panel {top:108px;right:12px;width:min(345px,calc(100% - 24px))}
+}
+@media(max-width:370px){.winter-music-panel {top:108px}}
+
+/* The four-track selector is deliberately part of the single floating music panel. */
+.winter-music-panel {max-height:min(560px,calc(100svh - 95px));overflow:auto;overscroll-behavior:contain;}
+.winter-music-tracks {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:11px 0 12px}
+.winter-music-tracks button {
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ min-width:0;min-height:52px;padding:9px 10px;
+ border:1px solid #c8cec4;border-radius:8px;
+ background:#fffef9b8;color:#5e6c61;text-align:left;
+ transition:background .18s,border-color .18s,transform .18s;
+}
+.winter-music-tracks button:hover {background:#eff2e9;border-color:#aabaaa}
+.winter-music-tracks button:active {transform:scale(.985)}
+.winter-music-tracks button[aria-pressed="true"] {
+ border-color:#7f9883;background:linear-gradient(140deg,#dee8d9,#f1eee2);
+ color:#354f43;box-shadow:inset 0 0 0 1px #a5baa065;
+}
+.winter-music-tracks button span {font-size:10px;line-height:1.4;font-weight:500;overflow-wrap:anywhere}
+.winter-music-tracks button small {margin-top:4px;font-size:7px;letter-spacing:1px;color:#87978d}
+@media(max-width:760px) {
+ .winter-music-panel {max-height:calc(100svh - 126px)}
+ .winter-music-tracks button {min-height:48px}
+}
+
+/* Domestic-accessible fallback: authorised previews + on-device audio. */
+.winter-music-panel {max-height:min(650px,calc(100svh - 90px))}
+.winter-music-service-label {margin:11px 1px 7px;color:#738678;font:600 9px/1.6 var(--sans);letter-spacing:1.1px}
+.winter-music-player {height:155px;background:#e9ebe9}
+.winter-music-local {margin-top:12px;padding:12px;background:#eff0e9;border:1px solid #d9dfd5;border-radius:9px}
+.winter-music-local-label {display:block;margin:0 0 9px;font-size:11px;font-weight:600;color:#536956}
+#winter-local-file {display:block;box-sizing:border-box;width:100%;max-width:100%;font:10px/1.6 var(--sans);color:#5b6f60}
+#winter-local-file::file-selector-button {padding:7px 9px;margin-right:9px;color:#354e42;border:1px solid #adbead;border-radius:6px;background:#fffdf7;cursor:pointer}
+.winter-music-local .winter-music-hint {margin:10px 0 0;font-size:9px}
+@media(max-width:760px) {
+  .winter-music-panel {max-height:calc(100svh - 120px)}
+  .winter-music-player {height:145px}
+}
+
+/* Eight-track selector: readable on iPad and phones, with the active song unmistakable. */
+.winter-music-panel {width:min(382px,calc(100% - 24px));max-height:min(680px,calc(100svh - 96px));scrollbar-width:thin;scrollbar-color:#bac7b8 transparent}
+.winter-music-tracks {gap:8px}
+.winter-music-tracks button {min-height:61px;padding:10px 11px;border-radius:9px}
+.winter-music-tracks button span {font-size:11px;font-weight:550}
+.winter-music-tracks button small {font-size:8px;letter-spacing:.2px;line-height:1.4}
+.winter-music-tracks button[aria-pressed="true"] {border-color:#6c916d;background:linear-gradient(135deg,#e0ecd8,#f8f2e7);box-shadow:inset 0 0 0 1px #a1b99d}
+.winter-music-tracks button[aria-pressed="true"]::after {content:'♪ NOW SELECTED';margin-top:6px;font:600 7px/1.3 var(--sans);letter-spacing:.8px;color:#537953}
+@media(max-width:760px){.winter-music-panel{max-height:calc(100svh - 115px)}.winter-music-tracks button{min-height:59px}}

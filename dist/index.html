@@ -15,17 +15,21 @@
   <link rel="stylesheet" href="style.css?v=cinema-2">
   <link rel="stylesheet" href="motion.css?v=journey-1">
   <link rel="stylesheet" href="celebration.css?v=cinema-2">
-  <link rel="stylesheet" href="cake-scene.css?v=cinema-2">
+  <link rel="stylesheet" href="cake-scene.css?v=touchfix-1">
   <link rel="stylesheet" href="memory-notes.css?v=three-pages-1">
   <link rel="stylesheet" href="nature-atlas.css?v=cinema-2">
   <link rel="stylesheet" href="keepsake.css?v=handmade-2">
-  <link rel="stylesheet" href="journey.css?v=field-notes-1">
-  <link rel="stylesheet" href="shenzhen-entry.css?v=1">
-  <script src="app.js?v=journey-1" defer></script>
-  <script src="cake-scene.js?v=ritual-2" defer></script>
+  <link rel="stylesheet" href="journey.css?v=personal-photos-2">
+  <link rel="stylesheet" href="music.css?v=gentle-eight-1">
+  <link rel="stylesheet" href="personal-album.css?v=forest-epilogue-1">
+  <link rel="stylesheet" href="interactive-finale.css?v=paper-silhouette-1">
+  <script src="app.js?v=finale-1" defer></script>
+  <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
-  <script src="journey.js?v=field-notes-1" defer></script>
+  <script src="journey.js?v=finale-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
+  <script src="music.js?v=gentle-eight-1" defer></script>
+  <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -64,6 +68,9 @@
         </button>
       </nav>
       <div class="header-actions">
+      <button type="button" id="winter-music-toggle" class="winter-music-toggle" aria-label="播放背景音乐" aria-pressed="false" aria-expanded="false" aria-controls="winter-music-panel" title="播放音乐" data-playing="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><path d="M9 8 20 6"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/></svg>
+      </button>
       <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false" aria-label="暂停氛围动效" title="暂停氛围动效" hidden>
         <svg class="motion-pause-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5v10M13 5v10"/></svg>
         <svg class="motion-play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6V4Z"/></svg>
@@ -74,6 +81,34 @@
       </button>
       </div>
     </header>
+
+    <aside id="winter-music-panel" class="winter-music-panel" aria-label="背景音乐" hidden>
+      <div class="winter-music-panel-head">
+        <div><p class="winter-music-overline">A LITTLE SONG FOR WINTER</p><p id="winter-music-title" class="winter-music-title">pretty</p><p class="winter-music-byline" id="winter-music-byline">JVKE · original song</p></div>
+        <button id="winter-music-close" type="button" class="winter-music-close" aria-label="收起音乐播放器（不影响播放）">×</button>
+      </div>
+      <div class="winter-music-tracks" role="group" aria-label="选择八首歌曲">
+        <button type="button" data-winter-song="moon" aria-pressed="false"><span>moon and back</span><small>JVKE</small></button>
+        <button type="button" data-winter-song="pretty" aria-pressed="true"><span>pretty</span><small>DEFAULT ♡</small></button>
+        <button type="button" data-winter-song="her" aria-pressed="false"><span>her</span><small>JVKE</small></button>
+        <button type="button" data-winter-song="winter" aria-pressed="false"><span>this is what winter feels like</span><small>JVKE</small></button>
+        <button type="button" data-winter-song="bloom" aria-pressed="false"><span>Bloom</span><small>The Paper Kites · 3:30</small></button>
+        <button type="button" data-winter-song="coastline" aria-pressed="false"><span>Coastline</span><small>Hollow Coves · 3:53</small></button>
+        <button type="button" data-winter-song="lalune" aria-pressed="false"><span>La Lune</span><small>Billie Marten</small></button>
+        <button type="button" data-winter-song="wheresmylove" aria-pressed="false"><span>Where's My Love (Acoustic)</span><small>SYML · 3:59</small></button>
+      </div>
+      <p class="winter-music-service-label">APPLE MUSIC · 官方试听 / 订阅可完整播放</p>
+      <iframe id="winter-music-frame" class="winter-music-player" title="Apple Music · JVKE · pretty" allow="autoplay *; encrypted-media *; fullscreen *" referrerpolicy="strict-origin-when-cross-origin" loading="lazy"></iframe>
+      <p class="winter-music-hint">点击上方播放器中的播放按钮。未登录一般只能试听约 30 秒。完整播放需要相应的 Apple Music 订阅，并受地区授权与网络访问限制。</p>
+      <div class="winter-music-local">
+        <label class="winter-music-local-label" for="winter-local-file">从本机选择音频文件 · 完整播放</label>
+        <input id="winter-local-file" type="file" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg">
+        <p id="winter-local-file-status" class="winter-music-hint">音乐文件只在当前设备中使用，不会上传到网站。请选择你有权播放的文件。</p>
+      </div>
+      
+      <a class="winter-music-credit" id="winter-music-credit" href="https://music.apple.com/us/song/1796262634" target="_blank" rel="noopener noreferrer">Apple Music 打开《pretty》</a>
+      <p id="winter-music-status" class="sr-only" aria-live="polite"></p>
+    </aside>
 
     <div class="page-content" id="page-content" tabindex="-1">
       <section class="page-panel home-panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
@@ -86,9 +121,8 @@
 
       <section class="page-panel about-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
         <div class="album-corner-mark" aria-hidden="true"><span>THE WINTER COLLECTION</span><span>VOL. 25 · A NEW CHAPTER</span></div>
-        <figure class="keepsake-photo photo-alps" aria-hidden="true"><img src="assets/swiss-alps-small.webp" width="960" height="641" alt="" decoding="async"><figcaption>to all the paths ahead</figcaption></figure>
-        <figure class="keepsake-photo photo-lake" aria-hidden="true"><img src="assets/memory-natural-small.webp" width="960" height="640" alt="" decoding="async"><figcaption>the world you love</figcaption></figure>
         <div class="about-heading"><p class="page-eyebrow">TO MY TWENTY-FIVE-YEAR-OLD SELF</p><h2>Dear me<span class="heading-dot">.</span></h2><svg class="album-flourish" viewBox="0 0 180 23" fill="none" aria-hidden="true"><path d="M8 13h44m76 0h44M57 13c17 0 22-11 33-11s16 11 33 11M70 15c10 0 13 5 20 5s10-5 20-5" stroke="currentColor" stroke-width=".8"/><path d="m90 7 3 5-3 5-3-5 3-5Z" fill="currentColor"/><path d="m41 13-7-5-1 5 6 3m107-3 7-5 1 5-6 3" stroke="currentColor" stroke-width=".7"/></svg></div>
+        <div class="keepsake-mosaic" aria-label="25 张便利贴和你珍藏的照片">
         <div class="notes-board" role="group" aria-label="22 张带有不同折痕的便利贴，拼成数字 25">
           <div class="note-digit" role="group" aria-label="数字 2"><button type="button" class="sticky-note butter" data-note-id="1" style="--paper-scale:0.983;--rotation:-2.3deg;--offset-x:-0.8px;--offset-y:-0.1px;--paper-texture:url('assets/paper/note-01.svg');--curl-size:11%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:5.8px;--paper-light:108deg;--paper-origin:41%;--paper-radius:3px 2px 6px 2px" aria-label="第 1 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">01</span></button>
 <button type="button" class="sticky-note sage" data-note-id="2" style="--paper-scale:1.017;--rotation:1.5deg;--offset-x:0.2px;--offset-y:1.4px;--paper-texture:url('assets/paper/note-02.svg');--curl-size:9%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:5.2px;--paper-light:149deg;--paper-origin:62%;--paper-radius:2px 2px 3px 2px" aria-label="第 2 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">02</span></button>
@@ -121,7 +155,17 @@
 <button type="button" class="sticky-note butter" data-note-id="21" style="--paper-scale:1.021;--rotation:2.75deg;--offset-x:1.3px;--offset-y:-1.7px;--paper-texture:url('assets/paper/note-21.svg');--curl-size:12%;--curl-left:auto;--curl-right:0;--curl-top:auto;--curl-bottom:0;--curl-flip-x:1;--curl-flip-y:1;--paper-lift:3.5px;--paper-light:131deg;--paper-origin:35%;--paper-radius:2px 1px 3px 6px" aria-label="第 21 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">21</span></button>
 <button type="button" class="sticky-note sage" data-note-id="22" style="--paper-scale:0.992;--rotation:4.38deg;--offset-x:1.7px;--offset-y:0.9px;--paper-texture:url('assets/paper/note-22.svg');--curl-size:9%;--curl-left:0;--curl-right:auto;--curl-top:auto;--curl-bottom:0;--curl-flip-x:-1;--curl-flip-y:1;--paper-lift:4.6px;--paper-light:171deg;--paper-origin:39%;--paper-radius:3px 4px 5px 4px" aria-label="第 22 张便利贴，点击写字"><span class="note-text"></span><span class="note-index" aria-hidden="true">22</span></button></div>
         </div>
+          <div class="portrait-rail rail-left" role="group" aria-label="左侧的四张拍立得照片"><button class="portrait-pin pin-1" type="button" data-portrait="0" style="--tile-x:0.0000%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：海边的风和背影，Free spirit 自由的灵魂"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Free spirit</b><small>自由的灵魂</small></span></button><button class="portrait-pin pin-2" type="button" data-portrait="1" style="--tile-x:33.3333%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：暖光下的日常，Gentle gaze 温柔的目光"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Gentle gaze</b><small>温柔的目光</small></span></button><button class="portrait-pin pin-3" type="button" data-portrait="2" style="--tile-x:66.6667%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：夜晚暖色里的你，Quiet glow 安静发光"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Quiet glow</b><small>安静发光</small></span></button><button class="portrait-pin pin-4" type="button" data-portrait="3" style="--tile-x:100.0000%;--tile-y:0%" aria-haspopup="dialog" aria-label="放大照片：蓝色海天的草坡，Open heart 清澈真诚"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Open heart</b><small>清澈真诚</small></span></button></div>
+          <div class="portrait-rail rail-right" role="group" aria-label="右侧的三张拍立得照片"><button class="portrait-pin pin-5" type="button" data-portrait="4" style="--tile-x:0.0000%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：鲜花与蝴蝶，Radiance 明媚耀眼"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Radiance</b><small>明媚耀眼</small></span></button><button class="portrait-pin pin-6" type="button" data-portrait="5" style="--tile-x:33.3333%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：蓝天下的酷女孩，Fearlessly you 自在做自己"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Fearlessly you</b><small>自在做自己</small></span></button><button class="portrait-pin pin-7" type="button" data-portrait="6" style="--tile-x:66.6667%;--tile-y:100%" aria-haspopup="dialog" aria-label="放大照片：背着海鹦玩偶看海，Wanderlust 热爱探索"><span class="pin-head" aria-hidden="true"></span><span class="portrait-thumb" aria-hidden="true"></span><span class="portrait-words"><b>Wanderlust</b><small>热爱探索</small></span></button></div>
+        </div>
         <div class="notes-footnote"><p><strong>22 张便利贴</strong><span class="footnote-dot">·</span>写给 25 岁的自己</p><p class="birthday-thanks">周琬婷，辛苦了。谢谢你过去的24年的坚韧。</p><p class="notes-instruction">把想对自己说的话，一张张留在这里。</p><p class="note-status" id="note-status" role="status" aria-live="polite"></p></div>
+
+        <dialog id="portrait-lightbox" class="portrait-lightbox" aria-labelledby="portrait-lightbox-title" aria-modal="true">
+          <div class="portrait-lightbox-head"><span>SEVEN LITTLE MOMENTS · WINTER</span><button type="button" id="portrait-close" aria-label="关闭照片">×</button></div>
+          <div class="portrait-lightbox-print"><div id="portrait-large-image" class="portrait-large-image" role="img" aria-label="放大的照片"></div><p id="portrait-lightbox-title" class="portrait-lightbox-title">Free spirit</p><p id="portrait-lightbox-zh" class="portrait-lightbox-zh">自由的灵魂</p></div>
+          <div class="portrait-lightbox-controls"><button id="portrait-prev" type="button">← 上一张</button><span id="portrait-counter">01 / 07</span><button id="portrait-next" type="button">下一张 →</button></div>
+          <p class="portrait-lightbox-hint">点开每个瞬间，总还有想慢慢讲的故事。</p>
+        </dialog>
       </section>
 
       <section class="page-panel destination-panel" id="panel-destination" role="tabpanel" aria-labelledby="tab-destination" tabindex="0" hidden>
@@ -137,11 +181,11 @@
               <div class="envelope-address"><h2><span class="recipient-name">25岁的周琬婷</span><span class="recipient-greeting">生日快乐</span></h2><p>From Gwen, with all my love.</p></div>
               <span class="envelope-fiber" aria-hidden="true"></span>
               <svg class="envelope-twine" viewBox="0 0 540 342" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke-linecap="round"><path class="rope-horizontal" d="M-4 116C96 120 141 110 270 116s185 2 276-2" stroke="#8f8d73" stroke-width="3.2"/><path class="rope-horizontal" d="M-4 115C96 119 141 109 270 115s185 2 276-2" stroke="#d9d1b6" stroke-width=".9"/><path class="rope-vertical" d="M123-3c-5 57 5 92 0 154s4 143-1 195" stroke="#8f8d73" stroke-width="3.2"/><path class="rope-vertical" d="M122-3c-5 57 5 92 0 154s4 143-1 195" stroke="#d9d1b6" stroke-width=".9"/></g></svg>
-              <button type="button" class="open-envelope string-knot" id="open-envelope" aria-label="点击绳结，展开写给周琬婷的生日信" aria-describedby="envelope-help"><svg viewBox="0 0 120 80" aria-hidden="true"><g fill="none" stroke="#8b886c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path class="bow-loop-left" pathLength="1" d="M60 37C39 8 14 13 22 33c6 15 28 11 38 4Z"/><path class="bow-loop-right" pathLength="1" d="M60 37c18-31 47-24 38-3-6 13-27 11-38 3Z"/><path class="bow-tail-left" d="M59 39C44 48 41 60 30 67"/><path class="bow-tail-right" d="M63 39c15 5 18 19 31 23"/><path d="m54 37 7-5 7 7-8 6-6-8Z" fill="#aaa388"/></g><g fill="none" stroke="#e5ddc1" stroke-width=".85"><path class="bow-loop-left" pathLength="1" d="M60 36C39 7 14 12 22 32c6 15 28 11 38 4Z"/><path class="bow-loop-right" pathLength="1" d="M60 36c18-31 47-24 38-3-6 13-27 11-38 3Z"/></g></svg><span class="sr-only">解开绳结</span></button>
+              <button type="button" class="open-envelope string-knot" id="open-envelope" aria-label="解开蝴蝶结，打开生日信"><svg viewBox="0 0 120 80" aria-hidden="true"><g fill="none" stroke="#8b886c" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path class="bow-loop-left" pathLength="1" d="M60 37C39 8 14 13 22 33c6 15 28 11 38 4Z"/><path class="bow-loop-right" pathLength="1" d="M60 37c18-31 47-24 38-3-6 13-27 11-38 3Z"/><path class="bow-tail-left" d="M59 39C44 48 41 60 30 67"/><path class="bow-tail-right" d="M63 39c15 5 18 19 31 23"/><path d="m54 37 7-5 7 7-8 6-6-8Z" fill="#aaa388"/></g><g fill="none" stroke="#e5ddc1" stroke-width=".85"><path class="bow-loop-left" pathLength="1" d="M60 36C39 7 14 12 22 32c6 15 28 11 38 4Z"/><path class="bow-loop-right" pathLength="1" d="M60 36c18-31 47-24 38-3-6 13-27 11-38 3Z"/></g></svg><span class="sr-only">解开绳结</span></button>
             </div>
           </div>
           <p class="destination-love-note">把祝福藏进山野，把这封信交给你。</p>
-          <p class="envelope-help" id="envelope-help">点一下绳结，拆开我送你的礼物 <span aria-hidden="true">↗</span></p>
+          
           <span class="letter-postscript">WITH LOVE, ALWAYS · GWEN</span>
         </div>
 <section class="cake-page" id="cake-page" data-cake-state="unlit" aria-labelledby="grand-cake-title" hidden>
@@ -155,7 +199,7 @@
     </div>
   </div>
   <button type="button" class="candle-ignition-target" id="candle-ignition-target" aria-label="把打火机靠近这里，点亮蜡烛" disabled tabindex="-1"><span class="sr-only">点亮生日蜡烛</span></button>
-  <p class="lighter-instructions" id="lighter-instructions"><span id="lighter-instruction-copy">拿起打火机，点亮这一刻</span><small>点一下，点亮这一刻 <span aria-hidden="true">↗</span></small></p>
+  <p class="lighter-instructions" id="lighter-instructions"><span id="lighter-instruction-copy">轻点打火机直接点亮，也可以拖向蜡烛</span><small>轻点即点亮 · 也可拖动火焰 <span aria-hidden="true">↗</span></small></p>
   <div class="cake-thanks" id="cake-thanks" aria-live="polite" aria-atomic="true">
     <p class="cake-thanks-overline">FOR EVERY WAY YOU HAVE BEEN HERE</p>
     <div class="cake-thanks-lines" id="cake-thanks-lines">
@@ -165,9 +209,10 @@
       <p>Thank you for being here.</p>
       <p>Thank you for staying by my side.</p>
     </div>
+    <p class="cake-story-hint"><span>Make a wish, then keep going.</span><small>许完愿，故事还没结束。<br>再往下走，还有一些想慢慢告诉你的话。</small></p>
   </div>
   <canvas id="cake-fireworks" class="cake-fireworks" aria-hidden="true"></canvas>
-  <button type="button" class="cake-continue" id="cake-continue" hidden>再点一下，看看我们的故事 <span aria-hidden="true">↗</span></button>
+  <button type="button" class="cake-continue" id="cake-continue" hidden>继续下一页 · 两国回忆 <span aria-hidden="true">↗</span></button>
   <p class="cake-scene-status sr-only" id="cake-scene-status" role="status" aria-live="polite"></p>
   <dialog class="grand-blow-dialog" id="grand-blow-dialog" aria-labelledby="grand-blow-title">
     <span aria-hidden="true" class="blow-spark">✧</span><h2 id="grand-blow-title">尊贵的小寿星winter请吹一下蜡烛</h2><button type="button" id="grand-blow-confirm">好的，我知道啦</button>
@@ -199,9 +244,67 @@
             </div>
           </div>
           <div class="puppy-parade" role="img" aria-label="两只小狗正一前一后地奔跑"><span class="puppy-runner puppy-one"><svg class="running-puppy" viewBox="0 0 150 98" aria-hidden="true"><g class="puppy-body"><g class="puppy-leg puppy-leg-back" style="transform-origin:43px 58px"><path d="m44 57-9 21 14 3"/></g><g class="puppy-leg puppy-leg-front puppy-far" style="transform-origin:91px 57px"><path d="m90 57 8 19 13 2"/></g><path class="puppy-tail" d="M33 43C15 44 12 29 19 22c2 14 10 11 18 14"/><path class="puppy-fill" d="M31 40c7-15 43-20 62-7 13 9 11 26 0 32-18 11-48 9-61-2-8-6-8-17-1-23Z"/><g class="puppy-leg puppy-leg-front" style="transform-origin:88px 60px"><path d="m88 59 4 22 14 1"/></g><g class="puppy-leg puppy-leg-back puppy-near" style="transform-origin:45px 60px"><path d="m45 59-2 22 13 2"/></g><path class="puppy-fill" d="M93 29c0-17 16-27 30-19 11 5 13 18 7 25 8 3 11 10 3 13-5 2-10-1-15 1-12 5-26-4-25-20Z"/><path class="puppy-ear" d="M100 15C87 13 83 25 88 36c5 8 12 3 12-4l3-14"/><path d="m124 26 .1 .1" class="puppy-eye"/><path d="M136 35q5 2 1 5-5-1-1-5Z" class="puppy-nose"/><path d="m125 44 5 1"/><path class="puppy-patch" d="M51 32c-14 12-10 28 1 32 10 1 16-7 15-17-2-9-7-15-16-15Z"/><path d="M26 88q44 4 92-1" class="puppy-ground"/></g></svg></span><span class="puppy-runner puppy-two"><svg class="running-puppy" viewBox="0 0 150 98" aria-hidden="true"><g class="puppy-body"><g class="puppy-leg puppy-leg-back" style="transform-origin:43px 58px"><path d="m44 57-9 21 14 3"/></g><g class="puppy-leg puppy-leg-front puppy-far" style="transform-origin:91px 57px"><path d="m90 57 8 19 13 2"/></g><path class="puppy-tail" d="M33 43C15 44 12 29 19 22c2 14 10 11 18 14"/><path class="puppy-fill" d="M31 40c7-15 43-20 62-7 13 9 11 26 0 32-18 11-48 9-61-2-8-6-8-17-1-23Z"/><g class="puppy-leg puppy-leg-front" style="transform-origin:88px 60px"><path d="m88 59 4 22 14 1"/></g><g class="puppy-leg puppy-leg-back puppy-near" style="transform-origin:45px 60px"><path d="m45 59-2 22 13 2"/></g><path class="puppy-fill" d="M93 29c0-17 16-27 30-19 11 5 13 18 7 25 8 3 11 10 3 13-5 2-10-1-15 1-12 5-26-4-25-20Z"/><path class="puppy-ear" d="M100 15C87 13 83 25 88 36c5 8 12 3 12-4l3-14"/><path d="m124 26 .1 .1" class="puppy-eye"/><path d="M136 35q5 2 1 5-5-1-1-5Z" class="puppy-nose"/><path d="m125 44 5 1"/><path class="puppy-patch" d="M51 32c-14 12-10 28 1 32 10 1 16-7 15-17-2-9-7-15-16-15Z"/><path d="M26 88q44 4 92-1" class="puppy-ground"/></g></svg></span></div>
-        <section class="shenzhen-invitation" aria-labelledby="shenzhen-invitation-title"><div><p>SHENZHEN · A SPATIAL CHAPTER</p><h3 id="shenzhen-invitation-title">去见你，从 C 座走到九楼。</h3><p>沿街寻找入口，查阅楼层索引，亲手按下 9F。<br>深圳 3D 空间机制样章 · 美术与实机验收待完成</p></div><a href="shenzhen/">进入深圳样章 <span aria-hidden="true">↗</span></a></section>
-        <section class="journey-invitation" aria-labelledby="journey-invitation-title"><div><p>THE STORY BEFORE US · 旧版相册保留</p><h3 id="journey-invitation-title">你走过的路，想陪你再走一遍。</h3><p>从达州到南安普顿，再走到我们相遇的地方。</p></div><button type="button" id="open-journey">打开旧版相册 <span aria-hidden="true">↗</span></button></section>
+        <section class="journey-invitation" aria-labelledby="journey-invitation-title"><div><p>THE STORY BEFORE US</p><h3 id="journey-invitation-title">你走过的路，想陪你再走一遍。</h3><p>从达州到南安普顿，再走到我们相遇的地方。</p></div><button type="button" id="open-journey">带 Gwen 出发 <span aria-hidden="true">↗</span></button></section>
         </section>
+<section class="journey-afterword" id="journey-afterword" aria-labelledby="afterword-title" tabindex="-1" hidden>
+  <div class="afterword-stars" aria-hidden="true"></div>
+  <header class="afterword-topbar">
+    <span>AFTER THE LAST STOP · AN UNEXPECTED ENCOUNTER</span>
+    <button id="afterword-back" class="afterword-back" type="button">← 回到相遇</button>
+  </header>
+  <div class="afterword-copy">
+    <span class="afterword-overline">A LITTLE NOTE ABOUT FATE</span>
+    <h2 id="afterword-title">偏偏，在那里遇见了你。</h2>
+    <p class="afterword-line" style="--line:0">我知道，启德对你来说，</p>
+    <p class="afterword-line" style="--line:1">的确只是工作单位，也是一个工作的地方。</p>
+    <p class="afterword-line afterword-emphasis" style="--line:2">可对我来说，那里是我遇见你的地方。</p>
+    <p class="afterword-line" style="--line:3">在那里，我遇到了特别的人，</p>
+    <p class="afterword-line" style="--line:4">也发生了一段特别的故事。</p>
+    <p class="afterword-line afterword-paragraph" style="--line:5">我并不会在那里待很久。</p>
+    <p class="afterword-line" style="--line:6">它只是一次普通的停留，</p>
+    <p class="afterword-line" style="--line:7">甚至算不上人生列车上的一个站点。</p>
+    <p class="afterword-line afterword-paragraph" style="--line:8">可越是这样想，我就越觉得幸运。</p>
+    <p class="afterword-line" style="--line:9">原来冥冥之中的缘分，</p>
+    <p class="afterword-line" style="--line:10">会这样轻轻地，把两个人带到彼此面前。</p>
+    <div class="afterword-final" style="--line:11">
+      <span>What stayed with me was never the place, but you.</span>
+      <strong>真正留在我心里的，从来不是那个地方，而是你。</strong>
+    </div>
+    <button type="button" class="afterword-continue" id="afterword-continue">下一页 · 让我们的故事拼在一起 <span aria-hidden="true">↗</span></button>
+    <button type="button" class="afterword-home" id="afterword-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button>
+  </div>
+  <span class="afterword-footer-mark" aria-hidden="true">FOR WINTER · WITH LOVE</span>
+</section>
+<section class="birthday-finale" id="birthday-finale" aria-labelledby="birthday-finale-title" hidden>
+  <div class="finale-paper-noise" aria-hidden="true"></div>
+  <header class="finale-top"><span>THE LITTLE THINGS THAT BROUGHT US TOGETHER · NO. 25</span><button type="button" id="finale-back">← 回到那封信</button></header>
+  <div class="finale-story">
+    <p class="finale-index">A TINY PIECE OF FATE · OUR BIRTHDAY PAGE</p>
+    <h2 id="birthday-finale-title">原来我们会这样相遇。</h2>
+    <p class="finale-help" id="finale-help" role="status" aria-live="polite">照片被时光撕成了两半。<strong>拖动或点击两边的照片，让我们重新站到一起。</strong></p>
+    <div class="finale-newspaper" id="finale-newspaper" data-joined="false" aria-label="互动撕页合照：拼合两半照片">
+      <span class="news-headline" aria-hidden="true">THE WINTER CHRONICLE</span>
+      <span class="news-date" aria-hidden="true">A STORY IN TWO PIECES · 25</span>
+      <div class="finale-polaroid-mat">
+        <div class="finale-photo-pieces" id="finale-pieces">
+          <button type="button" id="finale-piece-left" class="finale-piece left-piece" aria-label="左半张照片，拖到一起或点按拼合"><span aria-hidden="true">Ⅰ</span></button>
+          <button type="button" id="finale-piece-right" class="finale-piece right-piece" aria-label="右半张照片，拖到一起或点按拼合"><span aria-hidden="true">Ⅱ</span></button>
+          <div class="finale-photo-whole" role="img" aria-label="AI 创意生成的两位小朋友一起庆祝 25 岁生日" aria-hidden="true"></div>
+        </div>
+        <div class="finale-caption"><span>THEN & NOW · SIDE BY SIDE</span><span>这一次，我们在同一张照片里。</span></div>
+      </div>
+      <p class="news-footline" aria-hidden="true">Some encounters feel written in the stars · for winter, with love</p>
+    </div>
+    <div class="finale-surprise" id="finale-surprise" aria-live="polite" hidden>
+      <p>WITH ALL MY HEART</p>
+      <h3>我很荣幸<br>能够参与你的<span>25岁</span></h3>
+      <span class="finale-english">How lucky I am to be here for your 25th birthday.</span>
+      <div class="finale-actions"><button type="button" id="finale-replay">再拼一次 <span aria-hidden="true">↻</span></button><button type="button" id="finale-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button></div>
+    </div>
+  </div>
+  <div class="finale-balloons" id="finale-balloons" aria-hidden="true"></div>
+  <canvas id="finale-confetti" class="finale-confetti" aria-hidden="true"></canvas>
+</section>
 <section class="journey-page" id="journey-page" aria-labelledby="journey-title" data-stop="0" hidden>
   <header class="journey-heading">
     <div><p class="journey-eyebrow">THE WAY TO YOU · GWEN'S FIELD NOTES</p><h2 id="journey-title" tabindex="-1">你走过的路，带我再走一遍。</h2></div>
@@ -213,39 +316,41 @@
         <picture class="journey-photo" data-photo-key="dazhou" data-active="true" aria-hidden="false"><source media="(max-width:760px)" srcset="assets/journey-dazhou-small.webp"><img src="assets/journey-dazhou.webp" alt="四川达州廊桥的城市资料影像。" width="1800" height="1350" draggable="false" decoding="async"></picture>
         <picture class="journey-photo" data-photo-key="chongqing" data-active="false" aria-hidden="true"><source media="(max-width:760px)" srcset="assets/journey-chongqing-small.webp"><img src="assets/journey-chongqing.webp" alt="重庆工商大学南岸校区正门实景。" width="1800" height="1013" draggable="false" decoding="async"></picture>
         <picture class="journey-photo" data-photo-key="southampton" data-active="false" aria-hidden="true"><source media="(max-width:760px)" srcset="assets/journey-southampton-small.webp"><img src="assets/journey-southampton.webp" alt="英国南安普顿大学 Highfield 校区的草坪与公共空间。" width="1800" height="1200" draggable="false" decoding="async"></picture>
-        <picture class="journey-photo" data-photo-key="together" data-active="false" aria-hidden="true"><source media="(max-width:760px)" srcset="assets/swiss-alps-small.webp"><img src="assets/swiss-alps.webp" alt="瑞士的雪峰、松林与草地，留给以后一起去的山野。" width="2000" height="1335" draggable="false" decoding="async"></picture>
+        <picture class="journey-photo" data-photo-key="school" data-active="false" aria-hidden="true"><img src="assets/journey-school-user.webp" alt="达州市第一中学校门照片，红色校名碑刻有 1906 字样。" loading="lazy" draggable="false" decoding="async"></picture>
+         <picture class="journey-photo" data-photo-key="together" data-active="false" aria-hidden="true"><img src="assets/journey-qide-user.webp" alt="深圳夜景照片，夜色下有商业楼宇与沿街灯光。" loading="lazy" draggable="false" decoding="async"></picture>
       </div>
       <div class="journey-photo-fallback" id="journey-photo-fallback" hidden><span aria-hidden="true">✧</span><p>这里的风景，等你慢慢讲给我听。</p></div>
       <span class="journey-photo-number" id="journey-photo-number" aria-hidden="true">01</span>
-      <figcaption class="journey-photo-caption"><p id="journey-photo-caption">达州 · 城市资料影像</p><span class="journey-swipe-hint">轻扫画面，慢慢走 <span aria-hidden="true">↔</span></span></figcaption>
+      <figcaption class="journey-photo-caption"><p id="journey-photo-caption">达州 · 城市资料影像</p></figcaption>
     </figure>
     <article class="journey-letter" aria-labelledby="journey-place-title">
       <div class="journey-letter-body" id="journey-letter-body" tabindex="0" aria-label="这一站的来信">
         <p class="journey-chapter" id="journey-chapter">01 / 05 · FAMILIAR DAYS</p>
         <p class="journey-period" id="journey-period">熟悉的日常 · 四川达州</p>
-        <h3 id="journey-place-title">从你熟悉的街区开始</h3>
-        <p class="journey-fact" id="journey-fact">西外 · 天府新城与罗浮广场</p>
-        <div class="journey-nearby" id="journey-nearby" role="group" aria-label="选一处熟悉的地方"><button type="button" data-journey-spot="tianfu" aria-pressed="true">天府新城</button><button type="button" data-journey-spot="luofu" aria-pressed="false">罗浮广场</button></div>
-        <p class="journey-prose" id="journey-prose">在认识你以前，这座城就已经陪着你。我把天府新城、罗浮广场这些名字记下来，想有一天，跟着你走一走，听你讲那些熟悉的日常。</p>
-        <div class="journey-question"><span>我想问你</span><p id="journey-question">如果带我去天府新城，你想先让我看见什么？</p></div>
-        <p class="journey-signature">You lead. I'll listen. <span>— Gwen</span></p>
+        <h3 id="journey-place-title">从你的熟悉街区开始</h3>
+        <p class="journey-fact" id="journey-fact">四川达州</p>
+        
+        <p class="journey-prose" id="journey-prose">在认识你以前，这座城就已经陪着你。我想有一天能够跟着你走一走，听你在那儿讲熟悉的日常。</p>
+        <div class="journey-question"><span>我想知道</span><p id="journey-question">如果有一天带我走走，你最想从哪里开始？</p></div>
+        <p class="journey-signature"><span id="journey-signature-line">I wish I could have walked beside you.</span> <span>— Gwen</span></p>
       </div>
       <button type="button" class="journey-write" id="journey-write" aria-haspopup="dialog"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 13 9-9 3 3-9 9-4 1 1-4Zm7-7 3 3M4 18h12"/></svg><span id="journey-write-label">把这一段，慢慢讲给 Gwen</span><span aria-hidden="true">↗</span></button>
       <p class="journey-saved-preview" id="journey-saved-preview" hidden></p>
     </article>
     <section class="journey-navigation" aria-label="沿着时光探索五段旅程">
-      <div class="journey-navigation-top"><p>沿着时光，慢慢走 <span class="journey-drag-help">· 拖动圆点，停在你想讲的地方</span></p><div class="journey-arrows"><button type="button" id="journey-previous" aria-label="上一站" disabled>←</button><span id="journey-count">01 / 05</span><button type="button" id="journey-next" aria-label="下一站">→</button></div></div>
+      <div class="journey-navigation-top"><p>旅程进度 <span class="journey-drag-help">· 拖动圆点，停在你想讲的地方</span></p><div class="journey-arrows"><button type="button" id="journey-previous" aria-label="上一站" disabled>←</button><span id="journey-count">01 / 05</span><button type="button" id="journey-next" aria-label="下一站">→</button></div></div>
       <div class="journey-track" id="journey-track"><span class="journey-track-base" aria-hidden="true"></span><span class="journey-track-ink" aria-hidden="true"></span><input id="journey-position" type="range" min="0" max="400" step="any" value="0" aria-label="选择人生旅程中的一站" aria-valuetext="第1站，达州日常" aria-describedby="journey-range-help"></div>
       <p class="sr-only" id="journey-range-help">可以拖动，也可以使用左右方向键逐站移动，Home 到第一站，End 到最后一站。</p>
-      <div class="journey-stops" id="journey-stops"><button type="button" data-journey-stop="0" style="--stop-position:0" aria-current="step"><span>01</span>达州日常</button><button type="button" data-journey-stop="1" style="--stop-position:.25"><span>02</span>高中</button><button type="button" data-journey-stop="2" style="--stop-position:.5"><span>03</span>南岸</button><button type="button" data-journey-stop="3" style="--stop-position:.75"><span>04</span>南安普顿</button><button type="button" data-journey-stop="4" style="--stop-position:1"><span>05</span>相遇</button></div>
+      <div class="journey-stops" id="journey-stops"><button type="button" data-journey-stop="0" style="--stop-position:0" aria-current="step"><span>01</span>达州日常</button><button type="button" data-journey-stop="1" style="--stop-position:.25"><span>02</span>初中和高中</button><button type="button" data-journey-stop="2" style="--stop-position:.5"><span>03</span>南岸</button><button type="button" data-journey-stop="3" style="--stop-position:.75"><span>04</span>南安普顿</button><button type="button" data-journey-stop="4" style="--stop-position:1"><span>05</span>相遇</button></div>
+      <button type="button" class="journey-afterword-trigger" id="journey-afterword-trigger" hidden>最后一站之后 · 还有一封信想对你说 <span aria-hidden="true">↗</span></button>
       <div class="journey-bottomline"><span id="journey-ending">那些我还没参与的日子，想听你慢慢讲。</span><button type="button" id="journey-credits-open" aria-haspopup="dialog">影像：Nyx Ning · CC BY-SA 3.0</button></div>
     </section>
   </div>
   <p class="sr-only" id="journey-status" role="status" aria-live="polite" aria-atomic="true"></p>
   <dialog class="journey-note-dialog" id="journey-note-dialog" aria-labelledby="journey-note-title" aria-describedby="journey-note-question journey-note-storage">
-    <form id="journey-note-form"><div class="journey-note-top"><span>WINTER'S SIDE OF THE STORY</span><button type="button" id="journey-note-close" aria-label="关闭这张纸条">×</button></div><h3 id="journey-note-title">天府新城</h3><p id="journey-note-question">如果带我去天府新城，你想先让我看见什么？</p><label class="sr-only" for="journey-note-input">写下这一站想讲给 Gwen 的话</label><textarea id="journey-note-input" maxlength="500" rows="6" placeholder="从你想起的第一件小事，慢慢写起。"></textarea><div class="journey-note-meta"><span id="journey-note-storage">只保存在当前浏览器，尚未发送。</span><span id="journey-note-count">0 / 500</span></div><div class="journey-note-actions"><button type="button" id="journey-note-cancel">先留白</button><button type="submit">留在这一站</button></div><p id="journey-note-feedback" role="status" aria-live="polite"></p></form>
+    <form id="journey-note-form"><div class="journey-note-top"><span>WINTER'S SIDE OF THE STORY</span><button type="button" id="journey-note-close" aria-label="关闭这张纸条">×</button></div><h3 id="journey-note-title">从你的熟悉街区开始</h3><p id="journey-note-question">如果有一天带我走走，你最想从哪里开始？</p><label class="sr-only" for="journey-note-input">写下这一站想讲给 Gwen 的话</label><textarea id="journey-note-input" maxlength="500" rows="6" placeholder="从你想起的第一件小事，慢慢写起。"></textarea><div class="journey-note-meta"><span id="journey-note-storage">只保存在当前浏览器，尚未发送。</span><span id="journey-note-count">0 / 500</span></div><div class="journey-note-actions"><button type="button" id="journey-note-cancel">先留白</button><button type="submit">留在这一站</button></div><p id="journey-note-feedback" role="status" aria-live="polite"></p></form>
   </dialog>
-  <dialog class="journey-credit-dialog" id="journey-credit-dialog" aria-labelledby="journey-credit-title"><div class="journey-note-top"><span>PLACES & PHOTOGRAPHS</span><button type="button" id="journey-credits-close" aria-label="关闭影像来源">×</button></div><h3 id="journey-credit-title">路上的影像</h3><p>达州使用城市资料影像；重庆为南岸校区正门，南安普顿为 Highfield 校区公共空间。最后一站的瑞士山野，留给以后的我们。</p><ul id="journey-credit-list"><li><a href="https://commons.wikimedia.org/wiki/File:%E5%9B%9B%E5%B7%9D_%E8%BE%BE%E5%B7%9E%E5%B8%82-%E5%BB%8A%E6%A1%A5_-_panoramio.jpg" target="_blank" rel="noopener noreferrer">达州城市影像 · 廊桥，2011</a><small>Nyx Ning · <a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a></small></li><li><a href="https://commons.wikimedia.org/wiki/File:%E9%87%8D%E5%BA%86%E5%B7%A5%E5%95%86%E5%A4%A7%E5%AD%A6_%E5%8D%97%E5%B2%B8%E6%A0%A1%E5%8C%BA%E6%AD%A3%E9%97%A8.jpg" target="_blank" rel="noopener noreferrer">重庆工商大学 · 南岸校区正门</a><small>不可思议的诚 · <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></small></li><li><a href="https://commons.wikimedia.org/wiki/File:Highfield_Campus_at_the_University_of_Southampton_-_geograph.org.uk_-_3168891.jpg" target="_blank" rel="noopener noreferrer">南安普顿大学 · Highfield 校区</a><small>Roger Davies · <a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0</a></small></li><li><a href="https://unsplash.com/photos/6IEGjAhBnfU" target="_blank" rel="noopener noreferrer">瑞士格林德瓦山野</a><small>Polina Kocheva · <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">Unsplash License</a></small></li></ul><p class="journey-credit-small">照片经缩放、转换格式，并可能随画面裁切展示。照片许可见各链接；资料影像的拍摄年份不代表 Winter 的经历年份。</p></dialog>
+  <dialog class="journey-credit-dialog" id="journey-credit-dialog" aria-labelledby="journey-credit-title"><div class="journey-note-top"><span>PLACES & PHOTOGRAPHS</span><button type="button" id="journey-credits-close" aria-label="关闭影像来源">×</button></div><h3 id="journey-credit-title">路上的影像</h3><p>达州日常为城市资料影像；初中和高中一站使用 珍藏的达州一中校门照片；重庆和南安普顿使用已注明来源的校园影像；相遇一站使用 深圳夜景照片，并非启德办公楼的实景。</p><ul id="journey-credit-list"><li><a href="https://commons.wikimedia.org/wiki/File:%E5%9B%9B%E5%B7%9D_%E8%BE%BE%E5%B7%9E%E5%B8%82-%E5%BB%8A%E6%A1%A5_-_panoramio.jpg" target="_blank" rel="noopener noreferrer">达州城市影像 · 廊桥，2011</a><small>Nyx Ning · <a href="https://creativecommons.org/licenses/by-sa/3.0" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a></small></li><li><a href="https://commons.wikimedia.org/wiki/File:%E9%87%8D%E5%BA%86%E5%B7%A5%E5%95%86%E5%A4%A7%E5%AD%A6_%E5%8D%97%E5%B2%B8%E6%A0%A1%E5%8C%BA%E6%AD%A3%E9%97%A8.jpg" target="_blank" rel="noopener noreferrer">重庆工商大学 · 南岸校区正门</a><small>不可思议的诚 · <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></small></li><li><a href="https://commons.wikimedia.org/wiki/File:Highfield_Campus_at_the_University_of_Southampton_-_geograph.org.uk_-_3168891.jpg" target="_blank" rel="noopener noreferrer">南安普顿大学 · Highfield 校区</a><small>Roger Davies · <a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener noreferrer">CC BY-SA 2.0</a></small></li><li>达州市第一中学校 · 校门<small>私人影像 · 网页内展示</small></li><li>深圳 · 夜间商业街景<small>私人影像 · 相遇章节配图</small></li></ul><p class="journey-credit-small">部分私人影像经过压缩裁切；其余公开影像许可见对应链接。场景照片不代表 Winter 经历的准确时间或具体办公地点。</p></dialog>
 </section>
 
         <section class="unlock-page" id="unlock-page" aria-labelledby="unlock-page-title" hidden>

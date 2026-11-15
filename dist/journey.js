@@ -10,36 +10,31 @@
   const previous = byId('journey-previous');
   const next = byId('journey-next');
   const status = byId('journey-status');
-  const nearby = byId('journey-nearby');
   const noteDialog = byId('journey-note-dialog');
   const noteInput = byId('journey-note-input');
   const noteFeedback = byId('journey-note-feedback');
   const noteButton = byId('journey-write');
   const credits = byId('journey-credit-dialog');
   const stopButtons = Array.from(page.querySelectorAll('[data-journey-stop]'));
-  const spotButtons = Array.from(page.querySelectorAll('[data-journey-spot]'));
+  const afterwordTrigger = byId('journey-afterword-trigger');
   const photos = Array.from(page.querySelectorAll('[data-photo-key]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const storageKey = 'winter-journey-notes-v1';
   const stops = [
-    { key:'dazhou', label:'达州日常', chapter:'FAMILIAR DAYS', period:'熟悉的日常 · 四川达州', title:'从你熟悉的街区开始', fact:'西外 · 天府新城与罗浮广场', photo:'dazhou', caption:'达州 · 城市资料影像', credit:'Nyx Ning · CC BY-SA 3.0', prose:'在认识你以前，这座城就已经陪着你。我把天府新城、罗浮广场这些名字记下来，想有一天，跟着你走一走，听你讲那些熟悉的日常。', question:'' },
-    { key:'school', label:'高中', chapter:'BEFORE WE MET', period:'高中 · 四川达州', title:'新达一中', fact:'你读过高中的地方', photo:'dazhou', caption:'达州 · 城市资料影像', credit:'Nyx Ning · CC BY-SA 3.0', prose:'这段路，我没有陪你走过。先把「新达一中」留在这里，等你愿意的时候，带我认识那时的你。那些很小、却一直记得的事，我也想好好听。', question:'如果能带我回去一天，你最想让我认识什么样的你？' },
-    { key:'chongqing', label:'南岸', chapter:'A WIDER WORLD', period:'本科 · 重庆', title:'重庆工商大学', fact:'南岸校区 · 商务英语', photo:'chongqing', caption:'重庆工商大学 · 南岸校区正门', credit:'不可思议的诚 · CC BY-SA 4.0', prose:'商务英语、南岸校区，是我知道的线索。我想沿着这些线索，慢慢认识还没遇见我的你。你喜欢过的风景、记得的小事，都值得被认真听见。', question:'南岸的日子里，有没有一段路、一件小事，你想留给我听？' },
-    { key:'southampton', label:'南安普顿', chapter:'ACROSS THE SEA', period:'硕士 · 英国南安普顿', title:'南安普顿大学', fact:'University of Southampton · 英语很好，雅思 7.5', photo:'southampton', caption:'南安普顿大学 · Highfield 校区影像', credit:'Roger Davies · CC BY-SA 2.0', prose:'后来，你走到了南安普顿。你的英语很好，雅思 7.5；也知道你会认真热爱生活，带着好奇心去旅行。读书之外的那些日子，想听你慢慢讲。', question:'在南安普顿，哪一片天空、哪一个平常的日子，最让你想念？' },
-    { key:'qide', label:'相遇', chapter:'WHERE OUR STORY BEGAN', period:'工作与相遇 · 毕业后的两年', title:'启德', fact:'你工作、也和 Gwen 相识的地方', photo:'together', caption:'瑞士山野 · 留给以后的我们', credit:'Polina Kocheva · Unsplash', prose:'走到这里，终于是我也在场的一页。毕业后的那两年，你在启德工作；也是在这里，我认识了你。前面的那些路，想慢慢听你讲。从相遇这一页开始，想和你一起往后走。', question:'如果把我们相遇的日子留在这一页，你最想写下哪一个瞬间？' }
+    { key:'dazhou', label:'达州日常', chapter:'FAMILIAR DAYS', period:'熟悉的日常 · 四川达州', title:'从你的熟悉街区开始', fact:'四川达州', photo:'dazhou', caption:'达州 · 城市资料影像（非具体街区）', credit:'Nyx Ning · CC BY-SA 3.0', prose:'在认识你以前，这座城就已经陪着你。我想有一天能够跟着你走一走，听你在那儿讲熟悉的日常。', question:'如果有一天带我走走，你最想从哪里开始？', english:'I wish I could have walked beside you.' },
+    { key:'school', label:'初中和高中', chapter:'BEFORE WE MET', period:'初中和高中 · 四川达州', title:'新达一中（达州一中）', fact:'你读过初中和高中的地方', photo:'school', caption:'达州一中 · 校门', credit:'珍藏影像', prose:'这段路我没有陪你走过，等你愿意的时候，带我认识那时的你。那些很小、却一直记得的事，我也想听你分享。你的故事，我一直都想了解。', question:'如果能回到初中或高中的某一天，你最想讲给我听什么？', english:'I would love to know the girl you were.' },
+    { key:'chongqing', label:'南岸', chapter:'A WIDER WORLD', period:'本科 · 重庆', title:'重庆工商大学', fact:'南岸校区', photo:'chongqing', caption:'重庆工商大学 · 南岸校区正门', credit:'不可思议的诚 · CC BY-SA 4.0', prose:'我好像也不太了解这个时期的你。那个还没有遇见我的你，会是什么样的呢？在我眼里，你一直是明媚而向上的。如果现在的我回到那时候认识你，我想，我也一定会欣赏你吧。', question:'大学四年的日子里，有没有一段路，或者一家你和好朋友们去过的餐厅，你想讲给我听？', english:'I think I would have admired you even then.' },
+    { key:'southampton', label:'南安普顿', chapter:'ACROSS THE SEA', period:'硕士 · 英国南安普顿', title:'南安普顿大学', fact:'University of Southampton', photo:'southampton', caption:'南安普顿大学 · Highfield 校区影像', credit:'Roger Davies · CC BY-SA 2.0', prose:'后来，你走到了南安普顿。在今年，我跟你一起也走到了南安普顿。读书之外的日子，你热爱生活，带着好奇心去探索这个世界。我想听你慢慢讲。我总在你的照片里看见充满了生命力的你，这让我很是喜欢。', question:'在南安普顿，哪一片天空、哪一个平常的日子，最让你想念？', english:'Somehow, our paths led us here together.' },
+    { key:'qide', label:'相遇', chapter:'WHERE OUR STORY BEGAN', period:'相遇 · 深圳南山', title:'天利名城 · 启德', fact:'你来到深圳工作的地方，也是我认识你的地方', photo:'together', caption:'深圳 · 夜色里的街景', credit:'珍藏影像', prose:'走到这里，终于也是我在场的一页。毕业后的这两年，你来到深圳工作，也是在这里我认识了你。从相遇这一页开始，想和你一起走到 destination。', question:'如果把我们相遇的日子留在这一页，你最想写下哪一个瞬间？', english:'Of all the places, I am glad I met you here.' }
   ];
-  const spots = {
-    tianfu: { key:'dazhou-tianfu', title:'天府新城', question:'如果带我去天府新城，你想先让我看见什么？' },
-    luofu: { key:'dazhou-luofu', title:'罗浮广场', question:'如果一起走到罗浮广场，你想讲给我哪一件日常小事？' }
-  };
-  const allowedKeys = ['dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
+  // Retain legacy note IDs so previous browser notes are not discarded.
+  const allowedKeys = ['dazhou','dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
   const notes = Object.create(null);
   const brokenPhotos = new Set();
   const removers = [];
   let active = false;
   let disposed = false;
   let index = 0;
-  let spot = 'tianfu';
   let position = 0;
   let goal = 0;
   let velocity = 0;
@@ -54,10 +49,12 @@
     const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
     if (stored && typeof stored === 'object') allowedKeys.forEach(key => { if (Object.hasOwn(stored,key) && typeof stored[key] === 'string') notes[key] = stored[key].slice(0,500); });
   } catch (_) {}
+  // Move an earlier Dazhou neighbourhood note into the combined chapter without erasing its old key.
+  if (!notes.dazhou) notes.dazhou = notes['dazhou-tianfu'] || notes['dazhou-luofu'] || '';
 
   function listen(target, event, handler, options) { target.addEventListener(event,handler,options); removers.push(() => target.removeEventListener(event,handler,options)); }
   function calm() { return reduced.matches || shell.dataset.motion === 'off'; }
-  function notePlace() { return index === 0 ? spots[spot] : { key:stops[index].key, title:stops[index].title, question:stops[index].question }; }
+  function notePlace() { return { key:stops[index].key, title:stops[index].title, question:stops[index].question }; }
   function setText(id, text) { byId(id).textContent = text; }
   function cancelText() { if (textAnimation) textAnimation.cancel(); textAnimation = null; }
   function updateNotePreview() {
@@ -80,14 +77,16 @@
     setText('journey-fact',stop.fact);
     setText('journey-prose',stop.prose);
     setText('journey-question',notePlace().question);
+    setText('journey-signature-line',stop.english);
     setText('journey-photo-caption',stop.caption);
     setText('journey-photo-number',String(index+1).padStart(2,'0'));
     setText('journey-count',String(index+1).padStart(2,'0') + ' / 05');
     setText('journey-ending',index === stops.length-1 ? '后来还有很多路，想和你一起走。' : '那些我还没参与的日子，想听你慢慢讲。');
     setText('journey-credits-open','影像：' + stop.credit);
-    nearby.hidden = index !== 0;
     previous.disabled = index === 0;
-    next.disabled = index === stops.length-1;
+    next.disabled = false;
+    next.setAttribute('aria-label',index===stops.length-1?'继续阅读相遇之后的后记':'前往下一站');
+    afterwordTrigger.hidden = index !== stops.length-1;
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
     photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected)); });
     range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
@@ -167,7 +166,13 @@
 
   stopButtons.forEach(button => listen(button,'click',() => selectStop(Number(button.dataset.journeyStop))));
   listen(previous,'click',() => selectStop(index-1));
-  listen(next,'click',() => selectStop(index+1));
+  listen(next,'click',() => {
+    if(index === stops.length-1) {if(active && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));}
+    else selectStop(index+1);
+  });
+  listen(afterwordTrigger,'click',() => {
+    if(active && index===stops.length-1 && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));
+  });
   listen(range,'input',() => {
     if (!active || disposed || noteDialog.open || credits.open) return;
     cancelSpring(); releaseSwipe(); velocity = 0;
@@ -194,12 +199,6 @@
   listen(window,'pointercancel',event => { if (swipe?.id === event.pointerId) releaseSwipe(); });
   listen(frame,'lostpointercapture',() => { if (swipe) releaseSwipe(); });
   listen(frame,'dragstart',event => event.preventDefault());
-  spotButtons.forEach(button => listen(button,'click',() => {
-    if (!active || index !== 0 || !Object.hasOwn(spots,button.dataset.journeySpot)) return;
-    spot = button.dataset.journeySpot;
-    spotButtons.forEach(item => item.setAttribute('aria-pressed',String(item === button)));
-    setText('journey-question',spots[spot].question); updateNotePreview();
-  }));
   listen(noteButton,'click',() => {
     if (!active || disposed || noteDialog.open || credits.open) return;
     stopMotion();

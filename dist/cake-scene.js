@@ -97,7 +97,7 @@
     lighter.style.setProperty('--lighter-dy', '0px');
     lighter.setAttribute('aria-pressed', 'false');
     candleTarget.disabled = true; candleTarget.tabIndex = -1;
-    instruction.textContent = '拿起打火机，点亮这一刻';
+    instruction.textContent = '轻点打火机直接点亮，也可以拖向蜡烛';
   }
   function nearCandles(x, y, padding = 8) {
     const t = geometry?.target;
@@ -128,13 +128,14 @@
     page.dataset.lighter = 'dragging';
     lighter.setAttribute('aria-pressed', 'true');
     candleTarget.disabled = false; candleTarget.tabIndex = 0;
-    instruction.textContent = '拖动火焰，轻轻靠近蜡烛';
+    instruction.textContent = '正在移动火焰，靠近蜡烛就会点亮';
     try { lighter.setPointerCapture?.(event.pointerId); } catch (_) {}
   }
   function moveTool(event) {
     if (!grip || event.pointerId !== grip.id || !active || phase !== 'unlit') return;
     grip.lastX = event.clientX; grip.lastY = event.clientY;
     if (Math.hypot(event.clientX - grip.startX, event.clientY - grip.startY) > 8) grip.moved = true;
+    if (event.cancelable) event.preventDefault();
     if (dragFrame === null) dragFrame = requestAnimationFrame(paintGrip);
   }
   function dropTool(event) {
@@ -144,9 +145,9 @@
     if (dragFrame !== null) cancelAnimationFrame(dragFrame);
     paintGrip();
     if (grip?.near) { lightCake(); return; }
-    if (grip && !grip.moved && !grip.wasHeld) {
-      clearHeat(); releaseGrip(); page.dataset.lighter = 'held';
-      instruction.textContent = '把火焰拖向蜡烛，或轻点蜡烛点亮';
+    if (grip && !grip.moved) {
+      // One-tap fallback for iPads and phones; dragging remains fully supported.
+      lightCake();
     } else putBack();
   }
 
@@ -390,17 +391,18 @@
     if (phase === 'finished') stillFestival();
   }) : null;
   listen(lighter, 'pointerdown', pickUp);
-  listen(window, 'pointermove', moveTool, { passive: true });
+  listen(window, 'pointermove', moveTool, { passive: false });
   listen(window, 'pointerup', dropTool);
   listen(lighter, 'pointercancel', () => { if (grip) putBack(); });
+  listen(lighter, 'touchmove', event => { if (grip && event.cancelable) event.preventDefault(); }, { passive: false });
   listen(window, 'pointercancel', event => { if (grip && event.pointerId === grip.id) putBack(); });
   listen(lighter, 'lostpointercapture', () => { if (grip) putBack(); });
   listen(window, 'keydown', event => { if (event.key === 'Escape' && phase === 'unlit' && active) putBack(); });
   listen(lighter, 'click', event => {
-    // Enter/Space and older browsers retain the original single-button path.
+    // Clicking, Enter/Space and older browsers all have a direct ignition path.
     if (event.detail === 0 || typeof window.PointerEvent !== 'function') { lightCake(); return; }
     if (pointerClick) { pointerClick = false; return; }
-    if (phase === 'unlit') { page.dataset.lighter = 'held'; lighter.setAttribute('aria-pressed', 'true'); candleTarget.disabled = false; candleTarget.tabIndex = 0; instruction.textContent = '把火焰拖向蜡烛，或轻点蜡烛点亮'; }
+    if (phase === 'unlit') lightCake();
   });
   listen(candleTarget, 'click', () => { if (['held','dragging'].includes(page.dataset.lighter)) lightCake(); });
   listen(portraitQuery, 'change', () => { if (active) { putBack(false); layoutScene(); } });
