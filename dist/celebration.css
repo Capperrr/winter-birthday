@@ -89,9 +89,6 @@
 .app-shell[data-destination='unlock'] .dream-landscape, .app-shell[data-destination='unlock'] .dream-shade { opacity: 0; }
 .app-shell[data-destination='unlock'] .destination-panel { display: block; }
 .app-shell[data-destination='unlock'] .brand { color: #637455; }
-.app-shell[data-destination='unlock'] .glass-nav { background: linear-gradient(145deg,#f8f3e4a6,#e7e1cb78); border-color: #fff8e3d9; box-shadow: 0 6px 25px #6a694c0d, inset 0 1px 0 #fffff0; }
-.app-shell[data-destination='unlock'] .glass-nav button { color: #637153; }
-.app-shell[data-destination='unlock'] .glass-lens { background: linear-gradient(145deg,#fffcedde,#f5f0dadb); }
 .unlock-page { position: relative; isolation: isolate; height: 100%; overflow: hidden; animation: birthday-window 700ms ease-out both; }
 .unlock-nature, .unlock-mist { position: absolute; inset: 0; pointer-events: none; }
 .unlock-nature { z-index: -3; }

@@ -1,82 +1,97 @@
-/* An ivory, pearl and sage celebration in the same alpine world. */
-.app-shell[data-destination='cake'] { background: #1b3437; color: #d7dfc8; }
-.app-shell[data-destination='cake'] .dream-landscape, .app-shell[data-destination='cake'] .dream-shade { opacity: 0; }
-.app-shell[data-destination='cake'] .destination-panel { display: block; }
-.app-shell[data-destination='cake'] .brand { color: #d7dfc8; }
-.app-shell[data-destination='cake'] .glass-nav { background: linear-gradient(145deg,#e8eddf75,#c5d2c243); border-color: #e5ebd585; }
-.app-shell[data-destination='cake'] .motion-toggle { color: #d7dfc8; border-color: #c9d6b957; background: #33524955; }
-.cake-page { position: relative; isolation: isolate; width: 100%; height: 100%; overflow: hidden; color: #e1e5d0; background: transparent; }
-.grand-cake-intro { position: absolute; inset: 3% 20px auto; z-index: 3; text-align: center; transition: opacity 650ms ease, translate 650ms ease; }
-.grand-cake-intro > p { margin: 0 0 10px; color: #aabd9e; font-size: 7px; font-weight: 500; letter-spacing: 3px; }
-.grand-cake-intro h2 { margin: 0; color: #dfe4cc; font-family: var(--serif); font-size: clamp(25px,3vw,43px); font-weight: 400; letter-spacing: .2px; line-height: 1.1; }
-.grand-cake-tableau { position: absolute; inset: 16% 0 1%; display: grid; align-items: center; justify-items: center; transition: opacity 850ms ease, scale 1200ms ease; }
-.grand-cake-object { position: relative; height: min(64svh,550px); width: auto; max-width: 92%; aspect-ratio: 2 / 3; z-index: 2; }
-.grand-cake-photo, .grand-candles-overlay { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
-.grand-candles-overlay { overflow: visible; }
-.grand-cake-art { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 16px 27px #0e29273b); }
-.grand-cake-halo { position: absolute; left: 50%; top: 42%; width: 48%; height: 75%; translate: -50% -50%; border-radius: 50%; background: radial-gradient(ellipse,#c5d5b219,#d0dbb500 67%); pointer-events: none; }
-.grand-candle-flame { opacity: 0; scale: .35 .8; transform-box: view-box; transition: opacity 450ms ease, scale 450ms ease; }
-.grand-candle-smoke { opacity: 0; }
-.cake-page:is([data-cake-state='lit'],[data-cake-state='waiting']) .grand-candle-flame { opacity: 1; scale: 1; animation: grand-flame-sway 2100ms ease-in-out infinite; }
-.cake-page .flame-1 { animation-delay: -510ms !important; }
-.cake-page .flame-2 { animation-delay: -1190ms !important; }
-.cake-page .flame-3 { animation-delay: -270ms !important; }
-.cake-page .flame-4 { animation-delay: -1580ms !important; }
-.grand-lighter { position: absolute; z-index: 4; left: calc(50% + min(21.33svh, 183px) + 25px); right: auto; bottom: 12%; display: flex; flex-direction: column; align-items: center; width: 110px; padding: 0; border: 0; border-radius: 10px; color: #c0ccb0; background: transparent; cursor: pointer; transition: opacity 350ms ease, translate 350ms ease, scale 200ms ease; }
-.grand-lighter > svg { display: block; width: 63px; height: auto; overflow: visible; filter: drop-shadow(3px 7px 6px #0b232c66); }
-.grand-lighter > span { display: block; margin-top: 9px; font-size: 8px; letter-spacing: .5px; line-height: 1.8; }
-.grand-lighter > span > span { margin-left: 4px; }
-.grand-lighter:hover { translate: 0 -4px; }
-.grand-lighter:active { scale: .97; }
-.lighter-own-flame { opacity: 0; }
-.cake-page[data-cake-state='lighting'] .lighter-own-flame { opacity: 1; }
-.ignition-spark { position: absolute; z-index: 5; left: 81%; top: 67%; width: 8px; height: 16px; border-radius: 75% 35% 70% 35%; opacity: 0; background: #e8d39d; box-shadow: 0 0 17px #ead6a4a6; rotate: 15deg; pointer-events: none; }
-.cake-page[data-cake-state='lighting'] .ignition-spark { animation: ignition-flight 750ms ease-in-out both; }
-.cake-page[data-cake-state='thanks'] .grand-candle-smoke { animation: grand-candle-smoke 1300ms ease-out backwards; }
-.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) .grand-cake-tableau { opacity: 0; scale: .97; pointer-events: none; }
-.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) .grand-cake-intro { opacity: 0; translate: 0 -6px; }
-.cake-thanks { position: absolute; z-index: 4; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 23px; padding: 20px 30px 55px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 600ms ease, visibility 600ms; }
-.cake-thanks-overline { margin: 0; font-size: 7px; letter-spacing: 3px; color: #a9bc9b; }
-.cake-thanks-lines { width: min(830px,100%); text-align: center; }
-.cake-thanks-lines p { margin: 0 0 15px; font-family: var(--serif); font-size: clamp(21px,2.6vw,35px); font-weight: 400; line-height: 1.3; letter-spacing: .3px; color: #e0e2cb; }
-.cake-page[data-cake-state='thanks'] .cake-thanks { opacity: 1; visibility: visible; }
-.cake-page[data-cake-state='thanks'] .cake-thanks-lines p { animation: cake-thanks-arrive 750ms ease-out backwards; }
-.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(2) { animation-delay: 170ms; }
-.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(3) { animation-delay: 340ms; }
-.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(4) { animation-delay: 510ms; }
-.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(5) { animation-delay: 680ms; }
-.cake-page[data-cake-state='fireworks'] .cake-thanks { visibility: visible; transition: none; opacity: 0; }
-.cake-fireworks { position: absolute; inset: 0; z-index: 6; display: block; width: 100%; height: 100%; pointer-events: none; }
-.cake-continue { position: absolute; z-index: 8; left: 50%; bottom: 8%; translate: -50% 0; display: inline-flex; align-items: center; justify-content: center; gap: 25px; min-height: 44px; padding: 12px 22px; border: 1px solid #d3dec14f; border-radius: 40px; color: #d7dfc4; background: #2f4b446e; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 11px; letter-spacing: 1px; white-space: nowrap; animation: cake-thanks-arrive 700ms ease-out both; }
-.cake-continue:hover { background: #49634f9c; border-color: #d4dfbb8c; }
-.grand-blow-dialog { width: min(410px,calc(100% - 40px)); padding: 29px 30px; border: 1px solid #fff5d7; border-radius: 24px; background: #eee8d6; color: #58664b; text-align: center; box-shadow: 0 20px 80px #092a3b47; }
-.grand-blow-dialog::backdrop { background: #15333338; backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px); }
-.grand-blow-dialog .blow-spark { display: block; margin-bottom: 16px; font-size: 30px; color: #9da57d; }
-.grand-blow-dialog h2 { margin: 0; font-family: var(--cn-serif); font-size: 21px; font-weight: 400; letter-spacing: 1.2px; line-height: 1.9; }
-.grand-blow-dialog button { min-height: 44px; margin-top: 25px; padding: 11px 25px; border: 1px solid #93a47b; border-radius: 30px; background: #879d74; color: #f4f1db; font-size: 12px; letter-spacing: 1px; }
-.grand-blow-dialog button:hover { background: #738d61; }
-.cake-page[data-reduced='true']:is([data-cake-state='fireworks'],[data-cake-state='finished']) .cake-thanks { opacity: 1; visibility: visible; }
-.app-shell[data-motion-paused='true'] .grand-candle-flame { animation-play-state: paused !important; }
-.app-shell[data-motion='off'] .grand-candle-flame { animation: none !important; }
-@keyframes grand-flame-sway { 0%,100% { transform: rotate(-3deg) scale(.97,1); } 50% { transform: rotate(3deg) scale(1.04,.98); } }
-@keyframes ignition-flight { 0% { opacity: 0; transform: translate(0,0) scale(.7); } 18% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; left: 50%; top: 12%; transform: scale(.5); } }
-@keyframes grand-candle-smoke { 0% { opacity: .5; translate: 0 0; } 100% { opacity: 0; translate: 5px -19px; } }
-@keyframes cake-thanks-arrive { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
-@media (max-width:760px) {
-  .grand-cake-intro { top: 6%; }
-  .grand-cake-intro > p { font-size: 6px; letter-spacing: 2.3px; }
-  .grand-cake-intro h2 { font-size: 32px; }
-  .grand-cake-tableau { top: 18%; bottom: 2%; }
-  .grand-cake-object { width: auto; height: min(59svh,490px); max-width: 90%; }
-  .grand-lighter { width: 79px; left: auto; right: 1%; bottom: 11%; }
-  .grand-lighter > svg { width: 48px; }
-  .grand-lighter > span { font-size: 6px; max-width: 78px; letter-spacing: .1px; }
-  .cake-thanks { gap: 19px; padding: 15px 22px 60px; }
-  .cake-thanks-overline { font-size: 6px; letter-spacing: 1.6px; text-align: center; }
-  .cake-thanks-lines p { font-size: clamp(21px,5.7vw,28px); margin-bottom: 16px; line-height: 1.35; }
-  .cake-continue { bottom: 7%; gap: 16px; font-size: 9px; padding-inline: 17px; }
-  .grand-blow-dialog { padding: 26px 25px; }
-  .grand-blow-dialog h2 { font-size: 19px; }
+/* The photograph, candle maps and lighter share one physical scene plane. */
+.app-shell[data-destination='cake'] { background:#061727; color:#e6e5da; }
+.app-shell[data-destination='cake'] .dream-landscape, .app-shell[data-destination='cake'] .dream-shade { opacity:0; }
+.app-shell[data-destination='cake'] .page-content { position:static; }
+.app-shell[data-destination='cake'] .destination-panel { position:static; display:block; animation:none; }
+.app-shell[data-destination='cake'] .brand { color:#d3dbe0; }
+.app-shell[data-destination='cake'] .motion-toggle { border-color:#c6d5df29; background:#1025354d; color:#d3dbe0; }
+.cake-backdrop img { object-position:50% 14%; }
+.cake-backdrop::after { background:linear-gradient(#0313231f,transparent 28%,#0312210d); }
+.app-shell[data-scene-fit='contain'] .cake-backdrop img { object-fit:contain; object-position:50% 0; }
+.cake-page { position:absolute; z-index:1; inset:0; isolation:isolate; width:100%; height:100%; overflow:hidden; color:#e8e6d9; }
+.cake-page::before, .cake-page::after { content:''; position:absolute; z-index:1; pointer-events:none; opacity:0; }
+.cake-page::before { inset:0 0 54%; background:url('assets/living-clouds.webp') center 34% / 90% auto no-repeat; mix-blend-mode:screen; }
+.cake-page::after { inset:43% 14% 27%; background:linear-gradient(110deg,transparent 30%,#96b3c631 49%,transparent 72%); mix-blend-mode:screen; }
+.app-shell[data-motion='on'][data-destination='cake'] .cake-page::before { opacity:.026; animation:night-cloud-drift 72s ease-in-out infinite alternate; }
+.app-shell[data-motion='on'][data-destination='cake'] .cake-page::after { animation:lake-light-breathe 19s ease-in-out infinite; }
+.grand-cake-tableau { position:absolute; inset:0; z-index:0; transition:opacity 1000ms ease; }
+.grand-scene-plane { position:absolute; left:0; top:0; width:100%; height:100%; }
+.grand-cake-photograph, .grand-candles-overlay { position:absolute; inset:0; display:block; width:100%; height:100%; }
+.grand-cake-photograph img { display:block; width:100%; height:100%; }
+.grand-candles-overlay { pointer-events:none; }
+.candles-tall { display:none; }
+.grand-cake-intro { position:absolute; z-index:3; top:31%; left:6.5%; width:24%; max-width:430px; text-align:left; pointer-events:none; transition:opacity 650ms ease,translate 650ms ease; }
+.grand-cake-intro > p { margin:0 0 19px; color:#b9c6d0; font-size:7px; font-weight:400; letter-spacing:2.7px; line-height:1.8; }
+.grand-cake-intro h2 { margin:0; color:#f0e9d9; font:400 clamp(34px,3.35vw,65px)/1.08 var(--serif); letter-spacing:-.7px; }
+.grand-candle-flame { opacity:0; scale:.5 .7; transform-box:view-box; transition:opacity 280ms ease,scale 350ms ease; }
+.grand-candle-smoke, .grand-candle-warmth { opacity:0; }
+.cake-page[data-cake-state='lighting'] .grand-candle-flame { opacity:1; scale:1; transition-delay:var(--light-delay,0ms); }
+.cake-page:is([data-cake-state='lit'],[data-cake-state='waiting']) .grand-candle-flame { opacity:1; scale:1; animation:grand-flame-sway 2400ms ease-in-out infinite; }
+.flame-1 { animation-delay:-510ms !important; }.flame-2 { animation-delay:-1190ms !important; }.flame-3 { animation-delay:-270ms !important; }.flame-4 { animation-delay:-1580ms !important; }
+.grand-candle-warmth { transition:opacity 1200ms ease; }
+.cake-page:is([data-cake-state='lighting'],[data-cake-state='lit'],[data-cake-state='waiting']) .grand-candle-warmth { opacity:.58; }
+.grand-lighter { position:absolute; z-index:4; left:70%; top:82%; display:block; width:clamp(78px,6.2vw,108px); height:auto; aspect-ratio:1065/1477; padding:0; border:0; border-radius:8px; background:transparent; color:#d9e0e0; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:grab; translate:calc(-50% + var(--lighter-dx,0px)) calc(-100% + var(--lighter-dy,0px)); rotate:-4deg; transition:rotate 220ms ease; }
+.lighter-art { display:block; width:100%; height:100%; overflow:visible; }
+.lighter-own-flame { opacity:0; transform-box:view-box; transform-origin:681px 424px; transition:opacity 150ms ease; }
+.lighter-contact { transition:opacity 180ms ease; }
+.cake-page[data-lighter='held'] .grand-lighter, .cake-page[data-lighter='dragging'] .grand-lighter { cursor:grabbing; rotate:-4deg; }
+.cake-page:is([data-lighter='held'],[data-lighter='dragging'],[data-cake-state='lighting']) .lighter-own-flame { opacity:1; }
+.cake-page:is([data-lighter='held'],[data-lighter='dragging']) .lighter-contact { opacity:0; }
+.cake-page[data-lighter='returning'] .grand-lighter { transition:translate 340ms cubic-bezier(.22,.72,.22,1); }
+.app-shell[data-motion='on'] .cake-page:is([data-lighter='held'],[data-lighter='dragging']) .lighter-own-flame { animation:lighter-flutter 1600ms ease-in-out infinite; }
+.candle-ignition-target { position:absolute; z-index:4; padding:0; border:1px dashed transparent; border-radius:50%; color:#ddcfaa; background:transparent; opacity:0; pointer-events:none; }
+.cake-page:is([data-lighter='held'],[data-lighter='dragging']) .candle-ignition-target { opacity:.55; border-color:#e7d9ba65; pointer-events:auto; }
+.cake-page[data-near-candles='true'] .candle-ignition-target { opacity:.85; border-color:#f1d9a8a6; }
+.candle-ignition-target:focus-visible { opacity:1; outline:1px solid #ead2a8; outline-offset:4px; }
+.lighter-instructions { position:absolute; z-index:3; left:66%; top:85.5%; width:25%; margin:0; color:#e3e3d8; text-align:left; font-size:clamp(9px,.8vw,12px); letter-spacing:.8px; line-height:1.7; transition:opacity 350ms ease; }
+.lighter-instructions > small { display:block; margin-top:5px; color:#afbfc7; font-size:8px; letter-spacing:.4px; }
+.cake-page:is([data-cake-state='lighting'],[data-cake-state='lit'],[data-cake-state='waiting']) .lighter-instructions { opacity:0; pointer-events:none; }
+.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) :is(.grand-cake-tableau,.grand-cake-intro,.lighter-instructions) { opacity:0; pointer-events:none; }
+.cake-page[data-cake-state='thanks'] .grand-candle-smoke { animation:grand-candle-smoke 1200ms ease-out backwards; }
+.cake-thanks { position:absolute; z-index:4; inset:8% 0 4%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:25px; padding:50px 35px 65px; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 700ms ease,visibility 700ms; }
+.cake-thanks-overline { margin:0; color:#b4c4ce; font-size:7px; letter-spacing:3px; }
+.cake-thanks-lines { width:min(830px,100%); text-align:center; }
+.cake-thanks-lines p { margin:0 0 15px; color:#f0ecdf; font:400 clamp(22px,2.6vw,36px)/1.3 var(--serif); letter-spacing:.2px; }
+.cake-page[data-cake-state='thanks'] .cake-thanks { opacity:1; visibility:visible; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p { animation:cake-thanks-arrive 750ms ease-out backwards; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(2) { animation-delay:170ms; }.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(3) { animation-delay:340ms; }.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(4) { animation-delay:510ms; }.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(5) { animation-delay:680ms; }
+.cake-page[data-cake-state='fireworks'] .cake-thanks { visibility:visible; transition:none; opacity:0; }
+.cake-fireworks { position:absolute; inset:0; z-index:6; display:block; width:100%; height:100%; pointer-events:none; }
+.cake-continue { position:absolute; z-index:8; left:50%; bottom:7%; translate:-50% 0; display:inline-flex; align-items:center; justify-content:center; gap:23px; min-height:44px; max-width:90%; padding:12px 21px; border:1px solid #d9dfd24d; border-radius:30px; color:#ece9dc; background:#152d4059; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); font-size:11px; letter-spacing:.7px; white-space:nowrap; animation:cake-thanks-arrive 700ms ease-out both; }
+.cake-continue:hover { border-color:#ebdfbf85; background:#28445980; }
+.grand-blow-dialog { width:min(410px,calc(100% - 40px)); padding:29px 30px; border:1px solid #ece6d7; border-radius:18px; color:#465a55; background:#eee9dc; box-shadow:0 12px 50px #0615203b; text-align:center; }
+.grand-blow-dialog::backdrop { background:#0616244d; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+.blow-spark { display:block; margin-bottom:16px; color:#8e987b; font-size:28px; }
+.grand-blow-dialog h2 { margin:0; font:400 21px/1.9 var(--cn-serif); letter-spacing:1.2px; }
+.grand-blow-dialog button { min-height:44px; margin-top:25px; padding:11px 25px; border:1px solid #6e8581; border-radius:26px; color:#f1eddf; background:#637e78; font-size:12px; letter-spacing:1px; }
+.grand-blow-dialog button:hover { background:#526e68; }
+.cake-page[data-reduced='true']:is([data-cake-state='fireworks'],[data-cake-state='finished']) .cake-thanks { opacity:1; visibility:visible; }
+.app-shell[data-motion-paused='true'] :is(.grand-candle-flame,.lighter-own-flame), .app-shell[data-motion-paused='true'] .cake-page::before, .app-shell[data-motion-paused='true'] .cake-page::after { animation-play-state:paused !important; }
+.app-shell[data-motion='off'] :is(.grand-candle-flame,.lighter-own-flame) { animation:none !important; }
+@keyframes night-cloud-drift { from { translate:-11px 0; } to { translate:13px 3px; } }
+@keyframes lake-light-breathe { 0%,100% { opacity:.025; } 50% { opacity:.07; } }
+@keyframes grand-flame-sway { 0%,100% { transform:rotate(-2deg) scale(.98,1); } 50% { transform:rotate(2.5deg) scale(1.03,.97); } }
+@keyframes lighter-flutter { 0%,100% { scale:.98 1; } 50% { scale:1.025 .96; } }
+@keyframes grand-candle-smoke { 0% { opacity:.35; translate:0 0; } 100% { opacity:0; translate:4px -16px; } }
+@keyframes cake-thanks-arrive { from { opacity:0; translate:0 8px; } to { opacity:1; translate:0 0; } }
+@media (max-width:1100px) and (min-width:761px) { .grand-cake-intro { left:5.5%; width:24%; top:33%; }.grand-cake-intro h2 { font-size:clamp(33px,4vw,44px); }.grand-cake-intro > p { font-size:6px; letter-spacing:1.8px; } }
+@media (max-width:760px), (max-aspect-ratio:4/5) {
+  .app-shell[data-destination='cake'] { min-height:650px; }
+  .app-shell[data-destination='cake'] .site-header { row-gap:13px; padding-block:17px 12px; }
+  .cake-backdrop img { object-position:50% 50%; }
+  .candles-wide { display:none; }.candles-tall { display:block; }
+  .grand-cake-intro { top:21.5%; left:5%; width:90%; max-width:none; text-align:center; }
+  .grand-cake-intro > p { margin-bottom:10px; font-size:6px; letter-spacing:2.2px; }
+  .grand-cake-intro h2 { font-size:clamp(28px,8.2vw,38px); letter-spacing:-.35px; }
+  .grand-lighter { width:76px; }
+  .lighter-instructions { top:auto; bottom:3.2%; left:5%; width:90%; text-align:center; font-size:10px; letter-spacing:.4px; }
+  .lighter-instructions > small { margin-top:3px; font-size:7px; }
+  .cake-thanks { inset:12% 0 5%; gap:19px; padding:50px 24px 60px; }
+  .cake-thanks-overline { font-size:6px; letter-spacing:1.6px; text-align:center; }
+  .cake-thanks-lines p { font-size:clamp(22px,5.7vw,28px); margin-bottom:16px; line-height:1.35; }
+  .cake-continue { bottom:6%; gap:16px; font-size:9px; padding-inline:17px; }
+  .grand-blow-dialog { padding:26px 25px; }.grand-blow-dialog h2 { font-size:19px; }
 }
-@media (max-height:650px) and (min-width:761px) { .grand-cake-intro { top: 1%; }.grand-cake-intro h2 {font-size:30px}.grand-cake-tableau {top:15%;bottom:0}.grand-cake-object {height:60svh;width:auto}.grand-lighter {bottom:10%;right:auto}.grand-lighter > svg{width:49px}.cake-thanks-lines p{font-size:25px;margin-bottom:11px}.cake-thanks {gap:16px;padding-bottom:45px} }
-@media (prefers-reduced-motion:reduce) { .cake-page *, .cake-page *::before, .cake-page *::after { animation:none!important;transition:none!important; } }
+@media (max-width:350px) { .grand-lighter { width:66px; }.grand-cake-intro h2 { font-size:28px; } }
+@media (max-height:650px) and (min-width:761px) { .grand-cake-intro { top:32%; }.grand-cake-intro h2 { font-size:38px; }.grand-lighter { width:74px; }.lighter-instructions { top:86%; font-size:9px; }.cake-thanks-lines p { font-size:25px; margin-bottom:11px; }.cake-thanks { gap:16px; padding-bottom:45px; } }
+@media (prefers-reduced-motion:reduce) { .cake-page *, .cake-page::before, .cake-page::after { animation:none !important; transition:none !important; } }

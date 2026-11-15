@@ -10,7 +10,13 @@
   const status = document.getElementById('cake-scene-status');
   const lines = Array.from(document.querySelectorAll('#cake-thanks-lines > p'));
   const canvas = document.getElementById('cake-fireworks');
+  const scenePlane = document.getElementById('cake-art-slot');
+  const candleTarget = document.getElementById('candle-ignition-target');
+  const flameAnchor = document.getElementById('lighter-flame-anchor');
+  const instruction = document.getElementById('lighter-instruction-copy');
+  const instructionBox = document.getElementById('lighter-instructions');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const portraitQuery = window.matchMedia('(max-width:760px), (max-aspect-ratio:4/5)');
   const palette = ['#e9d6a5', '#dce8dc', '#b7d1b5', '#a8cdd2', '#d3af7d'];
   const timers = new Set();
   const removers = [];
@@ -27,6 +33,122 @@
   let particles = [];
   let rockets = [];
   let disposed = false;
+  let geometry = null;
+  let grip = null;
+  let dragFrame = null;
+  let heatTimer = null;
+  let pointerClick = false;
+
+  // The same map sizes the photograph, wicks, touch target and tool landing.
+  function layoutScene() {
+    if (!active) return;
+    const rect = page.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const tall = portraitQuery.matches;
+    const map = tall
+      ? { width: 1024, height: 1536, lighter: [750, 1365], target: [400, 525, 226, 88] }
+      : { width: 1536, height: 1024, lighter: [1075, 840], target: [650, 157, 236, 80] };
+    const contain = !tall && rect.width / rect.height > 1.92;
+    const scale = (contain ? Math.min : Math.max)(rect.width / map.width, rect.height / map.height);
+    const x = (rect.width - map.width * scale) / 2;
+    const y = (rect.height - map.height * scale) * (tall ? .5 : contain ? 0 : .14);
+    scenePlane.style.width = map.width * scale + 'px';
+    scenePlane.style.height = map.height * scale + 'px';
+    scenePlane.style.left = x + 'px';
+    scenePlane.style.top = y + 'px';
+    const landingX = Math.max(tall ? 44 : 56, Math.min(rect.width - (tall ? 44 : 56), x + map.lighter[0] * scale));
+    lighter.style.left = (landingX - x) / (map.width * scale) * 100 + '%';
+    lighter.style.top = map.lighter[1] / map.height * 100 + '%';
+    if (tall) {
+      instructionBox.style.left = instructionBox.style.top = instructionBox.style.width = '';
+    } else {
+      const labelWidth = Math.min(220, rect.width * .23);
+      const right = landingX + 65;
+      instructionBox.style.left = (right + labelWidth < rect.width - 18 ? right : landingX - labelWidth - 65) + 'px';
+      instructionBox.style.top = y + map.lighter[1] * scale - 72 + 'px';
+      instructionBox.style.width = labelWidth + 'px';
+    }
+    const [tx, ty, tw, th] = map.target;
+    const target = { left: rect.left + x + tx * scale, top: rect.top + y + ty * scale, width: tw * scale, height: Math.max(44, th * scale) };
+    candleTarget.style.left = target.left - rect.left + 'px';
+    candleTarget.style.top = target.top - rect.top + 'px';
+    candleTarget.style.width = target.width + 'px';
+    candleTarget.style.height = target.height + 'px';
+    shell.dataset.sceneFit = contain ? 'contain' : 'cover';
+    geometry = { rect, target };
+  }
+
+  function clearHeat() {
+    if (heatTimer !== null) { clearTimeout(heatTimer); timers.delete(heatTimer); }
+    heatTimer = null;
+    page.dataset.nearCandles = 'false';
+  }
+  function releaseGrip() {
+    const previous = grip;
+    grip = null;
+    if (dragFrame !== null) cancelAnimationFrame(dragFrame);
+    dragFrame = null;
+    try { if (previous && lighter.hasPointerCapture?.(previous.id)) lighter.releasePointerCapture(previous.id); } catch (_) {}
+  }
+  function putBack(animate = true) {
+    clearHeat(); releaseGrip();
+    page.dataset.lighter = animate && !calm() ? 'returning' : 'resting';
+    lighter.style.setProperty('--lighter-dx', '0px');
+    lighter.style.setProperty('--lighter-dy', '0px');
+    lighter.setAttribute('aria-pressed', 'false');
+    candleTarget.disabled = true; candleTarget.tabIndex = -1;
+    instruction.textContent = '拿起打火机，点亮这一刻';
+  }
+  function nearCandles(x, y, padding = 8) {
+    const t = geometry?.target;
+    return Boolean(t && x >= t.left - padding && x <= t.left + t.width + padding && y >= t.top - padding && y <= t.top + t.height + padding);
+  }
+  function paintGrip() {
+    dragFrame = null;
+    if (!grip || !active || phase !== 'unlit') return;
+    const g = grip;
+    const rect = geometry.rect;
+    const dx = Math.max(rect.left + 4 - g.box.left, Math.min(rect.left + rect.width - 4 - (g.box.left + g.box.width), g.lastX - g.startX));
+    const dy = Math.max(rect.top + 76 - g.box.top, Math.min(rect.top + rect.height - 8 - (g.box.top + g.box.height), g.lastY - g.startY));
+    lighter.style.setProperty('--lighter-dx', dx + 'px');
+    lighter.style.setProperty('--lighter-dy', dy + 'px');
+    g.near = nearCandles(g.flameX + dx, g.flameY + dy, g.type === 'touch' ? 12 : 8);
+    page.dataset.nearCandles = String(g.near);
+    if (g.near && heatTimer === null) heatTimer = later(() => { heatTimer = null; if (grip?.near) lightCake(); }, 180);
+    else if (!g.near) clearHeat();
+  }
+  function pickUp(event) {
+    if (!active || phase !== 'unlit' || document.hidden || grip || event.isPrimary === false || (event.button !== undefined && event.button !== 0)) return;
+    event.preventDefault(); pointerClick = true;
+    layoutScene();
+    const box = lighter.getBoundingClientRect();
+    const flame = flameAnchor.getBoundingClientRect();
+    const wasHeld = page.dataset.lighter === 'held';
+    grip = { id: event.pointerId, type: event.pointerType, startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY, box, flameX: flame.left + flame.width / 2, flameY: flame.top + flame.height / 2, moved: false, near: false, wasHeld };
+    page.dataset.lighter = 'dragging';
+    lighter.setAttribute('aria-pressed', 'true');
+    candleTarget.disabled = false; candleTarget.tabIndex = 0;
+    instruction.textContent = '拖动火焰，轻轻靠近蜡烛';
+    try { lighter.setPointerCapture?.(event.pointerId); } catch (_) {}
+  }
+  function moveTool(event) {
+    if (!grip || event.pointerId !== grip.id || !active || phase !== 'unlit') return;
+    grip.lastX = event.clientX; grip.lastY = event.clientY;
+    if (Math.hypot(event.clientX - grip.startX, event.clientY - grip.startY) > 8) grip.moved = true;
+    if (dragFrame === null) dragFrame = requestAnimationFrame(paintGrip);
+  }
+  function dropTool(event) {
+    if (!grip || event.pointerId !== grip.id) return;
+    grip.lastX = event.clientX ?? grip.lastX; grip.lastY = event.clientY ?? grip.lastY;
+    if (Math.hypot(grip.lastX - grip.startX, grip.lastY - grip.startY) > 8) grip.moved = true;
+    if (dragFrame !== null) cancelAnimationFrame(dragFrame);
+    paintGrip();
+    if (grip?.near) { lightCake(); return; }
+    if (grip && !grip.moved && !grip.wasHeld) {
+      clearHeat(); releaseGrip(); page.dataset.lighter = 'held';
+      instruction.textContent = '把火焰拖向蜡烛，或轻点蜡烛点亮';
+    } else putBack();
+  }
 
   function listen(target, name, handler, options) {
     target.addEventListener(name, handler, options);
@@ -216,6 +338,9 @@
   }
   function lightCake() {
     if (!active || phase !== 'unlit') return;
+    clearHeat(); releaseGrip();
+    page.dataset.lighter = 'igniting';
+    candleTarget.disabled = true; candleTarget.tabIndex = -1;
     setPhase('lighting');
     lighter.disabled = true;
     later(() => {
@@ -225,6 +350,7 @@
     }, calm() ? 0 : 760);
   }
   function stopResources() {
+    putBack(false);
     timers.forEach(id => clearTimeout(id)); timers.clear();
     cancelFrame(); particles = []; rockets = [];
     if (dialog.open) dialog.close();
@@ -238,16 +364,17 @@
     status.textContent = '';
     page.dataset.reduced = String(calm());
     setPhase('unlit'); elapsed = 0;
+    pointerClick = false;
   }
   function activate(value) {
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     reset();
-    if (active) resize?.observe(page);
+    if (active) { layoutScene(); resize?.observe(page); }
     else resize?.disconnect();
   }
   function visibilityChange() {
-    if (document.hidden) cancelFrame();
+    if (document.hidden) { cancelFrame(); if (phase === 'unlit') putBack(false); }
     else if (active && phase === 'fireworks' && frame === null) { lastFrame = 0; frame = requestAnimationFrame(draw); }
   }
   function reducedChange() {
@@ -255,11 +382,29 @@
     if (active && phase === 'fireworks' && calm()) staticFinish();
   }
   const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(() => {
-    if (!active || !['fireworks','finished'].includes(phase)) return;
+    if (!active) return;
+    if (grip || page.dataset.lighter === 'held') putBack(false);
+    layoutScene();
+    if (!['fireworks','finished'].includes(phase)) return;
     if (!fitCanvas()) { staticFinish(); return; }
     if (phase === 'finished') stillFestival();
   }) : null;
-  listen(lighter, 'click', lightCake);
+  listen(lighter, 'pointerdown', pickUp);
+  listen(window, 'pointermove', moveTool, { passive: true });
+  listen(window, 'pointerup', dropTool);
+  listen(lighter, 'pointercancel', () => { if (grip) putBack(); });
+  listen(window, 'pointercancel', event => { if (grip && event.pointerId === grip.id) putBack(); });
+  listen(lighter, 'lostpointercapture', () => { if (grip) putBack(); });
+  listen(window, 'keydown', event => { if (event.key === 'Escape' && phase === 'unlit' && active) putBack(); });
+  listen(lighter, 'click', event => {
+    // Enter/Space and older browsers retain the original single-button path.
+    if (event.detail === 0 || typeof window.PointerEvent !== 'function') { lightCake(); return; }
+    if (pointerClick) { pointerClick = false; return; }
+    if (phase === 'unlit') { page.dataset.lighter = 'held'; lighter.setAttribute('aria-pressed', 'true'); candleTarget.disabled = false; candleTarget.tabIndex = 0; instruction.textContent = '把火焰拖向蜡烛，或轻点蜡烛点亮'; }
+  });
+  listen(candleTarget, 'click', () => { if (['held','dragging'].includes(page.dataset.lighter)) lightCake(); });
+  listen(portraitQuery, 'change', () => { if (active) { putBack(false); layoutScene(); } });
+  if (!resize) listen(window, 'resize', () => { if (active) { putBack(false); layoutScene(); } });
   listen(confirm, 'click', confirmBlow);
   listen(dialog, 'cancel', event => { event.preventDefault(); confirmBlow(); });
   listen(next, 'click', () => { if (active && ready) document.dispatchEvent(new CustomEvent('winter:celebration-complete')); });
@@ -269,10 +414,10 @@
   const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(reducedChange) : null;
   motionObserver?.observe(shell, { attributes: true, attributeFilter: ['data-motion'] });
   listen(window, 'pagehide', event => {
-    if (event.persisted) { cancelFrame(); return; }
+    if (event.persisted) { cancelFrame(); if (phase === 'unlit') putBack(false); return; }
     active = false; stopResources(); disposed = true;
     resize?.disconnect(); motionObserver?.disconnect(); removers.forEach(remove => remove());
   });
-  listen(window, 'pageshow', visibilityChange);
+  listen(window, 'pageshow', () => { if (active) layoutScene(); visibilityChange(); });
   if (shell?.dataset.destination === 'cake') activate(true);
 })();
