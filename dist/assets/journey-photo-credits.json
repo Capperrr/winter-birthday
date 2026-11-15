@@ -42,24 +42,24 @@
     "id": "school",
     "file": "External image (web-linked, not hosted in repository)",
     "title": "达州市第一中学校校园参考影像",
-    "author": "第三方学校资料站",
-    "source_url": "https://www.zs114.cn/udzsdyzx/",
+    "author": "达州市第一中学校网站",
+    "source_url": "https://yizhong.pusoft.cn/",
     "license": "Copyright — external source, permission not verified",
     "license_url": "https://www.zs114.cn/udzsdyzx/",
-    "modifications": "No local copy; loaded from a third-party image endpoint. Subject and image availability require verification.",
-    "depicts": "达州市第一中学校校园照片参考；不主张确认具体学生时代所在校区。",
+    "modifications": "Externally loaded reference image from school website; no local modification. Image can be unavailable due to anti-hotlinking.",
+    "depicts": "达州一中官网展示的校园运动场，不能确认 Winter 当时就读的具体校区。",
     "caption": "达州市第一中学校 · 校园资料影像"
   },
   {
     "id": "qide",
     "file": "External image (web-linked, not hosted in repository)",
     "title": "天利名城（天利中央广场）建筑外观图",
-    "author": "天利名城楼宇资料网站",
-    "source_url": "https://tianlimingcheng.cn/",
+    "author": "天利中央广场招商资料站",
+    "source_url": "https://tianlimingcheng.chenyidz.com/",
     "license": "Copyright — external source, permission not verified",
     "license_url": "https://tianlimingcheng.cn/",
-    "modifications": "No local copy; externally hosted photo. The address corroborates the building but the image endpoint availability requires verification.",
-    "depicts": "深圳南山区天利名城中央商务广场楼宇；启德南山校区位于C座。",
+    "modifications": "Externally loaded building entrance photo; source and rights need confirmation for continued reuse.",
+    "depicts": "深圳南山天利中央广场地面入口（建筑资料图），不等于启德的办公室内部。",
     "caption": "深圳南山 · 天利中央广场"
   }
 ]
