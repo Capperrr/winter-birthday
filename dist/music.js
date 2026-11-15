@@ -50,9 +50,10 @@
           callback:()=>{try{widget.setVolume(38)}catch(_){}}
         });
       } catch (_) {
-        ready=false;
+        ready=false; widget=null;
         frame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(tracks[id].url)
           + '&color=%237a998b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false';
+        attachWidget();
       }
     } else {
       frame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(tracks[id].url)
