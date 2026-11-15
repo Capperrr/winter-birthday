@@ -10,7 +10,7 @@
 .pin-5{--pin-lean:8deg;align-self:flex-start}.pin-6{--pin-lean:-7deg;align-self:flex-end}.pin-7{--pin-lean:5deg;align-self:flex-start}
 .portrait-pin:focus-visible,.portrait-pin:hover{z-index:4;transform:rotate(0deg) translateY(-5px) scale(1.08);box-shadow:3px 13px 23px #514b4170;outline:2px solid #819c82;outline-offset:2px}
 .pin-head{position:absolute;z-index:5;left:50%;top:-8px;width:13px;height:13px;transform:translateX(-50%);border:1px solid #8d6047;border-radius:50%;background:radial-gradient(circle at 30% 29%,#fff6dd 0 11%,#c39c79 17%,#825941 70%);box-shadow:1px 2px 4px #50403880}
-.portrait-thumb{display:block;width:100%;aspect-ratio:4/4.6;background:#c2b4ad image-set(url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),url('assets/winter-photo-sheet.webp') type('image/webp')) var(--tile-x) var(--tile-y)/400% 200% no-repeat}
+.portrait-thumb{display:block;width:100%;aspect-ratio:4/4.6;background:#c2b4ad url('assets/winter-photo-sheet.webp') var(--tile-x) var(--tile-y)/400% 200% no-repeat;background-image:image-set(url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),url('assets/winter-photo-sheet.webp') type('image/webp'))}
 .portrait-words{display:flex;flex-direction:column;gap:3px;padding-top:5px}
 .portrait-words b{font:400 clamp(13px,1.35vw,17px)/1.1 'Caveat',cursive}
 .portrait-words small{color:#838078;font:400 8px/1.3 var(--cn-serif)}
@@ -33,7 +33,7 @@
 .portrait-lightbox-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px;color:#8b7d6d;font:600 9px/1.5 var(--sans);letter-spacing:1.5px}
 #portrait-close{display:grid;place-items:center;min-width:43px;min-height:43px;border:1px solid #b3aa98;border-radius:50%;color:#526459;background:#fdfbf5;font-size:21px;cursor:pointer}
 .portrait-lightbox-print{width:min(100%,420px);margin:auto;padding:12px 12px 18px;background:white;box-shadow:0 7px 26px #5f5b5080;transform:rotate(-.5deg)}
-.portrait-large-image{width:100%;aspect-ratio:4/5;background:#c0bbaa image-set(url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),url('assets/winter-photo-sheet.webp') type('image/webp')) var(--tile-x,0%) var(--tile-y,0%)/400% 200% no-repeat}
+.portrait-large-image{width:100%;aspect-ratio:4/5;background:#c0bbaa url('assets/winter-photo-sheet.webp') var(--tile-x,0%) var(--tile-y,0%)/400% 200% no-repeat;background-image:image-set(url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),url('assets/winter-photo-sheet.webp') type('image/webp'))}
 .portrait-lightbox-title{margin:13px 0 0;text-align:center;font:400 29px/1.2 'Caveat',cursive;color:#4d6258}
 .portrait-lightbox-zh{margin:3px 0;text-align:center;font:11px/1.5 var(--cn-serif);color:#819087}
 .portrait-lightbox-controls{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:16px}
@@ -83,7 +83,7 @@
 .news-date{display:block;color:#a18b76;font:600 8px/1.4 var(--sans);letter-spacing:2px;margin:10px auto}
 .finale-polaroid-mat{position:relative;width:min(100%,490px);padding:12px 12px 19px;margin:0 auto 10px;background:#fdf9f1;box-shadow:0 5px 20px #765f5366;transform:rotate(1deg)}
 .finale-photo-pieces{position:relative;width:100%;aspect-ratio:730/497;isolation:isolate;overflow:visible}
-.finale-piece{position:absolute;top:0;bottom:0;width:51%;z-index:3;margin:0;padding:0;border:0;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;filter:drop-shadow(1px 3px 3px #342a296b);background-image:linear-gradient(#fcf2dc07,#fcf2dc07),image-set(url('assets/finale-childhood-crisp.avif') type('image/avif'),url('assets/finale-childhood.webp') type('image/webp'));background-size:196% 100%;background-repeat:no-repeat;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .5s,opacity .5s}
+.finale-piece{position:absolute;top:0;bottom:0;width:51%;z-index:3;margin:0;padding:0;border:0;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;filter:drop-shadow(1px 3px 3px #342a296b);background-image:linear-gradient(#fcf2dc07,#fcf2dc07),url('assets/finale-childhood.webp');background-image:linear-gradient(#fcf2dc07,#fcf2dc07),image-set(url('assets/finale-childhood-crisp.avif') type('image/avif'),url('assets/finale-childhood.webp') type('image/webp'));background-size:196% 100%;background-repeat:no-repeat;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .5s,opacity .5s}
 .finale-piece:active{cursor:grabbing}
 .finale-piece.left-piece{left:0;background-position:left center;clip-path:polygon(0 0,99% 0,95% 7%,100% 17%,96% 27%,100% 39%,95% 50%,100% 62%,95% 73%,100% 84%,96% 94%,100% 100%,0 100%);transform:translateX(calc(-30% + var(--piece-dx,0px))) translateY(var(--piece-dy,0px)) rotate(-12deg)}
 .finale-piece.right-piece{right:0;background-position:right center;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,5% 93%,0 83%,5% 73%,0 62%,5% 51%,0 40%,4% 29%,0 17%,5% 7%);transform:translateX(calc(30% + var(--piece-dx,0px))) translateY(var(--piece-dy,0px)) rotate(12deg)}
@@ -93,7 +93,7 @@
 .finale-piece.is-found.left-piece{transform:translateX(-6%) rotate(-3deg)}
 .finale-piece.is-found.right-piece{transform:translateX(6%) rotate(3deg)}
 .finale-newspaper[data-joined="true"] .finale-piece{transform:translate(0,0) rotate(0)!important;opacity:0;pointer-events:none}
-.finale-photo-whole{position:absolute;inset:0;background:image-set(url('assets/finale-childhood-crisp.avif') type('image/avif'),url('assets/finale-childhood.webp') type('image/webp')) center/cover no-repeat;opacity:0;transform:scale(.94);filter:none;transition:opacity .75s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.finale-photo-whole{position:absolute;inset:0;background:url('assets/finale-childhood.webp') center/cover no-repeat;background-image:image-set(url('assets/finale-childhood-crisp.avif') type('image/avif'),url('assets/finale-childhood.webp') type('image/webp'));opacity:0;transform:scale(.94);filter:none;transition:opacity .75s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
 .finale-newspaper[data-joined="true"] .finale-photo-whole{opacity:1;transform:scale(1)}
 .finale-caption{display:flex;justify-content:space-between;gap:10px;margin-top:14px;color:#827168;font:400 11px/1.4 'Caveat',cursive}
 .finale-caption span:last-child{font:400 10px/1.5 var(--cn-serif)}
