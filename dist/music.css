@@ -1,0 +1,41 @@
+/* A discreet music control shared by every page; uses the artist's official stream. */
+.winter-music-toggle {
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;flex:0 0 42px;padding:0;border:1px solid #d8dfa862;
+  border-radius:50%;background:#173b3457;color:#e8e8cf;
+  box-shadow:0 3px 16px #102b2c18;backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);transition:background .2s,color .2s,border-color .2s;
+}
+.winter-music-toggle:hover {background:#32524791}
+.winter-music-toggle svg {height:19px;width:19px;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round}
+.winter-music-toggle[data-playing="true"]::after {
+  content:"";position:absolute;right:2px;top:2px;width:6px;height:6px;
+  border-radius:50%;background:#c9dbbc;box-shadow:0 0 0 2px #183c35;
+}
+.winter-music-panel {
+  position:absolute;z-index:25;top:76px;right:clamp(18px,4vw,82px);
+  width:min(345px,calc(100% - 32px));padding:15px 15px 14px;
+  color:#3d4f4b;background:#f9f6edfa;border:1px solid #ffffff;
+  border-radius:13px;box-shadow:0 15px 60px #132f3342,0 3px 15px #293c3924;
+}
+.winter-music-panel[hidden] {display:none}
+.winter-music-panel-head {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.winter-music-overline {margin:0 0 5px;font:600 8px/1.6 var(--sans);letter-spacing:2px;color:#8c9783}
+.winter-music-title {margin:0;font:400 16px/1.55 var(--serif);color:#43574a}
+.winter-music-byline {margin:1px 0 0;color:#7b8977;font-size:9px}
+.winter-music-close {display:flex;align-items:center;justify-content:center;min-width:35px;min-height:35px;padding:0;background:transparent;color:#64776b;border:1px solid #a5b6a05c;border-radius:50%;font-size:18px}
+.winter-music-player {width:100%;height:118px;border:0;border-radius:6px;background:#e9ece6}
+.winter-music-hint {margin:9px 1px 0;color:#829087;font:400 9px/1.75 var(--sans)}
+.winter-music-credit {display:inline-block;margin-top:8px;color:#607966;text-decoration:underline;text-underline-offset:2px;font-size:9px}
+.app-shell[data-page="about"] .winter-music-toggle,
+.app-shell[data-destination="journey"] .winter-music-toggle,
+.app-shell[data-destination="letter"] .winter-music-toggle,
+.app-shell[data-destination="envelope"] .winter-music-toggle {
+  color:#405e59;border-color:#a2b1a76b;background:#fbfaf7ad;
+}
+.app-shell[data-destination="journey"] .winter-music-toggle[data-playing="true"]::after {background:#597f92;box-shadow:0 0 0 2px #fff}
+@media(max-width:760px){
+  .winter-music-toggle {width:38px;height:38px;flex-basis:38px}
+  .winter-music-panel {top:108px;right:12px;width:min(345px,calc(100% - 24px))}
+}
+@media(max-width:370px){.winter-music-panel {top:108px}}
