@@ -1,6 +1,7 @@
 import * as THREE from './vendor/three.module.mjs';
 import {HOTSPOTS,NINTH_FLOOR,OBSTACLES} from './game-core.mjs';
 import {applyCinematicStreet} from './cinematic-street.mjs';
+import {dressNinthFloor} from './cinematic-interior.mjs';
 
 // Scenery is replaceable independently of collision, objectives and save data.
 export function createWorld({manager=new THREE.LoadingManager()}={}) {
@@ -148,6 +149,7 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
   panel(corridor,'corridor-note',['留给走到这里的你','窗边的黄铜叶片，','请放回接待台的叶形凹槽。'],1.04,1.05,[-2.98,1.7,-9.4],Math.PI/2,{font:57,background:'#e7dfc7',color:'#53654d'});
   box(corridor,[3.4,.95,1.3],[.2,.475,-3.25],'wood',null,{shadow:true});box(corridor,[3.5,.08,1.4],[.2,.99,-3.25],'wall');
   box(corridor,[1.1,.06,1],[-2.65,.97,-6],'wall');plant(corridor,2.3,0,.6,.8);
+  dressNinthFloor({corridor,lobby,lift,box,panel,resources,materials});
   const leafShape=new THREE.Shape();leafShape.moveTo(0,-.24);leafShape.bezierCurveTo(-.28,-.04,-.27,.18,0,.29);leafShape.bezierCurveTo(.27,.18,.28,-.04,0,-.24);
   const leaf=new THREE.Mesh(new THREE.ExtrudeGeometry(leafShape,{depth:.024,bevelEnabled:true,bevelSize:.012,bevelThickness:.01,bevelSegments:2,steps:1}),materials.brass);leaf.position.set(-2.55,NINTH_FLOOR+1.015,-6);leaf.rotation.x=-Math.PI/2;scene.add(leaf);register(leaf,'leaf');leaf.name='carryable_brass_leaf';
   const vein=box(leaf,[.012,.40,.008],[0,.015,.029],'brass','leaf');
