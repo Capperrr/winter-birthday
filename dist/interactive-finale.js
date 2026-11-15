@@ -170,31 +170,92 @@
       particles.push({kind:'spark',x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,decay:.008+Math.random()*.009,color:colors[j%colors.length],size:1.5+Math.random()*2.5,spin:0});
     }
   }
+  function spawnStarCake(w,h){
+    const cx=w/2,cy=h*.51,ww=Math.min(285,w*.56);
+    const x1=cx-ww*.48,x2=cx+ww*.48,top=cy-ww*.28,bottom=cy+ww*.34;
+    const points=[];
+    function line(ax,ay,bx,by,n=30,clr='#f5dfbd'){
+      for(let i=0;i<n;i++){
+        const k=i/(n-1);points.push([ax+(bx-ax)*k,ay+(by-ay)*k,clr]);
+      }
+    }
+    line(x1,top,x2,top,62,'#f5dfbd');
+    line(x1,bottom,x2,bottom,70,'#f5dfbd');
+    line(x1,top,x1,bottom,44,'#d4b2df');
+    line(x2,top,x2,bottom,44,'#d4b2df');
+    line(x1,cy+ww*.08,x2,cy+ww*.08,62,'#ceb4e9');
+    for(let k=0;k<74;k++){
+      const f=k/73,xx=x1+ww*.96*f,yy=top+12+7*Math.sin(f*9*Math.PI);
+      points.push([xx,yy,'#e9c3dc']);
+    }
+    for(const dx of [-.22,0,.22]){
+      line(cx+ww*dx,top-ww*.19,cx+ww*dx,top,19,'#f6eee2');
+      for(let k=0;k<9;k++){const angle=Math.PI*2*k/9;points.push([
+        cx+ww*dx+Math.sin(angle)*4,top-ww*.21+Math.cos(angle)*8,'#ffe2a5'
+      ])}
+    }
+    for(const [tx,ty,color] of points)particles.push({
+      kind:'cake',x:between(.08*w,.92*w),y:between(.08*h,.83*h),tx,ty,
+      vx:0,vy:0,life:1,color,size:between(1,2.4),spin:between(0,6.28)
+    });
+  }
+  function between(a,b){return a+Math.random()*(b-a)}
   function startConfetti(){
     if(quietMotion())return;
-    const {w,h}=resizeCanvas();particles=[];lastFrame=0;effectEnd=performance.now()+9600;
-    for(let i=0;i<105;i++)particles.push({kind:'paper',x:Math.random()*w,y:-Math.random()*h*.7,vx:(Math.random()-.5)*2,vy:1+Math.random()*2.2,life:1,decay:0,color:palette[i%palette.length],size:4+Math.random()*6,spin:Math.random()*6.28});
-    createBurst(w*.25,h*.30,35,palette,1);createBurst(w*.74,h*.23,35,palette,1);
+    const {w,h}=resizeCanvas();
+    particles=[];lastFrame=0;
+    const startTime=performance.now(),effectEndAt=startTime+8800;
+    effectEnd=effectEndAt;
+    for(let i=0;i<92;i++)particles.push({
+      kind:'paper',x:Math.random()*w,y:-Math.random()*h*.7,
+      vx:(Math.random()-.5)*2,vy:1+Math.random()*2.2,
+      life:1,decay:0,color:palette[i%palette.length],
+      size:4+Math.random()*6,spin:Math.random()*6.28
+    });
+    createBurst(w*.24,h*.31,50,['#ffe7b2','#e8c1df','#f5f1ee'],1.2);
+    createBurst(w*.76,h*.25,50,['#e3c8ff','#d0e8eb','#f7dfbf'],1.2);
+    spawnStarCake(w,h);
     const ctx=confettiCanvas.getContext('2d');if(!ctx)return;
     const draw=now=>{
       if(shell.dataset.destination!=='finale'){animationId=0;ctx.clearRect(0,0,w,h);return}
-      const dt=Math.min(2.5,Math.max(.65,(now-(lastFrame||now-16))/16));lastFrame=now;
+      const dt=Math.min(2.5,Math.max(.65,(now-(lastFrame||now-16))/16));
+      lastFrame=now;
+      const elapsed=now-startTime;
       ctx.clearRect(0,0,w,h);
-      if(now<effectEnd&&Math.random()<.065)createBurst(w*(.12+Math.random()*.76),h*(.13+Math.random()*.3),30,palette,1.1);
-      particles=particles.filter(p=>p.life>0&&p.y<h+35);
+      if(elapsed<2300&&Math.random()<.075){
+        createBurst(w*between(.12,.88),h*between(.12,.45),31,['#eee1f5','#f8e9c8','#f6f7f4'],1.05);
+      }
+      particles=particles.filter(p=>p.life>0&&p.y<h+45);
       for(const p of particles){
+        if(p.kind==='cake'){
+          if(elapsed<1250)continue;
+          const ease=Math.min(.18,dt*.055);
+          p.x+=(p.tx-p.x)*ease;p.y+=(p.ty-p.y)*ease;
+          p.life=elapsed>7000?Math.max(0,1-(elapsed-7000)/950):1;
+          ctx.globalAlpha=p.life*(.73+.27*Math.sin(now*.003+p.spin));
+          ctx.fillStyle=p.color;
+          ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+          continue;
+        }
         p.x+=p.vx*dt;p.y+=p.vy*dt;
-        if(p.kind==='spark'){p.vx*=.992;p.vy=(p.vy+.055*dt)*.997;p.life-=p.decay*dt}
-        else {p.y+=.52*dt;p.spin+=.07*dt;p.x+=Math.sin(p.spin)*.65}
+        if(p.kind==='spark'){
+          p.vx*=.991;p.vy=(p.vy+.048*dt)*.997;
+          p.life-=p.decay*dt;
+        } else {
+          p.y+=.52*dt;p.spin+=.07*dt;p.x+=Math.sin(p.spin)*.65;
+        }
         ctx.globalAlpha=p.life;ctx.fillStyle=p.color;
         ctx.save();ctx.translate(p.x,p.y);
-        if(p.kind==='paper'){ctx.rotate(p.spin);ctx.fillRect(-p.size/2,-p.size/3,p.size,p.size*.6)}
-        else {ctx.beginPath();ctx.arc(0,0,p.size,0,Math.PI*2);ctx.fill()}
+        if(p.kind==='paper'){
+          ctx.rotate(p.spin);ctx.fillRect(-p.size/2,-p.size/3,p.size,p.size*.6);
+        } else {
+          ctx.beginPath();ctx.arc(0,0,p.size,0,Math.PI*2);ctx.fill();
+        }
         ctx.restore();
       }
       ctx.globalAlpha=1;
-      if(now<effectEnd||particles.some(p=>p.kind==='spark'))animationId=requestAnimationFrame(draw);
-      else {animationId=0;ctx.clearRect(0,0,w,h)}
+      if(now<effectEndAt||particles.some(p=>p.kind==='spark'))animationId=requestAnimationFrame(draw);
+      else{animationId=0;ctx.clearRect(0,0,w,h)}
     };
     animationId=requestAnimationFrame(draw);
   }
@@ -206,7 +267,7 @@
     help.innerHTML='拼好了。<strong>原来有些缘分，真的会把我们带到彼此面前。</strong>';
     left.disabled=right.disabled=true;
     surprise.hidden=false;
-    const ms=quietMotion()?0:720;
+    const ms=quietMotion()?0:190;
     window.setTimeout(()=>{
       if(shell.dataset.destination!=='finale'||!celebrated)return;
       spawnBalloons();startConfetti();
