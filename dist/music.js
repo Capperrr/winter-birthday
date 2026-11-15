@@ -9,7 +9,17 @@
 
   // Use the artist's published SoundCloud player, not a rehosted copyrighted MP3.
   // This single iframe stays mounted as the birthday site's hash routes change.
-  const officialTrack = 'https://soundcloud.com/itsjvke/this-is-what-winter-feels-like';
+  // Tracks are embedded from JVKE's published SoundCloud profile.
+  const tracks = {
+    moon: { title:'moon and back', url:'https://soundcloud.com/itsjvke/moon-and-back' },
+    pretty: { title:'pretty', url:'https://soundcloud.com/itsjvke/pretty' },
+    her: { title:'her', url:'https://soundcloud.com/itsjvke/her' },
+    winter: { title:'this is what winter feels like', url:'https://soundcloud.com/itsjvke/this-is-what-winter-feels-like' }
+  };
+  const songButtons = Array.from(document.querySelectorAll('[data-winter-song]'));
+  const title = document.getElementById('winter-music-title');
+  const songLink = document.getElementById('winter-music-credit');
+  let currentSong = 'moon';
   let widget = null;
   let ready = false;
   let playing = false;
@@ -18,6 +28,38 @@
   let disposed = false;
 
   function announce(message) { status.textContent = message; }
+  function refreshSong() {
+    const track = tracks[currentSong];
+    title.textContent = track.title;
+    songLink.href = track.url;
+    songLink.textContent = '在 SoundCloud 收听《' + track.title + '》';
+    frame.title = 'JVKE · ' + track.title + '，SoundCloud 官方播放器';
+    songButtons.forEach(el => el.setAttribute('aria-pressed',String(el.dataset.winterSong===currentSong)));
+  }
+  function chooseSong(id) {
+    if (!Object.hasOwn(tracks,id) || disposed) return;
+    currentSong = id;
+    playing = false;
+    hasPlayed = true;
+    sync(); refreshSong(); showPanel();
+    if (widget && ready) {
+      try {
+        widget.load(tracks[id].url,{
+          auto_play:true, hide_related:true, show_comments:false,
+          show_user:true, show_reposts:false, show_teaser:false, visual:false,
+          callback:()=>{try{widget.setVolume(38)}catch(_){}}
+        });
+      } catch (_) {
+        ready=false;
+        frame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(tracks[id].url)
+          + '&color=%237a998b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false';
+      }
+    } else {
+      frame.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(tracks[id].url)
+        + '&color=%237a998b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false';
+    }
+    announce('已选择《'+tracks[id].title+'》。iPad 如未播放，请点击下方播放器里的播放键。');
+  }
   function sync() {
     button.dataset.playing = String(playing);
     button.setAttribute('aria-pressed',String(playing));
@@ -46,7 +88,7 @@
       });
       widget.bind(window.SC.Widget.Events.PLAY, () => {
         playing = true; hasPlayed = true; sync();
-        announce('正在播放 JVKE 的 this is what winter feels like。');
+        announce('正在播放 JVKE 的《'+tracks[currentSong].title+'》。');
       });
       widget.bind(window.SC.Widget.Events.PAUSE, () => {
         playing = false; sync(); announce('音乐已暂停。');
@@ -66,7 +108,7 @@
   }
 
   frame.src = 'https://w.soundcloud.com/player/?url='
-    + encodeURIComponent(officialTrack)
+    + encodeURIComponent(tracks[currentSong].url)
     + '&color=%237a998b&auto_play=false&hide_related=true'
     + '&show_comments=false&show_user=true&show_reposts=false'
     + '&show_teaser=false&visual=false';
@@ -83,7 +125,9 @@
     };
     document.head.appendChild(script);
   }
+  refreshSong();
   loadApi();
+  songButtons.forEach(el => el.addEventListener('click',()=>chooseSong(el.dataset.winterSong)));
 
   button.addEventListener('click', () => {
     if (disposed) return;
