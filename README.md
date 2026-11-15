@@ -1,5 +1,9 @@
 # For WINTER — 写给你的25岁
 
+生日页包含生成的雪峰溪谷信件背景、贴合两位女孩轮廓的紫色透明抠图，以及拼图烟花结束后的实际页面拍照与手机锁屏。手机按下快门会重新拍取已拼好的 DOM 页面，锁屏为 **12月15日 00:00**，显示 **Gwen · 现在：生日快乐，以后的每一个生日都想陪你过。**
+
+原生日内容、音乐、22 张便签、国家回忆、相册和独立深圳样章均保留。[实现与验证边界](docs/BIRTHDAY-KEEPSAKE.md) · [生成素材记录](docs/BIRTHDAY-ART-PROVENANCE.md)。当前环境无法使用浏览器预览，拍照成片及 iPad 实机手感尚未验证；模拟、真实几何射线与资源检查不能替代这些实测。
+
 A birthday gift made for WINTER by Gwen. The light translucent navigation switches among About me, Home, and Destination. Its single shared material uses route color variables; the night scene uses a quiet blue tint without glossy gradients or prism highlights. Home keeps the forest cover, with “For you,” above the moss-green WINTER title and Gwen's small dedication. The envelope, greeting and country letters also identify Gwen as the gift's sender.
 
 About me is “Dear me”: her own words to her 25-year-old self. It contains 22 lightly creased sticky notes arranged as the digits 25: 11 notes for each digit. Each has a unique paper texture, fold paths, curl position, placement and shadow; the two digits do not repeat the same rotations. The double diagram-like frame has been removed. Slightly varied scale and stronger individual offsets let the papers feel placed by hand, with a quieter, desaturated botanical background and peripheral Alpine prints on wide screens. The existing portrait background is retained for phones. The requested self-addressed dedication remains underneath: “周琬婷，辛苦了。谢谢你过去的24年的坚韧。”

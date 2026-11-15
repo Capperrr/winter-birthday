@@ -1,0 +1,54 @@
+{
+  "textures/concrete_wall_001.webp": {
+    "bytes": 11714,
+    "sha256": "0a49f301ba7fd189313aaa4c85972702552c73d72095b3a178af4db222c667a8"
+  },
+  "textures/wood_table_001_nor_gl.webp": {
+    "bytes": 3824,
+    "sha256": "66246d4ddd65ccb3e026342fd8d16dbb4f39fe5ccc37c7d22d580a353a031f00"
+  },
+  "textures/pavement_02_nor_gl.webp": {
+    "bytes": 51172,
+    "sha256": "7c09d1896a8caf3fc15fec0c450e6c113399c7e049a17dff8d487f17b6efe046"
+  },
+  "textures/metadata.json": {
+    "bytes": 4191,
+    "sha256": "f5aad1b0764804b62fbe4469632cbeeaa35eca4af5ae12807726d85a2737c414"
+  },
+  "textures/pavement_02.webp": {
+    "bytes": 201342,
+    "sha256": "b3d910ab0951a6316b0d4b0a9a0d546334ce8748c948d147c4d09eee91295e5a"
+  },
+  "textures/wood_table_001.webp": {
+    "bytes": 67200,
+    "sha256": "694efc5857199d9065072fdc3b5731793c7f5aa25d97a32a771d91e8c984b1c7"
+  },
+  "textures/wood_table_001_rough.webp": {
+    "bytes": 103946,
+    "sha256": "a1ccc925adc3c9ab4edb22e66e1a4456ed9a99f66b0d6e80b2274be942b29d5e"
+  },
+  "textures/pavement_02_rough.webp": {
+    "bytes": 48602,
+    "sha256": "ac5af9d75c5d10edfa46ac5af4237a541399dac7d3ec0b4fcabc7606c043b3b1"
+  },
+  "textures/concrete_wall_001_nor_gl.webp": {
+    "bytes": 75268,
+    "sha256": "6171466d832b93c100e499d28a52af6f0c8e6a21a7b2d28bb7d231f4de3fffa5"
+  },
+  "textures/concrete_wall_001_rough.webp": {
+    "bytes": 62030,
+    "sha256": "62c0c2ffc5a12a345b20cfba9d2fcc11e08ff31ed234c3289fc1f318ec8332b3"
+  },
+  "vendor/metadata.json": {
+    "bytes": 441,
+    "sha256": "fc70433ed6a3c4202dc45eb09d21103b575624326d37e988999a6edeee692bed"
+  },
+  "vendor/three.module.mjs": {
+    "bytes": 687458,
+    "sha256": "f7cee3c7533449a1505cc12cb5128b89e3d4fd3d7ea62b05f9f5464a217472ee"
+  },
+  "vendor/THREE-LICENSE.txt": {
+    "bytes": 1081,
+    "sha256": "4c40a1ef62450b857c3b2aaf294936304cd552d965fbcd9d32d4c5bcf4ba4454"
+  }
+}
