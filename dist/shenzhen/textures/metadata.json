@@ -1,0 +1,125 @@
+[
+  {
+    "asset": "pavement_02",
+    "file": "pavement_02.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/pavement_02/pavement_02_diff_1k.jpg",
+    "page": "https://polyhaven.com/a/pavement_02",
+    "license": "CC0 1.0",
+    "license_url": "https://polyhaven.com/license",
+    "size": [
+      768,
+      768
+    ],
+    "bytes": 201342,
+    "author": "Poly Haven; individual contributor metadata unavailable (API returned 403)",
+    "maps": [
+      {
+        "asset": "pavement_02",
+        "map": "nor_gl",
+        "file": "pavement_02_nor_gl.webp",
+        "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/pavement_02/pavement_02_nor_gl_1k.jpg",
+        "size": [
+          768,
+          768
+        ],
+        "bytes": 51172,
+        "sha256": "7c09d1896a8caf3fc15fec0c450e6c113399c7e049a17dff8d487f17b6efe046"
+      },
+      {
+        "asset": "pavement_02",
+        "map": "rough",
+        "file": "pavement_02_rough.webp",
+        "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/pavement_02/pavement_02_rough_1k.jpg",
+        "size": [
+          768,
+          768
+        ],
+        "bytes": 48602,
+        "sha256": "ac5af9d75c5d10edfa46ac5af4237a541399dac7d3ec0b4fcabc7606c043b3b1"
+      }
+    ],
+    "sha256": "b3d910ab0951a6316b0d4b0a9a0d546334ce8748c948d147c4d09eee91295e5a"
+  },
+  {
+    "asset": "concrete_wall_001",
+    "file": "concrete_wall_001.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_wall_001/concrete_wall_001_diff_1k.jpg",
+    "page": "https://polyhaven.com/a/concrete_wall_001",
+    "license": "CC0 1.0",
+    "license_url": "https://polyhaven.com/license",
+    "size": [
+      768,
+      768
+    ],
+    "bytes": 11714,
+    "author": "Poly Haven; individual contributor metadata unavailable (API returned 403)",
+    "maps": [
+      {
+        "asset": "concrete_wall_001",
+        "map": "nor_gl",
+        "file": "concrete_wall_001_nor_gl.webp",
+        "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_wall_001/concrete_wall_001_nor_gl_1k.jpg",
+        "size": [
+          768,
+          768
+        ],
+        "bytes": 75268,
+        "sha256": "6171466d832b93c100e499d28a52af6f0c8e6a21a7b2d28bb7d231f4de3fffa5"
+      },
+      {
+        "asset": "concrete_wall_001",
+        "map": "rough",
+        "file": "concrete_wall_001_rough.webp",
+        "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/concrete_wall_001/concrete_wall_001_rough_1k.jpg",
+        "size": [
+          768,
+          768
+        ],
+        "bytes": 62030,
+        "sha256": "62c0c2ffc5a12a345b20cfba9d2fcc11e08ff31ed234c3289fc1f318ec8332b3"
+      }
+    ],
+    "sha256": "0a49f301ba7fd189313aaa4c85972702552c73d72095b3a178af4db222c667a8"
+  },
+  {
+    "asset": "wood_table_001",
+    "file": "wood_table_001.webp",
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table_001/wood_table_001_diff_1k.jpg",
+    "page": "https://polyhaven.com/a/wood_table_001",
+    "license": "CC0 1.0",
+    "license_url": "https://polyhaven.com/license",
+    "size": [
+      768,
+      768
+    ],
+    "bytes": 67200,
+    "author": "Poly Haven; individual contributor metadata unavailable (API returned 403)",
+    "maps": [
+      {
+        "asset": "wood_table_001",
+        "map": "nor_gl",
+        "file": "wood_table_001_nor_gl.webp",
+        "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table_001/wood_table_001_nor_gl_1k.jpg",
+        "size": [
+          768,
+          768
+        ],
+        "bytes": 3824,
+        "sha256": "66246d4ddd65ccb3e026342fd8d16dbb4f39fe5ccc37c7d22d580a353a031f00"
+      },
+      {
+        "asset": "wood_table_001",
+        "map": "rough",
+        "file": "wood_table_001_rough.webp",
+        "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/wood_table_001/wood_table_001_rough_1k.jpg",
+        "size": [
+          768,
+          768
+        ],
+        "bytes": 103946,
+        "sha256": "a1ccc925adc3c9ab4edb22e66e1a4456ed9a99f66b0d6e80b2274be942b29d5e"
+      }
+    ],
+    "sha256": "694efc5857199d9065072fdc3b5731793c7f5aa25d97a32a771d91e8c984b1c7"
+  }
+]
