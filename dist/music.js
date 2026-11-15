@@ -6,6 +6,7 @@
   const frame = document.getElementById('winter-music-frame');
   const status = document.getElementById('winter-music-status');
   const title = document.getElementById('winter-music-title');
+  const byline = document.getElementById('winter-music-byline');
   const officialLink = document.getElementById('winter-music-credit');
   const filePicker = document.getElementById('winter-local-file');
   const fileStatus = document.getElementById('winter-local-file-status');
@@ -18,7 +19,11 @@
     moon: { title:'moon and back', id:'1640157153' },
     pretty: { title:'pretty', id:'1796262634' },
     her: { title:'her', id:'1764940884' },
-    winter: { title:'this is what winter feels like', id:'1724478152' }
+    winter: { title:'this is what winter feels like', artist:'JVKE', id:'1724478152' },
+    bloom: { title:'Bloom', artist:'The Paper Kites', id:'609187708', duration:'3:30' },
+    coastline: { title:'Coastline', artist:'Hollow Coves', id:'1609039044', duration:'3:53' },
+    lalune: { title:'La Lune', artist:'Billie Marten', id:'1133221351', duration:'3 min+' },
+    wheresmylove: { title:"Where's My Love (Acoustic)", artist:'SYML', id:'1606587580', duration:'3:59' }
   };
   let currentSong = 'pretty';
   let playing = false;
@@ -56,9 +61,10 @@
   function refresh() {
     const track = tracks[currentSong];
     title.textContent = track.title;
+    if (byline) byline.textContent = (track.artist || 'JVKE') + ' · official song';
     officialLink.href = 'https://music.apple.com/us/song/' + track.id;
     officialLink.textContent = 'Apple Music 打开《' + track.title + '》';
-    frame.title = 'Apple Music · JVKE · ' + track.title;
+    frame.title = 'Apple Music · ' + (track.artist || 'JVKE') + ' · ' + track.title;
     trackButtons.forEach(el => el.setAttribute('aria-pressed', String(el.dataset.winterSong === currentSong)));
     const hasFile = localSources.has(currentSong);
     fileStatus.textContent = hasFile
