@@ -23,7 +23,7 @@ function start({ hash = '', storage = {}, session = {}, rejectSave = false, redu
     animate(keyframes, options) { const animation = { cancelled: false, cancel() { this.cancelled = true; } }; animations.push({ target: this, keyframes, options, animation }); return animation; }
   }
   let focused;
-  for (const id of ['main', 'page-tabs', 'view-toggle', 'view-label', 'view-status', 'scene-footer', 'scene-photo', 'dream-photo', 'note-editor', 'note-status', 'note-input', 'editor-title', 'character-count', 'editor-close', 'editor-cancel', 'note-form', 'birthday-dialog', 'envelope-stage', 'open-envelope', 'letter-page', 'letter-page-title', 'memory-wall', 'memory-china', 'memory-uk', 'birthday-okay-one', 'back-to-envelope', 'gift-envelope', 'unfold-sheet', 'unlock-page', 'unlock-page-title', 'birthday-word', 'unlock-error', 'cake-dialog', 'birthday-cake', 'birthday-unlock-form', 'cake-dialog-close', 'cake-page', 'journey-page', 'journey-title', 'open-journey', 'journey-return']) new Element(id);
+  for (const id of ['main', 'page-tabs', 'view-toggle', 'view-label', 'view-status', 'scene-footer', 'scene-photo', 'dream-photo', 'note-editor', 'note-status', 'note-input', 'editor-title', 'character-count', 'editor-close', 'editor-cancel', 'note-form', 'birthday-dialog', 'envelope-stage', 'open-envelope', 'letter-page', 'letter-page-title', 'memory-wall', 'memory-china', 'memory-uk', 'birthday-okay-one', 'back-to-envelope', 'gift-envelope', 'unfold-sheet', 'unlock-page', 'unlock-page-title', 'birthday-word', 'unlock-error', 'cake-dialog', 'birthday-cake', 'birthday-unlock-form', 'cake-dialog-close', 'cake-page', 'journey-page', 'journey-title', 'open-journey', 'journey-return', 'journey-afterword', 'afterword-back', 'afterword-home']) new Element(id);
   const tabs = ['about', 'home', 'destination'].map(page => { const e = new Element('tab-' + page); e.dataset.page = page; return e; });
   const panels = ['about', 'home', 'destination'].map(page => new Element('panel-' + page));
   const notes = Array.from({ length: 22 }, (_, i) => { const e = new Element(); e.dataset.noteId = String(i + 1); e.classes = ['sticky-note', i % 2 ? 'sage' : 'butter']; e.noteText = new Element(); e.querySelector = () => e.noteText; return e; });
@@ -171,6 +171,20 @@ travel.elements.get('open-journey').fire('click');
 assert.equal(travel.location.hash,'#journey');assert.equal(travel.elements.get('main').dataset.destination,'journey');assert.equal(travel.elements.get('main').dataset.page,'destination');assert.equal(travel.elements.get('journey-page').hidden,false);assert.equal(travel.elements.get('letter-page').hidden,true);assert.equal(travel.focused(),travel.elements.get('journey-title'));
 travel.window.fire('hashchange');assert.deepEqual(routes,[true],'Duplicate route does not restart journey');
 travel.elements.get('journey-return').fire('click');assert.equal(travel.location.hash,'#letter');assert.equal(travel.elements.get('memory-china').hidden,false);assert.deepEqual(routes,[true,false]);assert.equal(travel.focused(),travel.elements.get('open-journey'));
+travel.document.fire('winter:journey-afterword');
+assert.equal(travel.location.hash,'#afterword');
+assert.equal(travel.elements.get('main').dataset.destination,'afterword');
+assert.equal(travel.elements.get('journey-afterword').hidden,false);
+assert.equal(travel.elements.get('journey-page').hidden,true);
+travel.elements.get('afterword-back').fire('click');
+assert.equal(travel.location.hash,'#journey');
+travel.document.fire('winter:journey-afterword');
+travel.elements.get('afterword-home').fire('click');
+assert.equal(travel.location.hash,'#home');
+const afterwordLocked=start({hash:'#afterword'});
+assert.equal(afterwordLocked.location.hash,'#unlock');
+const afterwordRestored=start({hash:'#afterword',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});
+assert.equal(afterwordRestored.elements.get('main').dataset.destination,'afterword');
 const travelLocked=start({hash:'#journey'});assert.equal(travelLocked.location.hash,'#unlock');
 const travelCake=start({hash:'#journey',session:{'winter-birthday-word-solved':'true'}});assert.equal(travelCake.location.hash,'#cake');
 const travelRestored=start({hash:'#journey',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});assert.equal(travelRestored.elements.get('main').dataset.destination,'journey');travelRestored.tabs[1].fire('click');assert.equal(travelRestored.elements.get('journey-page').hidden,true);
