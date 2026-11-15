@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="personal-album.css?v=forest-epilogue-1">
   <link rel="stylesheet" href="interactive-finale.css?v=cutout-20261115">
   <link rel="stylesheet" href="gwen-handwriting-phone.css?v=hand-phone-1">
+  <link rel="stylesheet" href="cosmos-chapter.css?v=cosmic-01">
   <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
@@ -31,7 +32,8 @@
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
-  <script src="gwen-handwriting-phone.js?v=cutout-20261115" defer></script>
+  <script src="gwen-handwriting-phone.js?v=cosmic-01" defer></script>
+  <script src="cosmos-chapter.js?v=cosmic-01" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -307,7 +309,8 @@
       <h3 class="sr-only">我很荣幸，能够参与你的25岁。</h3>
       <img class="gwen-final-birthday" src="assets/handwriting/gwen-birthday.png" width="1330" height="218" alt="我很荣幸，能够参与你的25岁。Gwen 的亲笔手写" decoding="async">
       <span class="finale-english">How lucky I am to be here for your 25th birthday.</span>
-      <div class="finale-actions"><button type="button" id="finale-replay">再拼一次 <span aria-hidden="true">↻</span></button><button type="button" id="finale-phone-start" class="finale-phone-start">拿起手机 · 拍下这一刻 <span aria-hidden="true">▢</span></button><button type="button" id="finale-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button></div>
+      <p class="finale-phone-question">你是否愿意使用手机按下快门，留住这一刻？</p>
+      <div class="finale-actions"><button type="button" id="finale-replay">再拼一次 <span aria-hidden="true">↻</span></button><button type="button" id="finale-phone-start" class="finale-phone-start">是的，拿起手机 <span aria-hidden="true">▢</span></button><button type="button" id="finale-home">从 Home 再走一遍 <span aria-hidden="true">↗</span></button></div>
     </div>
   </div>
   <div class="finale-balloons" id="finale-balloons" aria-hidden="true"></div>
@@ -346,7 +349,9 @@
       </div>
       <div class="winter-phone-flash" aria-hidden="true"></div>
     </div>
+    <button type="button" id="winter-phone-power" title="轻点侧边键息屏，开启宇宙" aria-label="按下手机侧边息屏键，开启宇宙旅程"></button>
   </div>
+  <p class="phone-power-guide" id="phone-power-guide" hidden>照片已留在手机里。现在轻点手机右侧的息屏键，下一段故事就会开始。</p>
   <div class="winter-phone-tools">
     <button id="winter-phone-reset" type="button" hidden>重拍 ↺</button>
     <a id="winter-wallpaper-save" href="#" download="WINTER-25-wallpaper.png" hidden>保存这张壁纸 <span aria-hidden="true">↓</span></a>
@@ -354,6 +359,72 @@
   </div>
  </div>
 </dialog>
+
+<dialog id="winter-cosmos-dialog" aria-label="属于我们的宇宙与回忆" aria-modal="true">
+  <div class="cosmos-root" id="cosmos-root">
+    <canvas id="cosmos-stars" aria-hidden="true"></canvas>
+    <button class="cosmos-close" id="cosmos-close" type="button" aria-label="关闭宇宙章节">×</button>
+    <section id="cosmos-intro" class="cosmos-stage cosmos-prologue is-active" aria-labelledby="cosmos-intro-title">
+      <p class="cosmos-overline">TWO LITTLE PARTICLES · ONE UNLIKELY ENCOUNTER</p>
+      <div class="cosmos-particle-pair" aria-hidden="true"><i></i><i></i></div>
+      <h2 id="cosmos-intro-title"><span style="--step:0">宇宙已经138亿岁了，</span><span style="--step:1">我们只是其中两粒微尘。</span><span style="--step:2">飘了很久很久，</span><span style="--step:3">才刚好遇见。</span></h2>
+      <p class="cosmos-intro-foot">Somewhere in this wide universe, there was you.</p>
+      <button class="cosmos-continue" id="cosmos-to-stars" type="button">收集散落在星空里的祝福 <span aria-hidden="true">✦</span></button>
+    </section>
+    <section id="cosmos-blessings" class="cosmos-stage cosmos-stage-stars" aria-labelledby="cosmos-stars-title">
+      <p class="cosmos-overline">FOUR STARS, FOUR LITTLE WISHES</p>
+      <h2 id="cosmos-stars-title" style="font:400 clamp(23px,3.6vw,42px)/1.5 var(--cn-serif);margin:0">在星光里，留几句话给你。</h2>
+      <p class="constellation-hint">轻点四颗星星，看看我想对你说的话</p>
+      <div class="constellation-map" role="group" aria-label="四颗可以点击的祝福星星">
+        <button class="cosmos-star" type="button" data-wish="0" style="--x:21%;--y:28%" aria-label="第一颗祝福星星"></button>
+        <button class="cosmos-star" type="button" data-wish="1" style="--x:76%;--y:20%" aria-label="第二颗祝福星星"></button>
+        <button class="cosmos-star" type="button" data-wish="2" style="--x:39%;--y:73%" aria-label="第三颗祝福星星"></button>
+        <button class="cosmos-star" type="button" data-wish="3" style="--x:83%;--y:68%" aria-label="第四颗祝福星星"></button>
+      </div>
+      <p class="cosmos-quote" id="cosmos-wish-text" role="status" aria-live="polite">选一颗星星，让祝福慢慢亮起来。</p>
+      <button class="cosmos-continue" id="cosmos-to-apod" type="button">再看看你出生那一天的宇宙 <span aria-hidden="true">✧</span></button>
+    </section>
+    <section id="cosmos-apod" class="cosmos-stage cosmos-stage-apod" aria-labelledby="cosmos-apod-title">
+      <p class="cosmos-overline">NASA · ASTRONOMY PICTURE OF THE DAY</p>
+      <h2 id="cosmos-apod-title">2001.12.15</h2>
+      <h3>在你出生的那一天，NASA 的每日天文图。</h3>
+      <div class="cosmos-apod-card">
+        <strong>Ganymede: Torn Comet – Crater Chain</strong>
+        <p>这一天的每日天文图，展示的是木星的卫星——木卫三（Ganymede）上的十三个相邻陨坑。它们的影像由 Galileo 探测器在 1997 年拍摄；NASA 于 2001 年 12 月 15 日选作每日天文图。科学家认为，这种链状陨坑很可能来自彗星碎片的连续撞击。</p>
+        <p>并不是那一天宇宙才留下这道痕迹。而是在这一天，我们刚好能看见它。</p>
+        <p>我有时觉得，相遇也有一点像这样。许多很远的路，慢慢把人带向某一个时刻。那时还不知道，后来会遇见谁。</p>
+        <p>很高兴你来到这个世界。也很幸运，后来我遇见了你。</p>
+        <a href="https://apod.nasa.gov/apod/ap011215.html" target="_blank" rel="noopener noreferrer">查看 NASA 当天的原始图像和说明 ↗</a>
+        <span class="cosmos-apod-note">真实档案 · 图像拍摄于 1997 年，APOD 发布于 2001 年 12 月 15 日</span>
+      </div>
+      <button class="cosmos-continue" id="cosmos-to-gallery" type="button">把星光带到那些真实的日子里 <span aria-hidden="true">→</span></button>
+    </section>
+    <section id="cosmos-gallery" class="cosmos-stage cosmos-stage-gallery" aria-labelledby="cosmos-gallery-title">
+      <div class="cosmos-gallery-head">
+        <p class="cosmos-overline">THE DAYS YOU WERE YOU · A PRIVATE PHOTO WALL</p>
+        <h2 id="cosmos-gallery-title">一些闪闪发光的普通日子</h2>
+        <p>海风、天光、雨夜和街角。你走过的时光，原来有这么多好看的模样。</p>
+      </div>
+      <div class="photo-wall" id="cosmos-photo-wall" role="group" aria-label="十九张独立的旅行和生活照片，点击可以放大"></div>
+      <div class="cosmos-gallery-ink">
+        <img src="assets/handwriting/gwen-every-birthday.png" alt="Gwen 亲笔：以后的每一个生日我都想陪你过。" loading="lazy" decoding="async">
+        <p>如果可以，我想让未来的很多个平常日子，也慢慢成为我们的回忆。</p>
+      </div>
+      <p class="cosmos-gallery-bottom">A LITTLE UNIVERSE, HELD CLOSE · FOR WINTER</p>
+      <button class="cosmos-continue" id="cosmos-gallery-home" type="button">从 Home 再走一遍 <span aria-hidden="true">↗</span></button>
+    </section>
+    <div id="cosmos-photo-lightbox" role="dialog" aria-modal="true" aria-label="放大查看回忆照片" hidden>
+      <button class="cosmos-lightbox-close" id="cosmos-lightbox-close" type="button" aria-label="关闭照片">×</button>
+      <button class="cosmos-lightbox-nav" id="cosmos-lightbox-prev" type="button" aria-label="上一张">‹</button>
+      <div style="text-align:center">
+        <div class="cosmos-lightbox-photo" id="cosmos-lightbox-photo" role="img"></div>
+        <p class="cosmos-lightbox-caption" id="cosmos-lightbox-caption"></p>
+      </div>
+      <button class="cosmos-lightbox-nav" id="cosmos-lightbox-next" type="button" aria-label="下一张">›</button>
+    </div>
+  </div>
+</dialog>
+
 <section class="journey-page" id="journey-page" aria-labelledby="journey-title" data-stop="0" hidden>
   <header class="journey-heading">
     <div><p class="journey-eyebrow">THE WAY TO YOU · GWEN'S FIELD NOTES</p><h2 id="journey-title" tabindex="-1">你走过的路，带我再走一遍。</h2></div>
