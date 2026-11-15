@@ -62,3 +62,17 @@
  .winter-music-panel {max-height:calc(100svh - 126px)}
  .winter-music-tracks button {min-height:48px}
 }
+
+/* Domestic-accessible fallback: authorised previews + on-device audio. */
+.winter-music-panel {max-height:min(650px,calc(100svh - 90px))}
+.winter-music-service-label {margin:11px 1px 7px;color:#738678;font:600 9px/1.6 var(--sans);letter-spacing:1.1px}
+.winter-music-player {height:155px;background:#e9ebe9}
+.winter-music-local {margin-top:12px;padding:12px;background:#eff0e9;border:1px solid #d9dfd5;border-radius:9px}
+.winter-music-local-label {display:block;margin:0 0 9px;font-size:11px;font-weight:600;color:#536956}
+#winter-local-file {display:block;box-sizing:border-box;width:100%;max-width:100%;font:10px/1.6 var(--sans);color:#5b6f60}
+#winter-local-file::file-selector-button {padding:7px 9px;margin-right:9px;color:#354e42;border:1px solid #adbead;border-radius:6px;background:#fffdf7;cursor:pointer}
+.winter-music-local .winter-music-hint {margin:10px 0 0;font-size:9px}
+@media(max-width:760px) {
+  .winter-music-panel {max-height:calc(100svh - 120px)}
+  .winter-music-player {height:145px}
+}
