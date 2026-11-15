@@ -137,9 +137,9 @@ export function dressNinthFloor({corridor,lobby,lift,box,panel,resources,materia
   add(corridor,[.025,.12,.022],[-.50,1.145,-3.15],bronze);
 
   // Warm glass-wall reflections and reception sign backplate.
-  add(corridor,[3.79,1.06,.08],[0,1.97,2.80],walnut);
-  add(corridor,[3.63,.94,.06],[0,1.97,2.74],warmWhite);
-  add(corridor,[3.67,.023,.09],[0,1.48,2.705],bronze);
+  add(corridor,[3.79,1.06,.08],[0,1.97,2.925],walnut);
+  add(corridor,[3.63,.94,.06],[0,1.97,2.885],warmWhite);
+  add(corridor,[3.67,.023,.09],[0,1.48,2.833],bronze);
   for(let x of [-2.4,2.4]){
     add(corridor,[.044,2.70,.048],[x,1.67,2.66],walnut);
   }
