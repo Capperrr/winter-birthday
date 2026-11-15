@@ -37,5 +37,29 @@
     "modifications": "Resized and converted to WebP; display may crop to fit.",
     "depicts": "英国南安普顿大学 Highfield 校区公共空间。",
     "caption": "南安普顿大学 · Highfield 校区"
+  },
+  {
+    "id": "school",
+    "file": "External image (web-linked, not hosted in repository)",
+    "title": "达州市第一中学校校园参考影像",
+    "author": "第三方学校资料站",
+    "source_url": "https://www.zs114.cn/udzsdyzx/",
+    "license": "Copyright — external source, permission not verified",
+    "license_url": "https://www.zs114.cn/udzsdyzx/",
+    "modifications": "No local copy; loaded from a third-party image endpoint. Subject and image availability require verification.",
+    "depicts": "达州市第一中学校校园照片参考；不主张确认具体学生时代所在校区。",
+    "caption": "达州市第一中学校 · 校园资料影像"
+  },
+  {
+    "id": "qide",
+    "file": "External image (web-linked, not hosted in repository)",
+    "title": "天利名城（天利中央广场）建筑外观图",
+    "author": "天利名城楼宇资料网站",
+    "source_url": "https://tianlimingcheng.cn/",
+    "license": "Copyright — external source, permission not verified",
+    "license_url": "https://tianlimingcheng.cn/",
+    "modifications": "No local copy; externally hosted photo. The address corroborates the building but the image endpoint availability requires verification.",
+    "depicts": "深圳南山区天利名城中央商务广场楼宇；启德南山校区位于C座。",
+    "caption": "深圳南山 · 天利中央广场"
   }
 ]
