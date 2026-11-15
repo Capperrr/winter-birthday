@@ -57,77 +57,21 @@
 .afterword-continue{display:block;width:min(390px,100%);min-height:62px;margin:30px auto 0;padding:13px 20px;border:1.5px solid #f6e1c28c;border-radius:35px;color:#2f3947;background:linear-gradient(125deg,#e7cbab,#f8efe0);box-shadow:0 12px 32px #090f1f4f;font:500 14px/1.7 var(--cn-serif);letter-spacing:.5px;animation:ending-pulse 2s infinite;cursor:pointer}
 .afterword-continue span{margin-left:7px}.afterword-continue:hover{transform:translateY(-2px)}.afterword-continue:active{transform:scale(.95)}
 .afterword-home{margin:13px auto 0;min-height:44px;opacity:.7;background:transparent!important;border-color:#a6a8a46f;font-size:10px}
-.app-shell[data-destination="finale"]{
- background-color:#f1e9dd;
- background-image:radial-gradient(ellipse 70% 70% at 95% 2%,#fff5dfa8,transparent 80%),linear-gradient(130deg,#f5efe3,#ddd4c8);
- color:#403b37;--nav-ink:#585049;--nav-active:#322b27;--nav-material:#fcf6e6dc;--nav-border:#b6a89c
-}
-.app-shell[data-destination="finale"] .landscape,.app-shell[data-destination="finale"] .landscape-shade,.app-shell[data-destination="finale"] .dream-landscape{opacity:0}
-.app-shell[data-destination="finale"] .brand{color:#554a44}
-.app-shell[data-destination="finale"] .destination-panel{display:block;overflow:hidden}
-.app-shell[data-destination="finale"] .winter-music-toggle{color:#544840;background:#fff5e5cc;border-color:#a98d77}
-.birthday-finale{position:relative;isolation:isolate;height:100%;overflow:auto;padding:16px clamp(15px,4vw,70px) 28px;background:transparent;color:#473b37}
-.birthday-finale[hidden]{display:none!important}
-.finale-paper-noise{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.36;background-image:radial-gradient(#7b6d5830 0.6px,transparent 1px);background-size:7px 7px}
-.finale-top{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#988474;font:600 9px/1.5 var(--sans);letter-spacing:1.3px}
-.finale-top button{border:1px solid #b2a08d;border-radius:30px;color:#68554f;background:#fff9efa3;min-height:44px;padding:9px 15px;cursor:pointer}
-.finale-story{position:relative;max-width:810px;margin:clamp(15px,4vh,48px) auto;text-align:center}
-.finale-index{color:#aa8d74;font:700 9px/1.8 var(--sans);letter-spacing:2.1px}
-.finale-story h2{margin:10px 0 7px;color:#5d413c;font:400 clamp(25px,4vw,43px)/1.35 var(--cn-serif)}
-.finale-help{margin:8px auto 16px;max-width:610px;color:#7a6a64;font:400 12px/1.75 var(--cn-serif)}
-.finale-help strong{display:block;color:#9e6270;font-weight:500;margin-top:4px}
-.finale-newspaper{position:relative;margin:auto;width:min(100%,610px);padding:15px 20px 24px;border:1px solid #b8a894;background:linear-gradient(15deg,#e8dcc9,#f8f0e2 60%,#e4d5be);box-shadow:0 15px 33px #7d61544d,0 4px 7px #5c42351d;transform:rotate(-1.15deg)}
-.finale-newspaper::before{content:"";position:absolute;inset:7px;border:1px solid #9e8b7566;pointer-events:none}
-.finale-newspaper::after{content:"";position:absolute;top:7px;bottom:7px;left:50%;width:1px;background:linear-gradient(transparent,#9b806e3b,transparent);pointer-events:none}
-.news-headline{display:block;color:#74604b;font:500 clamp(17px,3vw,28px)/1.1 'Cormorant Garamond',serif;letter-spacing:3px;border-top:3px double #a38c74;border-bottom:3px double #a38c74;padding:6px 0 5px}
-.news-date{display:block;color:#a18b76;font:600 8px/1.4 var(--sans);letter-spacing:2px;margin:10px auto}
-.finale-polaroid-mat{position:relative;width:min(100%,490px);padding:12px 12px 19px;margin:0 auto 10px;background:#fdf9f1;box-shadow:0 5px 20px #765f5366;transform:rotate(1deg)}
-.finale-photo-pieces{position:relative;width:100%;aspect-ratio:730/497;isolation:isolate;overflow:visible}
-.finale-piece{position:absolute;top:0;bottom:0;width:51%;z-index:3;margin:0;padding:0;border:0;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;filter:drop-shadow(1px 3px 3px #342a296b);background-image:linear-gradient(#fcf2dc07,#fcf2dc07),url('assets/finale-childhood.webp');background-image:linear-gradient(#fcf2dc07,#fcf2dc07),image-set(url('assets/finale-childhood-crisp.avif') type('image/avif'),url('assets/finale-childhood.webp') type('image/webp'));background-size:196% 100%;background-repeat:no-repeat;transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .5s,opacity .5s}
-.finale-piece:active{cursor:grabbing}
-.finale-piece.left-piece{left:0;background-position:left center;clip-path:polygon(0 0,99% 0,95% 7%,100% 17%,96% 27%,100% 39%,95% 50%,100% 62%,95% 73%,100% 84%,96% 94%,100% 100%,0 100%);transform:translateX(calc(-30% + var(--piece-dx,0px))) translateY(var(--piece-dy,0px)) rotate(-12deg)}
-.finale-piece.right-piece{right:0;background-position:right center;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,5% 93%,0 83%,5% 73%,0 62%,5% 51%,0 40%,4% 29%,0 17%,5% 7%);transform:translateX(calc(30% + var(--piece-dx,0px))) translateY(var(--piece-dy,0px)) rotate(12deg)}
-.finale-piece span{position:absolute;bottom:10px;left:12px;padding:6px 10px;border-radius:20px;background:#fff8e6c9;color:#8a6d5a;font:500 11px/1 var(--serif)}
-.finale-piece:focus-visible{outline:3px solid #bd7688;outline-offset:-3px}
-.finale-piece.is-found{filter:drop-shadow(0 0 11px #f0dcaa);z-index:5}
-.finale-piece.is-found.left-piece{transform:translateX(-6%) rotate(-3deg)}
-.finale-piece.is-found.right-piece{transform:translateX(6%) rotate(3deg)}
-.finale-newspaper[data-joined="true"] .finale-piece{transform:translate(0,0) rotate(0)!important;opacity:0;pointer-events:none}
-.finale-photo-whole{position:absolute;inset:0;background:url('assets/finale-childhood.webp') center/cover no-repeat;background-image:image-set(url('assets/finale-childhood-crisp.avif') type('image/avif'),url('assets/finale-childhood.webp') type('image/webp'));opacity:0;transform:scale(.94);filter:none;transition:opacity .75s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
-.finale-newspaper[data-joined="true"] .finale-photo-whole{opacity:1;transform:scale(1)}
-.finale-caption{display:flex;justify-content:space-between;gap:10px;margin-top:14px;color:#827168;font:400 11px/1.4 'Caveat',cursive}
-.finale-caption span:last-child{font:400 10px/1.5 var(--cn-serif)}
-.news-footline{font:italic 13px/1.3 'Cormorant Garamond',serif;color:#8c7968}
-.finale-surprise{margin:26px auto 0;position:relative;z-index:10;animation:finale-message .95s cubic-bezier(.2,.9,.1,1) both}
-.finale-surprise[hidden]{display:none!important}
-.finale-surprise>p{font:600 9px/1.4 var(--sans);letter-spacing:3px;color:#977787}
-.finale-surprise h3{margin:12px 0 8px;color:#6d4155;font:500 clamp(31px,5vw,57px)/1.55 var(--cn-serif);text-shadow:0 2px 0 #fff4e4}
-.finale-surprise h3 span{display:inline-block;margin-left:6px;color:#d57e8f;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:1.15em}
-.finale-english{display:block;font:italic clamp(18px,2.5vw,27px)/1.3 'Caveat',cursive;color:#8f6e72}
-.finale-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:20px auto}
-.finale-actions button{min-height:45px;padding:12px 19px;border:1px solid #987b7c;border-radius:25px;background:#fff7ed;color:#755659;font:11px/1.5 var(--cn-serif);cursor:pointer}
-.finale-actions #finale-home{background:#866176;color:white}
-@keyframes finale-message{from{opacity:0;transform:translateY(25px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-.finale-confetti{position:fixed;inset:0;width:100vw;height:100vh;z-index:12;pointer-events:none}
-.finale-balloons{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:11}
-.finale-balloon{position:absolute;left:var(--float-x);bottom:-25vh;width:clamp(26px,5vw,54px);height:clamp(37px,7vw,75px);border-radius:48% 52% 48% 50%;background:radial-gradient(circle at 32% 25%,#ffffffbf,transparent 24%),var(--float-color);box-shadow:inset -7px -9px 10px #311c2824,1px 4px 7px #755b6470;transform-origin:bottom center;animation:balloon-float var(--float-duration,7s) var(--float-delay,0s) linear forwards}
-.finale-balloon::before{content:"";position:absolute;left:50%;bottom:-7px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid var(--float-color);transform:translateX(-50%)}
-.finale-balloon::after{content:"";position:absolute;left:50%;top:100%;height:95px;border-left:1px solid #ad9292;transform:rotate(6deg)}
-@keyframes balloon-float{0%{transform:translateY(0) translateX(0) rotate(-8deg);opacity:.95}45%{transform:translateY(-65vh) translateX(12px) rotate(6deg)}100%{transform:translateY(-142vh) translateX(-18px) rotate(-8deg);opacity:.15}}
-@media(max-width:760px){
- .finale-top{font-size:7px;letter-spacing:.4px}
- .finale-story{margin:15px auto}
- .finale-story h2{font-size:28px}
- .finale-newspaper{padding:11px 13px 16px;transform:rotate(-.4deg)}
- .finale-polaroid-mat{padding:8px 8px 12px}
- .finale-piece.left-piece{transform:translateX(calc(-14% + var(--piece-dx,0px))) translateY(var(--piece-dy,0px)) rotate(-7deg)}
- .finale-piece.right-piece{transform:translateX(calc(14% + var(--piece-dx,0px))) translateY(var(--piece-dy,0px)) rotate(7deg)}
- .news-headline{font-size:18px}
- .finale-help{font-size:11px}
- .finale-surprise h3{font-size:32px}
- .finale-actions{margin-bottom:35px}
-}
-@media(max-width:400px){.finale-top{font-size:6px}.finale-caption{font-size:9px}.finale-caption span:last-child{font-size:8px}}
+/* The original collage becomes a tight, transparent lavender silhouette. */
+.app-shell[data-destination="finale"]{background:#f1e9dd;color:#403b37;--nav-ink:#585049;--nav-active:#322b27;--nav-material:#fcf6e6dc;--nav-border:#b6a89c}
+.app-shell[data-destination="finale"] :is(.landscape,.landscape-shade,.dream-landscape){opacity:0}
+.app-shell[data-destination="finale"] .brand{color:#554a44}.app-shell[data-destination="finale"] .destination-panel{display:block;overflow:hidden}.app-shell[data-destination="finale"] .winter-music-toggle{color:#544840;background:#fff5e5cc;border-color:#a98d77}
+.birthday-finale{position:relative;isolation:isolate;height:100%;overflow:auto;padding:16px clamp(15px,4vw,70px) 28px;background:transparent;color:#473b37}.birthday-finale[hidden]{display:none!important}.finale-paper-noise{display:none}
+.finale-top{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#988474;font:600 8px/1.5 var(--sans);letter-spacing:1.3px}.finale-top button{border:1px solid #b2a08d;border-radius:30px;color:#68554f;background:#fff9efa3;min-height:44px;padding:9px 15px;cursor:pointer}
+.finale-story{position:relative;max-width:810px;margin:clamp(15px,4vh,48px) auto;text-align:center}.finale-index{color:#9b8172;font:500 8px/1.8 var(--sans);letter-spacing:2.1px}.finale-story h2{margin:10px 0 7px;color:#644a50;font:400 clamp(25px,4vw,43px)/1.4 var(--cn-serif)}
+.finale-help{margin:12px auto 22px;max-width:610px;color:#7a6a64;font:400 12px/1.8 var(--cn-serif)}.finale-help strong{display:block;color:#8e688c;font-weight:500;margin-top:4px}
+.finale-newspaper{position:relative;margin:22px auto 0;width:min(100%,580px);padding:0;border:0;background:transparent;box-shadow:none;transform:none}.finale-newspaper::before,.finale-newspaper::after,.news-headline,.news-date,.news-footline{display:none}.finale-polaroid-mat{position:relative;width:100%;padding:0;margin:0;background:transparent;box-shadow:none;transform:none}.finale-photo-pieces{position:relative;width:100%;aspect-ratio:1520/1035;isolation:isolate;overflow:visible;filter:drop-shadow(0 9px 9px #70536c16)}
+.finale-piece{position:absolute;inset:0 auto 0 0;width:50%;z-index:3;margin:0;padding:0;border:0;cursor:grab;user-select:none;-webkit-user-select:none;background:url('assets/finale-girls-cutout.webp') left center/200% 100% no-repeat;transition:transform 800ms cubic-bezier(.22,.72,.22,1),opacity 400ms ease}.app-shell[data-destination='finale'] .finale-piece{touch-action:none}.finale-piece:active{cursor:grabbing}.finale-piece.left-piece{left:0;clip-path:polygon(0 0,100% 0,96% 12%,100% 24%,96% 36%,100% 49%,95% 63%,100% 75%,96% 89%,100% 100%,0 100%);transform:translate(calc(-12% + var(--piece-dx,0px)),var(--piece-dy,0px)) rotate(-7deg)}.finale-piece.right-piece{left:auto;right:0;background-position:right center;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,4% 89%,0 75%,5% 63%,0 49%,4% 36%,0 24%,4% 12%);transform:translate(calc(12% + var(--piece-dx,0px)),var(--piece-dy,0px)) rotate(7deg)}.finale-piece span{position:absolute;bottom:6%;left:12%;display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#eee3f2e0;color:#806382;font:500 11px/1 var(--serif)}
+.finale-piece.is-found{transform:translate(0,0) rotate(0)!important}.finale-newspaper[data-joined="true"] .finale-piece{transform:none!important;opacity:0;pointer-events:none}.finale-photo-whole{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.97);transition:opacity 650ms ease,transform 850ms cubic-bezier(.22,.72,.22,1)}.finale-newspaper[data-joined="true"] .finale-photo-whole{opacity:1;transform:none}.finale-caption{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 20px;margin-top:15px;color:#9d8893;font:400 10px/1.6 var(--sans)}.finale-caption span:first-child{letter-spacing:1.1px;font-size:7px}.finale-caption span:last-child{font-family:var(--cn-serif)}
+.finale-surprise{margin:29px auto 0;position:relative;z-index:10;animation:finale-message 700ms cubic-bezier(.22,.72,.22,1) both}.finale-surprise[hidden]{display:none!important}.finale-surprise>p{font:500 8px/1.4 var(--sans);letter-spacing:3px;color:#9e8297}.finale-surprise h3{margin:12px 0 8px;color:#6d4155;font:500 clamp(29px,4vw,49px)/1.65 var(--cn-serif)}.finale-surprise h3 span{margin-left:6px;color:#a77394;font:inherit}.finale-english{display:block;font:italic clamp(18px,2.5vw,25px)/1.4 'Caveat',cursive;color:#987d88}.finale-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:24px auto}.finale-actions button{min-height:45px;padding:12px 19px;border:1px solid #ab919d;border-radius:25px;background:#fff7ed;color:#755669;font:11px/1.5 var(--cn-serif);cursor:pointer}.finale-actions #finale-home{background:#866176;color:white}
+@keyframes finale-message{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.finale-confetti{position:fixed;inset:0;width:100vw;height:100vh;z-index:12;pointer-events:none}.finale-balloons{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:11}.finale-balloon{position:absolute;left:var(--float-x);bottom:-25vh;width:clamp(26px,5vw,54px);height:clamp(37px,7vw,75px);border-radius:48% 52% 48% 50%;background:radial-gradient(circle at 32% 25%,#ffffffbf,transparent 24%),var(--float-color);box-shadow:inset -7px -9px 10px #311c2824;transform-origin:bottom center;animation:balloon-float var(--float-duration,7s) var(--float-delay,0s) linear forwards}.finale-balloon::before{content:'';position:absolute;left:50%;bottom:-7px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid var(--float-color);transform:translateX(-50%)}.finale-balloon::after{content:'';position:absolute;left:50%;top:100%;height:95px;border-left:1px solid #ad9292;transform:rotate(6deg)}@keyframes balloon-float{0%{transform:translateY(0) translateX(0) rotate(-8deg);opacity:.95}45%{transform:translateY(-65vh) translateX(12px) rotate(6deg)}100%{transform:translateY(-142vh) translateX(-18px) rotate(-8deg);opacity:.15}}
+@media(max-width:760px){.finale-top{font-size:7px;letter-spacing:.4px}.finale-story{margin:22px auto}.finale-story h2{font-size:27px}.finale-help{font-size:11px;max-width:310px;margin-bottom:28px}.finale-newspaper{width:96%}.finale-piece.left-piece{transform:translate(calc(-5% + var(--piece-dx,0px)),var(--piece-dy,0px)) rotate(-5deg)}.finale-piece.right-piece{transform:translate(calc(5% + var(--piece-dx,0px)),var(--piece-dy,0px)) rotate(5deg)}.finale-surprise h3{font-size:31px}.finale-actions{margin-bottom:35px}}@media(max-width:400px){.finale-top{font-size:6px}.finale-caption span:last-child{font-size:9px}}
 /* Global press and tap affordance; no generic hover noises on touchscreen. */
 .app-shell button:not(:disabled),.app-shell a[href],.portrait-lightbox button{touch-action:manipulation;-webkit-tap-highlight-color:#a8858244}
 /* Drag handles must override the generic tap-only rule, especially on iOS Safari. */
@@ -162,28 +106,3 @@
 .app-shell[data-destination='opening'] .keepsake-envelope .string-knot:focus-visible svg {filter:drop-shadow(0 0 2px #a1ac8a)}
 /* The whole '25岁' uses the same Chinese serif typeface; no foreign serif on 岁. */
 .finale-surprise h3 span {font-family:inherit!important;font-size:1em!important;font-weight:inherit!important;letter-spacing:inherit!important;line-height:inherit!important}
-/* Soft, torn portrait contours: hide the square white outer paper and retain the people, cake and lilac outline. */
-.finale-piece,
-.finale-photo-whole {
-  -webkit-mask-image:
-    radial-gradient(ellipse 33% 57% at 30% 43%, #000 76%,transparent 98%),
-    radial-gradient(ellipse 34% 57% at 69% 39%, #000 76%,transparent 98%),
-    radial-gradient(ellipse 50% 28% at 49% 79%, #000 73%,transparent 98%);
-  mask-image:
-    radial-gradient(ellipse 33% 57% at 30% 43%, #000 76%,transparent 98%),
-    radial-gradient(ellipse 34% 57% at 69% 39%, #000 76%,transparent 98%),
-    radial-gradient(ellipse 50% 28% at 49% 79%, #000 73%,transparent 98%);
-  -webkit-mask-repeat:no-repeat;
-  mask-repeat:no-repeat;
-}
-.finale-polaroid-mat {background:linear-gradient(145deg,#f6f1e7,#e8dcc8);box-shadow:0 6px 22px #78675539}
-.finale-newspaper {border-radius:2px;box-shadow:0 10px 27px #7d61543a}
-.finale-newspaper::before {border-style:dashed;border-color:#a890734d}
-.finale-photo-pieces {filter:drop-shadow(0 4px 3px #6d596342)}
-
-/* Each torn half keeps its face and cake area while softening the outer squared corners. */
-.finale-piece {
- -webkit-mask-image:radial-gradient(ellipse 79% 71% at 50% 47%,#000 77%,transparent 98%);
- mask-image:radial-gradient(ellipse 79% 71% at 50% 47%,#000 77%,transparent 98%);
-}
-@media(prefers-reduced-motion:reduce){.finale-piece,.finale-photo-whole{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}}

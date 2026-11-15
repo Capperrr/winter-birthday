@@ -1,0 +1,313 @@
+{
+  "image": "alpine-villagers.webp",
+  "width": 1024,
+  "height": 1024,
+  "columns": 4,
+  "rows": 4,
+  "cellWidth": 256,
+  "cellHeight": 256,
+  "logicalCellWidth": 64,
+  "logicalCellHeight": 64,
+  "pixelScale": 4,
+  "alpha": true,
+  "facing": "right-front-three-quarter",
+  "rowData": [
+    {
+      "row": 0,
+      "character": "hiker-sage",
+      "frames": [
+        {
+          "column": 0,
+          "cell": [
+            0,
+            0,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            72,
+            48,
+            184,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 1,
+          "cell": [
+            256,
+            0,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            76,
+            44,
+            172,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 2,
+          "cell": [
+            512,
+            0,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            76,
+            48,
+            180,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 3,
+          "cell": [
+            768,
+            0,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            76,
+            44,
+            172,
+            240
+          ],
+          "footBaseline": 240
+        }
+      ]
+    },
+    {
+      "row": 1,
+      "character": "hiker-cream",
+      "frames": [
+        {
+          "column": 0,
+          "cell": [
+            0,
+            256,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            72,
+            48,
+            184,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 1,
+          "cell": [
+            256,
+            256,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            76,
+            44,
+            172,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 2,
+          "cell": [
+            512,
+            256,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            76,
+            48,
+            180,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 3,
+          "cell": [
+            768,
+            256,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            76,
+            44,
+            172,
+            240
+          ],
+          "footBaseline": 240
+        }
+      ]
+    },
+    {
+      "row": 2,
+      "character": "shepherd",
+      "frames": [
+        {
+          "column": 0,
+          "cell": [
+            0,
+            512,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            80,
+            28,
+            184,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 1,
+          "cell": [
+            256,
+            512,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            80,
+            28,
+            180,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 2,
+          "cell": [
+            512,
+            512,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            80,
+            28,
+            184,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 3,
+          "cell": [
+            768,
+            512,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            84,
+            28,
+            180,
+            240
+          ],
+          "footBaseline": 240
+        }
+      ]
+    },
+    {
+      "row": 3,
+      "character": "baker",
+      "frames": [
+        {
+          "column": 0,
+          "cell": [
+            0,
+            768,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            84,
+            32,
+            184,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 1,
+          "cell": [
+            256,
+            768,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            88,
+            32,
+            176,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 2,
+          "cell": [
+            512,
+            768,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            88,
+            32,
+            184,
+            240
+          ],
+          "footBaseline": 240
+        },
+        {
+          "column": 3,
+          "cell": [
+            768,
+            768,
+            256,
+            256
+          ],
+          "visibleBounds": [
+            88,
+            32,
+            176,
+            240
+          ],
+          "footBaseline": 240
+        }
+      ]
+    }
+  ],
+  "generatedSource": "/workspace/generated_images/exec-c8e543f9-d714-4a74-b1ff-a4938f04d84d.png",
+  "generatedSourceDimensions": [
+    1254,
+    1254
+  ],
+  "transformations": [
+    "Nearest-neighbor resize 1254x1254 to logical 256x256",
+    "Nearest-neighbor upscale to 1024x1024",
+    "PNG and lossless WebP format conversion"
+  ],
+  "qualityNotes": [
+    "All sixteen frames are present and fully contained in separate square cells.",
+    "Character identities, clothing and props are visually coherent across each row.",
+    "Four frames form a modest walk cycle; columns 1 and 3 have similar extended-leg silhouettes, and columns 2 and 4 similar passing silhouettes.",
+    "Frames are generated art, not hand-authored animation. Use rowData visibleBounds and footBaseline if exact ground placement is required.",
+    "Pixel colors use simple shading and an alpha outline, with no painted ground shadows."
+  ]
+}

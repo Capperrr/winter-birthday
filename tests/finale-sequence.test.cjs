@@ -1,0 +1,15 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+function run(reduced){const nodes=new Map(),frames=new Map(),timers=new Map(),events=[];let id=0,now=0;
+ class Element{constructor(name){this.id=name;this.events={};this.dataset={};this.style={setProperty(){},removeProperty(){}};this.classList={add(){},remove(){}};this.hidden=false;this.disabled=false;nodes.set(name,this)}addEventListener(k,f){(this.events[k]||=[]).push(f)}fire(k,e={}){for(const f of this.events[k]||[])f(e)}setAttribute(){}focus(){}scrollIntoView(){}replaceChildren(){}appendChild(){}getContext(){return new Proxy({},{get:(t,k)=>typeof t[k]==='undefined'?()=>{}:t[k],set:(t,k,v)=>(t[k]=v,true)})}}
+ for(const name of ['main','portrait-lightbox','portrait-large-image','portrait-lightbox-title','portrait-lightbox-zh','portrait-counter','birthday-finale','finale-newspaper','finale-help','finale-surprise','finale-piece-left','finale-piece-right','finale-confetti','finale-balloons','finale-replay'])new Element(name);nodes.get('main').dataset.destination='finale';
+ const doc={listeners:{},getElementById:id=>nodes.get(id),querySelectorAll:()=>[],addEventListener(k,f){(this.listeners[k]||=[]).push(f)},dispatchEvent(e){events.push(e.type);for(const f of this.listeners[e.type]||[])f(e)},createElement:()=>new Element('created')};
+ const win={innerWidth:1024,innerHeight:768,devicePixelRatio:1,matchMedia:()=>({matches:reduced}),setTimeout(fn,delay){const n=++id;timers.set(n,{fn,delay});return n}};
+ const context={document:doc,window:win,performance:{now:()=>now},CustomEvent:class{constructor(type){this.type=type}},requestAnimationFrame(fn){const n=++id;frames.set(n,fn);return n},cancelAnimationFrame:n=>frames.delete(n),Math,console};
+ vm.runInNewContext(fs.readFileSync('dist/interactive-finale.js','utf8'),context);
+ const count=()=>events.filter(v=>v==='winter:finale-finished').length;
+ nodes.get('finale-piece-left').fire('click');assert.equal(count(),0);nodes.get('finale-piece-right').fire('click');assert.equal(count(),0,'Phone cannot open at initial join before its celebration sequence');
+ for(const[n,timer]of [...timers])if(timer.delay<=720){timers.delete(n);timer.fn()}
+ if(!reduced){assert.equal(count(),0);let ticks=0;while(frames.size&&ticks<1500){now+=16;const batch=[...frames.values()];frames.clear();batch.forEach(fn=>fn(now));ticks++;}assert.ok(ticks>580,'Fireworks actually run before completion event');}
+ assert.equal(count(),1);assert.equal(nodes.get('finale-newspaper').dataset.joined,'true');nodes.get('finale-replay').fire('click');assert.ok(events.includes('winter:finale-reset'));nodes.get('finale-piece-left').fire('click');nodes.get('finale-piece-right').fire('click');nodes.get('main').dataset.destination='home';for(const t of timers.values())t.fn();assert.equal(count(),1,'Navigating away cancels delayed completion');
+}
+run(false);run(true);console.log('PASS: Two-piece join → full finite fireworks → single phone event, reduced-motion path, replay and route cancellation. Simulated canvas/DOM, not browser rendering.');

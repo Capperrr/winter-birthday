@@ -28,7 +28,9 @@
   let portraitIndex = 0, lastPin = null;
   // Interaction feedback remains visual only; background music is controlled separately.
   let celebrated = false, animationId = 0, particles = [], lastFrame = 0, effectEnd = 0, activeDrag = null;
+  let completionSent = false;
   const pieces = {left:false,right:false};
+  function finishCelebration(){if(completionSent||!celebrated||shell.dataset.destination!=='finale')return;completionSent=true;document.dispatchEvent(new CustomEvent('winter:finale-finished'));}
   const palette = ['#ef889c','#eeb868','#8db8a5','#b5a0d1','#95bed4','#f1d5a1','#e5aabb'];
   function quietMotion(){ return reduced.matches || shell?.dataset.motion === 'off'; }
   document.addEventListener('pointerdown',event=>{
@@ -81,6 +83,7 @@
   if(!finalPage||!newspaper||!left||!right)return;
 
   function resetFinale(){
+    completionSent=false;document.dispatchEvent(new CustomEvent('winter:finale-reset'));
     cancelAnimationFrame(animationId);animationId=0;particles=[];celebrated=false;
     pieces.left=false;pieces.right=false;activeDrag=null;
     for(const el of [left,right]){
@@ -171,11 +174,11 @@
     }
   }
   function startConfetti(){
-    if(quietMotion())return;
+    if(quietMotion()){finishCelebration();return;}
     const {w,h}=resizeCanvas();particles=[];lastFrame=0;effectEnd=performance.now()+9600;
     for(let i=0;i<105;i++)particles.push({kind:'paper',x:Math.random()*w,y:-Math.random()*h*.7,vx:(Math.random()-.5)*2,vy:1+Math.random()*2.2,life:1,decay:0,color:palette[i%palette.length],size:4+Math.random()*6,spin:Math.random()*6.28});
     createBurst(w*.25,h*.30,35,palette,1);createBurst(w*.74,h*.23,35,palette,1);
-    const ctx=confettiCanvas.getContext('2d');if(!ctx)return;
+    const ctx=confettiCanvas.getContext('2d');if(!ctx){finishCelebration();return;}
     const draw=now=>{
       if(shell.dataset.destination!=='finale'){animationId=0;ctx.clearRect(0,0,w,h);return}
       const dt=Math.min(2.5,Math.max(.65,(now-(lastFrame||now-16))/16));lastFrame=now;
@@ -194,7 +197,7 @@
       }
       ctx.globalAlpha=1;
       if(now<effectEnd||particles.some(p=>p.kind==='spark'))animationId=requestAnimationFrame(draw);
-      else {animationId=0;ctx.clearRect(0,0,w,h)}
+      else {animationId=0;ctx.clearRect(0,0,w,h);finishCelebration()}
     };
     animationId=requestAnimationFrame(draw);
   }
