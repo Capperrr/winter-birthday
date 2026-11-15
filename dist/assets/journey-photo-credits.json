@@ -41,27 +41,27 @@
   {
     "id": "school",
     "file": "journey-school-user.webp",
-    "title": "达州市第一中学校校门（用户提供）",
-    "author": "Gwen 提供照片",
+    "title": "达州市第一中学校校门",
+    "author": "私人影像",
     "source_url": "",
-    "license": "User-provided image; rights retained by its owner",
+    "license": "Private image; original rights holder retains rights",
     "license_url": "",
     "modifications": "Cropped to landscape format, resized, and converted to WebP for on-site display.",
     "depicts": "达州市第一中学校门的红色题字标志，1906年字样可见。",
-    "caption": "达州一中 · Gwen 提供的校门照片",
+    "caption": "达州一中 · 校门",
     "mobile_file": "journey-school-user.webp"
   },
   {
     "id": "qide",
     "file": "journey-qide-user.webp",
-    "title": "深圳夜间商业楼宇街景（用户提供）",
-    "author": "Gwen 提供照片",
+    "title": "深圳夜间商业楼宇街景",
+    "author": "私人影像",
     "source_url": "",
-    "license": "User-provided image; rights retained by its owner",
+    "license": "Private image; original rights holder retains rights",
     "license_url": "",
     "modifications": "Cropped to landscape format, resized, and converted to WebP for on-site display.",
     "depicts": "深圳夜景及商业楼宇外立面；并不宣称这是启德办公室或天利名城内部。",
-    "caption": "深圳夜景 · Gwen 提供的照片",
+    "caption": "深圳夜景 · 夜景",
     "mobile_file": "journey-qide-user.webp"
   }
 ]
