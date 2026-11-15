@@ -39,3 +39,26 @@
   .winter-music-panel {top:108px;right:12px;width:min(345px,calc(100% - 24px))}
 }
 @media(max-width:370px){.winter-music-panel {top:108px}}
+
+/* The four-track selector is deliberately part of the single floating music panel. */
+.winter-music-panel {max-height:min(560px,calc(100svh - 95px));overflow:auto;overscroll-behavior:contain;}
+.winter-music-tracks {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:11px 0 12px}
+.winter-music-tracks button {
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+ min-width:0;min-height:52px;padding:9px 10px;
+ border:1px solid #c8cec4;border-radius:8px;
+ background:#fffef9b8;color:#5e6c61;text-align:left;
+ transition:background .18s,border-color .18s,transform .18s;
+}
+.winter-music-tracks button:hover {background:#eff2e9;border-color:#aabaaa}
+.winter-music-tracks button:active {transform:scale(.985)}
+.winter-music-tracks button[aria-pressed="true"] {
+ border-color:#7f9883;background:linear-gradient(140deg,#dee8d9,#f1eee2);
+ color:#354f43;box-shadow:inset 0 0 0 1px #a5baa065;
+}
+.winter-music-tracks button span {font-size:10px;line-height:1.4;font-weight:500;overflow-wrap:anywhere}
+.winter-music-tracks button small {margin-top:4px;font-size:7px;letter-spacing:1px;color:#87978d}
+@media(max-width:760px) {
+ .winter-music-panel {max-height:calc(100svh - 126px)}
+ .winter-music-tracks button {min-height:48px}
+}
