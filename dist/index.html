@@ -20,11 +20,13 @@
   <link rel="stylesheet" href="nature-atlas.css?v=cinema-2">
   <link rel="stylesheet" href="keepsake.css?v=handmade-2">
   <link rel="stylesheet" href="journey.css?v=personal-photos-2">
+  <link rel="stylesheet" href="music.css?v=winter-1">
   <script src="app.js?v=journey-1" defer></script>
   <script src="cake-scene.js?v=ritual-2" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
   <script src="journey.js?v=personal-photos-2" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
+  <script src="music.js?v=winter-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -63,6 +65,9 @@
         </button>
       </nav>
       <div class="header-actions">
+      <button type="button" id="winter-music-toggle" class="winter-music-toggle" aria-label="播放背景音乐" aria-pressed="false" aria-expanded="false" aria-controls="winter-music-panel" title="播放音乐" data-playing="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><path d="M9 8 20 6"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/></svg>
+      </button>
       <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false" aria-label="暂停氛围动效" title="暂停氛围动效" hidden>
         <svg class="motion-pause-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5v10M13 5v10"/></svg>
         <svg class="motion-play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m7 4 8 6-8 6V4Z"/></svg>
@@ -73,6 +78,17 @@
       </button>
       </div>
     </header>
+
+    <aside id="winter-music-panel" class="winter-music-panel" aria-label="背景音乐" hidden>
+      <div class="winter-music-panel-head">
+        <div><p class="winter-music-overline">A LITTLE SONG FOR WINTER</p><p class="winter-music-title">this is what winter feels like</p><p class="winter-music-byline">JVKE · original song</p></div>
+        <button id="winter-music-close" type="button" class="winter-music-close" aria-label="收起音乐播放器（不影响播放）">×</button>
+      </div>
+      <iframe id="winter-music-frame" class="winter-music-player" title="JVKE · this is what winter feels like，SoundCloud 官方播放器" allow="autoplay" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <p class="winter-music-hint">点击音乐按钮开始；如果 iPad 没有声音，请点播放器里的播放键。收起后仍可继续听。</p>
+      <a class="winter-music-credit" href="https://soundcloud.com/itsjvke/this-is-what-winter-feels-like" target="_blank" rel="noopener noreferrer">在 SoundCloud 收听原曲</a>
+      <p id="winter-music-status" class="sr-only" aria-live="polite"></p>
+    </aside>
 
     <div class="page-content" id="page-content" tabindex="-1">
       <section class="page-panel home-panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
