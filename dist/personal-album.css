@@ -178,3 +178,47 @@
 }
 .app-shell[data-motion='off'] .winter-polaroid {opacity:1;transform:rotate(var(--lean));transition:none}
 .app-shell[data-motion='off'][data-destination='afterword'] :is(.afterword-line,.afterword-final,.afterword-home) {animation:none!important;opacity:1;transform:none;filter:none}
+
+/* THE NIGHT WE MET — a natural, restrained continuation of WINTER's mountain world. */
+.app-shell[data-destination='afterword'] {
+  background:
+    radial-gradient(ellipse 33% 29% at 77% 17%,#e1daba37,transparent 68%),
+    radial-gradient(ellipse 88% 90% at 46% 110%,#45645c5e,transparent 70%),
+    radial-gradient(ellipse 80% 60% at 5% 20%,#36545131,transparent 80%),
+    linear-gradient(163deg,#172e32,#1b3438 58%,#203b3b);
+  --nav-material:#17383780;--nav-border:#d7dec754;
+  --nav-ink:#d9e7db;--nav-active:#fff7e7;--nav-selected:#dce4d51f;
+}
+.journey-afterword {isolation:isolate;overflow-y:auto}
+.journey-afterword::before,
+.journey-afterword::after {content:'';position:absolute;left:0;right:0;z-index:-1;pointer-events:none}
+.journey-afterword::before {
+  bottom:-1px;height:34%;opacity:.46;
+  background:linear-gradient(180deg,#5b796f,#1b3b39);
+  clip-path:polygon(0 61%,7% 48%,13% 55%,22% 24%,32% 53%,40% 34%,50% 60%,58% 43%,65% 51%,76% 19%,85% 44%,94% 33%,100% 51%,100% 100%,0 100%);
+}
+.journey-afterword::after {
+  bottom:-1px;height:22%;opacity:.74;
+  background:linear-gradient(180deg,#2b5750,#102b30);
+  clip-path:polygon(0 47%,12% 70%,18% 48%,29% 65%,40% 45%,51% 73%,58% 58%,70% 67%,81% 44%,89% 58%,100% 40%,100% 100%,0 100%);
+}
+.journey-afterword .afterword-stars {
+  z-index:-1;opacity:.54;
+  background:
+    radial-gradient(circle at 76% 17%,#f6efd4b6 0 4px,#e0e2c744 6px,transparent 65px),
+    radial-gradient(circle at 17% 19%,#f9ead69c 0 1px,transparent 2px),
+    radial-gradient(circle at 80% 16%,#f9ead68a 0 1px,transparent 2px),
+    radial-gradient(circle at 61% 71%,#f9ead65b 0 1px,transparent 2px),
+    radial-gradient(circle at 27% 77%,#f9ead666 0 1px,transparent 2px);
+}
+.afterword-overline{color:#d6c5a7;letter-spacing:2.4px}
+.afterword-copy h2{color:#f6eddb;text-shadow:0 3px 12px #0c232940}
+.afterword-line{color:#e7ebe1;text-shadow:0 1px 5px #102b2f75}
+.afterword-line.afterword-emphasis,.afterword-final{color:#e8cfaa}
+.afterword-continue{box-shadow:0 9px 28px #0d272d59}
+@media(max-width:760px){
+ .journey-afterword::before{height:22%;opacity:.34}
+ .journey-afterword::after{height:14%;opacity:.47}
+ .afterword-overline{letter-spacing:1.4px}
+}
+@media(prefers-reduced-motion:reduce){.journey-afterword::before,.journey-afterword::after{animation:none}}
