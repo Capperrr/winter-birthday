@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#192a2d">
-<meta name="description" content="Gwen 走过 Winter 熟悉的城市、校园与深圳启德九楼。照片式、逐站推进的生日旅程。">
+<meta name="description" content="Gwen 走过 Winter 熟悉的城市、校园与深圳启德九楼。可行走的3D人生旅程与电影化转场。">
 <title>For WINTER · 你走过的路</title>
-<link rel="stylesheet" href="./life.css?v=3">
-<script src="./life.js?v=3" defer></script>
+<link rel="stylesheet" href="./life.css?v=4">
+<script src="./life.js?v=4" defer></script>
 </head>
 <body>
 <main class="experience" id="experience" aria-label="Winter 人生地点互动旅程">
@@ -20,10 +20,10 @@
   </div>
 
   <header class="topbar">
-    <div class="brand"><span class="brand-icon">W</span><div><span>FOR WINTER</span><small>THE PLACES THAT MADE YOU</small></div></div>
+    <div class="brand"><span class="brand-icon">W</span><div><span>FOR WINTER</span><small>THE PLACES THAT MADE YOU · 3D JOURNEY</small></div></div>
     <div class="header-actions">
       <button class="text-btn" id="sound" type="button" aria-pressed="false" title="开启或关闭声音">声音关闭</button>
-      <button class="text-btn" id="replay" type="button" title="从达州重新开始">重新旅行</button>
+      <button class="text-btn" id="replay" type="button" title="从达州重新开始">重新旅行</button><button class="text-btn" id="view-mode" type="button" aria-pressed="true">3D 探索：开</button>
       <a class="text-btn back" id="leave" href="https://for-winter-capperrr.alluringostrich4.chatgpt.site/#letter">返回生日网页</a>
     </div>
   </header>
@@ -39,7 +39,7 @@
     <div class="scene-detail" id="scene-detail" hidden></div>
   </section>
 
-  <div class="hotspot-wrap" id="hotspots" aria-label="场景中可以调查的地点"></div>
+  <div class="hotspot-wrap" id="hotspots" aria-label="场景中可以调查的地点"></div><p id="world-hint" class="world-hint">拖动看四周 · 轻点地面前进 · 左侧方向键移动</p>
 
   <div class="floor-indicator" id="floor-indicator" hidden>
     <span class="floor-label">ELEVATOR · FLOOR</span>
