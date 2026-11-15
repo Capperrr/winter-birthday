@@ -366,7 +366,8 @@ export class WinterWorld3D{
     this.position.z+=(-Math.cos(yaw)*forward+Math.sin(yaw)*side)*speed*dt;
   }
   this.position.x=clamp(this.position.x,-9,9);
-  this.position.z=clamp(this.position.z,this.chapter===4&&this.sub===3?-3:-.8,14);
+  const closestZ=this.chapter===4?(this.sub===2?-16:this.sub===3?-8:this.sub===4?-14:-10):(this.chapter===0?-7:-9);
+  this.position.z=clamp(this.position.z,closestZ,14);
   this.angle.yaw=mix(this.angle.yaw,this.target.yaw,1-Math.exp(-dt*12));
   this.angle.pitch=mix(this.angle.pitch,this.target.pitch,1-Math.exp(-dt*11));
   this.camera.position.set(this.position.x,1.65,this.position.z);
