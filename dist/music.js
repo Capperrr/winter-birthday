@@ -22,7 +22,6 @@
   };
   let currentSong = 'moon';
   let playing = false;
-  let selectedFileFor = '';
   const localSources = new Map();
   const audio = new Audio();
   audio.preload = 'metadata';
@@ -73,7 +72,7 @@
     playing = false;
     currentSong = id;
     if (localSources.has(id)) audio.src = localSources.get(id);
-    else { audio.removeAttribute('src'); audio.load(); }
+    else { audio.removeAttribute('src'); }
     refresh(); sync(); showPanel();
     announce('已选择《' + tracks[id].title + '》。可点击官方试听或选择本机文件。');
   }
@@ -84,7 +83,8 @@
       return;
     }
     if (audio.paused) {
-      audio.src = localSources.get(currentSong);
+      const target = localSources.get(currentSong);
+      if (audio.src !== target) audio.src = target;
       try { await audio.play(); } catch (_) { showPanel(); announce('浏览器没有开始播放。请重新点击播放键。'); }
     } else {
       audio.pause();
@@ -112,7 +112,6 @@
     if (previous) URL.revokeObjectURL(previous);
     const url = URL.createObjectURL(file);
     localSources.set(currentSong,url);
-    selectedFileFor = currentSong;
     audio.src = url;
     refresh();
     fileStatus.textContent = '已选择《' + tracks[currentSong].title + '》的本机音频，正在尝试播放。';
