@@ -1,16 +1,17 @@
 import * as THREE from './vendor/three.module.mjs';
 import {HOTSPOTS,NINTH_FLOOR,OBSTACLES} from './game-core.mjs';
+import {applyCinematicStreet} from './cinematic-street.mjs';
 
 // Scenery is replaceable independently of collision, objectives and save data.
 export function createWorld({manager=new THREE.LoadingManager()}={}) {
-  const scene=new THREE.Scene();scene.background=new THREE.Color('#91a5af');scene.fog=new THREE.Fog('#91a5af',38,145);
+  const scene=new THREE.Scene();scene.background=new THREE.Color('#84969e');scene.fog=new THREE.Fog('#899a9e',58,148);
   const rayMeshes=[],targets=new Map(),resources=new Set(),presses=[];
   const materials={};let textureCount=0;
   const material=(name,color,roughness=.7,metalness=0)=>materials[name]=new THREE.MeshStandardMaterial({color,roughness,metalness});
-  material('stone','#88908c',.85);material('wall','#d6d1c4',.8);material('wood','#685b4d',.65);
-  material('dark','#233b41',.62,.25);material('metal','#8c999e',.32,.78);material('brass','#b5a06a',.33,.7);
+  material('stone','#899491',.88);material('wall','#b1b5ae',.85);material('wood','#685f54',.72);
+  material('dark','#2a4045',.66,.18);material('metal','#778789',.36,.56);material('brass','#ae9b78',.42,.52);
   material('glass','#95bec7',.15,.22);materials.glass.transparent=true;materials.glass.opacity=.27;materials.glass.depthWrite=false;
-  material('floor','#b7b8ac',.48,.05);material('green','#375b45',.83);material('soil','#3b4138',1);
+  material('floor','#9ca4a1',.72,.04);material('green','#3a604d',.91);material('soil','#3b4138',1);
   material('white','#e7e1cf',.72);material('ink','#243f36',.8);material('black','#121c23',.8);
   if(typeof document!=='undefined') {
     const loader=new THREE.TextureLoader(manager);
@@ -25,8 +26,8 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
       mat.normalScale.set(.28,.28);
     }
   }
-  const hemi=new THREE.HemisphereLight('#d1e2ec','#657469',2.1);scene.add(hemi);
-  const sun=new THREE.DirectionalLight('#fff0d4',2.4);sun.position.set(-20,35,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=24;sun.shadow.camera.bottom=-24;sun.shadow.camera.far=100;sun.shadow.bias=-.0006;scene.add(sun);
+  const hemi=new THREE.HemisphereLight('#d9e3e9','#48534c',1.22);scene.add(hemi);
+  const sun=new THREE.DirectionalLight('#f0dcc4',1.54);sun.position.set(-20,35,18);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-25;sun.shadow.camera.right=25;sun.shadow.camera.top=24;sun.shadow.camera.bottom=-24;sun.shadow.camera.far=100;sun.shadow.bias=-.0006;scene.add(sun);
   function lamp(parent,x,y,z,intensity=35,color='#fff0d2',range=10) {const light=new THREE.PointLight(color,intensity,range,1.5);light.position.set(x,y,z);parent.add(light);return light;}
   function register(mesh,id,ray=true) {if(id){mesh.userData.hotspot=id;if(!targets.has(id))targets.set(id,mesh);}if(ray)rayMeshes.push(mesh);resources.add(mesh.geometry);return mesh;}
   function box(parent,size,at,mat,id=null,{ray=true,shadow=false}={}) {
@@ -42,7 +43,11 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
   function panel(parent,id,lines,width,height,at,rotation=0,opts={}) {
     const group=new THREE.Group();group.name=id||'sign';group.position.set(...at);group.rotation.y=rotation;parent.add(group);
     box(group,[width+.10,height+.10,.08],[0,0,-.05],'metal',id);
-    const text=makeText(lines,opts),mat=new THREE.MeshBasicMaterial({map:text.texture,toneMapped:false});resources.add(mat);
+    // Canvas dimensions follow the physical face ratio: a very wide entrance sign
+    // must not stretch the text texture horizontally on the building.
+    const textureH=Math.min(512,Math.max(180,Math.round(2048/(width/height))));
+    const textureW=Math.min(2048,Math.max(256,Math.round(textureH*width/height)));
+    const text=makeText(lines,{...opts,width:textureW,height:textureH}),mat=new THREE.MeshBasicMaterial({map:text.texture,toneMapped:false});resources.add(mat);
     const face=new THREE.Mesh(new THREE.PlaneGeometry(width,height),mat);face.position.z=.005;group.add(face);register(face,id);return {group,face,paint:text.paint};
   }
   function button(parent,id,at,rotation=0,label='9F') {
@@ -72,7 +77,6 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
   box(street,[3.9,.48,.72],[-6.75,.35,12.15],'wall',null,{shadow:true});box(street,[3.95,.12,.78],[-6.75,.66,12.15],'wood',null,{shadow:true});
   box(street,[2.4,.8,1],[6.2,.4,8.2],'wall',null,{shadow:true});plant(street,6.2,.8,8.2,1);
   for(let i=0;i<5;i++)cylinder(street,.10,.11,.75,[-10.8+i*2.1,.37,17.7],'metal');
-  for(const x of [-8.8,8.8]){cylinder(street,.15,.22,5.5,[x,2.75,5],'wood');for(let i=0;i<5;i++){const leaf=new THREE.Mesh(new THREE.SphereGeometry(1,10,6),materials.green);leaf.scale.set(1.8,.5,.6);leaf.position.set(x+Math.cos(i*1.25)*.7,5.6,5+Math.sin(i*1.25)*.7);leaf.rotation.y=-i*1.25;street.add(leaf);register(leaf,null,false);}}
   panel(street,'street-sign',['天利中央广场 · 二期','C 座入口  ↑','B 座 ←     → 广场'],1.8,1.35,HOTSPOTS['street-sign'].at,0,{font:64});
   box(street,[.10,1.1,.10],[-3.2,.6,7],'metal');
   panel(street,'wrong-entry',['B 座','BLOCK B'],1.35,1.5,HOTSPOTS['wrong-entry'].at,0,{font:90});
@@ -95,19 +99,26 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
   for(let x=-6.3;x<=6.4;x+=1.8)box(street,[.07,31,.1],[x,20,3.25],'metal',null,{ray:false});
   // Distant geometry provides true depth/parallax without photographic backdrops.
   const city=new THREE.Group();city.name='distant_shenzhen_massing';scene.add(city);
-  const windowGeometry=new THREE.BoxGeometry(.65,1,.025),windowMaterial=new THREE.MeshBasicMaterial({color:'#bdc9c3'});resources.add(windowGeometry);resources.add(windowMaterial);
+  const windowGeometry=new THREE.BoxGeometry(.65,1,.025),windowMaterial=new THREE.MeshStandardMaterial({color:'#779398',roughness:.31,metalness:.12});resources.add(windowGeometry);resources.add(windowMaterial);
   const windows=new THREE.InstancedMesh(windowGeometry,windowMaterial,700);city.add(windows);let wi=0;const dummy=new THREE.Object3D();
   for(let i=0;i<18;i++) {
     const side=i%2?1:-1,x=side*(22+(i%5)*8),z=4-Math.floor(i/2)*12,height=17+(i*13)%51,w=6+(i%3)*2;
     box(city,[w,height,7],[x,height/2,z],i%3===0?'wall':'dark',null,{ray:false});
     for(let floor=2;floor<height-1;floor+=3)for(let col=0;col<3;col++)if(wi<700){dummy.position.set(x-w*.27+col*w*.27,floor,z+3.53);dummy.rotation.set(0,0,0);dummy.updateMatrix();windows.setMatrixAt(wi++,dummy.matrix);}
   }windows.count=wi;windows.instanceMatrix.needsUpdate=true;
+  applyCinematicStreet({THREE,scene,street,city,box,register,resources,materials});
 
   const lobby=new THREE.Group();lobby.name='B_lobby';scene.add(lobby);
-  box(lobby,[11.8,.14,12],[0,-.08,-6],'floor');box(lobby,[.2,3.4,12],[-5.9,1.7,-6],'wall');box(lobby,[.2,3.4,12],[5.9,1.7,-6],'wall');box(lobby,[11.8,.15,12],[0,3.45,-6],'wall');
+  box(lobby,[11.8,.14,12],[0,-.08,-6],'floor');
+  // Stone expansion joints and a reception plinth give the room a legible scale.
+  for(let x=-5.2;x<=5.2;x+=2.6)box(lobby,[.015,.008,11.7],[x,.002,-6],'metal',null,{ray:false});
+  for(let z=-1;z>=-11;z-=2.6)box(lobby,[11.5,.008,.015],[0,.002,z],'metal',null,{ray:false});box(lobby,[.2,3.4,12],[-5.9,1.7,-6],'wall');box(lobby,[.2,3.4,12],[5.9,1.7,-6],'wall');box(lobby,[11.8,.15,12],[0,3.45,-6],'wall');
+  for(let x of [-5.77,5.77]) {
+    for(let z=-10.5;z<-.8;z+=2.9)box(lobby,[.025,2.9,.10],[x,1.55,z],'metal',null,{ray:false});
+  }
   box(lobby,[4.6,3.4,.25],[-3.65,1.7,-12],'wall');box(lobby,[4.6,3.4,.25],[3.65,1.7,-12],'wall');
   for(let z=-2;z>=-10;z-=3.6){lightStrip(lobby,[0,3.34,z],[3,.035,.14]);}
-  lamp(lobby,0,2.8,-3,46);lamp(lobby,0,2.8,-10,40);
+  lamp(lobby,0,2.8,-3,17);lamp(lobby,0,2.8,-10,15);
   plant(lobby,-4.36,0,-2.2,.85);box(lobby,[2.6,.45,1.5],[3.4,.25,-5.55],'wood');box(lobby,[2.5,.32,.48],[3.4,.65,-6.05],'dark');box(lobby,[1.5,.8,1.1],[-3.05,.4,-7.85],'wall');
   panel(lobby,'directory',['楼 层 索 引','09F  启德教育','08F  办公区','01F  大堂'],1.35,1.7,HOTSPOTS.directory.at,Math.PI/2,{font:61,background:'#ede8d8',color:'#344b46'});
   panel(lobby,null,['启德教育','请查阅楼层索引'],2,.5,[3.65,1.8,-11.82],0,{font:68});
@@ -116,8 +127,10 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
 
   const lift=new THREE.Group();lift.name='C_moving_elevator';scene.add(lift);
   box(lift,[2.75,.14,3.5],[0,-.07,-13.65],'floor');box(lift,[.13,2.75,3.5],[-1.37,1.37,-13.65],'metal');box(lift,[.13,2.75,3.5],[1.37,1.37,-13.65],'metal');box(lift,[2.75,2.75,.13],[0,1.37,-15.34],'metal');box(lift,[2.75,.13,3.5],[0,2.78,-13.65],'white');
-  for(const x of [-.95,.95])lightStrip(lift,[x,2.67,-13.6],[.10,.035,2.5]);lamp(lift,0,2.35,-13.5,35,'#fff3dc',5);
+  for(const x of [-.95,.95])lightStrip(lift,[x,2.67,-13.6],[.10,.035,2.5]);lamp(lift,0,2.35,-13.5,17,'#fff3dc',5);
   box(lift,[2.2,.035,.07],[0,.95,-15.23],'brass');box(lift,[.08,.035,2.4],[-1.26,.95,-13.7],'brass');
+  // Satin-steel seams instead of a featureless metal box.
+  for(const x of [-1.22,1.22])for(const z of [-14.6,-13.6,-12.6])box(lift,[.012,2.55,.022],[x,1.34,z],'dark',null,{ray:false});
   const leftDoor=box(lift,[1.27,2.58,.09],[-.635,1.29,-11.99],'metal',null,{shadow:true});
   const rightDoor=box(lift,[1.27,2.58,.09],[.635,1.29,-11.99],'metal',null,{shadow:true});
   panel(lift,null,['操 作 面 板','目的地请查楼层索引'],.75,.75,[1.28,1.65,-14.15],-Math.PI/2,{font:66});
@@ -130,7 +143,7 @@ export function createWorld({manager=new THREE.LoadingManager()}={}) {
   box(corridor,[.12,.85,15],[-3.22,.42,-4.6],'wall');box(corridor,[.08,2.2,15],[-3.22,1.94,-4.6],'glass');
   for(let z=-11;z<3;z+=2.5)box(corridor,[.08,3.2,.08],[-3.18,1.6,z],'metal');
   for(let z=-10;z<2;z+=3.4)lightStrip(corridor,[.2,3.09,z],[1.9,.035,.10]);
-  lamp(corridor,0,2.7,-8,35,'#fff0d7',10);lamp(corridor,0,2.7,-1,34,'#fff0d7',10);
+  lamp(corridor,0,2.7,-8,14,'#fff0d7',10);lamp(corridor,0,2.7,-1,13,'#fff0d7',10);
   panel(corridor,null,['9F · 启德教育','EIC EDUCATION'],3.6,.9,[0,1.95,2.84],Math.PI,{font:76,background:'#d4d3c4',color:'#385c4b'});
   panel(corridor,'corridor-note',['留给走到这里的你','窗边的黄铜叶片，','请放回接待台的叶形凹槽。'],1.04,1.05,[-2.98,1.7,-9.4],Math.PI/2,{font:57,background:'#e7dfc7',color:'#53654d'});
   box(corridor,[3.4,.95,1.3],[.2,.475,-3.25],'wood',null,{shadow:true});box(corridor,[3.5,.08,1.4],[.2,.99,-3.25],'wall');
