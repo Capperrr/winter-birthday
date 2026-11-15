@@ -187,3 +187,46 @@
  mask-image:radial-gradient(ellipse 79% 71% at 50% 47%,#000 77%,transparent 98%);
 }
 @media(prefers-reduced-motion:reduce){.finale-piece,.finale-photo-whole{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}}
+
+/* WINTER CUTOUT V2 — real transparent alpha and a single coordinated scale.
+   Never simulate a silhouette with elliptical masks: they cut hair and the lilac line.
+   The two faces and cake are one aligned composition, split only for the interaction. */
+.finale-polaroid-mat {
+  width:min(100%,520px);
+  padding:0!important;
+  margin:0 auto 12px;
+  background:transparent!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.finale-photo-pieces {
+  width:100%;
+  aspect-ratio:680/470!important;
+  filter:drop-shadow(0 9px 9px #735f6d37);
+}
+.finale-piece,
+.finale-photo-whole {
+  background-image:url('assets/finale-duo-cutout.avif')!important;
+  background-repeat:no-repeat!important;
+  background-color:transparent!important;
+  -webkit-mask-image:none!important;
+  mask-image:none!important;
+  filter:none;
+}
+.finale-piece {
+  background-size:196.08% 100%!important;
+  background-position-y:center!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 2px 2px #75567531);
+}
+.finale-photo-whole {
+  background-size:100% 100%!important;
+  background-position:center center!important;
+  filter:drop-shadow(0 3px 5px #78647a2e);
+}
+.finale-piece span {display:none!important}
+.finale-caption {margin-top:13px}
+@media(max-width:760px){
+ .finale-polaroid-mat {width:min(100%,520px)}
+ .finale-photo-pieces {aspect-ratio:680/470!important}
+}
