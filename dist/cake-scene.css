@@ -1,0 +1,86 @@
+/* An ivory, pearl and sage celebration in the same alpine world. */
+.app-shell[data-destination='cake'] { background: #1b3437; color: #d7dfc8; }
+.app-shell[data-destination='cake'] .dream-landscape, .app-shell[data-destination='cake'] .dream-shade { opacity: 0; }
+.app-shell[data-destination='cake'] .destination-panel { display: block; }
+.app-shell[data-destination='cake'] .brand { color: #d7dfc8; }
+.app-shell[data-destination='cake'] .glass-nav { background: linear-gradient(145deg,#e8eddf75,#c5d2c243); border-color: #e5ebd585; }
+.app-shell[data-destination='cake'] .motion-toggle { color: #d7dfc8; border-color: #c9d6b957; background: #33524955; }
+.cake-page { position: relative; isolation: isolate; width: 100%; height: 100%; overflow: hidden; color: #e1e5d0; background: radial-gradient(ellipse at 50% 40%,#395b5461,transparent 55%),linear-gradient(#243f42,#193337 68%,#183137); }
+.cake-night { position: absolute; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; background-image: radial-gradient(circle at 17% 15%,#dae2c96b 0 1px,transparent 1.7px),radial-gradient(circle at 69% 11%,#dae2c97a 0 1px,transparent 1.6px),radial-gradient(circle at 32% 29%,#dae2c94d 0 .7px,transparent 1.4px),radial-gradient(circle at 86% 38%,#dae2c945 0 .7px,transparent 1.5px); }
+.cake-moon { position: absolute; top: 8%; right: 14%; width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(at 35% 30%,#e8e8cf,#c8d6bd 70%,#a1b6a3); box-shadow: 0 0 40px #d9e4c51a; opacity: .64; }
+.cake-mountains { position: absolute; inset: auto 0 0; width: 100%; height: 60%; opacity: .72; }
+.grand-cake-intro { position: absolute; inset: 3% 20px auto; z-index: 3; text-align: center; transition: opacity 650ms ease, translate 650ms ease; }
+.grand-cake-intro > p { margin: 0 0 10px; color: #aabd9e; font-size: 7px; font-weight: 500; letter-spacing: 3px; }
+.grand-cake-intro h2 { margin: 0; color: #dfe4cc; font-family: var(--serif); font-size: clamp(25px,3vw,43px); font-weight: 400; letter-spacing: .2px; line-height: 1.1; }
+.grand-cake-tableau { position: absolute; inset: 16% 0 1%; display: grid; align-items: center; justify-items: center; transition: opacity 850ms ease, scale 1200ms ease; }
+.grand-cake-object { position: relative; height: min(64svh,550px); width: auto; max-width: 92%; aspect-ratio: 2 / 3; z-index: 2; }
+.grand-cake-photo, .grand-candles-overlay { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; }
+.grand-candles-overlay { overflow: visible; }
+.grand-cake-art { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 16px 27px #0e29273b); }
+.grand-cake-halo { position: absolute; left: 50%; top: 42%; width: 48%; height: 75%; translate: -50% -50%; border-radius: 50%; background: radial-gradient(ellipse,#c5d5b219,#d0dbb500 67%); pointer-events: none; }
+.grand-candle-flame { opacity: 0; scale: .35 .8; transform-box: view-box; transition: opacity 450ms ease, scale 450ms ease; }
+.grand-candle-smoke { opacity: 0; }
+.cake-page:is([data-cake-state='lit'],[data-cake-state='waiting']) .grand-candle-flame { opacity: 1; scale: 1; animation: grand-flame-sway 2100ms ease-in-out infinite; }
+.cake-page .flame-1 { animation-delay: -510ms !important; }
+.cake-page .flame-2 { animation-delay: -1190ms !important; }
+.cake-page .flame-3 { animation-delay: -270ms !important; }
+.cake-page .flame-4 { animation-delay: -1580ms !important; }
+.grand-lighter { position: absolute; z-index: 4; left: calc(50% + min(21.33svh, 183px) + 25px); right: auto; bottom: 12%; display: flex; flex-direction: column; align-items: center; width: 110px; padding: 0; border: 0; border-radius: 10px; color: #c0ccb0; background: transparent; cursor: pointer; transition: opacity 350ms ease, translate 350ms ease, scale 200ms ease; }
+.grand-lighter > svg { display: block; width: 63px; height: auto; overflow: visible; filter: drop-shadow(3px 7px 6px #0b232c66); }
+.grand-lighter > span { display: block; margin-top: 9px; font-size: 8px; letter-spacing: .5px; line-height: 1.8; }
+.grand-lighter > span > span { margin-left: 4px; }
+.grand-lighter:hover { translate: 0 -4px; }
+.grand-lighter:active { scale: .97; }
+.lighter-own-flame { opacity: 0; }
+.cake-page[data-cake-state='lighting'] .lighter-own-flame { opacity: 1; }
+.ignition-spark { position: absolute; z-index: 5; left: 81%; top: 67%; width: 8px; height: 16px; border-radius: 75% 35% 70% 35%; opacity: 0; background: #e8d39d; box-shadow: 0 0 17px #ead6a4a6; rotate: 15deg; pointer-events: none; }
+.cake-page[data-cake-state='lighting'] .ignition-spark { animation: ignition-flight 750ms ease-in-out both; }
+.cake-page[data-cake-state='thanks'] .grand-candle-smoke { animation: grand-candle-smoke 1300ms ease-out backwards; }
+.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) .grand-cake-tableau { opacity: 0; scale: .97; pointer-events: none; }
+.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) .grand-cake-intro { opacity: 0; translate: 0 -6px; }
+.cake-thanks { position: absolute; z-index: 4; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 23px; padding: 20px 30px 55px; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 600ms ease, visibility 600ms; }
+.cake-thanks-overline { margin: 0; font-size: 7px; letter-spacing: 3px; color: #a9bc9b; }
+.cake-thanks-lines { width: min(830px,100%); text-align: center; }
+.cake-thanks-lines p { margin: 0 0 15px; font-family: var(--serif); font-size: clamp(21px,2.6vw,35px); font-weight: 400; line-height: 1.3; letter-spacing: .3px; color: #e0e2cb; }
+.cake-page[data-cake-state='thanks'] .cake-thanks { opacity: 1; visibility: visible; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p { animation: cake-thanks-arrive 750ms ease-out backwards; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(2) { animation-delay: 170ms; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(3) { animation-delay: 340ms; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(4) { animation-delay: 510ms; }
+.cake-page[data-cake-state='thanks'] .cake-thanks-lines p:nth-child(5) { animation-delay: 680ms; }
+.cake-page[data-cake-state='fireworks'] .cake-thanks { visibility: visible; transition: none; opacity: 0; }
+.cake-fireworks { position: absolute; inset: 0; z-index: 6; display: block; width: 100%; height: 100%; pointer-events: none; }
+.cake-continue { position: absolute; z-index: 8; left: 50%; bottom: 8%; translate: -50% 0; display: inline-flex; align-items: center; justify-content: center; gap: 25px; min-height: 44px; padding: 12px 22px; border: 1px solid #d3dec14f; border-radius: 40px; color: #d7dfc4; background: #2f4b446e; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: 11px; letter-spacing: 1px; white-space: nowrap; animation: cake-thanks-arrive 700ms ease-out both; }
+.cake-continue:hover { background: #49634f9c; border-color: #d4dfbb8c; }
+.grand-blow-dialog { width: min(410px,calc(100% - 40px)); padding: 29px 30px; border: 1px solid #fff5d7; border-radius: 24px; background: #eee8d6; color: #58664b; text-align: center; box-shadow: 0 20px 80px #092a3b47; }
+.grand-blow-dialog::backdrop { background: #15333338; backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px); }
+.grand-blow-dialog .blow-spark { display: block; margin-bottom: 16px; font-size: 30px; color: #9da57d; }
+.grand-blow-dialog h2 { margin: 0; font-family: var(--cn-serif); font-size: 21px; font-weight: 400; letter-spacing: 1.2px; line-height: 1.9; }
+.grand-blow-dialog button { min-height: 44px; margin-top: 25px; padding: 11px 25px; border: 1px solid #93a47b; border-radius: 30px; background: #879d74; color: #f4f1db; font-size: 12px; letter-spacing: 1px; }
+.grand-blow-dialog button:hover { background: #738d61; }
+.cake-page[data-reduced='true']:is([data-cake-state='fireworks'],[data-cake-state='finished']) .cake-thanks { opacity: 1; visibility: visible; }
+.app-shell[data-motion-paused='true'] .grand-candle-flame { animation-play-state: paused !important; }
+.app-shell[data-motion='off'] .grand-candle-flame { animation: none !important; }
+@keyframes grand-flame-sway { 0%,100% { transform: rotate(-3deg) scale(.97,1); } 50% { transform: rotate(3deg) scale(1.04,.98); } }
+@keyframes ignition-flight { 0% { opacity: 0; transform: translate(0,0) scale(.7); } 18% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; left: 50%; top: 12%; transform: scale(.5); } }
+@keyframes grand-candle-smoke { 0% { opacity: .5; translate: 0 0; } 100% { opacity: 0; translate: 5px -19px; } }
+@keyframes cake-thanks-arrive { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+@media (max-width:760px) {
+  .grand-cake-intro { top: 6%; }
+  .grand-cake-intro > p { font-size: 6px; letter-spacing: 2.3px; }
+  .grand-cake-intro h2 { font-size: 32px; }
+  .grand-cake-tableau { top: 18%; bottom: 2%; }
+  .grand-cake-object { width: auto; height: min(59svh,490px); max-width: 90%; }
+  .grand-lighter { width: 79px; left: auto; right: 1%; bottom: 11%; }
+  .grand-lighter > svg { width: 48px; }
+  .grand-lighter > span { font-size: 6px; max-width: 78px; letter-spacing: .1px; }
+  .cake-thanks { gap: 19px; padding: 15px 22px 60px; }
+  .cake-thanks-overline { font-size: 6px; letter-spacing: 1.6px; text-align: center; }
+  .cake-thanks-lines p { font-size: clamp(21px,5.7vw,28px); margin-bottom: 16px; line-height: 1.35; }
+  .cake-continue { bottom: 7%; gap: 16px; font-size: 9px; padding-inline: 17px; }
+  .grand-blow-dialog { padding: 26px 25px; }
+  .grand-blow-dialog h2 { font-size: 19px; }
+  .cake-moon { width: 28px; height: 28px; right: 13%; }
+}
+@media (max-height:650px) and (min-width:761px) { .grand-cake-intro { top: 1%; }.grand-cake-intro h2 {font-size:30px}.grand-cake-tableau {top:15%;bottom:0}.grand-cake-object {height:60svh;width:auto}.grand-lighter {bottom:10%;right:auto}.grand-lighter > svg{width:49px}.cake-thanks-lines p{font-size:25px;margin-bottom:11px}.cake-thanks {gap:16px;padding-bottom:45px} }
+@media (prefers-reduced-motion:reduce) { .cake-page *, .cake-page *::before, .cake-page *::after { animation:none!important;transition:none!important; } }

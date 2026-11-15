@@ -22,6 +22,7 @@
   const unlockTitle = document.getElementById('unlock-page-title');
   const unlockWord = document.getElementById('birthday-word');
   const unlockError = document.getElementById('unlock-error');
+  const celebrationPage = document.getElementById('cake-page');
   const cakeDialog = document.getElementById('cake-dialog');
   const cakeButton = document.getElementById('birthday-cake');
   const countryButtons = Array.from(document.querySelectorAll('[data-country]'));
@@ -29,8 +30,11 @@
   const memories = { china: document.getElementById('memory-china'), uk: document.getElementById('memory-uk') };
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const unlockKey = 'winter-birthday-word-solved';
+  const celebrationKey = 'winter-birthday-celebrated';
   let memoryUnlocked = false;
+  let celebrationCompleted = false;
   try { memoryUnlocked = sessionStorage.getItem(unlockKey) === 'true'; } catch (_) {}
+  try { celebrationCompleted = sessionStorage.getItem(celebrationKey) === 'true'; } catch (_) {}
   let scenery = false;
   let currentRoute = null;
   let birthdayAccepted = false;
@@ -60,10 +64,11 @@
   }
 
   function showPage(requestedRoute, updateHistory = false) {
-    let route = ['home', 'about', 'destination', 'unlock', 'letter'].includes(requestedRoute) ? requestedRoute : 'home';
-    if (route === 'letter' && !memoryUnlocked) route = 'unlock';
+    let route = ['home', 'about', 'destination', 'unlock', 'cake', 'letter'].includes(requestedRoute) ? requestedRoute : 'home';
+    if (['cake','letter'].includes(route) && !memoryUnlocked) route = 'unlock';
+    else if (route === 'letter' && !celebrationCompleted) route = 'cake';
     const previousRoute = currentRoute;
-    const page = ['unlock', 'letter'].includes(route) ? 'destination' : route;
+    const page = ['unlock', 'cake', 'letter'].includes(route) ? 'destination' : route;
     clearOpening();
     if (editor.open) editor.close();
     if (route !== 'destination' && birthdayDialog.open) birthdayDialog.close();
@@ -85,9 +90,14 @@
     envelopeStage.hidden = route !== 'destination';
     letterPage.hidden = route !== 'letter';
     unlockPage.hidden = route !== 'unlock';
+    celebrationPage.hidden = route !== 'cake';
     envelopeButton.disabled = true;
 
-    if (route === 'letter') {
+    if (route === 'cake') {
+      birthdayAccepted = true;
+      shell.dataset.destination = 'cake';
+      envelopeStage.inert = true;
+    } else if (route === 'letter') {
       birthdayAccepted = true;
       shell.dataset.destination = 'letter';
       envelopeStage.inert = true;
@@ -103,7 +113,7 @@
         unlockError.textContent = '';
       }
     } else if (route === 'destination') {
-      if (!['destination', 'unlock', 'letter'].includes(previousRoute) || (updateHistory && previousRoute === 'destination')) birthdayAccepted = false;
+      if (!['destination', 'unlock', 'cake', 'letter'].includes(previousRoute) || (updateHistory && previousRoute === 'destination')) birthdayAccepted = false;
       shell.dataset.destination = birthdayAccepted ? 'envelope' : 'greeting';
       envelopeStage.inert = !birthdayAccepted;
       envelopeButton.disabled = !birthdayAccepted;
@@ -113,10 +123,11 @@
       shell.dataset.destination = 'idle';
       envelopeStage.inert = true;
     }
-    document.querySelector('meta[name="theme-color"]').content = ['unlock', 'letter'].includes(route) ? '#eee7d4' : page === 'about' ? '#eae7d9' : page === 'destination' ? '#a0acb9' : '#193b31';
-    document.title = route === 'letter' ? '两个国家，都有和你一起的时光 — WINTER' : route === 'unlock' ? 'Happy ____ WINTERRRR' : page === 'about' ? '写给25岁的自己 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
+    document.querySelector('meta[name="theme-color"]').content = route === 'cake' ? '#16282a' : ['unlock', 'letter'].includes(route) ? '#eee7d4' : page === 'about' ? '#eae7d9' : page === 'destination' ? '#a0acb9' : '#193b31';
+    document.title = route === 'cake' ? '为你点亮生日 — WINTER' : route === 'letter' ? '两个国家，都有和你一起的时光 — WINTER' : route === 'unlock' ? 'Happy ____ WINTERRRR' : page === 'about' ? '写给25岁的自己 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
+    if ((previousRoute === 'cake') !== (route === 'cake')) document.dispatchEvent(new CustomEvent('winter:celebration-route', { detail: { active: route === 'cake' } }));
     if (updateHistory && location.hash !== '#' + route) history.pushState(null, '', '#' + route);
-    else if (requestedRoute === 'letter' && route === 'unlock' && location.hash !== '#unlock') history.replaceState(null, '', '#unlock');
+    else if (requestedRoute !== route && ['cake','letter'].includes(requestedRoute) && location.hash !== '#' + route) history.replaceState(null, '', '#' + route);
   }
 
   function acceptBirthday() {
@@ -185,8 +196,7 @@
     unlockWord.setAttribute('aria-invalid', 'false');
     memoryUnlocked = true;
     try { sessionStorage.setItem(unlockKey, 'true'); } catch (_) {}
-    showPage('letter', true);
-    letterTitle.focus({ preventScroll: true });
+    showPage('cake', true);
   });
   unlockWord.addEventListener('input', () => {
     unlockWord.setAttribute('aria-invalid', 'false');
@@ -196,6 +206,13 @@
   document.getElementById('cake-dialog-close').addEventListener('click', () => cakeDialog.close());
   cakeDialog.addEventListener('cancel', event => { event.preventDefault(); cakeDialog.close(); });
   cakeDialog.addEventListener('close', () => { if (currentRoute === 'unlock') cakeButton.focus({ preventScroll: true }); });
+  document.addEventListener('winter:celebration-complete', () => {
+    if (currentRoute !== 'cake') return;
+    celebrationCompleted = true;
+    try { sessionStorage.setItem(celebrationKey, 'true'); } catch (_) {}
+    showPage('letter', true);
+    letterTitle.focus({ preventScroll: true });
+  });
 
   function selectCountry(country) {
     const valid = Object.hasOwn(memories, country);

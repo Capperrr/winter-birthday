@@ -67,8 +67,8 @@
     shell.dataset.motionState = reduce.matches ? 'reduced' : manuallyPaused ? 'disabled' : paused ? 'paused' : 'active';
     toggle.hidden = reduce.matches;
     toggle.setAttribute('aria-pressed', String(manuallyPaused));
-    toggle.setAttribute('aria-label', manuallyPaused ? '开启云朵和小狗动效' : '暂停云朵和小狗动效');
-    toggle.title = manuallyPaused ? '开启云朵和小狗动效' : '暂停云朵和小狗动效';
+    toggle.setAttribute('aria-label', manuallyPaused ? '开启动态效果' : '暂停动态效果');
+    toggle.title = manuallyPaused ? '开启动态效果' : '暂停动态效果';
     atmosphere.hidden = !enabled;
     dialogs.forEach(dialog => { dialog.dataset.motion = enabled ? 'on' : 'off'; });
     pointerAllowed = enabled && !paused && finePointer.matches && scene !== 'still';

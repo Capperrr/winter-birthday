@@ -1,0 +1,7 @@
+.memory-note[role='button'] { cursor: pointer; }
+.memory-note[role='button']:focus-visible { outline: 1.5px dashed #8b9874; outline-offset: 8px; }
+.memory-note-counter { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid #b3a88026; color: #9e967b; font-size: 8px; font-family: var(--sans); letter-spacing: .5px; line-height: 1.6; text-align: right; }
+.memory-note:hover .memory-note-counter { color: #718358; }
+.puppy-parade { background: url('assets/puppy-grass.svg') center bottom / 100% 32px no-repeat; }
+.puppy-ground { display: none; }
+@media (max-width: 760px) { .memory-note-counter { font-size: 8px; line-height: 1.7; } }
