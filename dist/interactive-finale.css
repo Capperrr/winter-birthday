@@ -148,3 +148,35 @@
 /* Keep the clickable ribbon but remove the distracting ring around its hit target. */
 .keepsake-envelope > .string-knot{border-radius:0!important;outline:none!important}
 .keepsake-envelope > .string-knot:focus-visible{outline:2px solid #8b886c!important;outline-offset:4px!important}
+
+/* Envelope: remove visual-only click rings and wax-circle ornament, keep the paper and ribbon intact. */
+.app-shell[data-destination='envelope'] .wax-seal,
+.app-shell[data-destination='opening'] .wax-seal,
+.app-shell[data-destination='envelope'] .envelope-help,
+.app-shell[data-destination='opening'] .envelope-help {display:none!important}
+.app-shell[data-destination='envelope'] .keepsake-envelope .string-knot,
+.app-shell[data-destination='opening'] .keepsake-envelope .string-knot {
+  outline:0!important;border:0!important;box-shadow:none!important;background:transparent!important;
+}
+.app-shell[data-destination='envelope'] .keepsake-envelope .string-knot:focus-visible svg,
+.app-shell[data-destination='opening'] .keepsake-envelope .string-knot:focus-visible svg {filter:drop-shadow(0 0 2px #a1ac8a)}
+/* The whole '25岁' uses the same Chinese serif typeface; no foreign serif on 岁. */
+.finale-surprise h3 span {font-family:inherit!important;font-size:1em!important;font-weight:inherit!important;letter-spacing:inherit!important;line-height:inherit!important}
+/* Soft, torn portrait contours: hide the square white outer paper and retain the people, cake and lilac outline. */
+.finale-piece,
+.finale-photo-whole {
+  -webkit-mask-image:
+    radial-gradient(ellipse 33% 57% at 30% 43%, #000 76%,transparent 98%),
+    radial-gradient(ellipse 34% 57% at 69% 39%, #000 76%,transparent 98%),
+    radial-gradient(ellipse 50% 28% at 49% 79%, #000 73%,transparent 98%);
+  mask-image:
+    radial-gradient(ellipse 33% 57% at 30% 43%, #000 76%,transparent 98%),
+    radial-gradient(ellipse 34% 57% at 69% 39%, #000 76%,transparent 98%),
+    radial-gradient(ellipse 50% 28% at 49% 79%, #000 73%,transparent 98%);
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+}
+.finale-polaroid-mat {background:linear-gradient(145deg,#f6f1e7,#e8dcc8);box-shadow:0 6px 22px #78675539}
+.finale-newspaper {border-radius:2px;box-shadow:0 10px 27px #7d61543a}
+.finale-newspaper::before {border-style:dashed;border-color:#a890734d}
+.finale-photo-pieces {filter:drop-shadow(0 4px 3px #6d596342)}
