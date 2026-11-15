@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="nature-atlas.css?v=cinema-2">
   <link rel="stylesheet" href="keepsake.css?v=handmade-2">
   <link rel="stylesheet" href="journey.css?v=personal-photos-2">
-  <link rel="stylesheet" href="music.css?v=mainland-1">
+  <link rel="stylesheet" href="music.css?v=gentle-eight-1">
   <link rel="stylesheet" href="personal-album.css?v=first-1">
   <link rel="stylesheet" href="interactive-finale.css?v=silent-touchfix-1">
   <script src="app.js?v=finale-1" defer></script>
@@ -28,7 +28,7 @@
   <script src="memory-notes.js?v=three-pages-1" defer></script>
   <script src="journey.js?v=finale-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
-  <script src="music.js?v=pretty-default-1" defer></script>
+  <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
 </head>
 <body>
@@ -84,18 +84,22 @@
 
     <aside id="winter-music-panel" class="winter-music-panel" aria-label="背景音乐" hidden>
       <div class="winter-music-panel-head">
-        <div><p class="winter-music-overline">A LITTLE SONG FOR WINTER</p><p id="winter-music-title" class="winter-music-title">pretty</p><p class="winter-music-byline">JVKE · original song</p></div>
+        <div><p class="winter-music-overline">A LITTLE SONG FOR WINTER</p><p id="winter-music-title" class="winter-music-title">pretty</p><p class="winter-music-byline" id="winter-music-byline">JVKE · original song</p></div>
         <button id="winter-music-close" type="button" class="winter-music-close" aria-label="收起音乐播放器（不影响播放）">×</button>
       </div>
-      <div class="winter-music-tracks" role="group" aria-label="选择 JVKE 的歌曲">
+      <div class="winter-music-tracks" role="group" aria-label="选择八首歌曲">
         <button type="button" data-winter-song="moon" aria-pressed="false"><span>moon and back</span><small>JVKE</small></button>
         <button type="button" data-winter-song="pretty" aria-pressed="true"><span>pretty</span><small>DEFAULT ♡</small></button>
         <button type="button" data-winter-song="her" aria-pressed="false"><span>her</span><small>JVKE</small></button>
         <button type="button" data-winter-song="winter" aria-pressed="false"><span>this is what winter feels like</span><small>JVKE</small></button>
+        <button type="button" data-winter-song="bloom" aria-pressed="false"><span>Bloom</span><small>The Paper Kites · 3:30</small></button>
+        <button type="button" data-winter-song="coastline" aria-pressed="false"><span>Coastline</span><small>Hollow Coves · 3:53</small></button>
+        <button type="button" data-winter-song="lalune" aria-pressed="false"><span>La Lune</span><small>Billie Marten</small></button>
+        <button type="button" data-winter-song="wheresmylove" aria-pressed="false"><span>Where's My Love (Acoustic)</span><small>SYML · 3:59</small></button>
       </div>
-      <p class="winter-music-service-label">国内优先 · APPLE MUSIC 官方试听</p>
+      <p class="winter-music-service-label">APPLE MUSIC · 官方试听 / 订阅可完整播放</p>
       <iframe id="winter-music-frame" class="winter-music-player" title="Apple Music · JVKE · pretty" allow="autoplay *; encrypted-media *; fullscreen *" referrerpolicy="strict-origin-when-cross-origin" loading="lazy"></iframe>
-      <p class="winter-music-hint">点击上方播放器中的播放按钮。未登录通常可试听约 30 秒；完整版需要对应订阅及地区授权。</p>
+      <p class="winter-music-hint">点击上方播放器中的播放按钮。未登录一般只能试听约 30 秒。完整播放需要相应的 Apple Music 订阅，并受地区授权与网络访问限制。</p>
       <div class="winter-music-local">
         <label class="winter-music-local-label" for="winter-local-file">从本机选择音频文件 · 完整播放</label>
         <input id="winter-local-file" type="file" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg">
