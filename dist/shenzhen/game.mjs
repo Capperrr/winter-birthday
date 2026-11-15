@@ -115,7 +115,7 @@ export async function startGame({rendererFactory=options=>new THREE.WebGLRendere
     audio.cue('metal');
   }
   function cancel() {if(inspection){closeInspection();return;}if(core.cancelCarry()){handleEvents();updateHUD(true);return;}pause();}
-  const input=new InputController({canvas,stick:byId('move-stick'),knob:byId('stick-knob'),carry:byId('carry-leaf'),onInteract:interact,onLook:(dx,dy)=>{focus=null;if(inspection)closeInspection(false);targetYaw-=dx*.0032;targetPitch=Math.max(-.72,Math.min(.72,targetPitch-dy*.0032));},onDrop:drop,onCancel:cancel,onPause:()=>pause()});
+  const input=new InputController({canvas,stick:byId('move-stick'),knob:byId('stick-knob'),carry:byId('carry-leaf'),onInteract:interact,onLook:(dx,dy)=>{focus=null;if(inspection)closeInspection(false);targetYaw-=dx*.0032;targetPitch=Math.max(-.43,Math.min(.40,targetPitch-dy*.0032));},onDrop:drop,onCancel:cancel,onPause:()=>pause()});
 
   function updateHUD(force=false) {
     const objective=core.objective();if(force||objective!==lastObjective){byId('objective').textContent=objective;lastObjective=objective;}
@@ -125,6 +125,7 @@ export async function startGame({rendererFactory=options=>new THREE.WebGLRendere
     byId('floor-number').textContent=core.lift.floor+'F';byId('ride-label').textContent=core.lift.phase==='closing'?'电梯关门中':core.lift.phase==='rising'?'正在上升':core.lift.phase==='arriving'?'已到九楼':'电梯开门中';
     byId('skip-ride').hidden=!['closing','rising'].includes(core.lift.phase);byId('touch-controls').hidden=!touchVisible;
     byId('context').hidden=Boolean(inspection||riding);
+    byId('replay-story').hidden=!core.flags.letterRead;
   }
   function updateTarget() {
     lastHit=inspection?null:hitAt();const near=Boolean(lastHit&&core.near(lastHit.id));
@@ -176,6 +177,7 @@ export async function startGame({rendererFactory=options=>new THREE.WebGLRendere
   listen(byId('help-button'),'click',()=>pause(byId('help-dialog')));
   listen(byId('help-close'),'click',resume);
   listen(byId('pause-restart'),'click',askReset);
+  listen(byId('replay-story'),'click',askReset);
   listen(byId('reset-confirm'),'click',restart);
   listen(byId('reset-cancel'),'click',()=>{byId('reset-dialog').close();if(playing)pause();});
   for(const id of ['pause-dialog','help-dialog'])listen(byId(id),'cancel',e=>{e.preventDefault();resume();});
