@@ -99,8 +99,10 @@
     else {c.font='30px serif';c.fillText('我很荣幸，能够参与你的25岁。',360,933);}
     c.fillStyle='#90727c';c.font='italic 23px Georgia,serif';
     c.fillText('How lucky I am to be here.',360,1021);
-    c.fillStyle='#9d8a81';c.font='15px Georgia,serif';c.fillText('FOR WINTER · WITH LOVE · GWEN',360,1110);
-    c.fillStyle='#fff9ef';c.font='24px Georgia,serif';c.fillText('A little piece of fate, kept forever.',360,1245);
+    const everyBirthday=await loadImage('assets/handwriting/gwen-every-birthday.png');
+    if(everyBirthday){c.save();c.globalAlpha=.90;c.drawImage(everyBirthday,97,1060,526,68);c.restore();}
+    c.fillStyle='#9d8a81';c.font='15px Georgia,serif';c.fillText('FOR WINTER · WITH LOVE · GWEN',360,1206);
+    c.fillStyle='#fff9ef';c.font='24px Georgia,serif';c.fillText('A little piece of fate, kept forever.',360,1304);
     return canvas.toDataURL('image/png');
   }
   async function openPhone(){
