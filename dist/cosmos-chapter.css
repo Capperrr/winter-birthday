@@ -73,3 +73,30 @@
 @media(max-width:900px){.photo-wall{grid-template-columns:repeat(3,minmax(0,1fr));gap:25px 15px}}
 @media(max-width:600px){.cosmos-stage{padding-inline:16px}.cosmos-prologue h2{font-size:clamp(22px,5.4vw,34px)}.cosmos-overline{letter-spacing:1.6px}.photo-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 12px;padding:25px 9px}.photo-memory{padding:6px 6px 10px}.photo-memory-caption{font-size:9px}.photo-memory-title{font-size:16px}.cosmos-lightbox-photo{width:min(370px,75vw)}.cosmos-lightbox-nav{width:37px;height:37px;flex:none}.cosmos-photo-lightbox{gap:4px}}
 @media(prefers-reduced-motion:reduce){.cosmos-prologue h2 span,.cosmos-particle-pair i{animation:none!important}.photo-memory{transition:none}}
+
+/* Actual full-resolution portrait files are loaded on demand, instead of enlarging the thumbnail atlas. */
+img.cosmos-lightbox-photo {
+ display:block;
+ width:auto;
+ max-width:min(81vw,820px);
+ height:auto;
+ max-height:min(79dvh,1000px);
+ aspect-ratio:auto;
+ object-fit:contain;
+ background:none!important;
+ border:9px solid #f3eee4;
+ box-shadow:0 27px 60px #000a;
+}
+#winter-cosmos-dialog[open] .cosmos-root {
+ animation:cosmos-unfold .92s cubic-bezier(.18,.71,.22,1) both;
+}
+@keyframes cosmos-unfold {
+ from{clip-path:circle(0% at 50% 48%);opacity:.58}
+ to{clip-path:circle(165% at 50% 48%);opacity:1}
+}
+@media(max-width:600px){
+ img.cosmos-lightbox-photo{width:auto;max-width:78vw;max-height:74dvh;border-width:6px}
+}
+@media(prefers-reduced-motion:reduce){
+ #winter-cosmos-dialog[open] .cosmos-root{animation:none}
+}
