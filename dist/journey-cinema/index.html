@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#192a2d">
+<meta name="description" content="Gwen 走过 Winter 熟悉的城市、校园与深圳启德九楼。照片式、逐站推进的生日旅程。">
+<title>For WINTER · 你走过的路</title>
+<link rel="stylesheet" href="./life.css?v=3">
+<script src="./life.js?v=3" defer></script>
+</head>
+<body>
+<main class="experience" id="experience" aria-label="Winter 人生地点互动旅程">
+  <div class="stage" id="stage">
+    <div class="photo-layer" id="photo-old" aria-hidden="true"></div>
+    <div class="photo-layer" id="photo-new" aria-hidden="true"></div>
+    <div class="photo-light" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-icon">W</span><div><span>FOR WINTER</span><small>THE PLACES THAT MADE YOU</small></div></div>
+    <div class="header-actions">
+      <button class="text-btn" id="sound" type="button" aria-pressed="false" title="开启或关闭声音">声音关闭</button>
+      <button class="text-btn" id="replay" type="button" title="从达州重新开始">重新旅行</button>
+      <a class="text-btn back" id="leave" href="https://for-winter-capperrr.alluringostrich4.chatgpt.site/#letter">返回生日网页</a>
+    </div>
+  </header>
+
+  <div class="chapter-number" aria-hidden="true"><span id="fraction">01</span><small> / 05</small></div>
+
+  <section class="scene-info" id="scene-info" aria-live="polite">
+    <p class="kicker" id="kicker">CHAPTER 01 · DAZHOU</p>
+    <h1 id="scene-title">从你熟悉的地方开始。</h1>
+    <div class="gold-line"></div>
+    <p class="place" id="place">四川 · 达州</p>
+    <p class="narration" id="narration"></p>
+    <div class="scene-detail" id="scene-detail" hidden></div>
+  </section>
+
+  <div class="hotspot-wrap" id="hotspots" aria-label="场景中可以调查的地点"></div>
+
+  <div class="floor-indicator" id="floor-indicator" hidden>
+    <span class="floor-label">ELEVATOR · FLOOR</span>
+    <strong id="floor-number">1</strong>
+    <span class="floor-desc" id="floor-desc">按下 9F，去见她。</span>
+    <button id="floor-nine" class="floor-button" type="button" aria-label="电梯九楼按钮">9F</button>
+    <div class="elevator-doors" id="elevator-doors" aria-hidden="true"><div></div><div></div></div>
+  </div>
+
+  <div class="letter-screen" id="letter-screen" hidden>
+    <div class="paper" id="paper">
+      <span class="paper-top">WINTER · 25</span>
+      <h2>终于，走到我们相识的地方。</h2>
+      <p>在遇见我以前，你已经走过了很长很长的路。</p>
+      <p>那些日子我没有参与过，但我想陪你再走一遍：从达州，到重庆，到南安普顿，最后走进深圳的九楼。</p>
+      <p>愿你一直保有热爱生活、勇敢去旅行的好奇心。以后的路，我们慢慢走。</p>
+      <p class="signature">生日快乐，Winter。<br>— Gwen</p>
+    </div>
+  </div>
+
+  <footer class="bottom">
+    <div class="meta">
+      <div class="location"><span class="pin"></span><span id="local-label">DAZHOU · CHINA</span></div>
+      <p class="truth-label" id="truth-label">地点参考资料照片；不是个人历史影像</p>
+      <a class="credit" id="credit" href="#" target="_blank" rel="noopener noreferrer">照片来源及真实性说明 ↗</a>
+    </div>
+    <div class="navigation">
+      <button type="button" class="previous" id="previous" aria-label="返回上一站">← <span>上一站</span></button>
+      <button type="button" class="next" id="next"><span id="next-label">下一站 · 达州一中</span><span class="next-arrow" aria-hidden="true">↗</span></button>
+    </div>
+  </footer>
+
+  <div class="progress" id="progress" aria-label="人生旅程进度"><span class="progress-line" id="progress-line"></span><div id="progress-dots"></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</main>
+</body>
+</html>
