@@ -100,6 +100,7 @@ async function prepare(){
  }
 }
 document.addEventListener('winter:camera-ready',()=>{if(shell.dataset.destination==='cake')prepare();});
-document.addEventListener('winter:celebration-route',e=>{if(e.detail?.active && window.WINTER_GESTURES?.active)prepare()});
-portrait.addEventListener('change',()=>{generation++;current='';canvas.width=1;canvas.height=1;shell.dataset.cakeCutout='loading';if(shell.dataset.cakeCamera==='on')prepare();});
+document.addEventListener('winter:celebration-route',e=>{if(e.detail?.active)prepare()});
+if(shell.dataset.destination==='cake')prepare();
+portrait.addEventListener('change',()=>{generation++;current='';canvas.width=1;canvas.height=1;shell.dataset.cakeCutout='loading';if(shell.dataset.destination==='cake')prepare();});
 })();
