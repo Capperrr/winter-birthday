@@ -14,6 +14,17 @@
  let color='#ffffff',size=8,eraser=false,drawing=false,last=null,firstDraw=0,helloTimer=0;
  let fingerPos={Right:null,Left:null},leftPalmStart=0,leftPalmDone=false,handDrawLast=0;
  const colors=[...controls.querySelectorAll('[data-colour]')];
+ const toolsToggle=$('creator-tools-toggle'),toolsPanel=$('creator-tools-panel');
+ const narrow=window.matchMedia('(max-width:760px)');
+ let toolsExpanded=false;
+ function showTools(expanded){
+   toolsExpanded=expanded;toolsPanel.hidden=narrow.matches&&!expanded;
+   toolsToggle.hidden=!narrow.matches;toolsToggle.setAttribute('aria-expanded',String(!toolsPanel.hidden));
+   $('winter-creator-toolbar').dataset.expanded=String(!toolsPanel.hidden);
+ }
+ toolsToggle.addEventListener('click',()=>showTools(!toolsExpanded));
+ narrow.addEventListener('change',()=>showTools(false));
+ showTools(false);
  const maxDpr=()=>Math.min(2,window.devicePixelRatio||1);
  const active=()=>stage.classList.contains('is-active')&&$('winter-cosmos-dialog')?.open;
  const activeCake=()=>shell?.dataset.destination==='cake';
@@ -172,6 +183,7 @@
  saveButton.addEventListener('click',save);
  document.addEventListener('winter:cosmos-stage',e=>{
   const on=e.detail?.stage==='cosmos-creator';
+  $('winter-cosmos-dialog').dataset.creatorActive=String(on);
   if(on){requestAnimationFrame(fit);creatorStatus.textContent=window.WINTER_GESTURES?.active?'镜头已开启 · 可以开始创作':'先用手指画画，或点「开启摄像头」进行隔空互动';}
   else{stopFinger();drawing=false;if(window.WINTER_GESTURES?.active && !activeCake())window.WINTER_GESTURES.stop('已离开绘画章节，摄像头自动关闭');}
  });

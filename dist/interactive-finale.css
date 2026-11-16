@@ -1,6 +1,6 @@
 /* THE WINTER CHRONICLE · touch-first polaroids, tactile controls and finale. */
 .app-shell[data-page="about"] .about-panel{padding-top:clamp(22px,4vh,50px);padding-bottom:40px}
-.keepsake-mosaic{position:relative;display:flex;align-items:center;justify-content:center;width:min(1180px,100%);min-height:0;margin:0 auto}
+.keepsake-mosaic{position:relative;display:flex;align-items:center;justify-content:center;width:min(1180px,100%);flex:0 0 auto;min-height:0;margin:0 auto}
 .keepsake-mosaic .notes-board{position:relative;z-index:2}
 .portrait-rail{position:absolute;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.2vh,14px);width:clamp(91px,12vw,146px)}
 .rail-left{left:clamp(0px,1.5vw,30px)}
@@ -21,7 +21,7 @@
 @media(max-width:700px){
  .keepsake-mosaic{display:flex;flex-direction:column;gap:11px}
  .portrait-rail{position:relative;top:auto;left:auto;right:auto;transform:none;flex-direction:row;flex-wrap:nowrap;width:100%;justify-content:center;gap:clamp(8px,3vw,16px);padding:9px 0}
- .rail-left{order:0}.keepsake-mosaic .notes-board{order:1}.rail-right{order:2}
+ .rail-left{order:1}.keepsake-mosaic .notes-board{order:0}.rail-right{order:2}
  .portrait-pin{flex:0 1 80px;width:clamp(57px,17vw,86px);padding:4px 4px 6px}
  .portrait-words b{font-size:12px}.portrait-words small{font-size:7px}
  .keepsake-mosaic .notes-board{margin-block:2px}
@@ -230,3 +230,10 @@
  .finale-polaroid-mat {width:min(100%,520px)}
  .finale-photo-pieces {aspect-ratio:680/470!important}
 }
+
+/* The camera composition takes over once the phone is lifted. */
+.finale-balloons,.finale-confetti{transition:opacity 450ms ease}
+.app-shell[data-phone="open"] :is(.finale-balloons,.finale-confetti){opacity:0;pointer-events:none}
+
+.birthday-finale{transition:opacity 400ms ease}
+.app-shell[data-phone="open"] .birthday-finale{opacity:.18;pointer-events:none}

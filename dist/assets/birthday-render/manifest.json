@@ -1,0 +1,18 @@
+{
+  "blender": "4.3.2",
+  "cake": "Existing photographic cake retained at native resolution with alpha.",
+  "stone": "Blender slate geometry and contact shadows.",
+  "lighter": "Blender silver lighter mesh; unlit, original live SVG flame retained.",
+  "lighter_flame": [
+    811.59,
+    428.33
+  ],
+  "wide": [
+    1536,
+    1024
+  ],
+  "portrait": [
+    1024,
+    1536
+  ]
+}
