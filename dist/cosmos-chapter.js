@@ -16,7 +16,7 @@
  const photos=[
    ['Breathe in the blue','海风与晴天'],
    ['Last light','日落之前'],
-   ['Everyday scenes','便利店里的日常'],
+   ['Convenience store','便利店'],
    ['In bloom','樱花开的时候'],
    ['Sunlit afternoon','屋檐下的阳光'],
    ['Little things','货架间的瞬间'],
@@ -26,20 +26,20 @@
    ['Green pause','绿地里的休息'],
    ['City notes','走过街角'],
    ['After the rain','雨夜与倒影'],
-   ['Coffee break','一杯咖啡的午后'],
-   ['Light and air','有风的院子'],
+   ['A rainy goodbye','雨中短暂的分别'],
+   ['Before your class','上课前一起待过的星巴克'],
    ['Through the trees','树荫里的路'],
    ['Wild tides','走近海浪'],
    ['Just you','很自然的一个瞬间'],
    ['Quiet afternoons','草坪、树和风'],
-   ['Winter by the sea','海边的冬天']
+   ['Winter by the lake','湖边的冬天']
  ];
  const wall=document.getElementById('cosmos-photo-wall');
  const preview=document.getElementById('cosmos-photo-lightbox');
  const previewPhoto=document.getElementById('cosmos-lightbox-photo');
  const previewCaption=document.getElementById('cosmos-lightbox-caption');
  const closeButton=document.getElementById('cosmos-close');
- let current=0,selected=-1,lastFocus=null;
+ let current=0,selected=-1,lastFocus=null,introTimer=0;
  let raf=0,last=0,w=0,h=0,dpr=1,twinkles=[],shooting=[];
  const between=(a,b)=>a+Math.random()*(b-a);
  function tileStyle(el,i){
@@ -52,7 +52,8 @@
    item.style.setProperty('--drop',((i*37)%34)+'px');
    item.setAttribute('aria-label','放大第'+(i+1)+'张照片：'+cn);
    const frame=document.createElement('span');frame.className='photo-memory-frame';
-   tileStyle(frame,i);
+   frame.style.backgroundImage='url("assets/memory-wall/memory-'+String(i+1).padStart(2,'0')+'.webp")';
+    frame.style.backgroundSize='cover';frame.style.backgroundPosition='center';
    const en=document.createElement('span');en.className='photo-memory-title';en.textContent=english;
    const name=document.createElement('span');name.className='photo-memory-caption';name.textContent=cn;
    item.append(frame,en,name);item.addEventListener('click',()=>openPhoto(i));wall.append(item);
@@ -72,7 +73,11 @@
  document.getElementById('cosmos-lightbox-next').addEventListener('click',()=>openPhoto(selected+1));
  preview.addEventListener('click',e=>{if(e.target===preview)closePhoto()});
  function showStage(n){
-   current=n;
+   clearTimeout(introTimer);
+    current=n;
+    const intro=document.getElementById('cosmos-intro');
+    intro.classList.remove('is-complete');
+    if(n===0){void intro.offsetWidth;introTimer=setTimeout(()=>{if(dialog.open&&current===0)intro.classList.add('is-complete')},reduced?.matches?0:10900);}
    stages.forEach((stage,i)=>{stage.classList.toggle('is-active',i===n);stage.setAttribute('aria-hidden',String(i!==n))});
    if(n===1){const wish=document.getElementById('cosmos-wish-text');wish.textContent='选一颗星星，让祝福慢慢亮起来。'}
    root.scrollTop=0;dialog.scrollTop=0;
@@ -122,7 +127,8 @@
  }
  closeButton.addEventListener('click',close);
  dialog.addEventListener('close',()=>{
-   if(raf){cancelAnimationFrame(raf);raf=0}shooting=[];lastFocus?.focus?.({preventScroll:true});
+   clearTimeout(introTimer);
+    if(raf){cancelAnimationFrame(raf);raf=0}shooting=[];lastFocus?.focus?.({preventScroll:true});
  });
  dialog.addEventListener('cancel',e=>{if(!preview.hidden){e.preventDefault();closePhoto()}});
  document.addEventListener('keydown',e=>{
