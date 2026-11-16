@@ -18,8 +18,9 @@
   const power = document.getElementById('winter-phone-power');
   const powerGuide = document.getElementById('phone-power-guide');
   if (!finale || !start || !phone || !shutter) return;
-  let revealTimer=0, notifyTimer=0, flashTimer=0, lastShot='', lastFocused=null, shotBusy=false;
+  let revealTimer=0, notifyTimer=0, flashTimer=0, powerTimer=0, run=0, lastShot='', lastFocused=null, shotBusy=false, powerReady=false;
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const quiet=()=>reduced?.matches || document.getElementById('main')?.dataset.motion==='off';
 
   function isCelebrated(){return joined?.dataset.joined==='true' && !surprise.hidden;}
   function hideStart(){clearTimeout(revealTimer);start.hidden=true;}
@@ -34,7 +35,7 @@
   }
   document.addEventListener('winter:finale-enter',()=>{
     hideStart();
-    if(phone.open)phone.close();
+    closePhone();
   });
   function loadImage(path){
     return new Promise(resolve=>{
@@ -107,82 +108,70 @@
     c.fillStyle='#fff9ef';c.font='24px Georgia,serif';c.fillText('A little piece of fate, kept forever.',360,1304);
     return canvas.toDataURL('image/png');
   }
+  function cancelPending(){
+    clearTimeout(notifyTimer);clearTimeout(flashTimer);clearTimeout(powerTimer);
+    notifyTimer=flashTimer=powerTimer=0;run++;shotBusy=false;
+  }
+  function setPowerReady(ready){
+    shell.dataset.motion=quiet()?'off':'on';
+    powerReady=ready;shell.classList.toggle('is-power-ready',ready);
+    if(power)power.disabled=!ready;
+    if(powerGuide){powerGuide.hidden=!ready;powerGuide.classList.remove('is-leaving');}
+  }
   async function openPhone(){
-    if(!isCelebrated())return;
-    clearTimeout(notifyTimer);clearTimeout(flashTimer);
-    lastFocused=document.activeElement;
-    lastShot='';shotBusy=false;
+    if(!isCelebrated()||phone.open)return;
+    cancelPending();const token=run;
+    lastFocused=document.activeElement;lastShot='';
     shell.dataset.mode='camera';shell.classList.remove('is-snapping','is-powered-off');
-    if(powerGuide)powerGuide.hidden=true;
-    if(power)power.disabled=false;
-    camera.hidden=false;lock.hidden=true;notification.hidden=true;save.hidden=true;reset.hidden=true;
-    phone.showModal();
-    shutter.disabled=true;
-    try{
-      lastShot=await createBirthdayPhoto();
-      preview.src=lastShot;
-    } catch(e){
-      // Keep the original static image in the viewfinder as a reliable fallback.
-      lastShot='';
-    }
-    shutter.disabled=false;
-    shutter.focus({preventScroll:true});
+    setPowerReady(false);camera.hidden=false;lock.hidden=true;notification.hidden=true;save.hidden=true;reset.hidden=true;
+    phone.showModal();shutter.disabled=true;
+    try{const image=await createBirthdayPhoto();if(token!==run||!phone.open)return;lastShot=image;preview.src=image;}catch(e){if(token!==run||!phone.open)return;lastShot='';}
+    shutter.disabled=false;shutter.focus({preventScroll:true});
   }
   async function snap(){
-    if(shotBusy)return;
-    shotBusy=true;shutter.disabled=true;
+    if(shotBusy||!phone.open||camera.hidden)return;
+    const token=run;shotBusy=true;shutter.disabled=true;
     shell.classList.remove('is-snapping');void shell.offsetWidth;shell.classList.add('is-snapping');
     if(!lastShot)try{lastShot=await createBirthdayPhoto()}catch(e){}
+    if(token!==run||!phone.open)return;
     flashTimer=window.setTimeout(()=>{
-      shell.classList.remove('is-snapping');
-      camera.hidden=true;lock.hidden=false;shell.dataset.mode='lock';
-      if(lastShot){
-        lockImage.src=lastShot;
-        save.href=lastShot;save.hidden=false;
-      }
-      reset.hidden=false;
-      if(powerGuide)powerGuide.hidden=false;
-      notification.hidden=true;
-      notifyTimer=window.setTimeout(()=>{if(phone.open){notification.hidden=false;}},reduced?.matches?100:1100);
-      shotBusy=false;
-    },reduced?.matches?80:600);
+      if(token!==run||!phone.open)return;
+      shell.classList.remove('is-snapping');camera.hidden=true;lock.hidden=false;shell.dataset.mode='lock';
+      if(lastShot){lockImage.src=lastShot;save.href=lastShot;save.hidden=false;}
+      reset.hidden=false;notification.hidden=true;shotBusy=false;
+      notifyTimer=window.setTimeout(()=>{
+        if(token!==run||!phone.open||lock.hidden)return;
+        notification.hidden=false;setPowerReady(true);
+        power?.focus({preventScroll:true});
+      },quiet()?100:1100);
+    },quiet()?80:600);
   }
   function resetShot(){
-    clearTimeout(notifyTimer);clearTimeout(flashTimer);
-    shotBusy=false;shutter.disabled=false;
+    cancelPending();shutter.disabled=false;
     shell.dataset.mode='camera';camera.hidden=false;lock.hidden=true;
-    shell.classList.remove('is-powered-off');if(powerGuide)powerGuide.hidden=true;
-    notification.hidden=true;save.hidden=true;reset.hidden=true;
-    shutter.focus({preventScroll:true});
+    shell.classList.remove('is-powered-off','is-snapping');setPowerReady(false);
+    notification.hidden=true;save.hidden=true;reset.hidden=true;shutter.focus({preventScroll:true});
   }
   function closePhone(){
-    clearTimeout(notifyTimer);clearTimeout(flashTimer);
-    if(phone.open)phone.close();
-    lastFocused?.focus?.({preventScroll:true});
+    cancelPending();setPowerReady(false);
+    if(phone.open)phone.close();lastFocused?.focus?.({preventScroll:true});
   }
-  if(power)power.addEventListener('click',()=>{
-    if(lock.hidden || !phone.open || shell.classList.contains('is-powered-off'))return;
-    power.disabled=true;
-    shell.classList.add('is-powered-off');
-    if(powerGuide)powerGuide.hidden=true;
-    // Switch off the handset first; then the black screen becomes a universe.
-    window.setTimeout(()=>{
-      if(!phone.open)return;
-      closePhone();
-      shell.classList.remove('is-powered-off');
-      document.dispatchEvent(new CustomEvent('winter:cosmos-open'));
-    },reduced?.matches?110:560);
-  });
-  start.addEventListener('click',openPhone);
-  shutter.addEventListener('click',snap);
-  reset?.addEventListener('click',resetShot);
-  close?.addEventListener('click',closePhone);
-  phone.addEventListener('close',()=>{
-    clearTimeout(notifyTimer);clearTimeout(flashTimer);
-    lastFocused?.focus?.({preventScroll:true});
-  });
-  phone.addEventListener('click',ev=>{
-    // A standalone, backdrop-free handset: taps outside should not dismiss it accidentally.
-    ev.stopPropagation();
-  });
+  function powerOff(){
+    if(!powerReady||lock.hidden||!phone.open||shell.classList.contains('is-powered-off'))return;
+    const token=run,rect=shell.getBoundingClientRect();
+    const origin={x:Math.max(0,Math.min(100,(rect.left+rect.width/2)/(window.innerWidth||1)*100)),y:Math.max(0,Math.min(100,(rect.top+rect.height/2)/(window.innerHeight||1)*100))};
+    powerReady=false;if(power)power.disabled=true;
+    shell.classList.remove('is-power-ready');shell.classList.add('is-powered-off');powerGuide?.classList.add('is-leaving');
+    window.navigator?.vibrate?.(10);
+    powerTimer=window.setTimeout(()=>{
+      if(token!==run||!phone.open)return;
+      closePhone();shell.classList.remove('is-powered-off');
+      document.dispatchEvent(new CustomEvent('winter:cosmos-open',{detail:{origin}}));
+    },quiet()?110:560);
+  }
+  power?.addEventListener('click',powerOff);
+  start.addEventListener('click',openPhone);shutter.addEventListener('click',snap);
+  reset?.addEventListener('click',resetShot);close?.addEventListener('click',closePhone);
+  phone.addEventListener('close',()=>{cancelPending();setPowerReady(false);lastFocused?.focus?.({preventScroll:true});});
+  phone.addEventListener('click',event=>event.stopPropagation());
 })();

@@ -4,7 +4,7 @@
 .gwen-note-signatures img:last-child{width:33%;max-width:117px;height:auto;transform:rotate(8deg);filter:contrast(1.25) sepia(.13)}
 .gwen-afterword-ink{width:min(530px,92%);margin:20px auto 5px;transform:rotate(-2.5deg);opacity:.9}
 .gwen-afterword-ink img{display:block;width:100%;height:auto;filter:brightness(0) invert(92%) sepia(11%) saturate(500%) hue-rotate(340deg);opacity:.84}
-.app-shell[data-destination='afterword'] .gwen-afterword-ink{animation:gwen-write-appear .9s 4.5s both}
+.app-shell[data-destination='afterword'] .gwen-afterword-ink{animation:gwen-write-appear .8s 1.2s both}
 @keyframes gwen-write-appear{from{opacity:0;transform:translateY(16px) rotate(-3deg);filter:blur(3px)}to{opacity:.9;transform:translateY(0) rotate(-2.5deg);filter:blur(0)}}
 .gwen-final-birthday{display:block;width:min(660px,100%);height:auto;margin:8px auto 4px;padding:0 10px;object-fit:contain;filter:contrast(1.15) sepia(.28) saturate(.65)}
 .finale-surprise .gwen-final-birthday{animation:gwen-ink-rise .85s .16s backwards}
@@ -15,17 +15,17 @@
 @media(max-width:550px){.gwen-note-signatures{position:relative;left:auto;bottom:auto;transform:rotate(-3deg);margin:3px auto 0;width:80%;order:3}.gwen-note-signatures img:first-child{max-width:150px}.gwen-note-signatures img:last-child{max-width:90px}}
 
 /* Standalone phone. Intentionally NO green, no full-page replacement background. */
-.winter-phone-dialog{position:fixed;inset:0;margin:auto;max-width:none;max-height:100svh;width:max-content;height:max-content;padding:0;border:0;background:transparent;box-shadow:none;overflow:visible;color:#fff}
+.winter-phone-dialog{position:fixed;inset:0;margin:auto;max-width:calc(100vw - 12px);max-height:calc(100svh - 12px);width:max-content;height:max-content;padding:12px;border:0;background:transparent;box-shadow:none;overflow-x:hidden;overflow-y:auto;color:#fff}
 .winter-phone-dialog::backdrop{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.winter-phone-stage{display:flex;flex-direction:column;align-items:center;gap:11px;perspective:1100px}
-.winter-phone-shell{position:relative;width:min(342px,calc(100vw - 28px));aspect-ratio:355/725;max-height:calc(100svh - 95px);border-radius:clamp(35px,7vw,54px);padding:7px;background:linear-gradient(128deg,#d5d4d3,#49494d 18%,#202126 46%,#c4baba 76%,#414448 95%);box-shadow:0 24px 68px #221d2780,0 7px 20px #09090b69,inset 0 0 0 1px #e2dedaa6;transform:rotate(-1.2deg);animation:winter-phone-in .6s cubic-bezier(.2,.8,.2,1) both}
+.winter-phone-stage{display:flex;flex-direction:column;align-items:center;gap:10px;padding-inline:10px 80px;perspective:1100px}
+.winter-phone-shell{position:relative;width:min(338px,calc((100svh - 112px)*355/725),calc(100vw - 128px));aspect-ratio:355/725;max-height:none;flex:none;container-type:inline-size;border-radius:clamp(35px,7vw,54px);padding:7px;background:linear-gradient(128deg,#d5d4d3,#49494d 18%,#202126 46%,#c4baba 76%,#414448 95%);box-shadow:0 24px 68px #221d2780,0 7px 20px #09090b69,inset 0 0 0 1px #e2dedaa6;transform:rotate(-1.2deg);animation:winter-phone-in .6s cubic-bezier(.2,.8,.2,1) both}
 .winter-phone-shell::before{content:"";position:absolute;top:21%;left:-3px;width:3px;height:63px;background:linear-gradient(#8d8e92,#303033);border-radius:3px}
-.winter-phone-shell::after{content:"";position:absolute;top:22%;right:-3px;width:3px;height:46px;background:linear-gradient(#8d8e92,#28282c);border-radius:3px}
+
 .winter-phone-glass{position:relative;width:100%;height:100%;border-radius:inherit;border:2px solid #0b0c10;background:#11131b;overflow:hidden}
 .winter-phone-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:31%;height:29px;background:#030407;border-radius:25px;z-index:15;box-shadow:0 0 0 1px #29323d}
 .winter-phone-island i{position:absolute;right:11px;top:9px;width:9px;height:9px;background:radial-gradient(circle at 45% 40%,#3a466b,#0a0b1a 70%);border:1px solid #1a2236;border-radius:50%}
 .winter-phone-island b{position:absolute;left:20px;top:13px;width:19px;height:3px;border-radius:8px;background:#111015}
-.winter-phone-status{position:absolute;top:16px;left:24px;right:21px;display:flex;align-items:center;justify-content:space-between;font:600 12px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;z-index:12;text-shadow:0 1px 3px #000b}
+.winter-phone-status{position:absolute;top:16px;left:clamp(14px,7cqw,24px);right:clamp(14px,6cqw,21px);display:flex;align-items:center;justify-content:space-between;font:600 clamp(8px,3.6cqw,12px)/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;z-index:12;text-shadow:0 1px 3px #000b}
 .winter-camera-screen,.winter-phone-lockscreen{position:absolute;inset:0}
 .winter-camera-screen{display:flex;flex-direction:column;background:#0b0d12;padding:52px 0 12px}
 .winter-camera-heading{text-align:center;color:#bfbfc4;letter-spacing:2px;font:600 9px/1.2 -apple-system,sans-serif;padding:14px 0 16px}
@@ -53,10 +53,10 @@
 .winter-phone-lockscreen{isolation:isolate;overflow:hidden;background:linear-gradient(170deg,#233248,#8b7082,#bd9a8d)}
 .winter-lock-wallpaper{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;filter:saturate(.92)}
 .winter-lock-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#101b2c70,#1720330c 47%,#10121c88 100%)}
-.winter-lock-top{padding-top:clamp(80px,16%,133px);text-align:center;color:#fff;text-shadow:0 2px 13px #19182170;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-.winter-lock-date{font:500 clamp(15px,3.8vw,19px)/1.4 -apple-system,sans-serif}
-.winter-lock-time{font:200 clamp(60px,16vw,85px)/1.05 -apple-system,sans-serif;letter-spacing:-4px}
-.winter-lock-notification{margin:clamp(38px,13vh,106px) 15px 0;padding:13px 14px 15px;border:1px solid #ffffff5e;border-radius:19px;background:#e9edf0bf;color:#151d29;box-shadow:0 8px 26px #161b2680;backdrop-filter:blur(19px);-webkit-backdrop-filter:blur(19px);animation:winter-notify-arrive .62s cubic-bezier(.18,.9,.24,1) both;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.winter-lock-top{padding-top:clamp(55px,24cqw,82px);text-align:center;color:#fff;text-shadow:0 2px 13px #19182170;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.winter-lock-date{font:500 clamp(11px,5.3cqw,19px)/1.4 -apple-system,sans-serif}
+.winter-lock-time{font:200 clamp(37px,25cqw,85px)/1.05 -apple-system,sans-serif;letter-spacing:-4px}
+.winter-lock-notification{margin:clamp(16px,20cqw,64px) 12px 0;padding:13px 14px 15px;border:1px solid #ffffff5e;border-radius:19px;background:#e9edf0bf;color:#151d29;box-shadow:0 8px 26px #161b2680;backdrop-filter:blur(19px);-webkit-backdrop-filter:blur(19px);animation:winter-notify-arrive .62s cubic-bezier(.18,.9,.24,1) both;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 .winter-lock-notification[hidden]{display:none!important}
 .winter-lock-notify-head{display:flex;align-items:center;gap:6px;font-size:10px;color:#57606c}
 .winter-lock-notify-head strong{font-weight:600}
@@ -68,10 +68,30 @@
 .winter-lock-homebar{width:103px;height:5px;border-radius:9px;background:#fffd}
 @keyframes winter-notify-arrive{from{opacity:0;transform:translateY(-23px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes winter-phone-in{from{opacity:0;transform:translateY(24px) rotate(-6deg) scale(.88)}to{opacity:1;transform:translateY(0) rotate(-1.2deg) scale(1)}}
-.winter-phone-tools{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;max-width:370px}
+.winter-phone-tools{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;width:100%;max-width:338px}
 .winter-phone-tools button,.winter-phone-tools a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #927a8f;border-radius:23px;background:#f9f0e8;color:#5f485c;box-shadow:0 4px 12px #251d2833;font:500 11px/1.4 -apple-system,'Noto Serif SC',sans-serif;text-decoration:none;cursor:pointer}
 #winter-phone-close{background:#3f3440;color:#fff}
 .winter-phone-tools [hidden]{display:none!important}
-@media(max-width:380px){.winter-phone-shell{width:min(315px,calc(100vw - 20px))}.winter-phone-tools{max-width:310px;gap:6px}.winter-phone-tools button,.winter-phone-tools a{font-size:10px;padding:9px 10px}}
-@media(max-height:690px){.winter-phone-shell{max-height:calc(100svh - 78px);width:auto;aspect-ratio:355/725}.winter-lock-top{padding-top:65px}.winter-lock-notification{margin-top:25px}.winter-camera-heading{padding:6px 0}.winter-camera-controls{padding:8px 5px 1px}#winter-shutter{width:46px;height:46px}.winter-camera-hint{margin:3px 0}}
+@media(max-width:380px){.winter-phone-tools{max-width:310px;gap:6px}.winter-phone-tools button,.winter-phone-tools a{font-size:10px;padding:9px 10px}}
+@media(max-height:690px){.winter-camera-heading{padding:6px 0}.winter-camera-controls{padding:8px 5px 1px}#winter-shutter{width:46px;height:46px}.winter-camera-hint{margin:3px 0}}
 @media(prefers-reduced-motion:reduce){.winter-phone-shell,.winter-lock-notification,.gwen-afterword-ink,.finale-surprise .gwen-final-birthday{animation:none!important}}
+
+/* The cue belongs to the physical side key. It occupies no flow space. */
+#winter-phone-power{position:absolute;right:-22px;top:28%;z-index:18;display:grid;place-items:center;width:44px;height:88px;min-height:88px;margin:0;padding:0;border:0;border-radius:9px;background:transparent;cursor:pointer;touch-action:manipulation;opacity:1;overflow:visible}
+.winter-side-key{display:block;width:9px;height:67px;border:1px solid #c8c8c6;border-radius:0 5px 5px 0;background:linear-gradient(90deg,#b5b6b7,#575f6a);box-shadow:1px 0 2px #1116;transition:transform 160ms ease,background 200ms ease}
+#winter-phone-power:disabled{cursor:default;opacity:.45}
+#winter-phone-power:focus-visible{outline:2px solid #d7b47b;outline-offset:-3px;background:#f8e7bb22}
+#winter-phone-power:active:not(:disabled) .winter-side-key{transform:translateX(-2px)}
+.is-power-ready .winter-side-key{border-color:#f8dfaa;background:linear-gradient(90deg,#e8cc9d,#a88d68);animation:side-key-invite 1500ms ease-in-out 3}
+@keyframes side-key-invite{0%,100%{box-shadow:0 0 0 2px #ead4aa22}50%{box-shadow:0 0 0 7px #ead4aa44}}
+.phone-power-guide{position:absolute;left:calc(50% + 17px);top:50%;width:60px;translate:0 -50%;margin:0;padding:0;border:0;background:none;color:#584354;text-align:left;white-space:nowrap;animation:phone-cue-in 260ms ease-out both;transition:opacity 180ms ease}
+.phone-power-guide::before{content:'';position:absolute;left:-14px;top:50%;width:10px;height:1px;background:#a48786}
+.phone-power-guide::after{content:'';position:absolute;left:-16px;top:calc(50% - 2px);width:4px;height:4px;border-left:1px solid #a48786;border-bottom:1px solid #a48786;rotate:45deg}
+.phone-power-guide[hidden]{display:none!important}.phone-power-guide.is-leaving{animation:none;opacity:0;pointer-events:none}
+.phone-guide-label{display:block;color:#79616b;font:400 10px/1.7 var(--sans)}
+.phone-power-guide strong{display:block;color:#584354;font:500 11px/1.7 var(--sans);letter-spacing:.25px}
+@keyframes phone-cue-in{from{opacity:0}to{opacity:1}}
+#winter-phone-shell.is-powered-off .winter-phone-glass::after{content:'';position:absolute;inset:0;z-index:90;background:#020305;border-radius:inherit;animation:power-down 400ms ease both}@keyframes power-down{from{opacity:0}to{opacity:1}}
+@media(max-height:560px) and (min-width:600px){.winter-phone-stage{display:grid;grid-template-columns:auto 130px;gap:16px 80px;padding-inline:10px 0;align-items:center}.winter-phone-shell{grid-column:1;width:calc((100svh - 50px)*355/725)}.winter-phone-tools{grid-column:2;flex-direction:column;align-items:stretch;width:130px;max-width:130px}.winter-camera-controls{padding:8px 3px 1px}.winter-phone-status{top:14px}}
+@media(prefers-reduced-motion:reduce){.winter-side-key,.phone-power-guide{animation:none!important;transition:none!important}.winter-phone-shell.is-powered-off .winter-phone-glass::after{animation:none}}
+.winter-phone-shell[data-motion='off'],.winter-phone-shell[data-motion='off'] *{animation:none!important;transition:none!important}

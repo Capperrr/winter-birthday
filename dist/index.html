@@ -15,16 +15,16 @@
   <link rel="stylesheet" href="style.css?v=cinema-2">
   <link rel="stylesheet" href="motion.css?v=journey-1">
   <link rel="stylesheet" href="celebration.css?v=cinema-2">
-  <link rel="stylesheet" href="cake-scene.css?v=aligned-twenty">
+  <link rel="stylesheet" href="cake-scene.css?v=quiet-ritual-20261116">
   <link rel="stylesheet" href="memory-notes.css?v=three-pages-1">
   <link rel="stylesheet" href="nature-atlas.css?v=cinema-2">
   <link rel="stylesheet" href="keepsake.css?v=handmade-2">
   <link rel="stylesheet" href="journey.css?v=personal-photos-2">
   <link rel="stylesheet" href="music.css?v=gentle-eight-1">
-  <link rel="stylesheet" href="personal-album.css?v=forest-epilogue-1">
-  <link rel="stylesheet" href="interactive-finale.css?v=cutout-20261115">
-  <link rel="stylesheet" href="gwen-handwriting-phone.css?v=hand-phone-1">
-  <link rel="stylesheet" href="cosmos-chapter.css?v=cosmic-hd-03">
+  <link rel="stylesheet" href="personal-album.css?v=blue-hour-20261116">
+  <link rel="stylesheet" href="interactive-finale.css?v=quiet-encounter-20261116">
+  <link rel="stylesheet" href="gwen-handwriting-phone.css?v=side-key-20261116">
+  <link rel="stylesheet" href="cosmos-chapter.css?v=one-line-20261116">
   <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
@@ -32,8 +32,8 @@
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
-  <script src="gwen-handwriting-phone.js?v=cosmic-01" defer></script>
-  <script src="cosmos-chapter.js?v=cosmic-hd-02" defer></script>
+  <script src="gwen-handwriting-phone.js?v=side-key-20261116" defer></script>
+  <script src="cosmos-chapter.js?v=one-line-20261116" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -349,9 +349,14 @@
       </div>
       <div class="winter-phone-flash" aria-hidden="true"></div>
     </div>
-    <button type="button" id="winter-phone-power" title="轻点侧边键息屏，开启宇宙" aria-label="按下手机侧边息屏键，开启宇宙旅程"></button>
+    <button type="button" id="winter-phone-power" title="按右侧息屏键，进入下一段故事" aria-label="按下手机右侧息屏键，开启宇宙旅程" aria-describedby="phone-power-instruction" disabled>
+      <span class="winter-side-key" aria-hidden="true"></span>
+      <span class="phone-power-guide" id="phone-power-guide" hidden>
+        <span class="phone-guide-label">轻按这里</span>
+        <strong id="phone-power-instruction">息屏 · 继续</strong>
+      </span>
+    </button>
   </div>
-  <p class="phone-power-guide" id="phone-power-guide" hidden>照片已留在手机里。现在轻点手机右侧的息屏键，下一段故事就会开始。</p>
   <div class="winter-phone-tools">
     <button id="winter-phone-reset" type="button" hidden>重拍 ↺</button>
     <a id="winter-wallpaper-save" href="#" download="WINTER-25-wallpaper.png" hidden>保存这张壁纸 <span aria-hidden="true">↓</span></a>
@@ -367,7 +372,7 @@
     <section id="cosmos-intro" class="cosmos-stage cosmos-prologue is-active" aria-labelledby="cosmos-intro-title">
       <p class="cosmos-overline">TWO LITTLE PARTICLES · ONE UNLIKELY ENCOUNTER</p>
       <div class="cosmos-particle-pair" aria-hidden="true"><i></i><i></i></div>
-      <h2 id="cosmos-intro-title"><span style="--step:0">宇宙已经138亿岁了，</span><span style="--step:1">我们只是其中两粒微尘。</span><span style="--step:2">飘了很久很久，</span><span style="--step:3">才刚好遇见。</span></h2>
+      <h2 id="cosmos-intro-title" aria-label="宇宙已经138亿岁了，我们只是其中两粒微尘。飘了很久很久，才刚好遇见。"><span style="--step:0" aria-hidden="true">宇宙已经138亿岁了，</span><span style="--step:1" aria-hidden="true">我们只是其中两粒微尘。</span><span style="--step:2" aria-hidden="true">飘了很久很久，</span><span style="--step:3" aria-hidden="true">才刚好遇见。</span></h2>
       <p class="cosmos-intro-foot">Somewhere in this wide universe, there was you.</p>
       <button class="cosmos-continue" id="cosmos-to-stars" type="button">收集散落在星空里的祝福 <span aria-hidden="true">✦</span></button>
     </section>
@@ -406,7 +411,7 @@
         <h2 id="cosmos-gallery-title">一些闪闪发光的普通日子</h2>
         <p>海风、天光、雨夜和街角。你走过的时光，原来有这么多好看的模样。</p>
       </div>
-      <div class="photo-wall" id="cosmos-photo-wall" role="group" aria-label="十九张独立的旅行和生活照片，点击可以放大"></div>
+      <div class="photo-wall" id="cosmos-photo-wall" role="group" aria-label="旅行和生活照片，点击可以放大"></div>
       <div class="cosmos-gallery-ink">
         <img src="assets/handwriting/gwen-every-birthday.png" alt="Gwen 亲笔：以后的每一个生日我都想陪你过。" loading="lazy" decoding="async">
         <p>如果可以，我想让未来的很多个平常日子，也慢慢成为我们的回忆。</p>
