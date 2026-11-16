@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="gwen-handwriting-phone.css?v=hand-phone-1">
   <link rel="stylesheet" href="cosmos-chapter.css?v=power-cursor-01">
   <link rel="stylesheet" href="gesture-controls.css?v=gesture-01">
+  <link rel="stylesheet" href="winter-refinement.css?v=live-cake-creator-01">
   <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
@@ -35,7 +36,8 @@
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
   <script src="gwen-handwriting-phone.js?v=cosmic-01" defer></script>
   <script src="cosmos-chapter.js?v=cosmic-hd-02" defer></script>
-  <script src="gesture-controls.js?v=gesture-01" defer></script>
+  <script src="gesture-controls.js?v=live-cake-creator-01" defer></script>
+  <script src="creator-studio.js?v=live-cake-creator-01" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -199,6 +201,9 @@
           <span class="letter-postscript">WITH LOVE, ALWAYS · GWEN</span>
         </div>
 <section class="cake-page" id="cake-page" data-cake-state="unlit" aria-labelledby="grand-cake-title" hidden>
+  <div class="winter-cake-live" aria-hidden="true"><video id="winter-cake-video" autoplay muted playsinline></video></div>
+  <button type="button" id="winter-cake-camera-enable" class="winter-cake-camera-enable">开启镜头 · 把这一刻留在真实的世界里 <span aria-hidden="true">↗</span></button>
+  <span class="winter-cake-camera-note" id="winter-cake-camera-note" role="status" aria-live="polite"></span>
   <div class="grand-cake-intro" id="grand-cake-intro"><p>A WISH, JUST FOR YOU</p><h2 id="grand-cake-title"><small>For your</small><span class="cake-twenty">twenty</span><span class="cake-fifth">fifth.</span></h2></div>
   <div class="grand-cake-tableau" id="grand-cake-tableau">
     <div class="grand-scene-plane" id="cake-art-slot">
@@ -418,7 +423,34 @@
         <p>如果可以，我想让未来的很多个平常日子，也慢慢成为我们的回忆。</p>
       </div>
       <p class="cosmos-gallery-bottom">A LITTLE UNIVERSE, HELD CLOSE · FOR WINTER</p>
-      <button class="cosmos-continue" id="cosmos-gallery-home" type="button">从 Home 再走一遍 <span aria-hidden="true">↗</span></button>
+      <button class="cosmos-continue" id="cosmos-gallery-to-creator" type="button">下一页 · 为自己庆生吧 <span aria-hidden="true">↗</span></button>
+    </section>
+    <section id="cosmos-creator" class="cosmos-stage cosmos-stage-creator" aria-labelledby="cosmos-creator-title">
+      <div class="creator-stage-background" aria-hidden="true"><video id="winter-creator-video" autoplay muted playsinline></video></div>
+      <div class="creator-stage-head">
+        <span class="creator-overline">A LITTLE GIFT FOR THE ARTIST IN YOU</span>
+        <h2 id="cosmos-creator-title">为自己庆生吧！<span>我心中 TOP 1 的创作者</span></h2>
+        <p>这一次，换你来留下作品。把镜头当作画纸，用手指或手势，为自己的 25 岁画一点什么。</p>
+      </div>
+      <canvas id="winter-creator-canvas" class="creator-draw-canvas" aria-label="可用手指或摄像头手势绘画的全屏画布"></canvas>
+      <div class="creator-hello" id="creator-hello" aria-live="polite" hidden>good morning! welcome to my life!</div>
+      <div id="winter-creator-toolbar" class="creator-toolbar">
+        <p class="creator-toolbar-title">YOUR LITTLE CANVAS <span aria-hidden="true">·</span> 自由创作</p>
+        <div class="creator-colours" id="winter-creator-colours" role="group" aria-label="画笔颜色">
+          <button type="button" data-colour="#ffffff" aria-pressed="true" aria-label="白色" style="--swatch:#ffffff"></button>
+          <button type="button" data-colour="#232323" aria-pressed="false" aria-label="黑色" style="--swatch:#232323"></button>
+          <button type="button" data-colour="#e98a73" aria-pressed="false" aria-label="珊瑚红" style="--swatch:#e98a73"></button>
+          <button type="button" data-colour="#ec8ba8" aria-pressed="false" aria-label="粉色" style="--swatch:#ec8ba8"></button>
+          <button type="button" data-colour="#83b9df" aria-pressed="false" aria-label="蓝色" style="--swatch:#83b9df"></button>
+          <button type="button" data-colour="#84ba94" aria-pressed="false" aria-label="绿色" style="--swatch:#84ba94"></button>
+          <button type="button" data-colour="#f4c45e" aria-pressed="false" aria-label="黄色" style="--swatch:#f4c45e"></button>
+        </div>
+        <div class="creator-brush-row"><label for="winter-creator-brush">笔触 <output id="winter-creator-brush-size">8 px</output></label><input type="range" id="winter-creator-brush" min="1" max="30" value="8" step="1"></div>
+        <div class="creator-buttons"><button type="button" id="winter-creator-erase" aria-pressed="false">橡皮擦</button><button type="button" id="winter-creator-clear">清空</button><button type="button" id="winter-creator-save">保存画作</button></div>
+        <p class="creator-instruction" id="winter-creator-instruction">☝️ 触摸：手指写画 · 选颜色 · 调整笔触。<br>✋ 隔空：食指绘画 · 左手食指擦除 · 张开左掌清空 · 捏合色点停留 2 秒选色。</p>
+        <div class="creator-camera-row"><button type="button" id="winter-creator-camera-enable">开启摄像头 · 隔空画画</button><span id="winter-creator-camera-status" role="status" aria-live="polite">也可以直接用手指绘画</span></div>
+      </div>
+      <div class="creator-footer-nav"><button class="creator-previous" type="button" id="cosmos-creator-back">← 再看看那些普通日子</button><button class="creator-home" type="button" id="cosmos-gallery-home">带着这张画，再从 Home 走一遍 ↗</button></div>
     </section>
     <div id="cosmos-photo-lightbox" role="dialog" aria-modal="true" aria-label="放大查看回忆照片" hidden>
       <button class="cosmos-lightbox-close" id="cosmos-lightbox-close" type="button" aria-label="关闭照片">×</button>
