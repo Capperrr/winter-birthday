@@ -394,7 +394,7 @@
     if (!fitCanvas()) { staticFinish(); return; }
     if (phase === 'finished') stillFestival();
   }) : null;
-  listen(document, 'winter:air-ignite', () => lightCake('air'));
+  listen(document, 'winter:air-five-complete', event => { if (event.detail?.litCount===5) lightCake('air'); });
   listen(lighter, 'pointerdown', pickUp);
   listen(window, 'pointermove', moveTool, { passive: false });
   listen(window, 'pointerup', dropTool);
