@@ -46,8 +46,8 @@
     if (!rect.width || !rect.height) return;
     const tall = portraitQuery.matches;
     const map = tall
-      ? { width: 1024, height: 1536, lighter: [750, 1365], target: [400, 525, 226, 88] }
-      : { width: 1536, height: 1024, lighter: [1075, 840], target: [650, 157, 236, 80] };
+      ? { width: 1024, height: 1536, lighter: [822, 1365], target: [605, 525, 226, 88] }
+      : { width: 1536, height: 1024, lighter: [1265, 840], target: [980, 157, 236, 80] };
     const contain = !tall && rect.width / rect.height > 1.92;
     const scale = (contain ? Math.min : Math.max)(rect.width / map.width, rect.height / map.height);
     const x = (rect.width - map.width * scale) / 2;
@@ -97,7 +97,7 @@
     lighter.style.setProperty('--lighter-dy', '0px');
     lighter.setAttribute('aria-pressed', 'false');
     candleTarget.disabled = true; candleTarget.tabIndex = -1;
-    instruction.textContent = '轻点打火机直接点亮，也可以拖向蜡烛';
+    instruction.textContent = '';
   }
   function nearCandles(x, y, padding = 8) {
     const t = geometry?.target;
@@ -118,7 +118,7 @@
     else if (!g.near) clearHeat();
   }
   function pickUp(event) {
-    if (!active || phase !== 'unlit' || document.hidden || grip || event.isPrimary === false || (event.button !== undefined && event.button !== 0)) return;
+    if (!active || phase !== 'unlit' || !shell?.dataset.cakeTouchUnlocked || shell.dataset.cakeTouchUnlocked !== 'true' || document.hidden || grip || event.isPrimary === false || (event.button !== undefined && event.button !== 0)) return;
     event.preventDefault(); pointerClick = true;
     layoutScene();
     const box = lighter.getBoundingClientRect();
@@ -337,8 +337,9 @@
     status.textContent = '轻轻吹一下，1.5 秒后，愿望会被收好。';
     later(extinguish, 1500);
   }
-  function lightCake() {
-    if (!active || phase !== 'unlit') return;
+  function lightCake(source) {
+    // Lighting is strictly air-gesture-only after a live camera and hand recogniser are ready.
+    if (!active || phase !== 'unlit' || source !== 'air' || shell.dataset.cakeCamera !== 'on' || shell.dataset.cakeHandReady !== 'true') return;
     clearHeat(); releaseGrip();
     page.dataset.lighter = 'igniting';
     candleTarget.disabled = true; candleTarget.tabIndex = -1;
@@ -346,6 +347,8 @@
     lighter.disabled = true;
     later(() => {
       setPhase('lit'); lighter.hidden = true;
+      shell.dataset.cakeTouchUnlocked='true';
+      document.dispatchEvent(new CustomEvent('winter:cake-lit'));
       status.textContent = '蜡烛点亮了。';
       later(() => { if (phase === 'lit' && !dialog.open) dialog.showModal(); }, calm() ? 0 : 380);
     }, calm() ? 0 : 760);
@@ -362,6 +365,7 @@
   function reset() {
     stopResources(); ready = false;
     next.hidden = true; lighter.hidden = false; lighter.disabled = false;
+    shell.dataset.cakeTouchUnlocked='false';
     status.textContent = '';
     page.dataset.reduced = String(calm());
     setPhase('unlit'); elapsed = 0;
@@ -390,6 +394,7 @@
     if (!fitCanvas()) { staticFinish(); return; }
     if (phase === 'finished') stillFestival();
   }) : null;
+  listen(document, 'winter:air-ignite', () => lightCake('air'));
   listen(lighter, 'pointerdown', pickUp);
   listen(window, 'pointermove', moveTool, { passive: false });
   listen(window, 'pointerup', dropTool);
