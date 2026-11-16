@@ -264,6 +264,8 @@
 
 
 /* WINTER · camera-first, gesture-first cake: far-right on a continuous stone shelf. */
+.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-hand-ready='false'] .winter-cake-camera-enable{display:inline-flex!important}
+.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable{display:none!important}
 .app-shell[data-destination='cake'] .winter-cake-camera-enable{
   top:clamp(72px,11%,114px);right:clamp(15px,4vw,52px);
   max-width:min(245px,76vw);border-radius:100px;
