@@ -38,8 +38,8 @@ async function prepare(){
   // A low-level photographic difference traces the cake, flowers and pedestal
   // without turning the lake or dark mountain silhouettes into a rectangular frame.
   const raw=new Uint8Array(w*h);
-  const x0=Math.floor(w*(key==='portrait'?.24:.29));
-  const x1=Math.ceil(w*(key==='portrait'?.76:.73));
+  const x0=Math.floor(w*(key==='portrait'?.29:.34));
+  const x1=Math.ceil(w*(key==='portrait'?.71:.65));
   const y0=Math.floor(h*(key==='portrait'?.28:.11));
   const y1=Math.ceil(h*(key==='portrait'?.84:.83));
   for(let y=y0;y<y1;y++){
@@ -47,7 +47,7 @@ async function prepare(){
     const i=y*w+x,k=i*4;
     const diff=(Math.abs(data[k]-old[k])+Math.abs(data[k+1]-old[k+1])+Math.abs(data[k+2]-old[k+2]))/3;
     // Reject minor colour/compression shifts from unchanged background.
-    if(diff>21)raw[i]=255;
+    if(diff>26)raw[i]=255;
    }
   }
   // Fill tiny gaps within a real foreground contour, then soften only its silhouette.
@@ -58,7 +58,7 @@ async function prepare(){
     for(let dy=-2;dy<=2;dy+=2){
       for(let dx=-2;dx<=2;dx+=2){if(raw[(y+dy)*w+x+dx]){hit++;}}
     }
-    grown[y*w+x]=hit>=2?255:0;
+    grown[y*w+x]=hit>=3?255:0;
    }
   }
   // A small, separate stone slab crop anchors the cake; the lake and mountains are gone.
