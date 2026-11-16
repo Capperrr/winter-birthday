@@ -1,0 +1,120 @@
+/* WINTER design refinement: real scenery, restrained serif typography and gentle interaction. */
+/* 1. The meeting letter: a real nature photograph instead of polygon mountains. */
+.app-shell[data-destination='afterword']{
+ background:#17272a;
+ --nav-material:#263d3988;--nav-border:#f4e9d254;--nav-ink:#eee8d8;--nav-active:#fff5e3;
+}
+.journey-afterword{
+ background:
+  linear-gradient(180deg,rgba(13,28,33,.53),rgba(14,26,32,.64) 45%,rgba(12,27,31,.77)),
+  url('assets/swiss-alps.webp') center 48%/cover no-repeat;
+}
+.journey-afterword::before,.journey-afterword::after{display:none!important;content:none!important}
+.journey-afterword .afterword-stars{opacity:.08;background:radial-gradient(circle at 76% 13%,#fff9df 1px,transparent 2px)}
+.afterword-copy{max-width:770px;padding:clamp(30px,5vh,75px) clamp(8px,2vw,25px) 40px}
+.afterword-copy h2{font-size:clamp(28px,3.1vw,42px);letter-spacing:.8px;text-shadow:0 3px 18px #0008}
+.afterword-line{font-size:clamp(13px,1.3vw,17px);line-height:1.95;color:#faf7ee;text-shadow:0 2px 12px #081923cc}
+.afterword-line.afterword-emphasis{color:#f6d9a8}
+.afterword-final span{color:#f2dfc1}.afterword-final strong{color:#ffefdc}
+.afterword-continue,.afterword-home{backdrop-filter:blur(8px);background:#19393d99;border-color:#f0e1c777}
+@media(max-width:760px){
+ .journey-afterword{background-image:linear-gradient(180deg,#101f24a6,#142933bc),url('assets/swiss-alps-small.webp');background-position:center 40%}
+ .afterword-copy h2{font-size:27px}
+ .afterword-line{line-height:2.05;letter-spacing:.45px}
+}
+/* 2. The cake is still itself: a real live-camera background, with masked cake, stone and lighter foreground. */
+.winter-cake-live{position:absolute;inset:0;z-index:0;overflow:hidden;background:#091820;opacity:0;transition:opacity .85s ease;pointer-events:none}
+.winter-cake-live video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:saturate(.83) contrast(1.03) brightness(.73)}
+.winter-cake-live::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#071c2c75 0%,transparent 22%,transparent 58%,#071b2c8c 100%);pointer-events:none}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .winter-cake-live{opacity:1}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .cake-backdrop{opacity:0!important}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-cake-photograph{
+ -webkit-mask-image:radial-gradient(ellipse 49% 72% at 50% 58%,#000 51%,#000d 62%,#0005 78%,transparent 100%);
+ mask-image:radial-gradient(ellipse 49% 72% at 50% 58%,#000 51%,#000d 62%,#0005 78%,transparent 100%);
+}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-scene-plane{filter:drop-shadow(0 16px 26px #071a2880)}
+.cake-page .grand-cake-tableau{z-index:1}
+.cake-page .cake-thanks{z-index:4}
+.winter-cake-camera-enable{
+ position:absolute;z-index:8;top:clamp(85px,12%,128px);right:clamp(12px,4vw,50px);
+ display:inline-flex;align-items:center;gap:10px;
+ max-width:min(260px,72vw);min-height:43px;padding:8px 16px;
+ border:1px solid #faf0de8c;border-radius:24px;background:#152a39b8;
+ color:#f4eee5;font:400 11px/1.5 var(--cn-serif);letter-spacing:.2px;
+ backdrop-filter:blur(11px);cursor:pointer;
+}
+.winter-cake-camera-enable:active{transform:scale(.97)}
+.winter-cake-camera-enable span{font:17px/1 Georgia,serif}
+.app-shell[data-cake-camera='on'] .winter-cake-camera-enable{display:none}
+.winter-cake-camera-note{position:absolute;z-index:9;top:clamp(133px,18%,178px);right:clamp(12px,4vw,50px);max-width:240px;color:#e8e5d9;font:10px/1.7 var(--cn-serif);text-shadow:0 2px 5px #05141fcc;pointer-events:none}
+@media(max-width:760px){
+ .winter-cake-camera-enable{top:14%;right:4%;max-width:190px;min-height:37px;padding:8px 12px;font-size:10px}
+ .winter-cake-camera-note{top:21%;right:4%;max-width:190px;font-size:9px}
+ .app-shell[data-destination='cake'][data-cake-camera='on'] .grand-cake-photograph{
+ -webkit-mask-image:radial-gradient(ellipse 52% 65% at 50% 57%,#000 49%,#000b 63%,transparent 100%);
+ mask-image:radial-gradient(ellipse 52% 65% at 50% 57%,#000 49%,#000b 63%,transparent 100%);
+ }
+}
+/* Hide the gesture toggle on the first chapters; introduce it at the cake. */
+.gesture-dock:not(.gesture-visible){display:none!important}
+/* 3. Keep the photo chapter editorial, rather than a grid of decorative buttons. */
+.cosmos-gallery-head{max-width:760px;margin-bottom:35px}
+.cosmos-gallery-head h2{font-size:clamp(29px,4.4vw,51px);letter-spacing:1.2px}
+.cosmos-gallery-ink{margin-top:46px;border-color:#d7bfa846}
+#cosmos-gallery-to-creator{margin-top:26px;font-size:13px;background:#d2c1aa19;letter-spacing:.25px}
+#cosmos-gallery-to-creator:hover{background:#dbc5aa33}
+/* 4. Final creator studio: calm camera, useful palette, not a distracting UI mockup. */
+.cosmos-stage-creator{position:relative;justify-content:space-between;gap:18px;min-height:100dvh;min-height:100svh;padding:clamp(67px,10vh,95px) clamp(13px,3vw,38px) 30px;background:#121c25;overflow:hidden}
+.creator-stage-background{position:absolute;inset:0;z-index:0;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#506370,#1a2732 65%,#101820)}
+.creator-stage-background video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0;filter:saturate(.86) contrast(1.02) brightness(.72);transition:opacity .6s}
+.cosmos-stage-creator[data-camera='on'] .creator-stage-background video{opacity:1}
+.creator-stage-background::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0d1b29bb,#15253618 30%,transparent 68%,#0b1724a8);pointer-events:none}
+.creator-stage-head{position:relative;z-index:6;pointer-events:none;text-shadow:0 3px 18px #07111be6}
+.creator-overline{color:#eddac7;font:500 9px/1.6 var(--sans);letter-spacing:2.2px}
+.creator-stage-head h2{display:flex;flex-direction:column;align-items:center;gap:5px;margin:14px auto 9px;color:#f7f0e2;font:400 clamp(27px,3.2vw,48px)/1.5 var(--cn-serif);letter-spacing:.5px}
+.creator-stage-head h2 span{font-size:.57em;color:#f6dfc2;letter-spacing:1.3px}
+.creator-stage-head p{max-width:550px;margin:0 auto;color:#eee9de;font:400 clamp(11px,1.1vw,14px)/1.8 var(--cn-serif)}
+.creator-draw-canvas{position:absolute;inset:0;z-index:2;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.creator-hello{position:relative;z-index:4;margin:12px auto -4px;padding:6px 14px;border-radius:30px;background:#101b29bf;color:#fdf1e2;font:italic clamp(15px,2vw,21px)/1.5 'Caveat',cursive;letter-spacing:.4px}
+.creator-hello[hidden]{display:none}
+.creator-toolbar{position:relative;z-index:6;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;width:min(620px,95vw);margin:auto auto 0;padding:15px clamp(12px,3vw,24px) 13px;border:1px solid #e8dfd55c;border-radius:17px;background:#162635d3;backdrop-filter:blur(16px);box-shadow:0 15px 45px #08121c85;color:#f3eee5}
+.creator-toolbar-title{margin:0;color:#ded1bd;font:500 9px/1.5 var(--sans);letter-spacing:1.6px}
+.creator-colours{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,1.6vw,18px);margin:2px 0 1px}
+.creator-colours button{width:29px;height:29px;border:2px solid #faf0dc69;border-radius:50%;background:var(--swatch);box-shadow:0 1px 5px #0007;cursor:pointer;transition:transform .16s,outline-color .16s}
+.creator-colours button[aria-pressed='true']{transform:scale(1.18);outline:2px solid #faf4e6;outline-offset:3px}
+.creator-brush-row{display:flex;align-items:center;justify-content:center;gap:17px;width:100%;max-width:320px}
+.creator-brush-row label{min-width:85px;display:flex;justify-content:space-between;gap:8px;color:#ddd7c7;font:11px/1.4 var(--cn-serif)}
+.creator-brush-row output{color:#c9e0d0;font:10px/1.4 var(--sans)}
+.creator-brush-row input{flex:1;accent-color:#b9cbbb;cursor:pointer;min-height:28px}
+.creator-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
+.creator-buttons button,.creator-camera-row button,.creator-footer-nav button{min-height:40px;padding:9px 15px;border:1px solid #f4ebd35c;border-radius:24px;background:#f6f1e315;color:#f6f0e4;font:11px/1.5 var(--cn-serif);cursor:pointer}
+.creator-buttons button[aria-pressed='true']{background:#f3e5d83b;border-color:#f3e5d8}
+.creator-buttons button:active,.creator-camera-row button:active,.creator-footer-nav button:active{transform:scale(.97)}
+.creator-instruction{margin:0;color:#dbd7ca;font:10px/1.85 var(--cn-serif);letter-spacing:.1px}
+.creator-camera-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px}
+.creator-camera-row button{min-height:37px;background:#ebd8c026}
+.creator-camera-row span{color:#c9c5b8;font:10px/1.6 var(--cn-serif)}
+.creator-footer-nav{position:relative;z-index:6;display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.creator-footer-nav button{font-size:11px;background:#152536bd}
+#cosmos-creator .creator-previous{color:#e1d9cb;border-color:#c0b8a455}
+#cosmos-creator .creator-home{color:#fff1d8;border-color:#dfc6a8a3}
+@media(max-width:600px){
+ .cosmos-stage-creator{gap:9px;padding:70px 10px 12px}
+ .creator-stage-head h2{font-size:clamp(24px,5.2vw,33px);margin:6px auto 4px}
+ .creator-stage-head p{font-size:10px;line-height:1.65}
+ .creator-overline{font-size:8px;letter-spacing:1.1px}
+ .creator-toolbar{width:100%;padding:11px 9px 10px;gap:8px;border-radius:13px}
+ .creator-colours{gap:10px}
+ .creator-colours button{width:25px;height:25px}
+ .creator-instruction{font-size:9px;line-height:1.75}
+ .creator-buttons button,.creator-camera-row button{min-height:36px;padding:8px 12px;font-size:10px}
+ .creator-footer-nav button{font-size:9px;min-height:36px;padding:7px 11px}
+}
+@media(max-height:710px){
+ .creator-stage-head h2{font-size:clamp(24px,2.6vw,36px)}
+ .creator-toolbar{gap:6px;padding-block:9px}
+ .creator-instruction{line-height:1.5}
+}
+@media(prefers-reduced-motion:reduce){
+ .winter-cake-live,.creator-stage-background video,.creator-colours button{transition:none}
+}
