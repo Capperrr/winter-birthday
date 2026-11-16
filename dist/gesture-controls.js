@@ -45,9 +45,7 @@ function selectMode(next){
  touchButton.setAttribute('aria-pressed',String(next==='touch'));
  airButton.setAttribute('aria-pressed',String(next==='camera'));
  cameraTools.hidden=next!=='camera';
- instructions.textContent=next==='touch'?
-  '触摸模式：拖拽拼图、轻点星星、左右滑动照片；放大照片可用双指缩放。':
-  '隔空模式：捏合两指选择星星或拼图；张掌散开烟花、握拳聚成蛋糕；左右挥手切换照片。';
+ instructions.textContent='';
  if(next==='touch'){
   // Keep the live camera as the background after candle ignition.
   if(shell?.dataset.destination==='cake' && shell.dataset.cakeTouchUnlocked==='true' && stream){if(frame){cancelAnimationFrame(frame);frame=0;}cursor.hidden=true;}
@@ -95,6 +93,7 @@ async function startCamera(){
   const feed=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480},frameRate:{ideal:20,max:30}},audio:false});
   if(mode!=='camera'){feed.getTracks().forEach(t=>t.stop());return}
   stream=feed;video.srcObject=stream;await video.play();
+  if(shell?.dataset.destination==='cake')shell.dataset.cakeHandReady='false';
   dock.dataset.camera='on';startButton.hidden=true;stopButton.hidden=false;
   document.dispatchEvent(new CustomEvent('winter:camera-ready',{detail:{stream}}));
   tell('镜头已经开启，正在准备隔空手势识别…');
@@ -160,8 +159,8 @@ function processPose(pose,t){
  if(pose===stablePose){poseFrames++}else{stablePose=pose;poseFrames=1;poseFired=false}
  if(poseFrames<4 || poseFired || t-lastAction<1250)return;
  if(finale && !finale.hidden && !$('finale-surprise')?.hidden){
-  if(pose==='open'){emitParticle('scatter');tell('张开手掌 · 星光散开');lastAction=t;poseFired=true}
-  if(pose==='fist'){emitParticle('gather');tell('握紧拳头 · 星光聚成生日蛋糕');lastAction=t;poseFired=true}
+  if(pose==='open'){emitParticle('scatter');lastAction=t;poseFired=true}
+  if(pose==='fist'){emitParticle('gather');lastAction=t;poseFired=true}
  }
 }
 function processSwipe(x,t,pose){
