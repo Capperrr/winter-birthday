@@ -12,12 +12,12 @@
  const saveButton=$('winter-creator-save'),hello=$('creator-hello');
  const cakeVideo=$('winter-cake-video'),creatorVideo=$('winter-creator-video');
  let color='#ffffff',size=8,eraser=false,drawing=false,last=null,firstDraw=0,helloTimer=0;
- let fingerPos={Right:null,Left:null},leftPalmStart=0,leftPalmDone=false,swatchHold=null,handDrawLast=0;
+ let fingerPos={Right:null,Left:null},leftPalmStart=0,leftPalmDone=false,handDrawLast=0;
  const colors=[...controls.querySelectorAll('[data-colour]')];
  const maxDpr=()=>Math.min(2,window.devicePixelRatio||1);
  const active=()=>stage.classList.contains('is-active')&&$('winter-cosmos-dialog')?.open;
  const activeCake=()=>shell?.dataset.destination==='cake';
- const stopFinger=()=>{fingerPos={Right:null,Left:null};leftPalmStart=0;leftPalmDone=false;swatchHold=null};
+ const stopFinger=()=>{fingerPos={Right:null,Left:null};leftPalmStart=0;leftPalmDone=false};
  const point=(x,y)=>{const r=canvas.getBoundingClientRect();return{x:x-r.left,y:y-r.top}};
  function fit(){
   if(!active())return;
@@ -89,10 +89,11 @@
   if(cakeVideo){cakeVideo.srcObject=stream;cakeVideo.play().catch(()=>{});}
   if(creatorVideo){creatorVideo.srcObject=stream;creatorVideo.play().catch(()=>{});}
   shell.dataset.cakeCamera='on';stage.dataset.camera='on';
-  cakeNote.textContent='镜头已开启。轻点打火机，或使用手势点亮蜡烛。';
+  cakeNote.textContent='正在准备识别…';
   creatorEnable.textContent='镜头已开启 · 点击关闭';
   creatorStatus.textContent='镜头已开启；手势识别加载后即可隔空绘画。';
  });
+ document.addEventListener('winter:hand-model-ready',()=>{if(shell?.dataset.destination==='cake')cakeNote.textContent='';});
  document.addEventListener('winter:camera-stopped',()=>{
   stopVideos();creatorStatus.textContent='镜头已关闭。还可以继续触摸画画。';
  });
@@ -104,9 +105,9 @@
    if(source==='creator'){api.stop('已关闭摄像头；触摸仍可绘画');return}
    label.textContent='镜头已经开启';return;
   }
-  if(!api?.enableCamera){label.textContent='当前浏览器不支持手势模块，仍可直接触摸体验。';return}
+  if(!api?.enableCamera){label.textContent='当前浏览器不支持摄像头手势识别';return}
   btn.disabled=true;label.textContent='正在申请摄像头权限…';
-  try{await api.enableCamera()}catch(_){label.textContent='摄像头不可用，请继续使用触摸操作。'}
+  try{await api.enableCamera()}catch(_){label.textContent='摄像头未能开启，请检查权限后重试'}
   finally{btn.disabled=false}
  }
  cakeEnable?.addEventListener('click',()=>activateCamera('cake'));
@@ -147,7 +148,9 @@
    const cake=$('cake-page');
    if(cake?.dataset.cakeState==='unlit'){
     const hand=hands.find(h=>h.hand==='Right')||hands[0];
-    if(hand?.pinchStarted && !handDrawLast){handDrawLast=Date.now();$('grand-lighter')?.click();}
+    if(hand?.pinchStarted && !handDrawLast && shell?.dataset.cakeCamera==='on' && shell?.dataset.cakeHandReady==='true'){
+      handDrawLast=Date.now();document.dispatchEvent(new CustomEvent('winter:air-ignite'));
+    }
     if(!hand?.pinching)handDrawLast=0;
    }
    return;
@@ -162,7 +165,7 @@
   for(const type of ['Right','Left']){
    const h=bothHands.find(h=>h.hand===type);
    const key=type==='Right'?'Right':'Left';
-   if(!h){fingerPos[key]=null;if(type==='Left'){leftPalmStart=0;swatchHold=null;}continue}
+   if(!h){fingerPos[key]=null;if(type==='Left')leftPalmStart=0;continue}
    const p=screenPoint(h);
    if(type==='Left'){
     // Hold an open left hand for 1.2s before clearing: prevents accidental wipes.
@@ -171,16 +174,8 @@
      if(!leftPalmDone && now-leftPalmStart>1200){clearDrawing();leftPalmDone=true;creatorStatus.textContent='左手张掌：清空画布。';}
      fingerPos.Left=null;continue;
     }else{leftPalmStart=0;leftPalmDone=false}
-    // Pinch at one of the palette dots for two seconds to select it.
-    if(h.pinching){
-     const px=h.x*window.innerWidth,py=h.y*window.innerHeight;
-     const under=colors.find(b=>{const r=b.getBoundingClientRect();return px>=r.left-14&&px<=r.right+14&&py>=r.top-14&&py<=r.bottom+14});
-     if(under){
-      if(!swatchHold||swatchHold.color!==under.dataset.colour)swatchHold={color:under.dataset.colour,start:now};
-      else if(now-swatchHold.start>=2000){selected(under.dataset.colour);creatorStatus.textContent='已选取 '+under.getAttribute('aria-label')+' 画笔';swatchHold=null;}
-     }else swatchHold=null;
-     fingerPos.Left=null;continue;
-    }else swatchHold=null;
+    // Colour selection is touch-only; difficult two-second pinching is intentionally removed.
+    if(h.pinching){fingerPos.Left=null;continue;}
    }
    const draw=h.isIndexExtended&&!h.pinching&&h.pose!=='open'&&p.x>=0&&p.x<=rect.width&&p.y>=0&&p.y<=rect.height;
    if(draw){
@@ -196,7 +191,8 @@
    if(window.WINTER_GESTURES?.active)window.WINTER_GESTURES.stop('已离开创作页面，摄像头自动关闭');
  });
  document.addEventListener('winter:hand-model-unavailable',()=>{
-  creatorStatus.textContent='镜头已开启，但隔空识别暂不可用。可以直接在镜头上用手指画画。';
+  cakeNote.textContent='识别未就绪，检查网络后重新开启摄像头';
+  creatorStatus.textContent='隔空识别未就绪，仍可触摸画画。';
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopFinger()});
 })();
