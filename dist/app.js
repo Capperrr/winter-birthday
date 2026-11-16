@@ -199,7 +199,7 @@
           openingTimer = null;
           if (currentRoute === 'destination' && shell.dataset.destination === 'opening') finishUnfolding();
         }, 930);
-      }, 850);
+      }, 420);
     }, 620);
   });
   document.getElementById('back-to-envelope').addEventListener('click', () => {
