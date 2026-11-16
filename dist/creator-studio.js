@@ -112,9 +112,30 @@
  }
  cakeEnable?.addEventListener('click',()=>activateCamera('cake'));
  creatorEnable?.addEventListener('click',()=>activateCamera('creator'));
- function save(){
+ /* A clear export preview prevents claiming the image was saved when an iPad browser blocked a download. */
+ const exportDialog=document.createElement('dialog');
+ exportDialog.id='winter-art-export';
+ exportDialog.className='creator-export-dialog';
+ exportDialog.innerHTML='<div class="creator-export-sheet"><button type="button" id="winter-art-export-close" aria-label="关闭保存预览">×</button><h3>这一张，送给自己。</h3><p class="creator-export-subtitle">你的画作已经生成，选择一种保存方式。</p><img id="winter-art-export-preview" alt="刚才创作的 WINTER 25 岁画作预览"><div class="creator-export-actions"><button type="button" id="winter-art-export-share">分享 / 存入相册</button><a id="winter-art-export-download" download="WINTER-25-my-little-creation.png">下载 PNG 到文件</a></div><p class="creator-export-tip">iPad：推荐点「分享 / 存入相册」，在系统菜单中选「存储图像」。点「下载 PNG」则到「文件」App → 下载项查找（可能位于 iCloud Drive 或“我的 iPad”）。</p><p id="winter-art-export-status" class="creator-export-status" role="status" aria-live="polite"></p></div>';
+ document.body.appendChild(exportDialog);
+ const exportImage=$('winter-art-export-preview'),exportLink=$('winter-art-export-download'),exportShare=$('winter-art-export-share'),exportStatus=$('winter-art-export-status');
+ let exportUrl='',exportBlob=null,exportFile=null;
+ $('winter-art-export-close').addEventListener('click',()=>exportDialog.close());
+ exportDialog.addEventListener('click',e=>{if(e.target===exportDialog)exportDialog.close()});
+ exportDialog.addEventListener('close',()=>{if(exportUrl){URL.revokeObjectURL(exportUrl);exportUrl='';}exportBlob=null;exportFile=null;exportImage.removeAttribute('src')});
+ exportLink.addEventListener('click',()=>{exportStatus.textContent='已请求下载：打开「文件」App 的下载项查看；网页无法自动确认文件已保存。';});
+ exportShare.addEventListener('click',async()=>{
+   if(!exportFile||!navigator.share)return;
+   try{
+     await navigator.share({files:[exportFile],title:'WINTER · 25 岁的画作'});
+     exportStatus.textContent='若刚才选择了「存储图像」，请打开「照片」App 查看。';
+   }catch(err){
+     if(err?.name!=='AbortError')exportStatus.textContent='分享未成功，可以改用「下载 PNG」，或长按上面的预览图存储。';
+   }
+ });
+ async function save(){
   const w=canvas.width,h=canvas.height;
-  if(!w||!h)return;
+  if(!w||!h){creatorStatus.textContent='画布还未准备好，请再画一笔。';return;}
   const output=document.createElement('canvas');output.width=w;output.height=h;
   const cx=output.getContext('2d');
   cx.fillStyle='#172633';cx.fillRect(0,0,w,h);
@@ -129,9 +150,22 @@
   cx.drawImage(canvas,0,0);
   cx.fillStyle='#fff5e8';cx.textAlign='right';cx.font=Math.max(15,Math.round(w*.014))+'px Georgia';
   cx.fillText('For WINTER · 25',w-24,h-24);
-  const a=document.createElement('a');a.href=output.toDataURL('image/png');a.download='WINTER-25-my-little-creation.png';
-  document.body.appendChild(a);a.click();a.remove();
-  creatorStatus.textContent='画作已保存到你的设备。';
+  try{
+   const blob=await new Promise(resolve=>output.toBlob(resolve,'image/png'));
+   if(!blob)throw Error('PNG rendering failed');
+   if(exportUrl)URL.revokeObjectURL(exportUrl);
+   exportBlob=blob;exportUrl=URL.createObjectURL(blob);
+   exportFile=new File([blob],'WINTER-25-my-little-creation.png',{type:'image/png'});
+   exportImage.src=exportUrl;exportLink.href=exportUrl;
+   const canShare=Boolean(navigator.share&&navigator.canShare&&navigator.canShare({files:[exportFile]}));
+   exportShare.hidden=!canShare;
+   exportStatus.textContent='已生成 PNG 预览；尚未保存到设备。';
+   if(!exportDialog.open)exportDialog.showModal();
+   creatorStatus.textContent='画作预览已生成，请选择保存方式。';
+  }catch(e){
+   creatorStatus.textContent='生成图片失败，请重试保存。';
+   console.warn('WINTER artwork export:',e);
+  }
  }
  saveButton.addEventListener('click',save);
  document.addEventListener('winter:cosmos-stage',e=>{
