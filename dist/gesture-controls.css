@@ -1,0 +1,28 @@
+
+.gesture-dock{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom));z-index:1700;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#2a3935;pointer-events:none}
+.gesture-dock button{touch-action:manipulation;cursor:pointer}
+.gesture-launch{pointer-events:auto;position:relative;display:grid;place-items:center;width:44px;height:44px;border:1px solid #d6cdb3a8;border-radius:50%;background:#f8f2eae8;color:#344c4a;font-size:23px;box-shadow:0 7px 24px #10292348;backdrop-filter:blur(14px);transition:scale .15s}
+.gesture-launch:active{scale:.93}.gesture-launch:focus-visible,.gesture-dock button:focus-visible{outline:2px solid #c5a079;outline-offset:3px}
+.gesture-live-indicator{position:absolute;right:4px;top:4px;width:7px;height:7px;border-radius:50%;background:#b6aaa0;border:1px solid #f5eee4}
+.gesture-dock[data-camera="on"] .gesture-live-indicator{background:#45b979;box-shadow:0 0 9px #67cc9a}
+.gesture-panel{pointer-events:auto;position:absolute;left:0;bottom:52px;width:min(318px,calc(100vw - 24px));max-height:min(470px,calc(100dvh - 110px));overflow:auto;border:1px solid #ded9ccee;border-radius:16px;padding:15px;background:#f8f5efed;backdrop-filter:blur(18px);box-shadow:0 18px 46px #0b232e55;color:#34423f}
+.gesture-panel[hidden],.gesture-camera-tools[hidden],.gesture-air-cursor[hidden]{display:none!important}
+.gesture-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#687a78;font-size:10px;letter-spacing:.12em;font-weight:600}
+.gesture-panel-head button{min-width:30px;min-height:30px;border:0;background:transparent;color:#576b68;font-size:22px}
+.gesture-mode-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}
+.gesture-mode-row button{min-height:42px;padding:10px;border:1px solid #d8d7ca;border-radius:9px;background:#ffffffae;color:#526260;font-size:12px}
+.gesture-mode-row button[aria-pressed="true"]{color:#304a42;border-color:#879e8d;background:#e5eee2;box-shadow:inset 0 0 0 1px #b0c5b0}
+.gesture-instructions{margin:9px 0 4px;color:#56645f;font-size:11px;line-height:1.85}
+.gesture-camera-tools{margin-top:9px;display:flex;flex-direction:column;align-items:stretch;gap:9px}
+#winter-gesture-video{width:100%;max-height:135px;aspect-ratio:16/9;object-fit:cover;transform:scaleX(-1);border-radius:8px;background:#222e31}
+.gesture-camera-tools button{min-height:41px;border-radius:8px;border:1px solid #698c81;background:#375d51;color:#fffaf2;font-size:12px;font-weight:500}
+.gesture-camera-tools #winter-gesture-stop{border-color:#c0b5a9;background:#ede6de;color:#6c514b}
+.gesture-camera-tools button:disabled{opacity:.55;cursor:wait}
+.gesture-camera-tools #winter-gesture-status{margin:0;line-height:1.75;font-size:11px;color:#6b685f}
+.gesture-privacy{margin:0;color:#8a847b;font-size:9px;line-height:1.7}
+.gesture-air-cursor{position:fixed;left:0;top:0;z-index:1999;pointer-events:none;width:38px;height:38px;border:1.5px solid #e7e7dfb3;border-radius:50%;display:grid;place-items:center;background:#5e7a8b38;box-shadow:0 0 20px #a8ccea88;transform:translate(-50%,-50%);transition:background .12s,box-shadow .12s}
+.gesture-air-cursor span{font-size:22px;color:#fff1d7;text-shadow:0 0 9px #e1bb96}
+.gesture-air-cursor.is-pinching{background:#e4c8a877;box-shadow:0 0 24px #ead6aa}
+.gesture-dock[data-camera="on"] .gesture-launch{border-color:#7bb399}
+@media(max-width:600px){.gesture-dock{bottom:max(12px,env(safe-area-inset-bottom))}.gesture-panel{max-height:calc(100dvh - 96px)}}
+@media(prefers-reduced-motion:reduce){.gesture-launch,.gesture-air-cursor{transition:none}}
