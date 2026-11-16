@@ -18,7 +18,8 @@
  opacity:0!important;
 }
 /* This is a real AR tool until all five candles are lit: touch does not shortcut it. */
-.cake-page[data-cake-state='unlit'] .grand-lighter{
+.app-shell:not([data-living-lighter='ready']) .cake-page[data-cake-state='unlit'] .grand-lighter,
+.app-shell[data-cake-camera='on'] .cake-page[data-cake-state='unlit'] .grand-lighter{
  pointer-events:none!important;
  touch-action:pan-y;
 }
