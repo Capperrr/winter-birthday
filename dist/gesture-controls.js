@@ -23,11 +23,12 @@ $('winter-gesture-minimise').addEventListener('click',()=>setPanel(false));
 function relocate(){
  const host=(cosmos?.open&&cosmos)||(phone?.open&&phone)||document.body;
  if(dock.parentElement!==host)host.appendChild(dock);
- const visible=$('main')?.dataset.destination==='cake'||['letter','journey','afterword','finale'].includes($('main')?.dataset.destination)||Boolean(phone?.open||cosmos?.open);
+ const visible=$('main')?.dataset.destination==='cake'||Boolean(cosmos?.open&&$('cosmos-creator')?.classList.contains('is-active'));
  dock.classList.toggle('gesture-visible',visible);
 }
 const shell=$('main');
 if(shell)new MutationObserver(relocate).observe(shell,{attributes:true,attributeFilter:['data-destination']});
+document.addEventListener('winter:cosmos-stage',relocate);
 const dialogs=[cosmos,phone].filter(Boolean);
 for(const dialog of dialogs){
  const observer=new MutationObserver(relocate);
