@@ -51,6 +51,7 @@ a candle. While the camera is active, its original hand pipeline owns movement.
 ```sh
 node --test tests/routes.test.cjs tests/journey.test.cjs tests/cake-five-candles.test.cjs
 WINTER_PREVIEW_URL=http://127.0.0.1:4173 node tests/living-birthday.browser.cjs
+WINTER_PREVIEW_URL=http://127.0.0.1:4173 node tests/living-recovery.browser.cjs
 WINTER_PREVIEW_URL=http://127.0.0.1:4173 node tests/birthday-polish.browser.cjs
 ```
 

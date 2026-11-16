@@ -90,7 +90,7 @@ export function homeChapter() {
         view.renderer.render(view.scene, camera);
       }
       render(.05); shell.dataset.livingHome = 'ready'; state.home = 'ready';
-      animate(() => route('home') && !paused(), render);
+      animate(() => !view.lost && route('home') && !paused(), render);
       state.homeGeometry = () => ({ vertices: terrain.geometry.attributes.position.count, time, parallax: [x, y], dogs: dogs.map(d => ({ x: d.position.x, y: d.position.y })), calls: view.renderer.info.render.calls });
     } catch (error) { failure('home', error); }
   }, () => route('home'));

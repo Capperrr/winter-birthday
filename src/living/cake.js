@@ -42,6 +42,8 @@ async function cake() {
   if (tips.some(tip => !tip)) throw new Error('Missing five physical wicks');
   const roots = [...document.querySelectorAll('.grand-candles-overlay')];
   const proxies = roots.map(root => [...root.querySelectorAll('.grand-candle-flame')]);
+  const originalOrigins = proxies.map(list => list.map(flame => flame.style.transformOrigin));
+  view.element.addEventListener('webglcontextlost', () => proxies.forEach((list, n) => list.forEach((flame, i) => { flame.style.transformOrigin = originalOrigins[n][i]; })));
   new MutationObserver(wake).observe(page, { attributes: true, attributeFilter: ['data-cake-state', 'data-lighter'] });
   proxies.flat().forEach(flame => new MutationObserver(wake).observe(flame, { attributes: true, attributeFilter: ['class'] }));
   const flames = tips.map(tip => {
@@ -114,7 +116,7 @@ async function cake() {
   const hint = document.createElement('p'); hint.className = 'living-cake-hint'; hint.textContent = '轻轻拖动，看看为你做的蛋糕'; page.append(hint);
   // A modal paints one final snapshot (including all five lit flames), then
   // sleeps. Otherwise a paused frame could retain only four visible flames.
-  animate(() => route('cake') && !['fireworks', 'finished'].includes(page.dataset.cakeState), render,
+  animate(() => !view.lost && route('cake') && !['fireworks', 'finished'].includes(page.dataset.cakeState), render,
     () => !paused() && (!calm() || performance.now() < settleUntil || Math.abs(angle - targetAngle) > .001 || Math.abs(shift - (shell.dataset.cakeCamera === 'on' ? 1 : 0)) > .001));
   state.cakeWicks = () => projected.map(p => ({ ...p }));
   state.cakeGeometry = () => ({ meshes: count(model), angle, width, height, visibleFlames: flames.filter(f => f.group.visible).length, cameraOn: shell.dataset.cakeCamera === 'on', calls: view.renderer.info.render.calls });
@@ -168,7 +170,7 @@ async function lighter() {
       if (!width) resize(); view.renderer.render(view.scene, camera);
     }
     render(.05); shell.dataset.livingLighter = 'ready'; state.lighter = 'ready';
-    animate(() => route('cake') && !paused() && page.dataset.cakeState === 'unlit', render,
+    animate(() => !view.lost && route('cake') && !paused() && page.dataset.cakeState === 'unlit', render,
       () => !calm() || Math.abs(dx - tx) > .1 || Math.abs(dy - ty) > .1 || Math.abs(amount - (shell.dataset.cakeCamera === 'on' || open ? 0 : 1)) > .001 || Math.abs(wheelAngle - wheelTarget) > .01);
     state.lighterPose = () => ({ open, lid: amount, wheel: wheelAngle, x: dx, y: dy, handOwnsMovement: shell.dataset.cakeCamera === 'on' });
   } catch (error) { failure('lighter', error); }

@@ -31,25 +31,29 @@ export function canvas(parent, name, lit = true) {
   parent.append(element);
   const scene = new THREE.Scene();
   let environment;
-  if (lit) {
+  function refreshEnvironment() {
     const pmrem = new THREE.PMREMGenerator(renderer);
     // Small local studio cubemap: soft reflection strips without an expensive second scene bake.
     const cube = studioCube();
-    environment = pmrem.fromCubemap(cube); scene.environment = environment.texture;
-    cube.dispose(); pmrem.dispose(); scene.environmentIntensity = .45;
+    environment?.dispose(); environment = pmrem.fromCubemap(cube); scene.environment = environment.texture;
+    cube.dispose(); pmrem.dispose();
+  }
+  if (lit) {
+    refreshEnvironment(); scene.environmentIntensity = .45;
     scene.add(new THREE.HemisphereLight(0xc2d9ef, 0x29333e, 1.7));
     const key = new THREE.DirectionalLight(0xffedce, 3.1); key.position.set(-3, 6, 5); scene.add(key);
     const rim = new THREE.DirectionalLight(0x7fa5dd, 2.0); rim.position.set(4, 4, -3); scene.add(rim);
   }
-  let width = 1, height = 1;
+  let width = 1, height = 1, lost = false;
   function size(w, h) { width = w; height = h; renderer.setSize(w, h, false); }
   element.addEventListener('webglcontextlost', event => {
-    event.preventDefault(); shell.dataset[`living${name[0].toUpperCase() + name.slice(1)}`] = 'fallback'; state[name] = 'context-lost';
+    event.preventDefault(); lost = true; shell.dataset[`living${name[0].toUpperCase() + name.slice(1)}`] = 'fallback'; state[name] = 'context-lost';
   });
   element.addEventListener('webglcontextrestored', () => {
-    shell.dataset[`living${name[0].toUpperCase() + name.slice(1)}`] = 'ready'; state[name] = 'ready'; wake();
+    if (lit) refreshEnvironment();
+    lost = false; shell.dataset[`living${name[0].toUpperCase() + name.slice(1)}`] = 'ready'; state[name] = 'ready'; wake();
   });
-  return { element, renderer, scene, size, get width() { return width; }, get height() { return height; } };
+  return { element, renderer, scene, size, get lost() { return lost; }, get width() { return width; }, get height() { return height; } };
 }
 
 // One sleeping scheduler for all views. No hidden-route animation or background timers.

@@ -30,7 +30,7 @@ export function envelopeChapter() {
         view.renderer.render(view.scene, camera);
       }
       render(.05); shell.dataset.livingEnvelope = 'ready'; state.envelope = 'ready';
-      animate(() => shell.dataset.page === 'destination' && ['envelope', 'untying', 'opening'].includes(shell.dataset.destination) && !paused(), render,
+      animate(() => !view.lost && shell.dataset.page === 'destination' && ['envelope', 'untying', 'opening'].includes(shell.dataset.destination) && !paused(), render,
         () => !calm() || ['untying', 'opening'].includes(shell.dataset.destination));
       state.envelopePose = () => ({ phase: previous, flap: flap.rotation.x, sheet: sheet.position.y, bows: bows.map(b => b.visible) });
     } catch (error) { failure('envelope', error); }
