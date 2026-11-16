@@ -1,0 +1,85 @@
+/* Five individual birthday wicks. Hidden until actual air-lighter collision. */
+.cake-page .grand-candle-flame.candle-is-lit{
+ opacity:1!important;
+ scale:1!important;
+ animation:grand-flame-sway 2400ms ease-in-out infinite;
+}
+.cake-page[data-cake-state='unlit'] .grand-candle-flame:not(.candle-is-lit){
+ opacity:0!important;
+ scale:.5 .7!important;
+ animation:none!important;
+}
+.cake-page[data-cake-state='unlit'] .grand-candle-flame.candle-is-lit{
+ opacity:1!important;
+ scale:1!important;
+ transition:opacity 230ms ease,scale 260ms ease;
+}
+.cake-page[data-cake-state='unlit'] .grand-candle-warmth{
+ opacity:0!important;
+}
+/* This is a real AR tool until all five candles are lit: touch does not shortcut it. */
+.cake-page[data-cake-state='unlit'] .grand-lighter{
+ pointer-events:none!important;
+ touch-action:pan-y;
+}
+.cake-page .candle-ignition-target{
+ pointer-events:none!important;
+ opacity:0!important;
+}
+.cake-page[data-lighter='dragging'] .grand-lighter{
+ transition:none!important;
+ will-change:translate;
+}
+.cake-page[data-lighter='dragging'] .lighter-own-flame{
+ opacity:1!important;
+}
+.winter-candle-progress{
+ position:absolute;
+ z-index:12;
+ bottom:clamp(35px,7.8%,92px);
+ left:clamp(20px,5.4%,86px);
+ padding:8px 11px;
+ border:1px solid rgba(255,249,229,.27);
+ border-radius:28px;
+ background:rgba(15,28,42,.26);
+ color:#f3e8d8;
+ backdrop-filter:blur(7px);
+ -webkit-backdrop-filter:blur(7px);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.11);
+ letter-spacing:.15em;
+ text-align:center;
+ font:500 clamp(10px,.85vw,12px)/1.3 system-ui,sans-serif;
+ opacity:.8;
+ pointer-events:none;
+ transition:opacity 280ms ease;
+}
+.app-shell:not([data-cake-camera='on']) .winter-candle-progress,
+.cake-page:not([data-cake-state='unlit']) .winter-candle-progress,
+.cake-page[hidden] .winter-candle-progress{
+ opacity:0!important;
+ visibility:hidden;
+}
+.winter-wick-spark{
+ position:absolute;
+ z-index:11;
+ width:6px;
+ height:6px;
+ border-radius:50%;
+ transform:translate(-50%,-50%);
+ background:#fff6cb;
+ pointer-events:none;
+ box-shadow:0 0 5px 3px #ffe7a8a9,0 0 21px 10px #f2ca6c53;
+ animation:winter-wick-twinkle 700ms ease-out both;
+}
+@keyframes winter-wick-twinkle{
+ 0%{scale:.2;opacity:0}
+ 30%{scale:1.8;opacity:1}
+ 100%{scale:.3;opacity:0}
+}
+@media(max-width:760px),(max-aspect-ratio:4/5){
+ .winter-candle-progress{left:15px;bottom:clamp(26px,5.2%,66px);padding:7px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+ .winter-wick-spark{animation:none;opacity:0}
+ .cake-page .grand-candle-flame.candle-is-lit{animation:none!important}
+}
