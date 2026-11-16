@@ -6,7 +6,7 @@
  const canvas=document.getElementById('cosmos-stars');
  const ctx=canvas.getContext('2d',{alpha:true});
  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)');
- const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery'].map(id=>document.getElementById(id));
+ const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery','cosmos-creator'].map(id=>document.getElementById(id));
  const wishes=[
    '蜡烛会灭，你会有黑夜，但我会为你点灯。',
    '希望比起过去的时间，未来的日子里能够更幸福。',
@@ -76,6 +76,7 @@
    stages.forEach((stage,i)=>{stage.classList.toggle('is-active',i===n);stage.setAttribute('aria-hidden',String(i!==n))});
    if(n===1){const wish=document.getElementById('cosmos-wish-text');wish.textContent='选一颗星星，让祝福慢慢亮起来。'}
    root.scrollTop=0;dialog.scrollTop=0;
+    document.dispatchEvent(new CustomEvent('winter:cosmos-stage',{detail:{stage:stages[n].id}}));
    const title=stages[n].querySelector('h2')||stages[n].querySelector('button');
    if(title){title.setAttribute('tabindex','-1');title.focus({preventScroll:true})}
  }
@@ -133,7 +134,9 @@
  document.getElementById('cosmos-to-stars').addEventListener('click',()=>showStage(1));
  document.getElementById('cosmos-to-apod').addEventListener('click',()=>showStage(2));
  document.getElementById('cosmos-to-gallery').addEventListener('click',()=>showStage(3));
- document.getElementById('cosmos-gallery-home').addEventListener('click',()=>{
+ document.getElementById('cosmos-gallery-to-creator').addEventListener('click',()=>showStage(4));
+  document.getElementById('cosmos-creator-back').addEventListener('click',()=>showStage(3));
+  document.getElementById('cosmos-gallery-home').addEventListener('click',()=>{
    dialog.close();location.hash='#home';
  });
  document.querySelectorAll('[data-wish]').forEach(button=>button.addEventListener('click',()=>{
