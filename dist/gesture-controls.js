@@ -25,6 +25,10 @@ function relocate(){
  if(dock.parentElement!==host)host.appendChild(dock);
  const visible=$('main')?.dataset.destination==='cake'||Boolean(cosmos?.open&&$('cosmos-creator')?.classList.contains('is-active'));
  dock.classList.toggle('gesture-visible',visible);
+ const cakeLocked=shell?.dataset.destination==='cake' && $('cake-page')?.dataset.cakeState==='unlit';
+ dock.dataset.cakeLocked=String(cakeLocked);
+ touchButton.disabled=Boolean(cakeLocked);
+ if(cakeLocked&&mode!=='camera')selectMode('camera');
 }
 const shell=$('main');
 if(shell)new MutationObserver(relocate).observe(shell,{attributes:true,attributeFilter:['data-destination']});
@@ -36,6 +40,7 @@ for(const dialog of dialogs){
  dialog.addEventListener('close',()=>{relocate();resetZoom()});
 }
 function selectMode(next){
+ if(next==='touch' && shell?.dataset.destination==='cake' && $('cake-page')?.dataset.cakeState==='unlit')return;
  mode=next;dock.dataset.mode=next;
  touchButton.setAttribute('aria-pressed',String(next==='touch'));
  airButton.setAttribute('aria-pressed',String(next==='camera'));
@@ -43,7 +48,11 @@ function selectMode(next){
  instructions.textContent=next==='touch'?
   '触摸模式：拖拽拼图、轻点星星、左右滑动照片；放大照片可用双指缩放。':
   '隔空模式：捏合两指选择星星或拼图；张掌散开烟花、握拳聚成蛋糕；左右挥手切换照片。';
- if(next==='touch')stopCamera();
+ if(next==='touch'){
+  // Keep the live camera as the background after candle ignition.
+  if(shell?.dataset.destination==='cake' && shell.dataset.cakeTouchUnlocked==='true' && stream){if(frame){cancelAnimationFrame(frame);frame=0;}cursor.hidden=true;}
+  else stopCamera();
+ }
 }
 touchButton.addEventListener('click',()=>selectMode('touch'));
 airButton.addEventListener('click',()=>selectMode('camera'));
@@ -73,6 +82,7 @@ function stopCamera(message){
  cursor.hidden=true;dock.dataset.camera='off';
  stopButton.hidden=true;startButton.hidden=false;startButton.disabled=false;
  lastVideoTime=-1;pinchWas=false;stablePose='';poseFrames=0;poseFired=false;swipeStart=null;
+ if(shell) shell.dataset.cakeHandReady='false';
  if(message)tell(message);
  else if(mode==='camera')tell('摄像头已关闭。随时可以重新开启，触摸仍可使用。');
 }
@@ -91,10 +101,12 @@ async function startCamera(){
   try{
     await getDetector();
     if(!stream||mode!=='camera')return;
-    tell('隔空手势就绪。伸出食指可以书写。');
+    if(shell?.dataset.destination==='cake')shell.dataset.cakeHandReady='true';
+    document.dispatchEvent(new CustomEvent('winter:hand-model-ready'));
+    tell('已准备好');
     frame=requestAnimationFrame(track);
   }catch(_){
-    tell('镜头已经开启，手势模型暂不可用，仍可直接用手指绘画。');
+    tell('手势识别暂不可用');
     document.dispatchEvent(new CustomEvent('winter:hand-model-unavailable'));
   }
  }catch(err){
@@ -106,7 +118,8 @@ async function startCamera(){
 }
 startButton.addEventListener('click',startCamera);
 stopButton.addEventListener('click',()=>stopCamera());
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCamera('页面已切到后台，摄像头自动关闭。')});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCamera('摄像头已暂停')});
+document.addEventListener('winter:cake-lit',()=>{selectMode('touch');relocate()});
 window.addEventListener('pagehide',()=>stopCamera());
 function stageActive(id){return cosmos?.open && !$(id)?.hidden && $(id)?.classList.contains('is-active')}
 function emitParticle(action){document.dispatchEvent(new CustomEvent('winter:gesture-particle',{detail:{action}}))}
