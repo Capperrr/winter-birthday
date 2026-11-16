@@ -63,3 +63,9 @@ These photographs were resized, converted to WebP and may be cropped/desaturated
 The Destination landscape, birthday snow/aurora scene, transparent cloud layer, grand cake, photographic alpine night and day vistas, cinematic stone-plinth compositions/empty plates, transparent silver lighter and botanical stationery background were generated for this gift. Generated landscapes are not photographs of claimed locations. They are served locally as optimized WebP files. Paper grain/creases, torn-paper edges, hand-drawn women, the small puzzle cake, grass, flourish, dynamic flames and running puppies are original procedural or authored SVGs; the doodles evoke a loose handwritten style without using a third-party brand logo.
 
 Typography: Cormorant Garamond, DM Sans, Caveat and Noto Serif SC via Google Fonts, with local serif and system sans-serif fallbacks.
+
+## Blender tooling
+
+Run `python3 tools/blender/check_connection.py --output /tmp/winter-blender-check`
+to verify scene saving/reopening and GLB 2.0 mesh export with the local Blender
+executable. See [Blender 项目接入](docs/blender.md) for setup and output details.
