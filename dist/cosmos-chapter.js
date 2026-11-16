@@ -42,17 +42,13 @@
  let current=0,selected=-1,lastFocus=null;
  let raf=0,last=0,w=0,h=0,dpr=1,twinkles=[],shooting=[];
  const between=(a,b)=>a+Math.random()*(b-a);
- function tileStyle(el,i){
-   el.style.setProperty('--pic-x',((i%4)*100/3)+'%');
-   el.style.setProperty('--pic-y',(Math.floor(i/4)*25)+'%');
- }
+ wall.setAttribute('aria-label',photos.length+'张旅行与生活照片，点击可以放大');
  photos.forEach(([english,cn],i)=>{
    const item=document.createElement('button');item.type='button';item.className='photo-memory';
    item.style.setProperty('--tilt',(((i*23)%9)-4)*.57+'deg');
    item.style.setProperty('--drop',((i*37)%34)+'px');
    item.setAttribute('aria-label','放大第'+(i+1)+'张照片：'+cn);
-   const frame=document.createElement('span');frame.className='photo-memory-frame';
-   tileStyle(frame,i);
+   const frame=document.createElement('img');frame.className='photo-memory-frame';frame.src='assets/memory-wall/memory-'+String(i+1).padStart(2,'0')+'.webp';frame.alt=cn;frame.loading='lazy';frame.decoding='async';frame.width=440;frame.height=572;
    const en=document.createElement('span');en.className='photo-memory-title';en.textContent=english;
    const name=document.createElement('span');name.className='photo-memory-caption';name.textContent=cn;
    item.append(frame,en,name);item.addEventListener('click',()=>openPhoto(i));wall.append(item);
@@ -63,7 +59,7 @@
    previewPhoto.alt='照片 '+(selected+1)+'：'+photos[selected][1];
    for(const delta of [-1,1]){const neighbor=new Image();neighbor.src='assets/memory-wall/memory-'+String((selected+delta+photos.length)%photos.length+1).padStart(2,'0')+'.webp';}
    previewCaption.textContent=photos[selected][0]+' · '+photos[selected][1];
-   lastFocus=document.activeElement;preview.hidden=false;
+   if(preview.hidden)lastFocus=document.activeElement;preview.hidden=false;
    document.getElementById('cosmos-lightbox-close').focus({preventScroll:true});
  }
  function closePhoto(){preview.hidden=true;selected=-1;lastFocus?.focus?.({preventScroll:true})}
@@ -109,8 +105,9 @@
    }
    raf=requestAnimationFrame(starLoop);
  }
- function open(){
+ function open(event){
    if(dialog.open)return;
+   const origin=event?.detail?.origin;root.style.setProperty('--cosmos-origin-x',(Number.isFinite(origin?.x)?origin.x:50)+'%');root.style.setProperty('--cosmos-origin-y',(Number.isFinite(origin?.y)?origin.y:48)+'%');
    preview.hidden=true;selected=-1;lastFocus=document.activeElement;
    dialog.showModal();showStage(0);resize();last=0;shooting=[];
    if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(starLoop);
