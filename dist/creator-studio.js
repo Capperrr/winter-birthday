@@ -154,7 +154,7 @@
   }
   if(!active()||!context)return;
   const now=performance.now(),rect=canvas.getBoundingClientRect();
-  const screenPoint=h=>({x:h.x*rect.width,y:h.y*rect.height});
+  const screenPoint=h=>({x:h.x*window.innerWidth-rect.left,y:h.y*window.innerHeight-rect.top});
   const visibleHands=hands.filter(h=>h.visible);
   // One raised index finger should draw without forcing a second hand into frame.
   const bothHands=visibleHands.length===1 && visibleHands[0].hand==='Left' && visibleHands[0].pose!=='open'
@@ -182,7 +182,7 @@
      fingerPos.Left=null;continue;
     }else swatchHold=null;
    }
-   const draw=h.isIndexExtended&&!h.pinching&&h.pose!=='open';
+   const draw=h.isIndexExtended&&!h.pinching&&h.pose!=='open'&&p.x>=0&&p.x<=rect.width&&p.y>=0&&p.y<=rect.height;
    if(draw){
     if(fingerPos[key])writeLine(fingerPos[key],p,key==='Left');
     else writeLine(p,p,key==='Left');
