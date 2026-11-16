@@ -155,7 +155,10 @@
   if(!active()||!context)return;
   const now=performance.now(),rect=canvas.getBoundingClientRect();
   const screenPoint=h=>({x:h.x*rect.width,y:h.y*rect.height});
-  const bothHands=hands.filter(h=>h.visible);
+  const visibleHands=hands.filter(h=>h.visible);
+  // One raised index finger should draw without forcing a second hand into frame.
+  const bothHands=visibleHands.length===1 && visibleHands[0].hand==='Left' && visibleHands[0].pose!=='open'
+    ? [{...visibleHands[0],hand:'Right'}] : visibleHands;
   for(const type of ['Right','Left']){
    const h=bothHands.find(h=>h.hand===type);
    const key=type==='Right'?'Right':'Left';
@@ -179,7 +182,7 @@
      fingerPos.Left=null;continue;
     }else swatchHold=null;
    }
-   const draw=h.isIndexExtended&&!h.pinching&&h.pose!=='fist'&&h.pose!=='open';
+   const draw=h.isIndexExtended&&!h.pinching&&h.pose!=='open';
    if(draw){
     if(fingerPos[key])writeLine(fingerPos[key],p,key==='Left');
     else writeLine(p,p,key==='Left');
@@ -188,5 +191,12 @@
   }
  });
  window.addEventListener('resize',()=>{if(active())fit()},{passive:true});
+ $('winter-cosmos-dialog')?.addEventListener('close',()=>{
+   stopFinger();drawing=false;
+   if(window.WINTER_GESTURES?.active)window.WINTER_GESTURES.stop('已离开创作页面，摄像头自动关闭');
+ });
+ document.addEventListener('winter:hand-model-unavailable',()=>{
+  creatorStatus.textContent='镜头已开启，但隔空识别暂不可用。可以直接在镜头上用手指画画。';
+ });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopFinger()});
 })();
