@@ -65,7 +65,7 @@ async function prepare(){
   // Sample the lower part of the picture to avoid retaining the lake or the
   // cake in its old centred position over the live camera.
   canvas.width=w;canvas.height=h;ctx.clearRect(0,0,w,h);
-  const stoneStart=key==='portrait'?.82:.81;
+  const stoneStart=key==='portrait'?.78:.80;
   const stoneSourceY=Math.floor(h*.905);
   const rock=document.createElement('canvas');rock.width=w;rock.height=h;
   const rx=rock.getContext('2d',{alpha:true});
@@ -79,7 +79,7 @@ async function prepare(){
 
   // Move the transparent cake layer to the far right, independently of the slab.
   const alpha=new Uint8ClampedArray(w*h);
-  for(let y=y0;y<Math.min(y1,Math.round(h*stoneStart));y++){
+  for(let y=y0;y<y1;y++){
    for(let x=x0;x<x1;x++){const i=y*w+x;alpha[i]=grown[i];}
   }
   const mask=document.createElement('canvas');mask.width=w;mask.height=h;
