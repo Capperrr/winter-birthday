@@ -26,9 +26,9 @@
   <link rel="stylesheet" href="gwen-handwriting-phone.css?v=hand-phone-1">
   <link rel="stylesheet" href="cosmos-chapter.css?v=power-cursor-01">
   <link rel="stylesheet" href="gesture-controls.css?v=gesture-01">
-  <link rel="stylesheet" href="winter-refinement.css?v=studio-review-02">
+  <link rel="stylesheet" href="winter-refinement.css?v=stone-right-03">
   <script src="app.js?v=finale-1" defer></script>
-  <script src="cake-scene.js?v=touchfix-1" defer></script>
+  <script src="cake-scene.js?v=gesture-first-03" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
   <script src="journey.js?v=finale-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
@@ -36,9 +36,9 @@
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
   <script src="gwen-handwriting-phone.js?v=studio-review-02" defer></script>
   <script src="cosmos-chapter.js?v=studio-review-02" defer></script>
-  <script src="gesture-controls.js?v=studio-review-02" defer></script>
-  <script src="cake-cutout.js?v=studio-review-02" defer></script>
-  <script src="creator-studio.js?v=studio-review-02" defer></script>
+  <script src="gesture-controls.js?v=gesture-first-03" defer></script>
+  <script src="cake-cutout.js?v=stone-right-03" defer></script>
+  <script src="creator-studio.js?v=save-preview-03" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -203,7 +203,7 @@
         </div>
 <section class="cake-page" id="cake-page" data-cake-state="unlit" aria-labelledby="grand-cake-title" hidden>
   <div class="winter-cake-live" aria-hidden="true"><video id="winter-cake-video" autoplay muted playsinline></video></div>
-  <button type="button" id="winter-cake-camera-enable" class="winter-cake-camera-enable">开启镜头 · 把这一刻留在真实的世界里 <span aria-hidden="true">↗</span></button>
+  <button type="button" id="winter-cake-camera-enable" class="winter-cake-camera-enable">开启镜头 · 开始这一刻 <span aria-hidden="true">↗</span></button>
   <span class="winter-cake-camera-note" id="winter-cake-camera-note" role="status" aria-live="polite"></span>
   <div class="grand-cake-intro" id="grand-cake-intro"><p>A WISH, JUST FOR YOU</p><h2 id="grand-cake-title"><small>For your</small><span class="cake-twenty">twenty</span><span class="cake-fifth">fifth.</span></h2></div>
   <div class="grand-cake-tableau" id="grand-cake-tableau">
@@ -447,8 +447,8 @@
           <button type="button" data-colour="#f4c45e" aria-pressed="false" aria-label="黄色" style="--swatch:#f4c45e"></button>
         </div>
         <div class="creator-brush-row"><label for="winter-creator-brush">笔触 <output id="winter-creator-brush-size">8 px</output></label><input type="range" id="winter-creator-brush" min="1" max="30" value="8" step="1"></div>
-        <div class="creator-buttons"><button type="button" id="winter-creator-erase" aria-pressed="false">橡皮擦</button><button type="button" id="winter-creator-clear">清空</button><button type="button" id="winter-creator-save">保存画作</button></div>
-        <p class="creator-instruction" id="winter-creator-instruction">☝️ 触摸：手指写画 · 选颜色 · 调整笔触。<br>✋ 隔空：食指绘画 · 左手食指擦除 · 张开左掌清空 · 捏合色点停留 2 秒选色。</p>
+        <div class="creator-buttons"><button type="button" id="winter-creator-erase" aria-pressed="false">橡皮擦</button><button type="button" id="winter-creator-clear">清空</button><button type="button" id="winter-creator-save">预览并保存</button></div>
+        <p class="creator-instruction" id="winter-creator-instruction">触摸：左边选颜色、调整笔触，右边直接画。<br>隔空：伸出食指画画；左手食指擦除，张开左掌清空。</p>
         <div class="creator-camera-row"><button type="button" id="winter-creator-camera-enable">开启摄像头 · 隔空画画</button><span id="winter-creator-camera-status" role="status" aria-live="polite">也可以直接用手指绘画</span></div>
       </div>
       <div class="creator-footer-nav"><button class="creator-previous" type="button" id="cosmos-creator-back">← 再看看那些普通日子</button><button class="creator-home" type="button" id="cosmos-gallery-home">带着这张画，再从 Home 走一遍 ↗</button></div>
