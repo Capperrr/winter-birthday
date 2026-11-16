@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="style.css?v=cinema-2">
   <link rel="stylesheet" href="motion.css?v=journey-1">
   <link rel="stylesheet" href="celebration.css?v=cinema-2">
-  <link rel="stylesheet" href="cake-scene.css?v=aligned-twenty">
+  <link rel="stylesheet" href="cake-scene.css?v=quiet-ritual-20261116">
   <link rel="stylesheet" href="memory-notes.css?v=three-pages-1">
   <link rel="stylesheet" href="nature-atlas.css?v=cinema-2">
   <link rel="stylesheet" href="keepsake.css?v=handmade-2">
@@ -23,8 +23,8 @@
   <link rel="stylesheet" href="music.css?v=gentle-eight-1">
   <link rel="stylesheet" href="personal-album.css?v=blue-hour-20261116">
   <link rel="stylesheet" href="interactive-finale.css?v=quiet-encounter-20261116">
-  <link rel="stylesheet" href="gwen-handwriting-phone.css?v=power-guide-20261116">
-  <link rel="stylesheet" href="cosmos-chapter.css?v=gallery-flow-20261116">
+  <link rel="stylesheet" href="gwen-handwriting-phone.css?v=side-key-20261116">
+  <link rel="stylesheet" href="cosmos-chapter.css?v=one-line-20261116">
   <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
@@ -32,8 +32,8 @@
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
-  <script src="gwen-handwriting-phone.js?v=power-guide-20261116" defer></script>
-  <script src="cosmos-chapter.js?v=gallery-flow-20261116" defer></script>
+  <script src="gwen-handwriting-phone.js?v=side-key-20261116" defer></script>
+  <script src="cosmos-chapter.js?v=one-line-20261116" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -351,14 +351,10 @@
     </div>
     <button type="button" id="winter-phone-power" title="按右侧息屏键，进入下一段故事" aria-label="按下手机右侧息屏键，开启宇宙旅程" aria-describedby="phone-power-instruction" disabled>
       <span class="winter-side-key" aria-hidden="true"></span>
-    </button>
-  </div>
-  <div class="phone-power-guide" id="phone-power-guide" hidden>
-    <span class="phone-guide-overline">还有一段故事，藏在黑屏之后</span>
-    <p id="phone-power-instruction">轻按手机<strong>右侧息屏键</strong>，或点下方按钮。</p>
-    <button type="button" id="winter-phone-next" disabled>
-      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v8M5.4 4.9a7 7 0 1 0 9.2 0"/></svg>
-      <span>按下息屏键 · 继续</span><span aria-hidden="true">↗</span>
+      <span class="phone-power-guide" id="phone-power-guide" hidden>
+        <span class="phone-guide-label">轻按这里</span>
+        <strong id="phone-power-instruction">息屏 · 继续</strong>
+      </span>
     </button>
   </div>
   <div class="winter-phone-tools">
@@ -376,7 +372,7 @@
     <section id="cosmos-intro" class="cosmos-stage cosmos-prologue is-active" aria-labelledby="cosmos-intro-title">
       <p class="cosmos-overline">TWO LITTLE PARTICLES · ONE UNLIKELY ENCOUNTER</p>
       <div class="cosmos-particle-pair" aria-hidden="true"><i></i><i></i></div>
-      <h2 id="cosmos-intro-title"><span style="--step:0">宇宙已经138亿岁了，</span><span style="--step:1">我们只是其中两粒微尘。</span><span style="--step:2">飘了很久很久，</span><span style="--step:3">才刚好遇见。</span></h2>
+      <h2 id="cosmos-intro-title" aria-label="宇宙已经138亿岁了，我们只是其中两粒微尘。飘了很久很久，才刚好遇见。"><span style="--step:0" aria-hidden="true">宇宙已经138亿岁了，</span><span style="--step:1" aria-hidden="true">我们只是其中两粒微尘。</span><span style="--step:2" aria-hidden="true">飘了很久很久，</span><span style="--step:3" aria-hidden="true">才刚好遇见。</span></h2>
       <p class="cosmos-intro-foot">Somewhere in this wide universe, there was you.</p>
       <button class="cosmos-continue" id="cosmos-to-stars" type="button">收集散落在星空里的祝福 <span aria-hidden="true">✦</span></button>
     </section>

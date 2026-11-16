@@ -11,14 +11,19 @@
 .cosmos-stage{position:relative;z-index:2;display:none;min-height:100dvh;padding:clamp(68px,13vh,140px) 24px 80px;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .cosmos-stage.is-active{display:flex}
 .cosmos-overline{font:500 10px/1.9 var(--sans);letter-spacing:3px;color:#c0b3c0;margin:0 0 22px}
-.cosmos-prologue h2{margin:0;color:#f0eee5;font:400 clamp(29px,4.8vw,62px)/1.7 var(--cn-serif);letter-spacing:clamp(1px,.25vw,3px);text-shadow:0 5px 45px #c1bedb33}
-.cosmos-prologue h2 span{display:block;animation:cosmos-write 1.25s ease-out both;animation-delay:calc(var(--step)*.72s)}
+.cosmos-prologue h2{position:relative;width:min(1080px,100%);min-height:clamp(110px,22svh,190px);margin:0;color:#f0eee5;font:400 clamp(29px,4.8vw,62px)/1.7 var(--cn-serif);letter-spacing:clamp(1px,.25vw,3px)}
+.cosmos-prologue h2 span{position:absolute;inset:0;display:grid;place-items:center;opacity:0;text-wrap:balance}
+.cosmos-prologue[data-sequence='playing'] h2 span{animation:cosmos-line-pass 3600ms ease-in-out both;animation-delay:calc(600ms + var(--step)*3600ms)}
+.cosmos-prologue[data-sequence='playing'] h2 span:last-child{animation-name:cosmos-line-stay;animation-duration:900ms}
+@keyframes cosmos-line-pass{0%,100%{opacity:0}22%,76%{opacity:1}}
+@keyframes cosmos-line-stay{from{opacity:0}to{opacity:1}}
 @keyframes cosmos-write{from{opacity:0;transform:translateY(20px);filter:blur(7px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
 .cosmos-particle-pair{display:flex;gap:120px;justify-content:center;margin:26px 0 33px}
 .cosmos-particle-pair i{width:6px;height:6px;border-radius:50%;background:#f5e8c6;box-shadow:0 0 10px #f4e6c8,0 0 28px #c7a2bb;animation:two-dust 4.1s ease-in-out infinite alternate}
 .cosmos-particle-pair i:last-child{background:#d6c3fa;animation-direction:alternate-reverse}
 @keyframes two-dust{from{transform:translateX(-22px) translateY(-8px)}to{transform:translateX(50px) translateY(15px)}}
-.cosmos-intro-foot{margin:0;color:#bbbac8;font:italic 18px/1.7 'Caveat',serif}
+.cosmos-intro-foot{margin:0;color:#bbbac8;font:italic 18px/1.7 'Caveat',serif;opacity:0}
+.cosmos-prologue[data-sequence='playing'] .cosmos-intro-foot{animation:cosmos-line-stay 1100ms 11400ms ease both}
 .cosmos-continue{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;margin-top:38px;padding:12px 25px;border:1px solid #cfc5b6a3;border-radius:32px;color:#efece4;background:linear-gradient(120deg,#798ba52f,#b8a2a321);font:400 12px/1.5 var(--cn-serif);cursor:pointer;transition:transform .2s,background .2s,box-shadow .2s}
 .cosmos-continue:active{transform:scale(.96)}
 .cosmos-continue:hover{background:#fff2;box-shadow:0 5px 22px #d6c9cc29}
@@ -66,7 +71,6 @@
 .finale-phone-question{font:400 14px/1.6 var(--cn-serif);color:#806572;margin:14px auto 4px}
 @media(max-width:900px){.photo-wall{--gallery-columns:3;--gallery-gap-total:30px;gap:25px 15px}}
 @media(max-width:600px){.cosmos-stage{padding-inline:16px}.cosmos-prologue h2{font-size:clamp(22px,5.4vw,34px)}.cosmos-overline{letter-spacing:1.6px}.photo-wall{--gallery-columns:2;--gallery-gap-total:12px;gap:24px 12px;padding:25px 9px}.photo-memory{padding:6px 6px 10px}.photo-memory-caption{font-size:9px}.photo-memory-title{font-size:16px}.cosmos-lightbox-nav{width:37px;height:37px;flex:none}#cosmos-photo-lightbox{gap:4px;padding-inline:5px}}
-@media(prefers-reduced-motion:reduce){.cosmos-prologue h2 span,.cosmos-particle-pair i{animation:none!important}.photo-memory{transition:none}}
 
 /* Both the wall and lightbox use the original individual images. */
 img.cosmos-lightbox-photo {
@@ -91,9 +95,6 @@ img.cosmos-lightbox-photo {
 @media(max-width:600px){
  img.cosmos-lightbox-photo{width:auto;max-width:calc(100vw - 104px);max-height:74dvh;border-width:6px}
 }
-@media(prefers-reduced-motion:reduce){
- #winter-cosmos-dialog[open] .cosmos-root{animation:none}
-}
 
 .cosmos-nasa-figure{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;margin:0 auto 27px;padding:8px 8px 12px;background:#f3efe41c;border:1px solid #d6c7b536}
 .cosmos-nasa-figure img{display:block;width:auto;max-width:100%;height:auto;max-height:310px;object-fit:contain}
@@ -101,3 +102,17 @@ img.cosmos-lightbox-photo {
 .cosmos-nasa-figure.is-unavailable{display:none}
 
 .photo-memory:focus-visible{outline:2px solid #e3cda7;outline-offset:5px;transform:rotate(0)}
+
+/* Pause the reading beat when the tab is hidden. The continue action is always available. */
+#winter-cosmos-dialog[data-paused='true'] :is(.cosmos-root,.cosmos-prologue h2 span,.cosmos-intro-foot,.cosmos-particle-pair i){animation-play-state:paused}
+#winter-cosmos-dialog[data-motion='off'] .cosmos-prologue h2{min-height:0}
+#winter-cosmos-dialog[data-motion='off'] .cosmos-prologue h2 span{position:static;display:block;opacity:1;animation:none}
+#winter-cosmos-dialog[data-motion='off'] :is(.cosmos-intro-foot,.cosmos-particle-pair i,.cosmos-root){animation:none;opacity:1}
+@media(prefers-reduced-motion:reduce){
+ .cosmos-prologue h2{min-height:0}
+ .cosmos-prologue h2 span{position:static;display:block;opacity:1}
+ .cosmos-prologue h2 span,.cosmos-intro-foot,.cosmos-particle-pair i,.cosmos-stage-stars .cosmos-quote{animation:none!important}
+ .cosmos-intro-foot{opacity:1}
+ #winter-cosmos-dialog[open] .cosmos-root{animation:none}
+ .photo-memory{transition:none}
+}

@@ -6,6 +6,8 @@
  const canvas=document.getElementById('cosmos-stars');
  const ctx=canvas.getContext('2d',{alpha:true});
  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)');
+ const main=document.getElementById('main');
+ const calm=()=>Boolean(reduced?.matches||main?.dataset.motion==='off');
  const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery'].map(id=>document.getElementById(id));
  const wishes=[
    '蜡烛会灭，你会有黑夜，但我会为你点灯。',
@@ -70,6 +72,7 @@
  function showStage(n){
    current=n;
    stages.forEach((stage,i)=>{stage.classList.toggle('is-active',i===n);stage.setAttribute('aria-hidden',String(i!==n))});
+   stages[0].dataset.sequence=n===0?'playing':'idle';
    if(n===1){const wish=document.getElementById('cosmos-wish-text');wish.textContent='选一颗星星，让祝福慢慢亮起来。'}
    root.scrollTop=0;dialog.scrollTop=0;
    const title=stages[n].querySelector('h2')||stages[n].querySelector('button');
@@ -79,13 +82,13 @@
    dpr=Math.min(window.devicePixelRatio||1,2);
    w=window.innerWidth;h=window.innerHeight;
    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
-   ctx.setTransform(dpr,0,0,dpr,0,0);
+   ctx?.setTransform(dpr,0,0,dpr,0,0);
    twinkles=Array.from({length:Math.min(190,Math.round(w*h/8500))},()=>({
       x:Math.random()*w,y:Math.random()*h,r:between(.3,1.6),phase:between(0,6.283),alpha:between(.27,.8),speed:between(.2,.7)
    }));
  }
  function starLoop(t){
-   if(!dialog.open){raf=0;return}
+   if(!dialog.open||document.hidden){raf=0;return}
    if(!ctx){raf=0;return}
    const dt=Math.min(2.8,(t-(last||t-16))/16);last=t;
    ctx.clearRect(0,0,w,h);
@@ -93,7 +96,7 @@
      const brightness=dot.alpha*(.77+.23*Math.cos(t*.001*dot.speed+dot.phase));
      ctx.fillStyle='rgba(224,226,249,'+brightness+')';ctx.beginPath();ctx.arc(dot.x,dot.y,dot.r,0,Math.PI*2);ctx.fill();
    }
-   if(!reduced?.matches){
+   if(!calm()){
      if(Math.random()<.006 && shooting.length<2)shooting.push({x:between(.3,.95)*w,y:between(.05,.42)*h,v:between(5,10),life:1});
      for(const p of shooting){
        const len=54;p.x-=p.v*dt;p.y+=p.v*.53*dt;p.life-=.018*dt;
@@ -103,14 +106,20 @@
      }
      shooting=shooting.filter(p=>p.life>0&&p.y<h);
    }
-   raf=requestAnimationFrame(starLoop);
+   raf=calm()?0:requestAnimationFrame(starLoop);
+ }
+ function syncPlayback(){
+   dialog.dataset.motion=calm()?'off':'on';
+   dialog.dataset.paused=String(Boolean(document.hidden));
+   if(raf)cancelAnimationFrame(raf);raf=0;
+   if(dialog.open&&!document.hidden){last=0;raf=requestAnimationFrame(starLoop)}
  }
  function open(event){
    if(dialog.open)return;
    const origin=event?.detail?.origin;root.style.setProperty('--cosmos-origin-x',(Number.isFinite(origin?.x)?origin.x:50)+'%');root.style.setProperty('--cosmos-origin-y',(Number.isFinite(origin?.y)?origin.y:48)+'%');
    preview.hidden=true;selected=-1;lastFocus=document.activeElement;
    dialog.showModal();showStage(0);resize();last=0;shooting=[];
-   if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(starLoop);
+   syncPlayback();
  }
  function close(){
    if(!preview.hidden){closePhoto();return}
@@ -118,7 +127,7 @@
  }
  closeButton.addEventListener('click',close);
  dialog.addEventListener('close',()=>{
-   if(raf){cancelAnimationFrame(raf);raf=0}shooting=[];lastFocus?.focus?.({preventScroll:true});
+   if(raf){cancelAnimationFrame(raf);raf=0}shooting=[];stages[0].dataset.sequence='idle';lastFocus?.focus?.({preventScroll:true});
  });
  dialog.addEventListener('cancel',e=>{if(!preview.hidden){e.preventDefault();closePhoto()}});
  document.addEventListener('keydown',e=>{
@@ -126,7 +135,13 @@
    if(e.key==='ArrowRight'){e.preventDefault();openPhoto(selected+1)}
    if(e.key==='ArrowLeft'){e.preventDefault();openPhoto(selected-1)}
  });
- window.addEventListener('resize',()=>{if(dialog.open)resize()},{passive:true});
+ window.addEventListener('resize',()=>{if(dialog.open){resize();syncPlayback()}},{passive:true});
+ document.addEventListener('visibilitychange',syncPlayback);
+ reduced?.addEventListener?.('change',syncPlayback);
+ const motionObserver=typeof MutationObserver==='function'?new MutationObserver(syncPlayback):null;
+ if(main)motionObserver?.observe(main,{attributes:true,attributeFilter:['data-motion']});
+ window.addEventListener('pagehide',()=>{if(raf)cancelAnimationFrame(raf);raf=0;dialog.dataset.paused='true'});
+ window.addEventListener('pageshow',syncPlayback);
  document.getElementById('cosmos-to-stars').addEventListener('click',()=>showStage(1));
  document.getElementById('cosmos-to-apod').addEventListener('click',()=>showStage(2));
  document.getElementById('cosmos-to-gallery').addEventListener('click',()=>showStage(3));

@@ -17,7 +17,6 @@
   const close = document.getElementById('winter-phone-close');
   const power = document.getElementById('winter-phone-power');
   const powerGuide = document.getElementById('phone-power-guide');
-  const powerNext = document.getElementById('winter-phone-next');
   if (!finale || !start || !phone || !shutter) return;
   let revealTimer=0, notifyTimer=0, flashTimer=0, powerTimer=0, run=0, lastShot='', lastFocused=null, shotBusy=false, powerReady=false;
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -114,9 +113,9 @@
     notifyTimer=flashTimer=powerTimer=0;run++;shotBusy=false;
   }
   function setPowerReady(ready){
+    shell.dataset.motion=quiet()?'off':'on';
     powerReady=ready;shell.classList.toggle('is-power-ready',ready);
     if(power)power.disabled=!ready;
-    if(powerNext)powerNext.disabled=!ready;
     if(powerGuide){powerGuide.hidden=!ready;powerGuide.classList.remove('is-leaving');}
   }
   async function openPhone(){
@@ -143,7 +142,7 @@
       notifyTimer=window.setTimeout(()=>{
         if(token!==run||!phone.open||lock.hidden)return;
         notification.hidden=false;setPowerReady(true);
-        powerNext?.focus({preventScroll:true});
+        power?.focus({preventScroll:true});
       },quiet()?100:1100);
     },quiet()?80:600);
   }
@@ -161,7 +160,7 @@
     if(!powerReady||lock.hidden||!phone.open||shell.classList.contains('is-powered-off'))return;
     const token=run,rect=shell.getBoundingClientRect();
     const origin={x:Math.max(0,Math.min(100,(rect.left+rect.width/2)/(window.innerWidth||1)*100)),y:Math.max(0,Math.min(100,(rect.top+rect.height/2)/(window.innerHeight||1)*100))};
-    powerReady=false;if(power)power.disabled=true;if(powerNext)powerNext.disabled=true;
+    powerReady=false;if(power)power.disabled=true;
     shell.classList.remove('is-power-ready');shell.classList.add('is-powered-off');powerGuide?.classList.add('is-leaving');
     window.navigator?.vibrate?.(10);
     powerTimer=window.setTimeout(()=>{
@@ -171,7 +170,6 @@
     },quiet()?110:560);
   }
   power?.addEventListener('click',powerOff);
-  powerNext?.addEventListener('click',powerOff);
   start.addEventListener('click',openPhone);shutter.addEventListener('click',snap);
   reset?.addEventListener('click',resetShot);close?.addEventListener('click',closePhone);
   phone.addEventListener('close',()=>{cancelPending();setPowerReady(false);lastFocused?.focus?.({preventScroll:true});});

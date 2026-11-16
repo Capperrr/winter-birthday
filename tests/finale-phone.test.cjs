@@ -59,7 +59,7 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
     set src(value) { this._src = value; if (imageHeld) pendingImages.push(this); else { this.complete = true; this.onload?.(); } }
     get src() { return this._src; }
   }
-  class MutationObserver { constructor(fn) { this.fn = fn; observers.push(this); } observe() {} }
+  class MutationObserver { constructor(fn) { this.fn = fn; observers.push(this); } observe(target) { this.target = target; } }
   class CustomEvent { constructor(type, options = {}) { this.type = type; this.detail = options.detail; } }
   const globals = { document, window, Image, MutationObserver, CustomEvent, location: { hash: '#finale' },
     setTimeout: setTimer, clearTimeout: clearTimer,
@@ -89,7 +89,7 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
     await el('winter-shutter').click();
     advance(reduced ? 180 : 1700);
   }
-  return { el, document, advance, ready, cosmosEvents, timers, frames, draws, releaseImages, focused: () => focused, wishes };
+  return { el, document, advance, ready, cosmosEvents, timers, frames, draws, releaseImages, focused: () => focused, wishes, renderFrame() { const pending = [...frames.values()]; frames.clear(); pending.forEach(fn => fn(1000)); }, motionChanged() { observers.filter(observer => observer.target === el('main')).forEach(observer => observer.fn()); } };
 }
 
 (async () => {
@@ -97,7 +97,7 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
   await blocked.el('finale-phone-start').click();
   assert.equal(blocked.el('winter-phone-dialog').open, false, 'Birthday completion remains required');
 
-  for (const control of ['winter-phone-power', 'winter-phone-next']) {
+  for (const activation of ['key', 'hint']) {
     const app = start();
     await app.el('finale-phone-start').click();
     assert.equal(app.el('winter-shutter').disabled, false);
@@ -112,13 +112,14 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
     app.advance(1100);
     assert.equal(app.el('winter-lock-notification').hidden, false);
     assert.equal(app.el('phone-power-guide').hidden, false);
-    assert.equal(app.el('winter-phone-next').disabled, false);
-    assert.equal(app.focused(), app.el('winter-phone-next'));
+    assert.equal(app.el('winter-phone-power').disabled, false);
+    assert.equal(app.focused(), app.el('winter-phone-power'));
     assert.equal(app.el('winter-lock-wallpaper').src, app.el('phone-preview').src, 'The captured picture becomes the wallpaper');
     assert.ok(app.draws.includes('assets/handwriting/gwen-birthday.png'));
     assert.ok(app.draws.includes('assets/finale-duo-cutout.avif'));
-    await app.el(control).click();
-    await app.el('winter-phone-next').fire('click');
+    if (activation === 'key') await app.el('winter-phone-power').click();
+    else await app.el('winter-phone-power').fire('click', { target: app.el('phone-power-guide') });
+    await app.el('winter-phone-power').fire('click');
     assert.ok(app.el('winter-phone-shell').classList.contains('is-powered-off'));
     app.advance(559); assert.equal(app.cosmosEvents.length, 0);
     app.advance(1); assert.equal(app.cosmosEvents.length, 1, 'One transition, including rapid double taps');
@@ -155,10 +156,22 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
   await loading.ready(); assert.equal(loading.el('phone-power-guide').hidden, false, 'Reopening recovers cleanly');
 
   const reduced = start({ reduced: true }); await reduced.ready();
-  await reduced.el('winter-phone-next').click(); reduced.advance(110);
+  await reduced.el('winter-phone-power').click(); reduced.advance(110);
   assert.equal(reduced.cosmosEvents.length, 1);
 
-  const gallery = start(); await gallery.ready(); await gallery.el('winter-phone-next').click(); gallery.advance(560);
+  const gallery = start(); await gallery.ready(); await gallery.el('winter-phone-power').click(); gallery.advance(560);
+  assert.equal(gallery.el('cosmos-intro').dataset.sequence, 'playing');
+  gallery.document.hidden = true; await gallery.document.fire('visibilitychange');
+  assert.equal(gallery.el('winter-cosmos-dialog').dataset.paused, 'true');
+  assert.equal(gallery.frames.size, 0, 'Hidden tabs stop star frames and pause the text sequence');
+  gallery.document.hidden = false; await gallery.document.fire('visibilitychange');
+  assert.equal(gallery.el('winter-cosmos-dialog').dataset.paused, 'false');
+  assert.equal(gallery.frames.size, 1);
+  gallery.el('main').dataset.motion = 'off'; gallery.motionChanged(); gallery.renderFrame();
+  assert.equal(gallery.el('winter-cosmos-dialog').dataset.motion, 'off');
+  assert.equal(gallery.frames.size, 0, 'Motion off paints once and keeps every sentence readable');
+  gallery.el('main').dataset.motion = 'on'; gallery.motionChanged();
+  assert.equal(gallery.frames.size, 1);
   const tiles = gallery.el('cosmos-photo-wall').children;
   assert.equal(tiles.length, 19, 'All 19 supplied originals remain, awaiting the next user photo');
   const paths = new Set();
@@ -168,7 +181,7 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
     assert.equal(image.loading, 'lazy'); assert.ok(image.alt);
   });
   assert.equal(paths.size, tiles.length, 'Every tile uses an individual image');
-  await gallery.el('cosmos-to-stars').click(); await gallery.wishes[0].click();
+  await gallery.el('cosmos-to-stars').click(); assert.equal(gallery.el('cosmos-intro').dataset.sequence, 'idle', 'Continuing interrupts the text sequence'); await gallery.wishes[0].click();
   assert.ok(gallery.el('cosmos-wish-text').textContent.includes('我会为你点灯'));
   await gallery.el('cosmos-to-apod').click(); await gallery.el('cosmos-to-gallery').click();
   await tiles.at(-1).click();
@@ -180,6 +193,12 @@ function start({ celebrated = true, reduced = false, holdImages = false } = {}) 
   assert.equal(gallery.el('winter-cosmos-dialog').open, true);
   assert.equal(gallery.focused(), tiles.at(-1), 'Closing after image navigation restores the original tile focus');
   await gallery.el('cosmos-close').click(); assert.equal(gallery.frames.size, 0);
+  await gallery.document.fire('winter:cosmos-open');
+  assert.equal(gallery.el('cosmos-intro').dataset.sequence, 'playing', 'Reopening restarts the reading sequence');
+  await gallery.el('cosmos-close').click();
+  const html = readFileSync(path.join(dist, 'index.html'), 'utf8');
+  assert.ok(!html.includes('winter-phone-next'), 'The extra below-phone action is removed');
+  assert.match(html, /id="winter-phone-power"[\s\S]*id="phone-power-guide"[\s\S]*?<\/button>/, 'The hint is part of the physical key, not a second panel');
 
-  console.log('PASS: Captured wallpaper and original handwriting; notification-before-power gate; physical and equivalent power controls; one cosmos transition; retake/close/route/load interruption and recovery; reduced motion; all 19 photos, wrap navigation and focus restoration. DOM/state checks, not browser or iPad rendering.');
+  console.log('PASS: Captured wallpaper and original handwriting; notification-before-power gate; side key and its inline hint; one cosmos transition; retake/close/route/load interruption and recovery; reduced motion; interrupted/restarted cosmos reading, visibility and motion lifecycle; all 19 photos, wrap navigation and focus restoration. DOM/state checks, not browser or iPad rendering.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
