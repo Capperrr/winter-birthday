@@ -23,7 +23,11 @@ $('winter-gesture-minimise').addEventListener('click',()=>setPanel(false));
 function relocate(){
  const host=(cosmos?.open&&cosmos)||(phone?.open&&phone)||document.body;
  if(dock.parentElement!==host)host.appendChild(dock);
+ const visible=$('main')?.dataset.destination==='cake'||['letter','journey','afterword','finale'].includes($('main')?.dataset.destination)||Boolean(phone?.open||cosmos?.open);
+ dock.classList.toggle('gesture-visible',visible);
 }
+const shell=$('main');
+if(shell)new MutationObserver(relocate).observe(shell,{attributes:true,attributeFilter:['data-destination']});
 const dialogs=[cosmos,phone].filter(Boolean);
 for(const dialog of dialogs){
  const observer=new MutationObserver(relocate);
@@ -52,7 +56,7 @@ async function getDetector(){
    const options={baseOptions:{
       modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
       delegate:'GPU'
-     },runningMode:'VIDEO',numHands:1,
+     },runningMode:'VIDEO',numHands:2,
      minHandDetectionConfidence:.5,minHandPresenceConfidence:.5,minTrackingConfidence:.5};
    try{return await mp.HandLandmarker.createFromOptions(files,options)}
    catch(_){options.baseOptions.delegate='CPU';return await mp.HandLandmarker.createFromOptions(files,options)}
@@ -64,6 +68,7 @@ function stopCamera(message){
  if(frame){cancelAnimationFrame(frame);frame=0}
  if(stream){for(const track of stream.getTracks())track.stop();stream=null}
  video.pause();video.srcObject=null;
+ document.dispatchEvent(new CustomEvent('winter:camera-stopped'));
  cursor.hidden=true;dock.dataset.camera='off';
  stopButton.hidden=true;startButton.hidden=false;startButton.disabled=false;
  lastVideoTime=-1;pinchWas=false;stablePose='';poseFrames=0;poseFired=false;swipeStart=null;
@@ -79,12 +84,18 @@ async function startCamera(){
   const feed=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480},frameRate:{ideal:20,max:30}},audio:false});
   if(mode!=='camera'){feed.getTracks().forEach(t=>t.stop());return}
   stream=feed;video.srcObject=stream;await video.play();
-  tell('正在加载手部识别模型…');
-  await getDetector();
-  if(!stream||mode!=='camera')return;
   dock.dataset.camera='on';startButton.hidden=true;stopButton.hidden=false;
-  tell('识别已开启。抬起手掌，试试捏合两指或左右挥手。');
-  frame=requestAnimationFrame(track);
+  document.dispatchEvent(new CustomEvent('winter:camera-ready',{detail:{stream}}));
+  tell('镜头已经开启，正在准备隔空手势识别…');
+  try{
+    await getDetector();
+    if(!stream||mode!=='camera')return;
+    tell('隔空手势就绪。伸出食指可以书写。');
+    frame=requestAnimationFrame(track);
+  }catch(_){
+    tell('镜头已经开启，手势模型暂不可用，仍可直接用手指绘画。');
+    document.dispatchEvent(new CustomEvent('winter:hand-model-unavailable'));
+  }
  }catch(err){
   const msg=err?.name==='NotAllowedError'?'没有获得摄像头权限，请在浏览器设置里允许访问。':
    err?.name==='NotFoundError'?'设备上没有找到可用摄像头。':
@@ -161,7 +172,8 @@ function classify(hand){
  const pinching=distance(hand[4],hand[8])<palmWidth*.42;
  const fingertips=[8,12,16,20],pips=[6,10,14,18];
  const extended=fingertips.reduce((n,id,i)=>n+(distance(hand[id],w)>distance(hand[pips[i]],w)*1.16?1:0),0);
- return {pinching,pose:pinching?'pinch':extended>=3?'open':extended<=1?'fist':'neutral'};
+ const isIndexExtended=distance(hand[8],w)>distance(hand[6],w)*1.10;
+ return {pinching,pose:pinching?'pinch':extended>=3?'open':extended<=1?'fist':'neutral',isIndexExtended};
 }
 function track(t){
  if(!stream || mode!=='camera'){frame=0;return}
@@ -170,9 +182,20 @@ function track(t){
  lastDetect=t;lastVideoTime=video.currentTime;
  let result;
  try{result=detector.detectForVideo(video,t)}catch(_){stopCamera('识别暂时中断，已关闭摄像头；触摸操作仍可继续。');return}
+ const allHands=(result.landmarks||[]).map((marks,i)=>{
+  const state=classify(marks);
+  const label=result.handednesses?.[i]?.[0]?.categoryName||(i?'Left':'Right');
+  return {hand:label,visible:true,x:Math.max(0,Math.min(1,1-marks[8].x)),y:Math.max(0,Math.min(1,marks[8].y)),
+    pose:state.pose,pinching:state.pinching,isIndexExtended:state.isIndexExtended,
+    pinchStarted:state.pinching&&!pinchWas};
+ });
+ document.dispatchEvent(new CustomEvent('winter:hand-frame',{detail:{hands:allHands}}));
  const hand=result.landmarks?.[0];
  if(!hand){cursor.hidden=true;pinchWas=false;stablePose='';poseFrames=0;poseFired=false;swipeStart=null;return}
  const state=classify(hand);
+ if(stageActive('cosmos-creator')||shell?.dataset.destination==='cake'){
+  cursor.hidden=true;pinchWas=state.pinching;return;
+ }
  const info={x:Math.max(0,Math.min(1,1-hand[8].x)),y:Math.max(0,Math.min(1,hand[8].y))};
  const pt=findTarget(info);
  cursor.hidden=false;cursor.style.left=pt.x+'px';cursor.style.top=pt.y+'px';
@@ -227,5 +250,11 @@ if(photo){
 $('cosmos-lightbox-close')?.addEventListener('click',resetZoom);
 for(const id of lightboxButtons)$(id)?.addEventListener('click',resetZoom);
 relocate();
-window.WINTER_GESTURES={get mode(){return mode},get active(){return !!stream},stop:stopCamera};
+window.WINTER_GESTURES={
+ get mode(){return mode},
+ get active(){return !!stream},
+ get stream(){return stream},
+ async enableCamera(){selectMode('camera');return startCamera()},
+ stop:stopCamera
+};
 })();
