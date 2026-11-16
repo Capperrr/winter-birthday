@@ -13,7 +13,7 @@ const cosmos=$('winter-cosmos-dialog'),phone=$('winter-phone-dialog'),finale=$('
 const lightbox=$('cosmos-photo-lightbox'),photo=$('cosmos-lightbox-photo');
 const portrait=$('portrait-lightbox');
 let mode='touch',stream=null,detector=null,frame=0,loaded=null,lastVideoTime=-1,lastDetect=0;
-let pinchWas=false,stablePose='',poseFrames=0,lastAction=0,lastSwipe=0,swipeStart=null;
+let pinchWas=false,stablePose='',poseFrames=0,poseFired=false,lastAction=0,lastSwipe=0,swipeStart=null;
 let galleryIndex=0,zoom=1,pinchBase=null,gestureBusy=false;
 const clock=()=>performance.now(),distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function tell(s){status.textContent=s}
@@ -66,7 +66,7 @@ function stopCamera(message){
  video.pause();video.srcObject=null;
  cursor.hidden=true;dock.dataset.camera='off';
  stopButton.hidden=true;startButton.hidden=false;startButton.disabled=false;
- lastVideoTime=-1;pinchWas=false;stablePose='';poseFrames=0;swipeStart=null;
+ lastVideoTime=-1;pinchWas=false;stablePose='';poseFrames=0;poseFired=false;swipeStart=null;
  if(message)tell(message);
  else if(mode==='camera')tell('摄像头已关闭。随时可以重新开启，触摸仍可使用。');
 }
@@ -132,11 +132,11 @@ function processPinch(info,t){
  }
 }
 function processPose(pose,t){
- if(pose===stablePose){poseFrames++}else{stablePose=pose;poseFrames=1}
- if(poseFrames<4 || t-lastAction<1250)return;
+ if(pose===stablePose){poseFrames++}else{stablePose=pose;poseFrames=1;poseFired=false}
+ if(poseFrames<4 || poseFired || t-lastAction<1250)return;
  if(finale && !finale.hidden && !$('finale-surprise')?.hidden){
-  if(pose==='open'){emitParticle('scatter');tell('张开手掌 · 星光散开');lastAction=t}
-  if(pose==='fist'){emitParticle('gather');tell('握紧拳头 · 星光聚成生日蛋糕');lastAction=t}
+  if(pose==='open'){emitParticle('scatter');tell('张开手掌 · 星光散开');lastAction=t;poseFired=true}
+  if(pose==='fist'){emitParticle('gather');tell('握紧拳头 · 星光聚成生日蛋糕');lastAction=t;poseFired=true}
  }
 }
 function processSwipe(x,t,pose){
@@ -171,7 +171,7 @@ function track(t){
  let result;
  try{result=detector.detectForVideo(video,t)}catch(_){stopCamera('识别暂时中断，已关闭摄像头；触摸操作仍可继续。');return}
  const hand=result.landmarks?.[0];
- if(!hand){cursor.hidden=true;pinchWas=false;stablePose='';poseFrames=0;swipeStart=null;return}
+ if(!hand){cursor.hidden=true;pinchWas=false;stablePose='';poseFrames=0;poseFired=false;swipeStart=null;return}
  const state=classify(hand);
  const info={x:Math.max(0,Math.min(1,1-hand[8].x)),y:Math.max(0,Math.min(1,hand[8].y))};
  const pt=findTarget(info);
@@ -186,7 +186,7 @@ function resetZoom(){
  zoom=1;pinchBase=null;
  if(photo){photo.style.transform='';photo.style.transformOrigin='center center';}
 }
-const touchPointers=new Map();let swipeOrigin=null;
+let swipeOrigin=null;
 const lightboxButtons=['cosmos-lightbox-prev','cosmos-lightbox-next'];
 function triggerSwipe(delta){
  if(cosmos?.open&&!lightbox.hidden){$(delta>0?lightboxButtons[0]:lightboxButtons[1])?.click()}
