@@ -138,12 +138,12 @@
       camera.hidden=true;lock.hidden=false;shell.dataset.mode='lock';
       if(lastShot){
         lockImage.src=lastShot;
-        save.href=lastShot;save.hidden=false;
+        save.href=lastShot;save.hidden=true;
       }
-      reset.hidden=false;
-      if(powerGuide)powerGuide.hidden=false;
+      reset.hidden=true;
+      if(powerGuide)powerGuide.hidden=true;
       notification.hidden=true;
-      notifyTimer=window.setTimeout(()=>{if(phone.open){notification.hidden=false;}},reduced?.matches?100:1100);
+      // The lockscreen stays clear; the small arrow at the side key is the only cue.
       shotBusy=false;
     },reduced?.matches?80:600);
   }
