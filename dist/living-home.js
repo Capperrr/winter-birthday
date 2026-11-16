@@ -23,15 +23,15 @@ for(let i=0;i<13;i++){
 }
 const controls=document.createElement('div');
 controls.className='living-ui';controls.setAttribute('role','group');controls.setAttribute('aria-label','山野时间与交互');
-controls.innerHTML='<div class="living-segment" role="group" aria-label="切换山野时间"><button type="button" id="living-morning" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Morning</button><button type="button" id="living-night" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.7a8.5 8.5 0 0 1-11.7-11A8.5 8.5 0 1 0 20 15.7Z"/></svg>Night</button></div><span class="living-divider"></span><span class="living-hint" id="living-hint">用手指轻拂草地</span>';
+controls.innerHTML='<div class="living-segment" role="group" aria-label="切换山野时间"><button type="button" id="living-morning" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>Morning</button><button type="button" id="living-night" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.7a8.5 8.5 0 0 1-11.7-11A8.5 8.5 0 1 0 20 15.7Z"/></svg>Night</button></div>';
 shell.append(controls);
 const badge=document.createElement('div');badge.className='living-preview-tag';badge.textContent='LIVING LANDSCAPE · HOME PREVIEW';shell.append(badge);
-const canvas=stage.querySelector('canvas'),morning=controls.querySelector('#living-morning'),night=controls.querySelector('#living-night'),hint=controls.querySelector('#living-hint');
+const canvas=stage.querySelector('canvas'),morning=controls.querySelector('#living-morning'),night=controls.querySelector('#living-night');
 let mode='none',gl=null,program=null,uni={},ctx2d=null,paintCanvas=canvas,blades=[],width=0,height=0,ready=false,frame=0,lastDraw=0,nightMix=0,timeOfDay='morning';
-let windTouch={x:-1e5,y:-1e5},cursor={x:-1e5,y:-1e5},power=0,shiftX=0,shiftY=0,windHeld=false;
+
 const vertex=[
 '#version 300 es','precision highp float;',
-'uniform vec2 uResolution;','uniform float uTime;','uniform float uNight;','uniform vec2 uTouch;','uniform float uTouchStrength;',
+'uniform vec2 uResolution;','uniform float uTime;','uniform float uNight;',
 'out vec4 vTint;',
 'float hash(float x){return fract(sin(x*127.1+31.8)*43758.5453123);}',
 'void main(){',
@@ -48,9 +48,6 @@ const vertex=[
 ' float breeze=sin(uTime*1.0+rand1*15.0+depth*12.)*.50+sin(uTime*1.55+baselineX*.014+depth*7.1)*.45;',
 ' float broadwave=sin(uTime*.75+baselineX*.006+depth*7.0);',
 ' float dx=(breeze*.52+broadwave*.17)*bladeHeight;',
-' float d=length(vec2(baselineX,baselineY)-uTouch);',
-' float fall=exp(-d*d/(2.0*160.0*160.0));',
-' dx+=sign(baselineX-uTouch.x)*uTouchStrength*fall*min(38.0,bladeHeight*2.0);',
 ' float x=baselineX+side*bladeWidth*.5+dx*t*t;',
 ' float y=baselineY-bladeHeight*t;',
 ' gl_Position=vec4(x/uResolution.x*2.0-1.0,1.0-y/uResolution.y*2.0,0.0,1.0);',
@@ -77,7 +74,7 @@ function startGraphics(){
   if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program)||'Link failed');
   gl.deleteShader(v);gl.deleteShader(f);gl.useProgram(program);
   gl.bindVertexArray(gl.createVertexArray());
-  uni={resolution:gl.getUniformLocation(program,'uResolution'),time:gl.getUniformLocation(program,'uTime'),night:gl.getUniformLocation(program,'uNight'),touch:gl.getUniformLocation(program,'uTouch'),strength:gl.getUniformLocation(program,'uTouchStrength')};
+  uni={resolution:gl.getUniformLocation(program,'uResolution'),time:gl.getUniformLocation(program,'uTime'),night:gl.getUniformLocation(program,'uNight')};
   gl.disable(gl.DEPTH_TEST);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
   mode='webgl';
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(frame);frame=0;mode='lost';});
@@ -107,9 +104,7 @@ function render2d(t){
  ctx2d.clearRect(0,0,width,height);
  for(const b of blades){
   const depth=(b.y-.14)/.91,x=b.x*width,y=b.y*height,h=(3+26*Math.pow(depth,1.3))*(.7+b.n*.7)*Math.max(.65,Math.min(1.3,width/1050));
-  const d=Math.hypot(windTouch.x-x,windTouch.y-y);
-  const gust=power*Math.exp(-d*d/(2*165*165))*Math.sign(x-windTouch.x)*h*.9;
-  const sway=Math.sin(t*1.2+b.seed)*h*.19+gust;
+  const sway=Math.sin(t*1.2+b.seed)*h*.19;
   const r=nightMix>.5?48:Math.round(51+b.n*36),g=nightMix>.5?83:Math.round(98+b.n*33),blue=nightMix>.5?91:Math.round(31+b.n*7);
   ctx2d.strokeStyle='rgba('+r+','+g+','+blue+','+(0.13+depth*.37).toFixed(2)+')';
   ctx2d.lineWidth=.65+depth*1.35;ctx2d.beginPath();ctx2d.moveTo(x,y);ctx2d.quadraticCurveTo(x+sway*.52,y-h*.62,x+sway,y-h);ctx2d.stroke();
@@ -118,7 +113,6 @@ function render2d(t){
 function renderGL(t){
  gl.useProgram(program);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
  gl.uniform2f(uni.resolution,width,height);gl.uniform1f(uni.time,t);gl.uniform1f(uni.night,nightMix);
- gl.uniform2f(uni.touch,windTouch.x,windTouch.y);gl.uniform1f(uni.strength,power);
  const count=width<500?3200:width<1100?5100:7600;
  gl.drawArraysInstanced(gl.TRIANGLES,0,3,count);
 }
@@ -130,8 +124,6 @@ function draw(timestamp){
  if(!ready)resize();
  if(ready){
   nightMix+=((timeOfDay==='night'?1:0)-nightMix)*.08;
-  power*=.92;
-  windTouch.x+=(cursor.x-windTouch.x)*.24;windTouch.y+=(cursor.y-windTouch.y)*.24;
   if(mode==='webgl')renderGL(timestamp/1000);else if(mode==='2d')render2d(timestamp/1000);
  }
  frame=requestAnimationFrame(draw);
@@ -146,40 +138,10 @@ function sync(){
 function setTime(value){
  timeOfDay=value;shell.dataset.livingTime=value;
  morning.setAttribute('aria-pressed',String(value==='morning'));night.setAttribute('aria-pressed',String(value==='night'));
- hint.textContent=value==='night'?'星光也会陪你慢慢走':'用手指轻拂草地';
  sync();
 }
 morning.addEventListener('click',()=>setTime('morning'));
 night.addEventListener('click',()=>setTime('night'));
-let touchCount=0;
-const isInteractive=t=>Boolean(t?.closest?.('button,a,input,nav,header,footer,[role="button"]'));
-function point(ev){
- if(!canRun()||isInteractive(ev.target))return;
- const b=shell.getBoundingClientRect(),r=paintCanvas.getBoundingClientRect();
- const nx=Math.max(-1,Math.min(1,(ev.clientX-b.left)/(b.width||1)*2-1));
- const ny=Math.max(-1,Math.min(1,(ev.clientY-b.top)/(b.height||1)*2-1));
- shiftX+=(nx*6-shiftX)*.36;shiftY+=(ny*5-shiftY)*.36;
- shell.style.setProperty('--living-shift-x',(-shiftX).toFixed(1)+'px');shell.style.setProperty('--living-shift-y',(-shiftY).toFixed(1)+'px');
- stage.querySelector('.living-cloudsheet').style.setProperty('--living-cloud-x',(-nx*9).toFixed(1)+'px');
- stage.querySelector('.living-cloudsheet').style.setProperty('--living-cloud-y',(-ny*5).toFixed(1)+'px');
- cursor.x=ev.clientX-r.left;cursor.y=ev.clientY-r.top;
- if(ev.clientY>=r.top-60&&ev.clientY<=r.bottom+20){
-  if(windTouch.x<-10000){windTouch.x=cursor.x;windTouch.y=cursor.y}
-  power=Math.min(1.65,power+.33);
-  if(ev.pointerType==='touch'&&touchCount===0)hint.textContent='风经过了你指尖 ♡';
- }
-}
-shell.addEventListener('pointermove',point,{passive:true});
-shell.addEventListener('pointerdown',ev=>{
- point(ev);if(!canRun()||isInteractive(ev.target))return;
- touchCount++;
- const r=shell.getBoundingClientRect(),ripple=document.createElement('span');ripple.className='living-ripple';
- ripple.style.left=(ev.clientX-r.left)+'px';ripple.style.top=(ev.clientY-r.top)+'px';stage.append(ripple);
- ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});setTimeout(()=>ripple.remove(),1400);
-},{passive:true});
-shell.addEventListener('pointerup',()=>{touchCount=Math.max(0,touchCount-1)},{passive:true});
-shell.addEventListener('pointercancel',()=>{touchCount=0},{passive:true});
-shell.addEventListener('pointerleave',()=>{power*=.5;cursor={x:-10000,y:-10000}},{passive:true});
 new MutationObserver(sync).observe(shell,{attributes:true,attributeFilter:['data-page','data-motion','data-motion-paused','data-view']});
 if('ResizeObserver'in window)new ResizeObserver(()=>{ready=false}).observe(shell);
 else addEventListener('resize',()=>{ready=false},{passive:true});
