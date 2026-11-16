@@ -103,11 +103,12 @@
   const label=source==='cake'?cakeNote:creatorStatus;
   if(api?.active){
    if(source==='creator'){api.stop('已关闭摄像头；触摸仍可绘画');return}
-   label.textContent='镜头已经开启';return;
+   if(shell?.dataset.cakeHandReady==='true'){label.textContent='';return;}
+   api.stop('重新准备识别');
   }
   if(!api?.enableCamera){label.textContent='当前浏览器不支持摄像头手势识别';return}
   btn.disabled=true;label.textContent='正在申请摄像头权限…';
-  try{await api.enableCamera()}catch(_){label.textContent='摄像头未能开启，请检查权限后重试'}
+  try{await api.enableCamera();if(source==='cake'&&!api.active)label.textContent='摄像头未能开启，请检查权限后重试'}catch(_){label.textContent='摄像头未能开启，请检查权限后重试'}
   finally{btn.disabled=false}
  }
  cakeEnable?.addEventListener('click',()=>activateCamera('cake'));
