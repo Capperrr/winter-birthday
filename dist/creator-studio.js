@@ -122,7 +122,8 @@
  let exportUrl='',exportBlob=null,exportFile=null;
  $('winter-art-export-close').addEventListener('click',()=>exportDialog.close());
  exportDialog.addEventListener('click',e=>{if(e.target===exportDialog)exportDialog.close()});
- exportDialog.addEventListener('close',()=>{if(exportUrl){URL.revokeObjectURL(exportUrl);exportUrl='';}exportBlob=null;exportFile=null;exportImage.removeAttribute('src')});
+ exportDialog.addEventListener('close',()=>{exportImage.removeAttribute('src')});
+ window.addEventListener('pagehide',()=>{if(exportUrl)URL.revokeObjectURL(exportUrl)},{once:true});
  exportLink.addEventListener('click',()=>{exportStatus.textContent='已请求下载：打开「文件」App 的下载项查看；网页无法自动确认文件已保存。';});
  exportShare.addEventListener('click',async()=>{
    if(!exportFile||!navigator.share)return;
@@ -157,7 +158,7 @@
    exportBlob=blob;exportUrl=URL.createObjectURL(blob);
    exportFile=new File([blob],'WINTER-25-my-little-creation.png',{type:'image/png'});
    exportImage.src=exportUrl;exportLink.href=exportUrl;
-   const canShare=Boolean(navigator.share&&navigator.canShare&&navigator.canShare({files:[exportFile]}));
+   let canShare=false;try{canShare=Boolean(navigator.share&&navigator.canShare?.({files:[exportFile]}));}catch(_){}
    exportShare.hidden=!canShare;
    exportStatus.textContent='已生成 PNG 预览；尚未保存到设备。';
    if(!exportDialog.open)exportDialog.showModal();
