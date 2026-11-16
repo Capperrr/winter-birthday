@@ -243,7 +243,7 @@ for(const lb of [lightbox,portrait].filter(Boolean)){
  lb.addEventListener('pointercancel',()=>{swipeOrigin=null},{passive:true});
 }
 if(photo){
- photo.style.touchAction='none';
+ photo.style.touchAction='pan-y';
  photo.addEventListener('touchstart',e=>{
   if(e.touches.length===2){
    const a=e.touches[0],b=e.touches[1];
