@@ -32,18 +32,6 @@ After changes, run the relevant validation, push the work, and **merge the PR in
 
 Required order: enable camera -> detect hand -> pinch to grab lighter -> move flame into each wick -> each candle individually lights and stays lit -> 5/5 -> original blow/firework flow. Before 5/5, touch cannot shortcut ignition. On camera or recognition failure, show retry; do not silently mark candles as lit.
 
-## Living Blender views
-
-- `src/living/` owns the optional real-geometry Home, cake, lighter and envelope views.
-- `dist/living-birthday.js` is their committed static bundle; regenerate with `npm run --prefix tools/living-build build`. Setup and Blender reproduction commands are in `tools/living-build/README.md`.
-- `dist/assets/living/` contains local GLBs and six Blender-baked curled-paper surfaces. The existing 22 note buttons/IDs/storage and all text/images remain owned by the original scripts.
-- The real Swiss photograph is projected onto a relief; it must not be replaced with polygon mountains. Two articulated puppies and foreground grass sit in its meadow.
-- Five imported `CandleTip_0..4` nodes are projected into the original SVG coordinates. Do not remove the transparent SVG's layout geometry: `cake-five-candles.js` reads those coordinates. The visible 3D wicks and detector targets must remain aligned after resizing and the camera transition.
-- Touch/keyboard lighter inspection can open its lid and move/return the tool before camera use. It must never set candle completion. Once the camera is on, the original hand pipeline owns movement.
-- The original cake photo, native-resolution cutout and envelope artwork remain fallbacks on failed model/WebGL loading. Only mark a view `ready` after rendering it.
-- `tests/living-birthday.browser.cjs` checks geometry, touch capture/cancellation, four viewport projections, asset failure, the real camera gate and five separate collisions using synthetic video/detector coordinates. It is not a physical iPad or real-hand accuracy test.
-- No exploration/game environment is included in this pass. Existing Journey files remain unchanged.
-
 ## Diagnosing “Codex updated it but the website is old”
 
 1. In GitHub, confirm the new commit is at **`Capperrr/winter-birthday` → `main`**, not just a feature branch or unmerged draft PR.
