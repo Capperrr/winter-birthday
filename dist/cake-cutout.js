@@ -61,31 +61,38 @@ async function prepare(){
     grown[y*w+x]=hit>=3?255:0;
    }
   }
-  // A small, separate stone slab crop anchors the cake; the lake and mountains are gone.
+  // Draw a continuous, horizontal slab from the source stone texture.
+  // Sample the lower part of the picture to avoid retaining the lake or the
+  // cake in its old centred position over the live camera.
+  canvas.width=w;canvas.height=h;ctx.clearRect(0,0,w,h);
+  const stoneStart=key==='portrait'?.82:.81;
+  const stoneSourceY=Math.floor(h*.905);
+  const rock=document.createElement('canvas');rock.width=w;rock.height=h;
+  const rx=rock.getContext('2d',{alpha:true});
+  rx.drawImage(photo,0,stoneSourceY,w,h-stoneSourceY,0,Math.floor(h*stoneStart),w,Math.ceil(h*(1-stoneStart)));
+  rx.globalCompositeOperation='destination-in';
+  const fade=rx.createLinearGradient(0,h*stoneStart,0,h*(stoneStart+.04));
+  fade.addColorStop(0,'rgba(0,0,0,0)');fade.addColorStop(1,'rgba(0,0,0,1)');
+  rx.fillStyle=fade;rx.fillRect(0,Math.floor(h*stoneStart),w,h-Math.floor(h*stoneStart));
+  rx.globalCompositeOperation='source-over';
+  ctx.drawImage(rock,0,0);
+
+  // Move the transparent cake layer to the far right, independently of the slab.
   const alpha=new Uint8ClampedArray(w*h);
-  for(let y=0;y<h;y++){
-   const yn=y/h;
-   for(let x=0;x<w;x++){
-    const xn=x/w,i=y*w+x;
-    const edge=(x>x0+2&&x<x1-2&&y>y0+2&&y<y1-2)?grown[i]:0;
-    // Stone tabletop: a narrow grounded foreground, not an opaque old landscape.
-    const slabStart=key==='portrait'?.82:.83;
-    const slab=smooth(slabStart,slabStart+.016,yn)*
-       (1-smooth(key==='portrait'?.87:.9,key==='portrait'?.91:.94,Math.abs(xn-.5)*2));
-    alpha[i]=Math.max(edge,Math.round(slab*255));
-   }
+  for(let y=y0;y<Math.min(y1,Math.round(h*stoneStart));y++){
+   for(let x=x0;x<x1;x++){const i=y*w+x;alpha[i]=grown[i];}
   }
-  // Blur only 2px of edge pixels, keeping centre opaque and the cutout sharp.
   const mask=document.createElement('canvas');mask.width=w;mask.height=h;
   const mx=mask.getContext('2d',{willReadFrequently:true});
   const m=mx.createImageData(w,h);
   for(let i=0;i<alpha.length;i++){const j=i*4;m.data[j]=m.data[j+1]=m.data[j+2]=255;m.data[j+3]=alpha[i];}
   mx.putImageData(m,0,0);
-  // Light antialiasing at the very edge via a blurred alpha overlay; no huge feathered halo.
-  const sm=document.createElement('canvas');sm.width=w;sm.height=h;
-  const sx=sm.getContext('2d');sx.filter='blur(1.2px)';sx.drawImage(mask,0,0);
-  sx.globalCompositeOperation='source-in';sx.filter='none';sx.drawImage(photo,0,0,w,h);
-  canvas.width=w;canvas.height=h;ctx.clearRect(0,0,w,h);ctx.drawImage(sm,0,0);
+  const cake=document.createElement('canvas');cake.width=w;cake.height=h;
+  const cx=cake.getContext('2d',{alpha:true});
+  cx.filter='blur(.85px)';cx.drawImage(mask,0,0);cx.filter='none';
+  cx.globalCompositeOperation='source-in';cx.drawImage(photo,0,0,w,h);
+  const cakeShift=Math.round(w*(key==='portrait'?.21:.22));
+  ctx.drawImage(cake,cakeShift,0);
   current=key;shell.dataset.cakeCutout='ready';
  }catch(err){
   shell.dataset.cakeCutout='failed';
