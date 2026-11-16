@@ -69,3 +69,6 @@ Typography: Cormorant Garamond, DM Sans, Caveat and Noto Serif SC via Google Fon
 Run `python3 tools/blender/check_connection.py --output /tmp/winter-blender-check`
 to verify scene saving/reopening and GLB 2.0 mesh export with the local Blender
 executable. See [Blender 项目接入](docs/blender.md) for setup and output details.
+
+The birthday foreground renderer and touch refinements are documented in
+[Birthday art and touch polish](docs/birthday-art-and-touch-polish.md).

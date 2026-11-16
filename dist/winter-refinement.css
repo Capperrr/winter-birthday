@@ -22,38 +22,34 @@
  .afterword-copy h2{font-size:27px}
  .afterword-line{line-height:2.05;letter-spacing:.45px}
 }
-/* 2. The cake is still itself: a real live-camera background, with masked cake, stone and lighter foreground. */
-.winter-cake-live{position:absolute;inset:0;z-index:0;overflow:hidden;background:#091820;opacity:0;transition:opacity .85s ease;pointer-events:none}
-.winter-cake-live video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:saturate(.83) contrast(1.03) brightness(.73)}
-.winter-cake-live::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#071c2c75 0%,transparent 22%,transparent 58%,#071b2c8c 100%);pointer-events:none}
+/* Camera foreground: native-resolution cake, Blender slate and silver lighter. */
+.winter-cake-live{position:absolute;inset:0;z-index:0;overflow:hidden;background:#091820;opacity:0;transition:opacity 850ms ease;pointer-events:none}
+.winter-cake-live video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:brightness(.89) saturate(.96)}
+.winter-cake-live::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#071c2c66,transparent 28%,transparent 65%,#071b2c66)}
 .app-shell[data-destination='cake'][data-cake-camera='on'] .winter-cake-live{opacity:1}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .cake-backdrop{opacity:0!important}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-cake-photograph{
- -webkit-mask-image:radial-gradient(ellipse 49% 72% at 50% 58%,#000 51%,#000d 62%,#0005 78%,transparent 100%);
- mask-image:radial-gradient(ellipse 49% 72% at 50% 58%,#000 51%,#000d 62%,#0005 78%,transparent 100%);
-}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-scene-plane{filter:drop-shadow(0 16px 26px #071a2880)}
-.cake-page .grand-cake-tableau{z-index:1}
-.cake-page .cake-thanks{z-index:4}
-.winter-cake-camera-enable{
- position:absolute;z-index:8;top:clamp(85px,12%,128px);right:clamp(12px,4vw,50px);
- display:inline-flex;align-items:center;gap:10px;
- max-width:min(260px,72vw);min-height:43px;padding:8px 16px;
- border:1px solid #faf0de8c;border-radius:24px;background:#152a39b8;
- color:#f4eee5;font:400 11px/1.5 var(--cn-serif);letter-spacing:.2px;
- backdrop-filter:blur(11px);cursor:pointer;
-}
-.winter-cake-camera-enable:active{transform:scale(.97)}
-.winter-cake-camera-enable span{font:17px/1 Georgia,serif}
-.app-shell[data-cake-camera='on'] .winter-cake-camera-enable{display:none}
-.winter-cake-camera-note{position:absolute;z-index:9;top:clamp(133px,18%,178px);right:clamp(12px,4vw,50px);max-width:240px;color:#e8e5d9;font:10px/1.7 var(--cn-serif);text-shadow:0 2px 5px #05141fcc;pointer-events:none}
+.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-cutout='ready'] :is(.cake-backdrop,.grand-cake-photograph){opacity:0}
+.grand-cake-cutout{position:absolute;inset:0;z-index:2;width:100%;height:100%;display:block;opacity:0;transition:opacity 850ms ease;pointer-events:none}
+.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-cutout='ready'] .grand-cake-cutout{opacity:1}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay{z-index:3}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .candles-wide{transform:translateX(22%)}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .candles-tall{transform:translateX(21%)}
+.grand-cake-photograph{transition:opacity 850ms ease}
+.grand-candles-overlay{transition:transform 850ms ease}
+.cake-page .grand-cake-tableau{z-index:1}.cake-page .cake-thanks{z-index:4}
+.cake-page[data-cake-state='unlit'] .grand-lighter{opacity:0;pointer-events:none;touch-action:pan-y;transition:opacity 400ms ease}
+.app-shell[data-cake-camera='on'] .cake-page[data-cake-state='unlit'] .grand-lighter{opacity:1;z-index:6;cursor:default}
+.app-shell[data-destination='cake'] .candle-ignition-target{pointer-events:none;opacity:0}
+.app-shell[data-destination='cake'] .lighter-instructions{display:none}
+.winter-cake-camera-enable{position:absolute;z-index:8;top:clamp(104px,12%,132px);right:clamp(15px,4vw,52px);max-width:245px;min-height:44px;padding:10px 16px;border:1px solid #faf5e8a0;border-radius:28px;background:#112536b8;color:#f4eee5;font:400 11px/1.6 var(--cn-serif);letter-spacing:.2px;backdrop-filter:blur(10px);cursor:pointer}
+.winter-cake-camera-enable:active{scale:.98}.winter-cake-camera-enable span{margin-left:8px}
+.app-shell[data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable{display:none}
+.winter-cake-camera-note{position:absolute;z-index:9;top:clamp(155px,19%,190px);right:clamp(15px,4vw,52px);max-width:240px;color:#f0e9df;font:11px/1.7 var(--cn-serif);text-shadow:0 1px 4px #071321;pointer-events:none}
+.winter-cake-camera-note:empty{display:none}
 @media(max-width:760px){
- .winter-cake-camera-enable{top:14%;right:4%;max-width:190px;min-height:37px;padding:8px 12px;font-size:10px}
- .winter-cake-camera-note{top:21%;right:4%;max-width:190px;font-size:9px}
- .app-shell[data-destination='cake'][data-cake-camera='on'] .grand-cake-photograph{
- -webkit-mask-image:radial-gradient(ellipse 52% 65% at 50% 57%,#000 49%,#000b 63%,transparent 100%);
- mask-image:radial-gradient(ellipse 52% 65% at 50% 57%,#000 49%,#000b 63%,transparent 100%);
- }
+ .winter-cake-camera-enable{top:157px;right:4%;font-size:11px;max-width:235px}
+ .winter-cake-camera-note{top:208px;right:4%;max-width:220px}
+ .app-shell[data-destination='cake'] .grand-cake-intro{top:26%;max-width:48%;left:3%;width:46%;text-align:left}
+ .app-shell[data-destination='cake'] .grand-cake-intro h2{align-items:flex-start;font-size:clamp(25px,5vw,39px)}
 }
 /* Hide the gesture toggle on the first chapters; introduce it at the cake. */
 .gesture-dock:not(.gesture-visible){display:none!important}
@@ -63,63 +59,6 @@
 .cosmos-gallery-ink{margin-top:46px;border-color:#d7bfa846}
 #cosmos-gallery-to-creator{margin-top:26px;font-size:13px;background:#d2c1aa19;letter-spacing:.25px}
 #cosmos-gallery-to-creator:hover{background:#dbc5aa33}
-/* 4. Final creator studio: calm camera, useful palette, not a distracting UI mockup. */
-.cosmos-stage-creator{position:relative;justify-content:space-between;gap:18px;min-height:100dvh;min-height:100svh;padding:clamp(67px,10vh,95px) clamp(13px,3vw,38px) 30px;background:#121c25;overflow:hidden}
-.creator-stage-background{position:absolute;inset:0;z-index:0;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#506370,#1a2732 65%,#101820)}
-.creator-stage-background video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0;filter:saturate(.86) contrast(1.02) brightness(.72);transition:opacity .6s}
-.cosmos-stage-creator[data-camera='on'] .creator-stage-background video{opacity:1}
-.creator-stage-background::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0d1b29bb,#15253618 30%,transparent 68%,#0b1724a8);pointer-events:none}
-.creator-stage-head{position:relative;z-index:6;pointer-events:none;text-shadow:0 3px 18px #07111be6}
-.creator-overline{color:#eddac7;font:500 9px/1.6 var(--sans);letter-spacing:2.2px}
-.creator-stage-head h2{display:flex;flex-direction:column;align-items:center;gap:5px;margin:14px auto 9px;color:#f7f0e2;font:400 clamp(27px,3.2vw,48px)/1.5 var(--cn-serif);letter-spacing:.5px}
-.creator-stage-head h2 span{font-size:.57em;color:#f6dfc2;letter-spacing:1.3px}
-.creator-stage-head p{max-width:550px;margin:0 auto;color:#eee9de;font:400 clamp(11px,1.1vw,14px)/1.8 var(--cn-serif)}
-.creator-draw-canvas{position:absolute;inset:0;z-index:2;width:100%;height:100%;touch-action:none;cursor:crosshair}
-.creator-hello{position:relative;z-index:4;margin:12px auto -4px;padding:6px 14px;border-radius:30px;background:#101b29bf;color:#fdf1e2;font:italic clamp(15px,2vw,21px)/1.5 'Caveat',cursive;letter-spacing:.4px}
-.creator-hello[hidden]{display:none}
-.creator-toolbar{position:relative;z-index:6;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;width:min(620px,95vw);margin:auto auto 0;padding:15px clamp(12px,3vw,24px) 13px;border:1px solid #e8dfd55c;border-radius:17px;background:#162635d3;backdrop-filter:blur(16px);box-shadow:0 15px 45px #08121c85;color:#f3eee5}
-.creator-toolbar-title{margin:0;color:#ded1bd;font:500 9px/1.5 var(--sans);letter-spacing:1.6px}
-.creator-colours{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,1.6vw,18px);margin:2px 0 1px}
-.creator-colours button{width:29px;height:29px;border:2px solid #faf0dc69;border-radius:50%;background:var(--swatch);box-shadow:0 1px 5px #0007;cursor:pointer;transition:transform .16s,outline-color .16s}
-.creator-colours button[aria-pressed='true']{transform:scale(1.18);outline:2px solid #faf4e6;outline-offset:3px}
-.creator-brush-row{display:flex;align-items:center;justify-content:center;gap:17px;width:100%;max-width:320px}
-.creator-brush-row label{min-width:85px;display:flex;justify-content:space-between;gap:8px;color:#ddd7c7;font:11px/1.4 var(--cn-serif)}
-.creator-brush-row output{color:#c9e0d0;font:10px/1.4 var(--sans)}
-.creator-brush-row input{flex:1;accent-color:#b9cbbb;cursor:pointer;min-height:28px}
-.creator-buttons{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
-.creator-buttons button,.creator-camera-row button,.creator-footer-nav button{min-height:40px;padding:9px 15px;border:1px solid #f4ebd35c;border-radius:24px;background:#f6f1e315;color:#f6f0e4;font:11px/1.5 var(--cn-serif);cursor:pointer}
-.creator-buttons button[aria-pressed='true']{background:#f3e5d83b;border-color:#f3e5d8}
-.creator-buttons button:active,.creator-camera-row button:active,.creator-footer-nav button:active{transform:scale(.97)}
-.creator-instruction{margin:0;color:#dbd7ca;font:10px/1.85 var(--cn-serif);letter-spacing:.1px}
-.creator-camera-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px}
-.creator-camera-row button{min-height:37px;background:#ebd8c026}
-.creator-camera-row span{color:#c9c5b8;font:10px/1.6 var(--cn-serif)}
-.creator-footer-nav{position:relative;z-index:6;display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
-.creator-footer-nav button{font-size:11px;background:#152536bd}
-#cosmos-creator .creator-previous{color:#e1d9cb;border-color:#c0b8a455}
-#cosmos-creator .creator-home{color:#fff1d8;border-color:#dfc6a8a3}
-@media(max-width:600px){
- .cosmos-stage-creator{gap:9px;padding:70px 10px 12px}
- .creator-stage-head h2{font-size:clamp(24px,5.2vw,33px);margin:6px auto 4px}
- .creator-stage-head p{font-size:10px;line-height:1.65}
- .creator-overline{font-size:8px;letter-spacing:1.1px}
- .creator-toolbar{width:100%;padding:11px 9px 10px;gap:8px;border-radius:13px}
- .creator-colours{gap:10px}
- .creator-colours button{width:25px;height:25px}
- .creator-instruction{font-size:9px;line-height:1.75}
- .creator-buttons button,.creator-camera-row button{min-height:36px;padding:8px 12px;font-size:10px}
- .creator-footer-nav button{font-size:9px;min-height:36px;padding:7px 11px}
-}
-@media(max-height:710px){
- .creator-stage-head h2{font-size:clamp(24px,2.6vw,36px)}
- .creator-toolbar{gap:6px;padding-block:9px}
- .creator-instruction{line-height:1.5}
-}
-@media(prefers-reduced-motion:reduce){
- .winter-cake-live,.creator-stage-background video,.creator-colours button{transition:none}
-}
-
-
 /* 2026-11-16 · final art-direction pass: quiet navigation, legible prompts, honest imagery. */
 .afterword-continue{
   isolation:isolate;
@@ -137,11 +76,6 @@
 .afterword-continue:active{transform:scale(.97)}
 .afterword-continue span{font:18px/1 Georgia,serif;color:#fff8ee}
 .afterword-continue:focus-visible{outline:2px solid #fff4db;outline-offset:5px}
-/* The side-key pointer is the ONLY lockscreen instruction. */
-.phone-power-guide{display:none!important}
-#winter-phone-shell[data-mode="lock"]~.winter-phone-tools{visibility:hidden!important;pointer-events:none!important}
-#winter-phone-shell[data-mode="lock"] .phone-power-cursor small{font-size:9px;color:#fff8e8;text-shadow:0 2px 8px #050712bd}
-#winter-phone-shell[data-mode="lock"] .phone-power-cursor{filter:drop-shadow(0 1px 5px #03060caa)}
 /* The prologue presents ONE sentence at a time, never a static four-line wall. */
 #cosmos-intro h2{display:grid;place-items:center;position:relative;min-height:clamp(165px,30vh,260px);width:min(900px,100%);margin:0 auto}
 #cosmos-intro h2 span{
@@ -188,73 +122,6 @@
  #cosmos-photo-wall .photo-memory-title{font-size:14px}
  #cosmos-photo-wall .photo-memory-caption{font-size:10px}
 }
-/* Make the camera genuinely full-screen, with only a precisely segmented foreground. */
-.app-shell[data-cake-camera='on'][data-destination='cake'] .winter-cake-live{opacity:1!important}
-.app-shell[data-cake-camera='on'][data-destination='cake'] .winter-cake-live video{filter:brightness(.89) saturate(.96);opacity:1}
-.app-shell[data-cake-camera='on'][data-destination='cake'] .grand-cake-photograph{opacity:0!important;-webkit-mask-image:none!important;mask-image:none!important}
-.grand-cake-cutout{position:absolute;inset:0;z-index:2;width:100%;height:100%;display:none;pointer-events:none}
-.app-shell[data-cake-camera='on'][data-cake-cutout='ready'][data-destination='cake'] .grand-cake-cutout{display:block}
-.app-shell[data-cake-camera='on'][data-destination='cake'] .grand-candles-overlay{z-index:3}
-.app-shell[data-cake-camera='on'][data-destination='cake'] .grand-lighter{z-index:6}
-.app-shell[data-cake-camera='on'][data-destination='cake'] .grand-scene-plane{filter:none!important}
-.app-shell[data-cake-camera='on'][data-destination='cake'] .cake-backdrop{opacity:0!important}
-/* Camera is a scene background, not a small inset window. */
-.app-shell[data-cake-camera='on'][data-destination='cake'] .winter-cake-live{position:absolute;inset:0!important}
-/* A true drawing surface on the right; tools live in a clear left margin. */
-#cosmos-creator.cosmos-stage-creator{padding:clamp(66px,9vh,90px) 16px 20px;justify-content:flex-start;gap:0}
-#cosmos-creator .creator-stage-head{flex:0 0 auto;z-index:7;width:calc(100% - 190px);max-width:880px;align-self:flex-end;min-height:99px}
-#cosmos-creator .creator-stage-head h2{margin:0;color:#fff9ef;font-size:clamp(24px,3.3vw,40px)}
-#cosmos-creator .creator-stage-head h2 span{font-size:.52em}
-#cosmos-creator .creator-stage-head p{font-size:clamp(10px,1vw,12px);line-height:1.6}
-#cosmos-creator .creator-toolbar{
-  position:absolute;left:clamp(12px,2vw,30px);top:clamp(135px,21vh,230px);
-  bottom:auto;z-index:10;display:flex;flex-direction:column;align-items:stretch;gap:11px;
-  width:175px;max-width:29vw;max-height:calc(100dvh - 190px);
-  padding:0;margin:0;border:none;border-radius:0;overflow-y:auto;
-  background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-  box-shadow:none!important;text-align:left;text-shadow:0 2px 6px #08131bdc;
-}
-#cosmos-creator .creator-toolbar-title{font-size:8px;letter-spacing:1px;line-height:1.5}
-#cosmos-creator .creator-colours{display:grid;grid-template-columns:repeat(3,28px);gap:13px 14px;align-self:flex-start;margin:3px 0}
-#cosmos-creator .creator-colours button{width:27px;height:27px;box-shadow:0 2px 7px #1117}
-#cosmos-creator .creator-brush-row{display:flex;flex-direction:column;align-items:stretch;gap:4px;width:100%;max-width:160px}
-#cosmos-creator .creator-brush-row label{min-width:0;font-size:10px;justify-content:space-between}
-#cosmos-creator .creator-brush-row input{width:100%;flex:none}
-#cosmos-creator .creator-buttons{display:flex;flex-direction:column;align-items:stretch;gap:5px;width:100%}
-#cosmos-creator .creator-buttons button,#cosmos-creator .creator-camera-row button{min-height:36px;max-width:160px;font-size:10px;padding:7px 9px;background:#12233336;backdrop-filter:blur(4px)}
-#cosmos-creator .creator-instruction{margin:2px 0;font-size:9px;line-height:1.8;color:#fff2dd;background:transparent!important;border:none!important;padding:0!important;text-shadow:0 2px 7px #091526}
-#cosmos-creator .creator-camera-row{flex-direction:column;align-items:flex-start;gap:5px}
-#cosmos-creator .creator-camera-row span{font-size:9px;line-height:1.5;color:#e4e7df}
-#cosmos-creator .creator-draw-canvas{left:205px;width:calc(100% - 205px);height:100%}
-#cosmos-creator .creator-footer-nav{position:absolute;z-index:10;left:205px;right:18px;bottom:17px;pointer-events:none}
-#cosmos-creator .creator-footer-nav button{pointer-events:auto;backdrop-filter:blur(7px)}
-#cosmos-creator .creator-hello{position:absolute;z-index:9;left:calc(205px + 8%);top:27%;margin:0;background:none!important;box-shadow:none!important;text-shadow:0 3px 11px #07101bbb}
-@media(max-width:760px){
- #cosmos-creator.cosmos-stage-creator{padding:62px 8px 11px}
- #cosmos-creator .creator-stage-head{align-self:flex-end;min-height:90px;width:calc(100% - 122px);text-align:center}
- #cosmos-creator .creator-stage-head h2{font-size:clamp(19px,4.2vw,30px);line-height:1.35}
- #cosmos-creator .creator-stage-head h2 span{font-size:.58em}
- #cosmos-creator .creator-stage-head p{font-size:9px}
- #cosmos-creator .creator-toolbar{left:8px;top:135px;max-height:calc(100dvh - 180px);max-width:none;width:113px;gap:6px}
- #cosmos-creator .creator-toolbar-title{font-size:7px;letter-spacing:0}
- #cosmos-creator .creator-colours{grid-template-columns:repeat(3,23px);gap:9px}
- #cosmos-creator .creator-colours button{width:23px;height:23px}
- #cosmos-creator .creator-brush-row{gap:1px}
- #cosmos-creator .creator-brush-row label{font-size:9px}
- #cosmos-creator .creator-buttons{gap:4px}
- #cosmos-creator .creator-buttons button,#cosmos-creator .creator-camera-row button{max-width:110px;padding:6px 5px;min-height:34px;font-size:9px}
- #cosmos-creator .creator-instruction{font-size:8px;line-height:1.65}
- #cosmos-creator .creator-camera-row span{font-size:8px}
- #cosmos-creator .creator-draw-canvas{left:125px;width:calc(100% - 125px)}
- #cosmos-creator .creator-footer-nav{left:125px;right:6px;bottom:9px;gap:4px}
- #cosmos-creator .creator-footer-nav button{font-size:8px;min-height:32px;padding:6px 9px}
- #cosmos-creator .creator-hello{left:135px;top:25%}
-}
-@media(max-height:620px){
- #cosmos-creator .creator-toolbar{top:92px;max-height:calc(100dvh - 115px)}
- #cosmos-creator .creator-stage-head{min-height:63px}
- #cosmos-creator .creator-stage-head p{display:none}
-}
 @media(prefers-reduced-motion:reduce){
  #cosmos-intro h2{display:flex;flex-direction:column;min-height:auto;gap:11px}
  #cosmos-intro h2 span{animation:none!important;opacity:1!important;filter:none!important;transform:none!important}
@@ -263,30 +130,6 @@
 }
 
 
-/* WINTER · camera-first, gesture-first cake: far-right on a continuous stone shelf. */
-.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-hand-ready='false'] .winter-cake-camera-enable{display:inline-flex!important}
-.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable{display:none!important}
-.app-shell[data-destination='cake'] .winter-cake-camera-enable{
-  top:clamp(72px,11%,114px);right:clamp(15px,4vw,52px);
-  max-width:min(245px,76vw);border-radius:100px;
-  background:rgba(17,31,42,.64);border:1px solid rgba(250,245,232,.65);
-  box-shadow:inset 0 1px #ffffff38,0 6px 22px #03182466;
-}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .winter-cake-camera-enable{display:none}
-.cake-page[data-cake-state='unlit'] .grand-lighter{opacity:0;pointer-events:none!important;touch-action:pan-y;transition:opacity .4s ease}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .cake-page[data-cake-state='unlit'] .grand-lighter{opacity:1;pointer-events:none!important;cursor:default}
-.app-shell[data-destination='cake'] .candle-ignition-target{pointer-events:none!important}
-.app-shell[data-destination='cake'] .lighter-instructions{display:none!important}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay.candles-wide{transform:translateX(22%);}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay.candles-tall{transform:translateX(21%);}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-cake-cutout{filter:drop-shadow(0 10px 17px #060c1f62);}
-.app-shell[data-destination='cake'] .winter-cake-camera-note:empty{display:none}
-@media(max-width:760px){
-  .app-shell[data-destination='cake'] .winter-cake-camera-enable{top:13%;font-size:10px}
-  .app-shell[data-destination='cake'] .grand-cake-intro{top:23%;max-width:48%;left:3%;width:46%;text-align:left}
-  .app-shell[data-destination='cake'] .grand-cake-intro h2{align-items:flex-start!important;font-size:clamp(25px,5vw,39px)}
-  .app-shell[data-destination='cake'] .winter-cake-camera-note{top:19%;right:4%;max-width:170px}
-}
 /* The bottom-left switch is a quiet control, not a second instruction manual. */
 .gesture-panel .gesture-instructions,.gesture-panel .gesture-privacy{display:none!important}
 .gesture-panel{padding:12px!important;max-width:min(275px,calc(100vw - 24px))!important}
@@ -294,6 +137,49 @@
 .gesture-dock[data-cake-locked='true'] #winter-touch-mode{opacity:.35;pointer-events:none}
 .gesture-panel-head{letter-spacing:.06em}
 #main[data-destination='cake'] .winter-gesture-status{font-size:10px}
+/* The studio: desktop side tools; a collapsible bottom drawer on touch screens. */
+.cosmos-stage-creator{position:relative;justify-content:flex-start;gap:0;padding:clamp(66px,9vh,90px) 16px 20px;background:#121c25;overflow:hidden}
+.creator-stage-background{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 30%,#506370,#1a2732 65%,#101820)}
+.creator-stage-background video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0;filter:saturate(.86) contrast(1.02) brightness(.72);transition:opacity 600ms}
+.cosmos-stage-creator[data-camera='on'] .creator-stage-background video{opacity:1}
+.creator-stage-background::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#0d1b29bb,transparent 40%,#0b172488)}
+.creator-stage-head{position:relative;z-index:6;pointer-events:none;width:calc(100% - 205px);max-width:880px;align-self:flex-end;text-shadow:0 2px 10px #07111b}
+.creator-overline{color:#eddac7;font:500 9px/1.6 var(--sans);letter-spacing:2.2px}
+.creator-stage-head h2{display:flex;flex-direction:column;align-items:center;gap:5px;margin:10px auto;color:#fff7e8;font:400 clamp(25px,3.2vw,40px)/1.5 var(--cn-serif)}
+.creator-stage-head h2 span{font-size:.55em;color:#f6dfc2}
+.creator-stage-head p{max-width:550px;margin:0 auto;color:#e8e4da;font:12px/1.8 var(--cn-serif)}
+.creator-draw-canvas{position:absolute;inset:0 0 0 205px;z-index:2;width:calc(100% - 205px);height:100%;touch-action:none;cursor:crosshair}
+.creator-hello{position:absolute;left:calc(205px + 8%);top:27%;z-index:9;margin:0;color:#fdf1e2;font:italic 20px/1.5 'Caveat',serif;pointer-events:none}
+.creator-toolbar{position:absolute;left:clamp(12px,2vw,30px);top:clamp(155px,21vh,230px);z-index:10;width:175px;max-height:calc(100dvh - 200px);overflow-y:auto;text-align:left;color:#f3eee5;touch-action:pan-y}
+.creator-tools-panel{display:flex;flex-direction:column;gap:12px}
+.creator-tools-toggle[hidden],.creator-tools-panel[hidden]{display:none}
+.creator-toolbar-title{margin:0;color:#ded1bd;font:500 9px/1.5 var(--sans);letter-spacing:.6px}
+.creator-colours{display:grid;grid-template-columns:repeat(3,44px);gap:8px;align-self:flex-start}
+.creator-colours button{position:relative;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;touch-action:manipulation}
+.creator-colours button::before{content:'';position:absolute;inset:6px;border:1px solid #fff7df88;border-radius:50%;background:var(--swatch)}
+.creator-colours button[aria-pressed='true']::before{outline:2px solid #f8ebd3;outline-offset:3px}
+.creator-brush-row{display:flex;flex-direction:column;gap:4px;max-width:170px}.creator-brush-row label{display:flex;justify-content:space-between;color:#e7e0d6;font:11px/1.5 var(--cn-serif)}
+.creator-brush-row output{font:11px/1.5 var(--sans)}.creator-brush-row input{width:100%;min-height:36px;accent-color:#b9cbbb;cursor:pointer}
+.creator-buttons{display:flex;flex-direction:column;gap:6px}.creator-buttons button,.creator-camera-row button,.creator-footer-nav button{min-height:44px;padding:10px 13px;border:1px solid #f4ebd35c;border-radius:24px;background:#152536a8;color:#f6f0e4;font:11px/1.5 var(--cn-serif);cursor:pointer}
+.creator-buttons button[aria-pressed='true']{background:#f3e5d83b}.creator-instruction{margin:0;color:#dbd7ca;font:10px/1.8 var(--cn-serif)}
+.creator-camera-row{display:flex;flex-direction:column;gap:6px}.creator-camera-row span{color:#c9c5b8;font:10px/1.6 var(--cn-serif)}
+.creator-footer-nav{position:absolute;z-index:9;left:205px;right:18px;bottom:17px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.creator-tools-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:46px;padding:10px 14px;border:0;background:transparent;color:#fff3dc;font:12px/1.5 var(--cn-serif);cursor:pointer}
+.creator-tools-chevron{font:21px/1 var(--sans);transition:rotate 180ms}.creator-tools-toggle[aria-expanded='true'] .creator-tools-chevron{rotate:180deg}
+@media(max-width:760px){
+ .cosmos-stage-creator{padding:64px 18px 22px}
+ .creator-stage-head{width:100%;align-self:center}.creator-stage-head h2{font-size:26px;line-height:1.4}.creator-stage-head p{max-width:330px;font-size:11px}
+ .creator-draw-canvas{left:0;width:100%}
+ .creator-toolbar{position:fixed;left:12px;right:12px;top:auto;bottom:calc(74px + env(safe-area-inset-bottom));width:auto;max-height:min(62dvh,450px);padding:0;border:1px solid #d8c7ad69;border-radius:15px;background:#162735ed;backdrop-filter:blur(12px);box-shadow:0 8px 28px #07131e55}
+ .creator-tools-panel{padding:2px 14px 15px;gap:10px}
+ .creator-colours{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-self:center}.creator-colours button{width:44px;height:44px}
+ .creator-brush-row{flex-direction:row;align-items:center;gap:12px;max-width:none}.creator-brush-row label{min-width:85px;gap:10px}.creator-brush-row input{min-width:0;flex:1;min-height:40px}
+ .creator-buttons{flex-direction:row;gap:6px}.creator-buttons button{flex:1;min-width:0;padding:9px 5px;font-size:11px}
+ .creator-instruction{font-size:10px}.creator-camera-row button{align-self:flex-start}.creator-footer-nav{left:10px;right:10px;bottom:calc(12px + env(safe-area-inset-bottom));gap:6px}
+ .creator-footer-nav button{font-size:10px;padding:9px 10px;min-height:44px}.creator-hello{left:8%;top:27%;font-size:17px}
+}
+@media(max-height:620px) and (min-width:761px){.creator-toolbar{top:110px;max-height:calc(100dvh - 145px)}.creator-stage-head p{display:none}}
+#winter-cosmos-dialog[data-creator-active='true'] .gesture-dock{left:16px;right:auto;top:16px;bottom:auto}
 /* Restore iOS scroll chaining and vertical movement on long chapters. */
 html{height:auto;-webkit-overflow-scrolling:touch}
 body{height:auto;min-height:100dvh;overscroll-behavior-y:auto}

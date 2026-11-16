@@ -1,5 +1,5 @@
 /* GWEN'S REAL HANDWRITING · no synthetic lettering, original alpha PNGs. */
-.gwen-note-signatures{position:absolute;z-index:3;bottom:-25px;left:50%;width:min(430px,50%);transform:translateX(-50%) rotate(-3deg);display:flex;align-items:center;justify-content:center;gap:12px;pointer-events:none;opacity:.88}
+.gwen-note-signatures{position:relative;flex:0 0 auto;z-index:1;width:min(390px,80%);margin:18px auto 2px;transform:rotate(-2deg);display:flex;align-items:center;justify-content:center;gap:12px;pointer-events:none;opacity:.82}
 .gwen-note-signatures img:first-child{width:58%;max-width:215px;height:auto;filter:contrast(1.28) sepia(.13)}
 .gwen-note-signatures img:last-child{width:33%;max-width:117px;height:auto;transform:rotate(8deg);filter:contrast(1.25) sepia(.13)}
 .gwen-afterword-ink{width:min(530px,92%);margin:20px auto 5px;transform:rotate(-2.5deg);opacity:.9}
@@ -11,16 +11,16 @@
 @keyframes gwen-ink-rise{from{opacity:0;transform:translateY(17px)}to{opacity:1;transform:translateY(0)}}
 .finale-phone-start{background:#7d586b!important;color:white!important;border-color:#7d586b!important;box-shadow:0 5px 15px #5d334338!important}
 .finale-phone-start[hidden]{display:none!important}
-@media(max-width:800px){.gwen-note-signatures{width:min(280px,76%);bottom:-19px}.gwen-final-birthday{width:min(560px,100%)}.gwen-afterword-ink{width:min(380px,94%)}}
-@media(max-width:550px){.gwen-note-signatures{position:relative;left:auto;bottom:auto;transform:rotate(-3deg);margin:3px auto 0;width:80%;order:3}.gwen-note-signatures img:first-child{max-width:150px}.gwen-note-signatures img:last-child{max-width:90px}}
+@media(max-width:800px){.gwen-note-signatures{width:min(300px,80%)}.gwen-final-birthday{width:min(560px,100%)}.gwen-afterword-ink{width:min(380px,94%)}}
+@media(max-width:550px){.gwen-note-signatures{margin:20px auto 4px;width:80%}.gwen-note-signatures img:first-child{max-width:150px}.gwen-note-signatures img:last-child{max-width:90px}}
 
 /* Standalone phone. Intentionally NO green, no full-page replacement background. */
-.winter-phone-dialog{position:fixed;inset:0;margin:auto;max-width:none;max-height:100svh;width:max-content;height:max-content;padding:0;border:0;background:transparent;box-shadow:none;overflow:visible;color:#fff}
+.winter-phone-dialog{position:fixed;inset:0;margin:auto;width:max-content;height:max-content;max-width:calc(100vw - 12px);max-height:calc(100svh - 12px);padding:12px;border:0;background:transparent;box-shadow:none;overflow:auto;color:#fff}
 .winter-phone-dialog::backdrop{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-.winter-phone-stage{display:flex;flex-direction:column;align-items:center;gap:11px;perspective:1100px}
-.winter-phone-shell{position:relative;width:min(342px,calc(100vw - 28px));aspect-ratio:355/725;max-height:calc(100svh - 95px);border-radius:clamp(35px,7vw,54px);padding:7px;background:linear-gradient(128deg,#d5d4d3,#49494d 18%,#202126 46%,#c4baba 76%,#414448 95%);box-shadow:0 24px 68px #221d2780,0 7px 20px #09090b69,inset 0 0 0 1px #e2dedaa6;transform:rotate(-1.2deg);animation:winter-phone-in .6s cubic-bezier(.2,.8,.2,1) both}
+.winter-phone-stage{display:flex;flex-direction:column;align-items:center;gap:11px;padding-inline:10px 72px;perspective:1100px}
+.winter-phone-shell{position:relative;width:min(338px,calc((100svh - 114px)*355/725),calc(100vw - 120px));aspect-ratio:355/725;max-height:none;flex:none;container-type:inline-size;border-radius:clamp(35px,7vw,54px);padding:7px;background:linear-gradient(128deg,#d5d4d3,#49494d 18%,#202126 46%,#c4baba 76%,#414448 95%);box-shadow:0 24px 68px #221d2780,0 7px 20px #09090b69,inset 0 0 0 1px #e2dedaa6;transform:rotate(-1.2deg);animation:winter-phone-in .6s cubic-bezier(.2,.8,.2,1) both}
 .winter-phone-shell::before{content:"";position:absolute;top:21%;left:-3px;width:3px;height:63px;background:linear-gradient(#8d8e92,#303033);border-radius:3px}
-.winter-phone-shell::after{content:"";position:absolute;top:22%;right:-3px;width:3px;height:46px;background:linear-gradient(#8d8e92,#28282c);border-radius:3px}
+
 .winter-phone-glass{position:relative;width:100%;height:100%;border-radius:inherit;border:2px solid #0b0c10;background:#11131b;overflow:hidden}
 .winter-phone-island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:31%;height:29px;background:#030407;border-radius:25px;z-index:15;box-shadow:0 0 0 1px #29323d}
 .winter-phone-island i{position:absolute;right:11px;top:9px;width:9px;height:9px;background:radial-gradient(circle at 45% 40%,#3a466b,#0a0b1a 70%);border:1px solid #1a2236;border-radius:50%}
@@ -68,10 +68,26 @@
 .winter-lock-homebar{width:103px;height:5px;border-radius:9px;background:#fffd}
 @keyframes winter-notify-arrive{from{opacity:0;transform:translateY(-23px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes winter-phone-in{from{opacity:0;transform:translateY(24px) rotate(-6deg) scale(.88)}to{opacity:1;transform:translateY(0) rotate(-1.2deg) scale(1)}}
-.winter-phone-tools{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;max-width:370px}
-.winter-phone-tools button,.winter-phone-tools a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 14px;border:1px solid #927a8f;border-radius:23px;background:#f9f0e8;color:#5f485c;box-shadow:0 4px 12px #251d2833;font:500 11px/1.4 -apple-system,'Noto Serif SC',sans-serif;text-decoration:none;cursor:pointer}
-#winter-phone-close{background:#3f3440;color:#fff}
+.winter-phone-tools{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;width:100%;max-width:338px}
+.winter-phone-tools button,.winter-phone-tools a{display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;padding:8px;border:0;border-radius:5px;background:transparent;color:#604c59;box-shadow:none;font:500 11px/1.4 -apple-system,'Noto Serif SC',sans-serif;text-decoration:none;cursor:pointer}
+#winter-phone-close{background:transparent;color:#604c59}
+
 .winter-phone-tools [hidden]{display:none!important}
-@media(max-width:380px){.winter-phone-shell{width:min(315px,calc(100vw - 20px))}.winter-phone-tools{max-width:310px;gap:6px}.winter-phone-tools button,.winter-phone-tools a{font-size:10px;padding:9px 10px}}
-@media(max-height:690px){.winter-phone-shell{max-height:calc(100svh - 78px);width:auto;aspect-ratio:355/725}.winter-lock-top{padding-top:65px}.winter-lock-notification{margin-top:25px}.winter-camera-heading{padding:6px 0}.winter-camera-controls{padding:8px 5px 1px}#winter-shutter{width:46px;height:46px}.winter-camera-hint{margin:3px 0}}
 @media(prefers-reduced-motion:reduce){.winter-phone-shell,.winter-lock-notification,.gwen-afterword-ink,.finale-surprise .gwen-final-birthday{animation:none!important}}
+
+/* One physical side key; its attached hint activates that same button. */
+#winter-phone-power{position:absolute;right:-22px;top:28%;z-index:18;width:44px;height:88px;padding:0;border:0;background:transparent;overflow:visible;touch-action:manipulation}
+#winter-phone-power::before{content:'';position:absolute;left:18px;top:9px;width:8px;height:67px;border:1px solid #d9d4ca;border-radius:0 5px 5px 0;background:linear-gradient(90deg,#c9cacb,#657181);transition:transform 160ms,background 180ms}
+#winter-phone-power:active::before{transform:translateX(-2px)}
+#winter-phone-power:disabled{opacity:.45;cursor:default}
+#winter-phone-power:focus-visible{outline:2px solid #b29569;outline-offset:1px;border-radius:8px}
+.phone-power-cursor{position:absolute;left:calc(50% + 15px);top:50%;width:58px;translate:0 -50%;display:none;align-items:center;gap:5px;color:#604954;text-align:left;white-space:nowrap}
+.phone-power-cursor small{font:500 11px/1.5 var(--sans)}
+.side-key-line{position:absolute;left:-13px;width:9px;height:1px;background:#a38b85}
+.is-power-ready .phone-power-cursor{display:flex;animation:phone-hint-in 220ms ease both}
+.is-power-ready #winter-phone-power::before{background:linear-gradient(90deg,#edd5ad,#9c8869)}
+@keyframes phone-hint-in{from{opacity:0}to{opacity:1}}
+#winter-phone-shell.is-powered-off .winter-phone-glass::after{content:'';position:absolute;inset:0;z-index:90;background:#020305;border-radius:inherit;animation:phone-power-down 400ms ease both}
+@keyframes phone-power-down{from{opacity:0}to{opacity:1}}
+.winter-phone-shell[data-motion='off'],.winter-phone-shell[data-motion='off'] *{animation:none!important;transition:none!important}
+@media(max-height:560px) and (min-width:600px){.winter-phone-stage{display:grid;grid-template-columns:auto 130px;gap:16px 72px;padding-inline:10px 0}.winter-phone-shell{width:calc((100svh - 50px)*355/725)}.winter-phone-tools{width:130px;flex-direction:column;align-items:stretch}.winter-camera-heading{padding:5px 0}.winter-camera-controls{padding:6px 3px}.winter-camera-hint{margin:3px 0}#winter-shutter{width:44px;height:44px}}
