@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="interactive-finale.css?v=cutout-20261115">
   <link rel="stylesheet" href="gwen-handwriting-phone.css?v=hand-phone-1">
   <link rel="stylesheet" href="cosmos-chapter.css?v=power-cursor-01">
+  <link rel="stylesheet" href="gesture-controls.css?v=gesture-01">
   <script src="app.js?v=finale-1" defer></script>
   <script src="cake-scene.js?v=touchfix-1" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
@@ -34,6 +35,7 @@
   <script src="interactive-finale.js?v=silent-touchfix-1" defer></script>
   <script src="gwen-handwriting-phone.js?v=cosmic-01" defer></script>
   <script src="cosmos-chapter.js?v=cosmic-hd-02" defer></script>
+  <script src="gesture-controls.js?v=gesture-01" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -518,5 +520,26 @@
       <div class="editor-actions"><button type="button" class="editor-cancel" id="editor-cancel">再想一想</button><button class="editor-save" type="submit">保存这张便利贴 <span aria-hidden="true">↗</span></button></div>
     </form>
   </dialog>
+
+  <!-- Gesture control stays optional; camera access occurs ONLY after a direct tap. -->
+  <aside id="winter-gesture-dock" class="gesture-dock" data-mode="touch" data-camera="off" aria-label="WINTER 手势交互控制">
+    <button type="button" id="winter-gesture-toggle" class="gesture-launch" aria-expanded="false" aria-controls="winter-gesture-panel" aria-label="切换触摸与隔空手势">✋<span class="gesture-live-indicator" aria-hidden="true"></span></button>
+    <div id="winter-gesture-panel" class="gesture-panel" hidden>
+      <header class="gesture-panel-head"><span>HOW TO PLAY · 操作方式</span><button type="button" id="winter-gesture-minimise" aria-label="收起手势面板">×</button></header>
+      <div class="gesture-mode-row" role="group" aria-label="选择操作模式">
+        <button type="button" id="winter-touch-mode" aria-pressed="true">☝ 触摸</button>
+        <button type="button" id="winter-air-mode" aria-pressed="false">✋ 隔空</button>
+      </div>
+      <p id="winter-gesture-instructions" class="gesture-instructions">轻点星星，拖动拼图；照片可以左右滑动、双指缩放。</p>
+      <div id="winter-gesture-camera-tools" class="gesture-camera-tools" hidden>
+        <video id="winter-gesture-video" autoplay muted playsinline aria-label="仅在本机进行手势识别的摄像头预览"></video>
+        <button type="button" id="winter-gesture-start">开启摄像头识别</button>
+        <button type="button" id="winter-gesture-stop" hidden>停止摄像头</button>
+        <p id="winter-gesture-status" role="status" aria-live="polite">摄像头尚未开启；点击上方按钮后才会请求授权。</p>
+        <p class="gesture-privacy">仅在设备浏览器里识别，不上传视频；关闭即停止。需要 HTTPS 和可连接的识别模型资源。</p>
+      </div>
+    </div>
+    <div id="winter-gesture-cursor" class="gesture-air-cursor" aria-hidden="true" hidden><span>✦</span></div>
+  </aside>
 </body>
 </html>
