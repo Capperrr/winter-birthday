@@ -1,0 +1,56 @@
+{
+  "generator": "Blender 4.3.2 / tools/blender/build_living_assets.py",
+  "runtime": "Three.js 0.180.0, MIT",
+  "artwork": "New procedural cake, paper, envelope, grass and puppy geometry authored for this project. Lighter exported from the existing calibrated Blender source. Home texture reuses the original credited Swiss photograph.",
+  "unchangedStateOwner": "dist/app.js, dist/cake-scene.js, dist/cake-five-candles.js",
+  "files": {
+    "birthday-cake.glb": {
+      "bytes": 7069820,
+      "sha256": "b0a4d3ae34a0882357d50908fa7eeed41b1dd73440b8d7414b16a1446041fa04"
+    },
+    "envelope.glb": {
+      "bytes": 55288,
+      "sha256": "087bf3148f1360e070a681fd69dfce18a3751c910f4ce82507cece60962e3d62"
+    },
+    "grass.glb": {
+      "bytes": 53788,
+      "sha256": "1e7e85702264017c5a0b58d3498c230277a38e8478a90a3e3c23495c2a3a7762"
+    },
+    "home-terrain.glb": {
+      "bytes": 276604,
+      "sha256": "d09363089ae0b40da07e9226b3fe18432bf1a97641ff3fc1b21d3d43e9544029"
+    },
+    "lighter.glb": {
+      "bytes": 138820,
+      "sha256": "d96e4fae878182fbf11ca8f4e121ada1374b3101263f3d17e973a3e87418770f"
+    },
+    "paper-0.webp": {
+      "bytes": 1696,
+      "sha256": "cd28055695d714b67a7af205149045ea4239d06be60fe39af8d412c6c83603f8"
+    },
+    "paper-1.webp": {
+      "bytes": 1654,
+      "sha256": "7a3a8238ee7066e9ab97770ddda310568bc9a67de2cf2e9baabd02c3b19d7714"
+    },
+    "paper-2.webp": {
+      "bytes": 1702,
+      "sha256": "9372853a55903fb098df3831c931cc5aad4dce17c770870004c2d49dd386eff5"
+    },
+    "paper-3.webp": {
+      "bytes": 1738,
+      "sha256": "affdb576ecb5587a74e602a1ab2403f9be4ac2a43b7515778e628289c4b3af69"
+    },
+    "paper-4.webp": {
+      "bytes": 1780,
+      "sha256": "26c2f6ad762f6b6de1d356f93a9c8587814064d26f446301d2c169d643c057ae"
+    },
+    "paper-5.webp": {
+      "bytes": 1760,
+      "sha256": "4ce57708e92600ee626aa96a259ec0758cac250892e72430f93c05fb94da2828"
+    },
+    "puppy.glb": {
+      "bytes": 92508,
+      "sha256": "0db0e3db0fc22b6ebb9cc7af770fc1b487e6c62803b9b48a4c239f37020cb26d"
+    }
+  }
+}

@@ -10,12 +10,12 @@ fs.mkdirSync(output,{recursive:true});
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--use-fake-device-for-media-stream','--use-fake-ui-for-media-stream']});
  const errors=[];const checks=[];
  try{
- const context=await browser.newContext({viewport:{width:1440,height:1000},hasTouch:true,ignoreHTTPSErrors:true});
+ const context=await browser.newContext({viewport:{width:1440,height:1000},hasTouch:true,ignoreHTTPSErrors:true,reducedMotion:'reduce'});
  await context.addInitScript(()=>{sessionStorage.setItem('winter-birthday-word-solved','true');sessionStorage.setItem('winter-birthday-celebrated','true')});
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  const screenshot=name=>page.screenshot({path:path.join(output,name+'.png'),timeout:45000});
  const goto=async route=>{await page.goto(base+'/#'+route,{waitUntil:'domcontentloaded',timeout:60000});await page.waitForTimeout(1100);};
- await goto('cake');await page.waitForFunction(()=>document.querySelector('#main').dataset.cakeCutout==='ready');
+ await goto('cake');await page.waitForFunction(()=>document.querySelector('#main').dataset.cakeCutout==='ready',null,{timeout:90000});
  await page.locator('#winter-cake-camera-enable').click();
  await page.waitForFunction(()=>document.querySelector('#main').dataset.cakeCamera==='on');
  await page.waitForTimeout(1000);await page.locator('#grand-lighter').dispatchEvent('click');await page.evaluate(()=>document.querySelectorAll('video').forEach(video=>video.pause()));
