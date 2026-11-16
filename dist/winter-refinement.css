@@ -276,7 +276,7 @@
 .app-shell[data-destination='cake'] .candle-ignition-target{pointer-events:none!important}
 .app-shell[data-destination='cake'] .lighter-instructions{display:none!important}
 .app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay.candles-wide{transform:translateX(22%);}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay.candles-portrait{transform:translateX(21%);}
+.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay.candles-tall{transform:translateX(21%);}
 .app-shell[data-destination='cake'][data-cake-camera='on'] .grand-cake-cutout{filter:drop-shadow(0 10px 17px #060c1f62);}
 .app-shell[data-destination='cake'] .winter-cake-camera-note:empty{display:none}
 @media(max-width:760px){
