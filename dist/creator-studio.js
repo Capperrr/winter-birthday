@@ -180,17 +180,9 @@
  });
  document.addEventListener('winter:hand-frame',e=>{
   const detail=e.detail||{},hands=detail.hands||[];
-  if(activeCake()&&!active()){
-   const cake=$('cake-page');
-   if(cake?.dataset.cakeState==='unlit'){
-    const hand=hands.find(h=>h.hand==='Right')||hands[0];
-    if(hand?.pinchStarted && !handDrawLast && shell?.dataset.cakeCamera==='on' && shell?.dataset.cakeHandReady==='true'){
-      handDrawLast=Date.now();document.dispatchEvent(new CustomEvent('winter:air-ignite'));
-    }
-    if(!hand?.pinching)handDrawLast=0;
-   }
-   return;
-  }
+  // The cake chapter is owned by cake-five-candles.js. A pinch must
+  // pick up the lighter, not automatically ignite every candle.
+  if(activeCake()&&!active())return;
   if(!active()||!context)return;
   const now=performance.now(),rect=canvas.getBoundingClientRect();
   const screenPoint=h=>({x:h.x*window.innerWidth-rect.left,y:h.y*window.innerHeight-rect.top});
