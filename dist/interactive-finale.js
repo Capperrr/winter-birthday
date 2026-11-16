@@ -200,21 +200,21 @@
     });
   }
   function between(a,b){return a+Math.random()*(b-a)}
-  function startConfetti(){
+  function startConfetti(variant='default'){
     if(quietMotion())return;
     const {w,h}=resizeCanvas();
     particles=[];lastFrame=0;
-    const startTime=performance.now(),effectEndAt=startTime+8800;
+    const startTime=performance.now(),effectEndAt=startTime+(variant==='scatter'?3200:variant==='gather'?5400:8800);
     effectEnd=effectEndAt;
-    for(let i=0;i<92;i++)particles.push({
+    for(let i=0;i<(variant==='gather'?0:92);i++)particles.push({
       kind:'paper',x:Math.random()*w,y:-Math.random()*h*.7,
       vx:(Math.random()-.5)*2,vy:1+Math.random()*2.2,
       life:1,decay:0,color:palette[i%palette.length],
       size:4+Math.random()*6,spin:Math.random()*6.28
     });
-    createBurst(w*.24,h*.31,50,['#ffe7b2','#e8c1df','#f5f1ee'],1.2);
-    createBurst(w*.76,h*.25,50,['#e3c8ff','#d0e8eb','#f7dfbf'],1.2);
-    spawnStarCake(w,h);
+    if(variant!=='gather')createBurst(w*.24,h*.31,50,['#ffe7b2','#e8c1df','#f5f1ee'],1.2);
+    if(variant!=='gather')createBurst(w*.76,h*.25,50,['#e3c8ff','#d0e8eb','#f7dfbf'],1.2);
+    if(variant!=='scatter')spawnStarCake(w,h);
     const ctx=confettiCanvas.getContext('2d');if(!ctx)return;
     const draw=now=>{
       if(shell.dataset.destination!=='finale'){animationId=0;ctx.clearRect(0,0,w,h);return}
@@ -222,16 +222,17 @@
       lastFrame=now;
       const elapsed=now-startTime;
       ctx.clearRect(0,0,w,h);
-      if(elapsed<2300&&Math.random()<.075){
+      if(variant!=='gather'&&elapsed<2300&&Math.random()<.075){
         createBurst(w*between(.12,.88),h*between(.12,.45),31,['#eee1f5','#f8e9c8','#f6f7f4'],1.05);
       }
       particles=particles.filter(p=>p.life>0&&p.y<h+45);
       for(const p of particles){
         if(p.kind==='cake'){
-          if(elapsed<1250)continue;
+          if(elapsed<(variant==='default'?1250:0))continue;
           const ease=Math.min(.18,dt*.055);
           p.x+=(p.tx-p.x)*ease;p.y+=(p.ty-p.y)*ease;
-          p.life=elapsed>7000?Math.max(0,1-(elapsed-7000)/950):1;
+          const fadeAt=variant==='default'?7000:4100;
+           p.life=elapsed>fadeAt?Math.max(0,1-(elapsed-fadeAt)/850):1;
           ctx.globalAlpha=p.life*(.73+.27*Math.sin(now*.003+p.spin));
           ctx.fillStyle=p.color;
           ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
@@ -259,6 +260,15 @@
     };
     animationId=requestAnimationFrame(draw);
   }
+
+  // Optional camera gestures: palm opens stardust; fist brings the cake together.
+  document.addEventListener('winter:gesture-particle',event=>{
+    if(shell.dataset.destination!=='finale' || !celebrated || quietMotion())return;
+    const variant=event.detail?.action==='scatter'?'scatter':event.detail?.action==='gather'?'gather':null;
+    if(!variant)return;
+    cancelAnimationFrame(animationId);animationId=0;
+    startConfetti(variant);
+  });
   function celebrate(){
     if(celebrated)return;
     celebrated=true;
