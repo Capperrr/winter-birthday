@@ -412,8 +412,8 @@
   transform-origin:50% 78%;
   backface-visibility:hidden;
   animation:
-    living-letter-reveal 1450ms cubic-bezier(.16,.81,.21,1) calc(480ms + var(--letter-i)*105ms) both,
-    living-letter-gleam 2400ms cubic-bezier(.22,.79,.21,1) calc(1100ms + var(--letter-i)*100ms) both;
+    living-letter-reveal 1450ms cubic-bezier(.16,.81,.21,1) var(--letter-delay,480ms) both,
+    living-letter-gleam 2400ms cubic-bezier(.22,.79,.21,1) var(--gleam-delay,1100ms) both;
 }
 .app-shell[data-page="home"] .living-poem{
   color:var(--living-verse-ink);
