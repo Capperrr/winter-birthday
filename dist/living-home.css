@@ -483,3 +483,9 @@
   }
   .living-touch-glow{display:none!important}
 }
+
+/* Position the Morning / Night control directly beneath About Me / Home / Destination. */
+.site-header .living-ui,.app-shell[data-page="home"] .site-header .living-ui{position:relative;grid-column:2;grid-row:2;justify-self:center;align-self:center;left:auto;top:auto;right:auto;bottom:auto;transform:none;width:max-content;max-width:100%;padding:3px 5px;margin-top:6px;z-index:5}
+.app-shell:not([data-page="home"]) .site-header .living-ui{display:none}
+.site-header .living-segment button{min-height:36px}
+@media(max-width:760px){.site-header .living-ui,.app-shell[data-page="home"] .site-header .living-ui{grid-column:1/-1;grid-row:3;justify-self:center;margin-top:1px;padding:2px 4px}.site-header:has(.living-ui){row-gap:9px}.site-header .living-segment button{min-height:36px;min-width:95px}}

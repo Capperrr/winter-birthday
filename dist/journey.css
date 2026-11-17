@@ -150,3 +150,18 @@
 .journey-bottomline > button {color:#657b8d}
 .journey-bottomline > button:hover {color:#314c65}
 @media (max-width:760px) {.journey-letter {border:1px solid #e2dbd1}}
+
+/* One visual memory spread: an attached letter blending into the photograph. */
+@media(min-width:761px){
+ .journey-layout{position:relative;filter:drop-shadow(0 14px 24px #2e4c5930)}
+ .journey-frame{border-radius:13px 0 0 13px;box-shadow:inset 0 0 0 1px #fdfbf43b}
+ .journey-letter,.app-shell[data-destination='journey'] .journey-letter{position:relative;z-index:1;margin-left:-25px;padding-left:clamp(42px,4.7vw,70px);border:0;border-radius:0 13px 13px 0;background:linear-gradient(100deg,#e8e9e1fb 0%,#f2f0e9 22%,#f8f3e8 100%);box-shadow:-12px 0 32px #1b373b15,inset 1px 0 #ffffffb8}
+ .journey-letter::before{content:'';position:absolute;z-index:-1;left:-17px;top:0;bottom:0;width:19px;background:linear-gradient(90deg,transparent,#e8e9e1e8 94%);pointer-events:none}
+}
+.journey-fact:empty{display:none}
+@media(max-width:760px){
+ .journey-layout{grid-template-rows:clamp(210px,32svh,310px) auto auto;filter:none}
+ .journey-frame{border-radius:13px 13px 0 0}
+ .journey-letter,.app-shell[data-destination='journey'] .journey-letter{margin-top:0;padding:26px 24px;border:0;border-radius:0 0 13px 13px;background:linear-gradient(180deg,#f1efe7,#f7f2e8);box-shadow:0 14px 24px #334c5225}
+ .journey-navigation{padding-top:15px;padding-bottom:13px}
+}
