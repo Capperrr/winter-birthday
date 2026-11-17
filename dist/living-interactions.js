@@ -26,6 +26,8 @@
       letter.className='living-letter';
       letter.setAttribute('aria-hidden','true');
       letter.style.setProperty('--letter-i',index);
+      letter.style.setProperty('--letter-delay',(480+index*105)+'ms');
+      letter.style.setProperty('--gleam-delay',(1100+index*100)+'ms');
       letter.textContent=character;
       name.append(letter);
     });
