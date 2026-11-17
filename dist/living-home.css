@@ -266,3 +266,220 @@
   .app-shell[data-page="home"] .living-poem,
   .app-shell[data-page="home"] .gift-dedication{animation:none!important}
 }
+
+
+/* ─── WINTER Home: fingertip tracking and spring button gestures ─── */
+.app-shell[data-page="home"] .living-feedback-button{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  scale:1;
+  transition:scale 180ms ease,translate 420ms cubic-bezier(.2,.82,.18,1),color 280ms ease,background-color 280ms ease,box-shadow 220ms ease;
+}
+.app-shell[data-page="home"] .living-feedback-button.living-pressing{
+  scale:.94;
+  box-shadow:0 1px 4px rgba(4,20,24,.14);
+}
+.app-shell[data-page="home"] .glass-nav button.living-feedback-button:active{
+  transform:none;
+}
+.living-touch-glow{
+  position:absolute;
+  z-index:4;
+  border-radius:50%;
+  display:block;
+  pointer-events:none;
+  opacity:.28;
+  transform:translate(-50%,-50%) scale(.12);
+  transform-origin:center;
+  background:radial-gradient(circle,rgba(255,252,222,.95) 0%,rgba(253,226,181,.56) 34%,rgba(255,250,239,0) 71%);
+  box-shadow:0 0 22px rgba(255,247,218,.12) inset;
+  will-change:left,top,transform,opacity;
+}
+.app-shell[data-page="home"][data-living-time="night"] .living-touch-glow{
+  background:radial-gradient(circle,rgba(219,234,255,.96),rgba(169,200,250,.48) 35%,rgba(219,233,255,0) 71%);
+}
+.app-shell[data-page="home"] .living-segment{
+  position:relative;
+  isolation:isolate;
+  background:rgba(23,55,43,.64);
+  transition:background-color 280ms ease;
+}
+.app-shell[data-page="home"] .living-active-indicator{
+  position:absolute;
+  z-index:0;
+  top:3px;
+  bottom:3px;
+  left:3px;
+  width:calc((100% - 6px)/2);
+  border-radius:999px;
+  background:#f6e6cc;
+  box-shadow:0 3px 14px rgba(8,31,35,.22),inset 0 1px rgba(255,255,255,.65);
+  pointer-events:none;
+  transform-origin:center;
+  transition:background-color 280ms ease,box-shadow 280ms ease;
+}
+.app-shell[data-page="home"] .living-segment button{
+  z-index:1;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.app-shell[data-page="home"] .living-segment button[aria-pressed="true"]{
+  color:#254739;
+  font-weight:600;
+}
+.app-shell[data-page="home"] .living-segment button:not([aria-pressed="true"]){color:#f4f2dfd9}
+.app-shell[data-page="home"][data-living-time="night"] .living-segment{
+  background:rgba(12,32,43,.77);
+}
+.app-shell[data-page="home"][data-living-time="night"] .living-active-indicator{
+  background:#c4d9cc;
+  box-shadow:0 3px 16px rgba(3,21,41,.32),inset 0 1px rgba(255,255,255,.74);
+}
+.app-shell[data-page="home"][data-living-time="night"] .living-segment button[aria-pressed="true"]{
+  color:#173c42;
+}
+@keyframes living-spring-fallback{
+  0%{scale:.94}
+  32%{scale:1.055}
+  53%{scale:.982}
+  72%{scale:1.015}
+  100%{scale:1}
+}
+.app-shell[data-page="home"] .living-feedback-button.living-spring-fallback{
+  animation:living-spring-fallback 800ms linear both;
+}
+
+/* ─── WINTER Home: multi-layer lettering and warm/cool light ─── */
+.app-shell[data-page="home"]{
+  --living-title-low:#f5d7ad;
+  --living-title-mid:#fff5db;
+  --living-title-bright:#fffdf2;
+  --living-verse-ink:#ffedd6;
+}
+.app-shell[data-page="home"][data-living-time="night"]{
+  --living-title-low:#a5bedf;
+  --living-title-mid:#e5eaff;
+  --living-title-bright:#fff7e8;
+  --living-verse-ink:#e8e7ef;
+}
+.app-shell[data-page="home"] .cover-title .intro{
+  position:relative;
+  color:#fff0ce;
+  text-shadow:0 1px 17px rgba(255,213,160,.46),0 4px 20px rgba(3,28,39,.45);
+  animation:living-intro-script 1.6s cubic-bezier(.19,.78,.24,1) .10s both;
+  transition:color 850ms ease,text-shadow 850ms ease;
+}
+.app-shell[data-page="home"][data-living-time="night"] .cover-title .intro{
+  color:#eee7fa;
+  text-shadow:0 2px 18px rgba(209,213,255,.43),0 4px 21px rgba(5,18,48,.62);
+}
+.app-shell[data-page="home"] .cover-title .name:has(.living-letter){
+  display:flex;
+  justify-content:center;
+  align-items:baseline;
+  gap:clamp(2px,.62vw,12px);
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding-left:0;
+  letter-spacing:0;
+  animation:none;
+  perspective:760px;
+  transform:none;
+  color:var(--living-title-mid);
+}
+.app-shell[data-page="home"] .cover-title .living-letter{
+  position:relative;
+  display:inline-block;
+  flex:none;
+  color:var(--living-title-mid);
+  background-image:linear-gradient(109deg,
+    var(--living-title-low) 0%,
+    var(--living-title-mid) 31%,
+    var(--living-title-bright) 51%,
+    var(--living-title-mid) 68%,
+    var(--living-title-low) 100%);
+  background-size:240% 100%;
+  background-position:100% 0;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:none;
+  filter:drop-shadow(0 4px 10px rgba(10,34,42,.29));
+  transform-origin:50% 78%;
+  backface-visibility:hidden;
+  animation:
+    living-letter-reveal 1450ms cubic-bezier(.16,.81,.21,1) calc(480ms + var(--letter-i)*105ms) both,
+    living-letter-gleam 2400ms cubic-bezier(.22,.79,.21,1) calc(1100ms + var(--letter-i)*100ms) both;
+}
+.app-shell[data-page="home"] .living-poem{
+  color:var(--living-verse-ink);
+  animation:none;
+  transition:color 850ms ease;
+  text-shadow:0 3px 20px rgba(7,35,44,.64),0 1px 7px rgba(25,47,37,.24);
+}
+.app-shell[data-page="home"] .living-poem span{
+  display:block;
+  animation:living-poem-focus 1.25s cubic-bezier(.18,.79,.22,1) 1.78s both;
+}
+.app-shell[data-page="home"] .living-poem span:nth-child(2){
+  animation-delay:2.04s;
+}
+.app-shell[data-page="home"] .cover-caption .caption-star{
+  animation:living-star-stamp 900ms cubic-bezier(.18,.85,.25,1) 1.45s both;
+}
+.app-shell[data-page="home"] .gift-dedication{transition:color 800ms ease}
+@keyframes living-intro-script{
+  0%{opacity:0;clip-path:inset(0 100% 0 0);transform:translate3d(-11px,13px,0);filter:blur(3px)}
+  45%{opacity:1;filter:blur(0)}
+  100%{opacity:1;clip-path:inset(0 0 0 0);transform:translate3d(0,0,0);filter:blur(0)}
+}
+@keyframes living-letter-reveal{
+  0%{opacity:0;transform:translate3d(0,27px,0) rotateX(-28deg) scale(.91);filter:blur(8px)}
+  60%{opacity:1;transform:translate3d(0,-3px,0) rotateX(4deg) scale(1.02);filter:blur(0)}
+  100%{opacity:1;transform:translate3d(0,0,0) rotateX(0) scale(1);filter:drop-shadow(0 4px 10px rgba(10,34,42,.29))}
+}
+@keyframes living-letter-gleam{
+  from{background-position:100% 0}
+  to{background-position:0% 0}
+}
+@keyframes living-poem-focus{
+  0%{opacity:0;transform:translate3d(0,16px,0);filter:blur(7px);letter-spacing:.24em}
+  70%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:none;filter:blur(0);letter-spacing:inherit}
+}
+@keyframes living-star-stamp{
+  from{opacity:0;transform:rotate(-24deg) scale(.55);filter:blur(4px)}
+  to{opacity:1;transform:rotate(0) scale(1);filter:blur(0)}
+}
+@media(max-width:760px){
+  .app-shell[data-page="home"] .cover-title .name:has(.living-letter){
+    gap:clamp(0px,.25vw,3px);
+    letter-spacing:0;
+    padding-left:0;
+  }
+  .app-shell[data-page="home"] .living-poem span{
+    animation-duration:950ms;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .app-shell[data-page="home"] .living-feedback-button,
+  .app-shell[data-page="home"] .living-active-indicator{transition:none!important}
+  .app-shell[data-page="home"] .living-feedback-button.living-pressing{scale:1}
+  .app-shell[data-page="home"] .cover-title .intro,
+  .app-shell[data-page="home"] .cover-title .name,
+  .app-shell[data-page="home"] .cover-title .living-letter,
+  .app-shell[data-page="home"] .living-poem,
+  .app-shell[data-page="home"] .living-poem span,
+  .app-shell[data-page="home"] .cover-caption .caption-star{
+    animation:none!important;
+    opacity:1!important;
+    transform:none!important;
+    filter:none!important;
+    clip-path:none!important;
+  }
+  .living-touch-glow{display:none!important}
+}
