@@ -1,5 +1,5 @@
 /* WINTER / LIVING LANDSCAPE • isolated concept branch, never changes production main.
-   Photo-first world: live wind-swept grass, changing light and finger-responsive depth. */
+   Photo-first world: static meadow photograph, changing light and animated sky. */
 :root{--living-ease:cubic-bezier(.22,.77,.2,1)}
 .app-shell[data-page="home"] .landscape img{
   filter:saturate(.94) contrast(1.02) brightness(.97);
@@ -11,9 +11,6 @@
 .app-shell[data-page="home"] .landscape-shade{opacity:.81}
 .living-stage{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:1;transition:opacity .8s ease;isolation:isolate}
 .app-shell:not([data-page="home"]) .living-stage{opacity:0;visibility:hidden}
-.living-grass{position:absolute;inset:auto 0 0;display:block;width:100%;height:44%;pointer-events:none;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#0004 16%,#000 37%,#000 100%);
-  mask-image:linear-gradient(to bottom,transparent 0%,#0004 16%,#000 37%,#000 100%);}
 .living-cloudsheet{position:absolute;inset:-5% -16% 36%;pointer-events:none;opacity:.58;
   background:radial-gradient(ellipse 23% 10% at 27% 20%,#fff9 0%,#eef5fff0 26%,#edf3fe00 100%),
              radial-gradient(ellipse 18% 9% at 59% 15%,#f8fbffa8 0%,#ffffff00 96%),
@@ -75,12 +72,197 @@
 @media(max-width:760px){
  .living-ui{bottom:clamp(72px,12vh,113px);gap:8px;padding:6px 8px}
  .living-segment button{min-width:70px;min-height:38px;padding:5px 8px;font-size:10px}
- .living-grass{height:37%}
  .living-preview-tag{font-size:8px;bottom:10px;right:13px}
 }
 @media(max-height:650px){.living-ui{bottom:56px}}
 @media(prefers-reduced-motion:reduce){
  .living-stage *{animation:none!important;transition:none!important}
- .living-grass{display:none}
  .living-ui{transition:none}
+}
+
+/* WINTER Home / centered cinematic typography (preview only).
+   The meadow is part of the original photograph and never moves. */
+.app-shell[data-page="home"] .landscape img,
+.app-shell[data-page="home"][data-view="scenery"] .landscape img{
+  transform:scale(1.05);
+  will-change:auto;
+  transition:filter 1.5s ease;
+}
+.app-shell[data-page="home"] .home-panel{
+  justify-content:center;
+  align-items:center;
+}
+.app-shell[data-page="home"] .home-panel .cover-copy{
+  box-sizing:border-box;
+  width:100%;
+  max-width:1100px;
+  margin:0;
+  padding:clamp(16px,3vh,36px) clamp(22px,5vw,70px);
+  text-align:center;
+  transform:translateY(-3svh);
+}
+.app-shell[data-page="home"] .cover-title{
+  width:100%;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+  font-weight:400;
+  text-align:center;
+}
+.app-shell[data-page="home"] .cover-title .intro{
+  display:block;
+  margin:0 0 clamp(7px,1.8vh,19px);
+  font-family:'Allura','Caveat',cursive;
+  font-weight:400;
+  font-style:normal;
+  font-size:clamp(58px,6.6vw,100px);
+  line-height:1.1;
+  letter-spacing:.015em;
+  color:#fff2da;
+  text-shadow:0 3px 22px #2033445e;
+  animation:living-intro-appear 1.4s ease-out both;
+}
+.app-shell[data-page="home"] .cover-title .name{
+  display:block;
+  max-width:100%;
+  margin:0;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:400;
+  font-size:clamp(76px,11.8vw,194px);
+  line-height:.9;
+  letter-spacing:.16em;
+  padding-left:.16em;
+  color:#fff3df;
+  text-shadow:0 5px 27px #162b3b55;
+  animation:living-name-appear 2.15s cubic-bezier(.22,.65,.2,1) .45s both;
+}
+.app-shell[data-page="home"] .cover-caption{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:clamp(13px,2vw,24px);
+  margin:clamp(24px,4.3vh,43px) 0 0;
+  animation:living-verse-appear 1.2s ease-out 1.55s both;
+}
+.app-shell[data-page="home"] .cover-caption .caption-line{
+  display:block;
+  width:clamp(55px,8vw,120px);
+  height:1px;
+  background:#fff3e5a3;
+}
+.app-shell[data-page="home"] .cover-caption .caption-star{
+  color:#fff2d5;
+  font-size:clamp(16px,2vw,24px);
+  line-height:1;
+  text-shadow:0 0 16px #fff7de88;
+}
+.app-shell[data-page="home"] .living-poem{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:clamp(5px,.8vh,9px);
+  margin:clamp(21px,3.4vh,38px) 0 0;
+  color:#fdf0df;
+  font:400 clamp(17px,2.05vw,27px)/1.8 'Noto Serif SC','Songti SC',serif;
+  letter-spacing:.14em;
+  text-shadow:0 3px 18px #0c253c8c;
+  animation:living-verse-appear 1.5s ease-out 1.85s both;
+}
+.app-shell[data-page="home"] .living-poem span{display:block}
+.app-shell[data-page="home"] .gift-dedication{
+  display:block;
+  margin:clamp(19px,3.5vh,35px) 0 0;
+  color:#f9eddaa6;
+  font-size:10px;
+  line-height:1.5;
+  text-align:center;
+  letter-spacing:.22em;
+  animation:living-verse-appear 1.2s ease-out 2.25s both;
+}
+.app-shell[data-page="home"] .gift-dedication>span{
+  display:inline;
+  margin:0;
+  color:inherit;
+  font-size:inherit;
+  letter-spacing:inherit;
+}
+.app-shell[data-living-time="night"] .living-poem{color:#f3ebdf}
+.app-shell[data-living-time="night"] .cover-caption .caption-line{background:#e9ecf2aa}
+.app-shell[data-living-time="night"] .cover-caption .caption-star{color:#f5e9cd}
+.app-shell[data-living-time="night"] .cover-title .name{color:#f5ede1;text-shadow:0 4px 25px #03183288}
+.app-shell[data-living-time="night"] .cover-title .intro{color:#f5e9ce}
+.app-shell[data-living-time="night"] .gift-dedication{color:#e7e9ddad}
+/* Desktop toggles float in the upper-right, clear of the site navigation. */
+@media (min-width:761px){
+  .app-shell[data-page="home"] .living-ui{
+    top:clamp(102px,13vh,143px);
+    right:clamp(25px,4.2vw,75px);
+    bottom:auto;
+    left:auto;
+    transform:none;
+  }
+  .app-shell:not([data-page="home"]) .living-ui{
+    transform:translateY(12px);
+  }
+}
+@media (max-width:760px){
+  .app-shell[data-page="home"] .home-panel .cover-copy{
+    padding:15px clamp(15px,5vw,30px);
+    transform:translateY(-4svh);
+  }
+  .app-shell[data-page="home"] .cover-title .intro{
+    font-size:clamp(43px,10.5vw,68px);
+    margin-bottom:12px;
+  }
+  .app-shell[data-page="home"] .cover-title .name{
+    font-size:clamp(47px,12.2vw,86px);
+    letter-spacing:.10em;
+    padding-left:.10em;
+    animation-name:living-name-appear-mobile;
+  }
+  .app-shell[data-page="home"] .cover-caption{margin-top:24px}
+  .app-shell[data-page="home"] .living-poem{
+    margin-top:20px;
+    font-size:clamp(13px,3.7vw,19px);
+    letter-spacing:.07em;
+    line-height:1.85;
+  }
+  .app-shell[data-page="home"] .gift-dedication{
+    margin-top:22px;
+    font-size:8px;
+    letter-spacing:.12em;
+  }
+}
+@media (max-height:620px){
+  .app-shell[data-page="home"] .home-panel .cover-copy{transform:none;padding-block:8px}
+  .app-shell[data-page="home"] .cover-title .intro{font-size:clamp(35px,6vh,60px);margin-bottom:5px}
+  .app-shell[data-page="home"] .cover-title .name{font-size:clamp(44px,11vw,110px)}
+  .app-shell[data-page="home"] .cover-caption{margin-top:12px}
+  .app-shell[data-page="home"] .living-poem{margin-top:10px;font-size:clamp(12px,2.5vh,18px);gap:0}
+  .app-shell[data-page="home"] .gift-dedication{margin-top:12px}
+}
+@keyframes living-intro-appear{
+  from{opacity:0;transform:translateY(17px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes living-name-appear{
+  from{opacity:0;letter-spacing:.30em;transform:translateY(13px)}
+  to{opacity:1;letter-spacing:.16em;transform:translateY(0)}
+}
+@keyframes living-name-appear-mobile{
+  from{opacity:0;letter-spacing:.21em;transform:translateY(10px)}
+  to{opacity:1;letter-spacing:.10em;transform:translateY(0)}
+}
+@keyframes living-verse-appear{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .app-shell[data-page="home"] .cover-title .intro,
+  .app-shell[data-page="home"] .cover-title .name,
+  .app-shell[data-page="home"] .cover-caption,
+  .app-shell[data-page="home"] .living-poem,
+  .app-shell[data-page="home"] .gift-dedication{animation:none!important}
 }
