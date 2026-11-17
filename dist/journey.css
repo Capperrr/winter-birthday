@@ -162,9 +162,10 @@
   background-image:
     linear-gradient(115deg,rgba(13,37,51,.48) 0%,rgba(21,54,62,.33) 48%,rgba(19,52,58,.54) 100%),
     radial-gradient(ellipse 62% 58% at 95% 5%,rgba(255,225,172,.35),transparent 76%),
+    url('assets/journey-atmosphere.svg'),
     url('assets/swiss-alps.webp');
-  background-position:center,center,center 48%;
-  background-size:cover,cover,cover;
+  background-position:center,center,center,center 48%;
+  background-size:cover,cover,cover,cover;
   background-repeat:no-repeat;
   --nav-material:#f7fbf1bd;
   --nav-border:#eef4eaa8;
@@ -399,9 +400,10 @@
   .app-shell[data-destination='journey']{
     background-image:
       linear-gradient(180deg,rgba(14,40,54,.45),rgba(10,38,47,.51)),
+      url('assets/journey-atmosphere.svg'),
       url('assets/swiss-alps-small.webp');
-    background-position:center,center;
-    background-size:cover,cover;
+    background-position:center,center,center;
+    background-size:cover,cover,cover;
   }
   .app-shell[data-destination='journey'] .journey-page{gap:18px;padding:12px 12px 26px}
   .app-shell[data-destination='journey'] .journey-heading{padding-inline:7px}
