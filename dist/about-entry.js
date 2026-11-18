@@ -16,7 +16,7 @@
   intro.innerHTML=
     '<p class="winter-about-entry-kicker">THE SEVEN MOMENTS · WINTER, AT TWENTY-FIVE</p>'+
     '<h2 tabindex="-1">关于你，先从这些瞬间开始。</h2>'+
-    '<p class="winter-about-entry-description">我喜欢你所有的模样。轻轻滑动照片，看看一路走来的你。</p>'+
+    '<p class="winter-about-entry-description">轻轻滑动这些珍藏的照片，再翻开写给25岁自己的那一页。</p>'+
     '<div class="winter-about-stage" role="region" aria-label="七张生活照片的 3D 卡片轮播，左右滑动或点击旁边照片切换">'+
       '<span class="winter-about-stage-status" aria-live="polite"></span></div>'+
     '<div class="winter-about-entry-bottom">'+
@@ -24,7 +24,7 @@
         '<button type="button" class="winter-about-previous" aria-label="上一张照片">‹</button>'+
         '<button type="button" class="winter-about-next" aria-label="下一张照片">›</button>'+
       '</div>'+
-      '<button type="button" class="winter-about-to-notes">翻开下一页 · 25 张便利贴 <span aria-hidden="true">↗</span></button>'+
+      '<button type="button" class="winter-about-to-notes">翻开下一页 · 25 岁的便利贴 <span aria-hidden="true">↗</span></button>'+
     '</div>';
   about.prepend(intro);
   const stage=intro.querySelector('.winter-about-stage');
@@ -192,6 +192,10 @@
     requestAnimationFrame(()=>heading?.focus({preventScroll:true}));
   }
   toNotes.addEventListener('click',showNotes);
+  document.getElementById('tab-about')?.addEventListener('click',()=>{
+    // Tapping About me again should return to the photo opening.
+    if(shell.dataset.page==='about'&&!about.hidden&&about.dataset.aboutMode==='notes')showIntro(true);
+  });
   back.addEventListener('click',()=>{showIntro(false);requestAnimationFrame(()=>intro.querySelector('h2')?.focus({preventScroll:true}))});
   let wasAbout=false;
   function syncRoute(){
