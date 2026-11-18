@@ -1,0 +1,246 @@
+/* About Me / opening photo exhibition before the existing "25" notes.
+   Uses the same seven photographed moments as the existing modal.
+   No existing keepsake layout, source imagery, or note storage is changed. */
+#panel-about[data-about-mode="intro"]{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:stretch;
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding:clamp(12px,2.1svh,24px) clamp(14px,2.2vw,28px) clamp(25px,5vh,60px);
+  background:
+    radial-gradient(ellipse 45% 39% at 50% 49%,rgba(222,194,206,.32),transparent 100%),
+    transparent;
+}
+#panel-about[data-about-mode="intro"] > :not(.winter-about-entry):not(#portrait-lightbox){
+  display:none!important;
+}
+#panel-about[data-about-mode="notes"] > .winter-about-entry{display:none!important}
+.winter-about-entry{
+  position:relative;
+  display:flex;
+  flex:1 0 auto;
+  flex-direction:column;
+  align-items:center;
+  width:min(100%,1130px);
+  min-height:min(690px,calc(100svh - 145px));
+  margin:auto;
+  padding:clamp(10px,2vw,24px) 0 clamp(18px,3vw,30px);
+  isolation:isolate;
+  color:#415354;
+}
+.winter-about-entry::before{
+  content:'';
+  position:absolute;
+  z-index:-1;
+  inset:4% 2% 8%;
+  border-radius:46% 49% 38% 50%;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 44% 46% at 37% 48%,rgba(210,184,179,.26),transparent 80%),
+    radial-gradient(ellipse 45% 48% at 70% 35%,rgba(164,188,192,.19),transparent 78%);
+  filter:blur(44px);
+}
+.winter-about-entry-kicker{
+  margin:0;
+  color:#73807a;
+  text-align:center;
+  font:600 clamp(8px,.9vw,10px)/1.8 var(--sans);
+  letter-spacing:.27em;
+}
+.winter-about-entry h2{
+  margin:6px 0 4px;
+  color:#3a5150;
+  font:400 clamp(29px,3.55vw,50px)/1.25 var(--cn-serif);
+  letter-spacing:.06em;
+  text-align:center;
+  text-wrap:balance;
+}
+.winter-about-entry-description{
+  margin:7px auto clamp(10px,1.9vh,22px);
+  max-width:670px;
+  color:#70817b;
+  font:400 clamp(11px,1vw,14px)/1.9 var(--cn-serif);
+  text-align:center;
+}
+.winter-about-stage{
+  --entry-light:rgba(181,178,205,.27);
+  position:relative;
+  width:min(100%,990px);
+  height:clamp(330px,49svh,530px);
+  flex:none;
+  overflow:hidden;
+  touch-action:pan-y pinch-zoom;
+  cursor:grab;
+  user-select:none;
+  -webkit-user-select:none;
+  perspective:1150px;
+  transform-style:preserve-3d;
+  border-radius:clamp(15px,3vw,30px);
+  border:1px solid rgba(255,253,240,.39);
+  background:
+    radial-gradient(ellipse 49% 65% at 50% 52%,var(--entry-light),transparent 88%),
+    linear-gradient(145deg,rgba(255,249,235,.34),rgba(214,219,221,.19) 46%,rgba(244,232,224,.25));
+  box-shadow:inset 0 1px rgba(255,255,255,.70),0 17px 35px rgba(48,56,63,.09);
+  -webkit-backdrop-filter:blur(12px) saturate(105%);
+  backdrop-filter:blur(12px) saturate(105%);
+}
+.winter-about-stage.is-dragging{cursor:grabbing}
+.winter-about-stage::before{
+  content:'';
+  position:absolute;
+  z-index:0;
+  top:20%;left:20%;right:20%;bottom:12%;
+  pointer-events:none;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,.33),transparent 70%);
+  filter:blur(24px);
+}
+.winter-about-card{
+  position:absolute;
+  top:48%;left:50%;
+  display:flex;
+  flex-direction:column;
+  width:clamp(170px,22.4vw,236px);
+  height:auto;
+  margin:0;padding:clamp(7px,.7vw,10px);
+  border:1px solid rgba(255,255,255,.54);
+  border-radius:17px;
+  background:linear-gradient(138deg,rgba(255,255,255,.86),rgba(231,227,222,.73));
+  color:#3c5554;
+  text-align:center;
+  cursor:pointer;
+  transform:var(--entry-transform,translate3d(-50%,-50%,0));
+  opacity:var(--entry-opacity,1);
+  z-index:var(--entry-z,2);
+  filter:blur(var(--entry-blur,0px)) saturate(var(--entry-sat,1));
+  scale:1!important;
+  box-shadow:0 23px 54px rgba(35,51,60,.17),0 6px 12px rgba(47,51,59,.11),inset 0 1px rgba(255,255,255,.87);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transition:transform 720ms cubic-bezier(.2,1.12,.22,1),opacity 310ms ease,filter 400ms ease,box-shadow 400ms ease;
+  will-change:transform;
+}
+.winter-about-stage.is-dragging .winter-about-card{transition:none!important}
+.winter-about-card[data-current="true"]{
+  box-shadow:0 30px 69px rgba(42,51,59,.25),0 11px 22px rgba(47,50,53,.16),inset 0 1px rgba(255,255,255,.95);
+}
+.winter-about-card-image{
+  display:block;
+  width:100%;
+  aspect-ratio:4/5;
+  border-radius:10px;
+  background:#bec3c7 url('assets/winter-photo-sheet.webp') var(--tile-x,0%) var(--tile-y,0%)/400% 200% no-repeat;
+  background-image:image-set(url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),url('assets/winter-photo-sheet.webp') type('image/webp'));
+  pointer-events:none;
+}
+.winter-about-card[data-index="1"] .winter-about-card-image{
+  background-image:url('assets/winter-about-second-photo.webp');
+  background-position:50% 50%;
+  background-size:cover;
+}
+.winter-about-card-english{
+  display:block;
+  max-width:100%;
+  overflow:hidden;
+  margin-top:9px;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:#375356;
+  font:400 clamp(16px,1.7vw,23px)/1.2 'Caveat',cursive;
+  pointer-events:none;
+}
+.winter-about-card-chinese{
+  display:block;
+  max-width:100%;
+  overflow:hidden;
+  margin-top:3px;
+  padding-bottom:5px;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  color:#607070;
+  font:400 clamp(10px,1.1vw,12px)/1.6 var(--cn-serif);
+  pointer-events:none;
+}
+.winter-about-card:focus-visible{outline:2px solid #446a67;outline-offset:5px}
+.winter-about-stage-status{
+  position:absolute;
+  left:50%;bottom:4.5%;
+  transform:translateX(-50%);
+  color:#536f72;
+  font:500 10px/1.6 var(--sans);
+  letter-spacing:.14em;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.winter-about-entry-bottom{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:clamp(12px,2vw,22px);
+  margin-top:clamp(17px,2.6vh,29px);
+  padding-bottom:5px;
+}
+.winter-about-entry-nav{display:flex;align-items:center;gap:9px}
+.winter-about-entry-nav button{
+  min-width:44px;min-height:44px;
+  padding:0;
+  display:grid;place-items:center;
+  border:1px solid rgba(88,120,119,.38);
+  border-radius:50%;
+  color:#3c585b;
+  background:rgba(255,255,255,.28);
+  font-size:20px;
+  cursor:pointer;
+}
+.winter-about-entry-nav button:disabled{opacity:.37;cursor:default}
+.winter-about-to-notes{
+  display:inline-flex;
+  align-items:center;justify-content:center;
+  gap:13px;
+  min-height:48px;
+  padding:12px 25px;
+  border:1px solid rgba(255,255,255,.69);
+  border-radius:999px;
+  color:#f9f5ec;
+  background:linear-gradient(120deg,rgba(53,84,82,.93),rgba(62,100,97,.90));
+  box-shadow:0 8px 23px rgba(52,75,71,.19),inset 0 1px rgba(255,255,255,.19);
+  font:500 clamp(11px,1vw,13px)/1.4 var(--cn-serif);
+  letter-spacing:.05em;
+  cursor:pointer;
+  transition:background-color 230ms ease,transform 230ms ease,box-shadow 230ms ease;
+}
+.winter-about-to-notes:hover{transform:translateY(-2px);box-shadow:0 13px 27px rgba(49,70,70,.24)}
+.winter-about-to-notes span{font-size:17px}
+.winter-about-notes-back{
+  display:block;
+  margin:13px auto 5px;
+  padding:9px 17px;
+  min-height:42px;
+  border:1px solid rgba(104,134,125,.41);
+  border-radius:999px;
+  background:rgba(255,255,255,.52);
+  color:#496763;
+  font:400 11px/1.5 var(--cn-serif);
+  cursor:pointer;
+}
+@media(max-width:760px){
+  .winter-about-entry{min-height:calc(100svh - 140px);padding-top:8px}
+  .winter-about-entry h2{font-size:clamp(24px,6vw,36px)}
+  .winter-about-entry-description{margin:5px auto 13px;font-size:11px}
+  .winter-about-stage{height:clamp(286px,45svh,420px);width:100%}
+  .winter-about-card{width:clamp(150px,40vw,198px);padding:6px}
+  .winter-about-entry-bottom{margin-top:16px;gap:12px}
+  .winter-about-entry-nav button{min-height:42px;min-width:42px}
+  .winter-about-to-notes{min-height:45px;padding:10px 20px}
+}
+@media(max-height:700px) and (min-width:761px){
+  .winter-about-entry{min-height:0;padding-top:4px}
+  .winter-about-stage{height:clamp(275px,45svh,365px)}
+  .winter-about-entry-bottom{margin-top:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  .winter-about-card,.winter-about-to-notes{transition:none!important}
+}
