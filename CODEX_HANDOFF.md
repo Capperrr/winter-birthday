@@ -38,6 +38,13 @@ git rev-parse HEAD
 - `dist/living-water.js` 仅在 `data-destination="letter"` 且触摸点击命中湖水区域时产生照片折射水波；避免与卡片/按钮抢手势，滚动不误触，触发后约 1.5 秒结束。不要给草地、树林和雪山加水波。
 - 原有中国/英国的信纸、照片和路线仍然可交互。
 
+### About Me · 七张照片 3D Coverflow（2026-11-18 预览）
+- 在 About Me 的七张挂在便利贴周围的拍立得照片上点击，原放大照片弹窗已升级为真实 3D Coverflow：`dist/portrait-coverflow.js` + `dist/portrait-coverflow.css`。
+- 七张照片的原始顺序和对应素材保持不变。第二张个人照片使用 `assets/winter-about-second-photo.webp`，其他沿用高分辨率照片拼图素材，不能覆盖或替换。
+- 水平手指拖动跟手；松手按速度与位移吸附；点击两侧照片跳转；保留旧的上一张/下一张、键盘方向键、Escape 关闭与焦点恢复。动画只发生在弹窗，不影响 About Me 页面原布局或后面独立的 19 张星空照片墙。
+- 新旧浏览器逻辑以 `dist/interactive-finale.js` 的 `winter:portrait-index` 事件同步，**不得让两个脚本分别维护不同当前索引**。
+- 在 iPad 横屏/竖屏实测卡片遮挡、触摸滚动、弹性回弹和原图加载；`prefers-reduced-motion` 下自动移除弹性过渡。
+
 ### About Me / 星空后照片墙
 - 保留照片和用户上传的真实影像；About Me 第二张照片已经替换。
 - 星空后面的 19 张照片墙：保留标题“一些闪闪发光的普通日子”，说明文字为“我喜欢你所有的模样。”
