@@ -65,6 +65,9 @@
       dialog.showModal();
       document.getElementById('portrait-close')?.focus({preventScroll:true});
     }
+    // Notify the optional 3D viewer without replacing the original
+    // caption, counter, keyboard and focus-restoration logic.
+    dialog.dispatchEvent(new CustomEvent('winter:portrait-index',{detail:{index:portraitIndex}}));
   }
   pins.forEach(pin=>pin.addEventListener('click',()=>openPortrait(Number(pin.dataset.portrait),pin)));
   function closePortrait(){
