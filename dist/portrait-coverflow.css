@@ -96,7 +96,7 @@
   perspective:1100px;
   transform-style:preserve-3d;
 }
-.portrait-coverflow-card{
+.portrait-lightbox[data-coverflow="on"] .portrait-coverflow-card{
   --portrait-transform:translate3d(-50%,-50%,0) rotateY(0deg) scale(1);
   position:absolute;
   top:47%;
@@ -133,10 +133,10 @@
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
 }
-.portrait-coverflow.is-dragging .portrait-coverflow-card{
+.portrait-lightbox[data-coverflow="on"] .portrait-coverflow.is-dragging .portrait-coverflow-card{
   transition:none!important;
 }
-.portrait-coverflow-card[data-selected="true"]{
+.portrait-lightbox[data-coverflow="on"] .portrait-coverflow-card[data-selected="true"]{
   background:linear-gradient(140deg,rgba(255,255,255,.90),rgba(236,239,248,.74));
   border-color:rgba(255,253,248,.85);
   box-shadow:
