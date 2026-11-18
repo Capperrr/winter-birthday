@@ -97,7 +97,7 @@
   background:radial-gradient(ellipse,rgba(255,255,255,.33),transparent 70%);
   filter:blur(24px);
 }
-.winter-about-card{
+.app-shell #panel-about .winter-about-card{
   position:absolute;
   top:48%;left:50%;
   display:flex;
@@ -122,8 +122,8 @@
   transition:transform 720ms cubic-bezier(.2,1.12,.22,1),opacity 310ms ease,filter 400ms ease,box-shadow 400ms ease;
   will-change:transform;
 }
-.winter-about-stage.is-dragging .winter-about-card{transition:none!important}
-.winter-about-card[data-current="true"]{
+.app-shell #panel-about .winter-about-stage.is-dragging .winter-about-card{transition:none!important}
+.app-shell #panel-about .winter-about-card[data-current="true"]{
   box-shadow:0 30px 69px rgba(42,51,59,.25),0 11px 22px rgba(47,50,53,.16),inset 0 1px rgba(255,255,255,.95);
 }
 .winter-about-card-image{
@@ -163,7 +163,7 @@
   font:400 clamp(10px,1.1vw,12px)/1.6 var(--cn-serif);
   pointer-events:none;
 }
-.winter-about-card:focus-visible{outline:2px solid #446a67;outline-offset:5px}
+.app-shell #panel-about .winter-about-card:focus-visible{outline:2px solid #446a67;outline-offset:5px}
 .winter-about-stage-status{
   position:absolute;
   left:50%;bottom:4.5%;
