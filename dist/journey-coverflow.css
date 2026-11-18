@@ -194,3 +194,69 @@
   .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-letter{transition:none!important}
   .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-letter::after{display:none}
 }
+
+
+/* 2026-11-18 iPad readability repair:
+   The side cards must NEVER extend over the separate letter.
+   Preserve the 3D depth inside the image column, not outside it. */
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-layout{
+  isolation:isolate;
+  column-gap:clamp(43px,6.8vw,92px);
+}
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-frame{
+  z-index:0;
+  overflow:hidden!important;
+  clip-path:inset(0 0 0 0);
+  background:transparent!important;
+  border:0!important;
+  touch-action:pan-y pinch-zoom;
+  -webkit-touch-callout:none;
+}
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photographs{
+  inset:0;
+  overflow:visible;
+  pointer-events:auto;
+}
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-letter{
+  position:relative;
+  z-index:5;
+  isolation:isolate;
+}
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photo{
+  width:clamp(142px,59%,335px);
+  height:clamp(180px,82%,400px);
+  pointer-events:var(--jcf-hit,auto);
+  -webkit-touch-callout:none;
+}
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photo-caption{
+  bottom:4px;
+  left:4px;
+  right:4px;
+}
+.app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photo-caption p{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:999px;
+  background:rgba(13,40,51,.38);
+  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(7px);
+}
+@media (min-width:761px) and (max-width:1040px){
+  .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-layout{
+    column-gap:clamp(28px,4vw,50px);
+  }
+  .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photo{
+    width:clamp(135px,60%,285px);
+    height:clamp(170px,80%,355px);
+  }
+}
+@media(max-width:760px){
+  .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-frame{
+    margin:0 8px 8px;
+  }
+  .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photo{
+    width:clamp(138px,58%,225px);
+    height:clamp(182px,81%,291px);
+  }
+  .app-shell[data-destination='journey'] .journey-page[data-journey-coverflow="on"] .journey-photo-caption{bottom:3px}
+}
