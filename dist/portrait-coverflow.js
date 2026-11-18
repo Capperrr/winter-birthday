@@ -136,6 +136,7 @@
   });
   // Horizontal gesture only: vertical swipes retain native dialog scrolling.
   stage.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='touch')return; // Native touch handling below
     if(!dialog.open||event.target.closest('.portrait-coverflow-dots'))return;
     if(event.pointerType==='mouse'&&event.button!==0)return;
     if(dragging)return;
@@ -196,6 +197,59 @@
   stage.addEventListener('lostpointercapture',()=>{
     if(dragging?.moved){dragging=null;position=index;stage.classList.remove('is-dragging');update(true)}
   });
+
+  // iPad touchscreen gestures: the browser may cancel pointer events when
+  // scrolling. Native touchmove, explicitly non-passive, keeps light swipes.
+  let finger=null;
+  function findTouch(touches,id){
+    for(let n=0;n<touches.length;n++)if(touches[n].identifier===id)return touches[n];
+    return null;
+  }
+  stage.addEventListener('touchstart',event=>{
+    if(!dialog.open||event.touches.length!==1||finger||event.target.closest('.portrait-coverflow-dots'))return;
+    const t=event.changedTouches[0];
+    finger={id:t.identifier,startX:t.clientX,startY:t.clientY,
+      lastX:t.clientX,lastTime:performance.now(),velocity:0,horizontal:false,vertical:false};
+  },{passive:true});
+  stage.addEventListener('touchmove',event=>{
+    const p=finger;
+    if(!p||event.touches.length!==1||p.vertical)return;
+    const t=findTouch(event.touches,p.id);
+    if(!t)return;
+    const dx=t.clientX-p.startX,dy=t.clientY-p.startY;
+    if(!p.horizontal){
+      if(Math.abs(dy)>8&&Math.abs(dy)>Math.abs(dx)*1.2){p.vertical=true;return}
+      if(Math.abs(dx)<3||Math.abs(dx)<Math.abs(dy)*.9)return;
+      p.horizontal=true;stage.classList.add('is-dragging');
+    }
+    if(event.cancelable)event.preventDefault();
+    const now=performance.now(),dt=Math.max(9,now-p.lastTime);
+    p.velocity=p.velocity*.67+((t.clientX-p.lastX)/dt)*.33;
+    p.lastX=t.clientX;p.lastTime=now;
+    position=index-dx/spacing();
+    schedule();
+  },{passive:false});
+  function endTouch(event,cancelled=false){
+    if(!finger)return;
+    const t=findTouch(event.changedTouches,finger.id);
+    if(!t)return;
+    const p=finger;finger=null;
+    if(!p.horizontal){stage.classList.remove('is-dragging');return}
+    stage.classList.remove('is-dragging');
+    suppressClick=true;
+    clearTimeout(suppressTimer);
+    suppressTimer=setTimeout(()=>{suppressClick=false},480);
+    const dx=t.clientX-p.startX;
+    let steps=cancelled?0:Math.round(-(dx+p.velocity*98)/spacing());
+    if(!cancelled&&steps===0&&Math.abs(dx)>=12)steps=dx>0?-1:1;
+    steps=Math.max(-2,Math.min(2,steps));
+    if(pending){cancelAnimationFrame(pending);pending=0}
+    if(steps) pins[(index+steps+count)%count].click();
+    else{position=index;update(true)}
+  }
+  stage.addEventListener('touchend',e=>endTouch(e),{passive:true});
+  stage.addEventListener('touchcancel',e=>endTouch(e,true),{passive:true});
+
   stage.addEventListener('click',event=>{
     if(!suppressClick)return;
     suppressClick=false;
