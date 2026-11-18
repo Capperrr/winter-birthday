@@ -101,6 +101,7 @@
   });
 
   frame.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='touch')return;
     if(!isActive()||drag||e.isPrimary===false||(e.pointerType==='mouse'&&e.button!==0))return;
     drag={
       id:e.pointerId,
@@ -152,6 +153,62 @@
   frame.addEventListener('lostpointercapture',()=>{
     if(drag?.horizontal){drag=null;visual=index;frame.dataset.dragging='false';render()}
   });
+
+  // iPad native touch recognizer: respond to gentle horizontal swipes,
+  // preserve vertical page scroll, and keep the Journey text synchronized.
+  let finger=null;
+  function findFinger(list,id){
+    for(let n=0;n<list.length;n++)if(list[n].identifier===id)return list[n];
+    return null;
+  }
+  frame.addEventListener('touchstart',e=>{
+    if(!isActive()||e.touches.length!==1||finger)return;
+    const t=e.changedTouches[0];
+    finger={id:t.identifier,x:t.clientX,y:t.clientY,lastX:t.clientX,
+      lastT:performance.now(),velocity:0,horizontal:false,vertical:false};
+  },{passive:true});
+  frame.addEventListener('touchmove',e=>{
+    const p=finger;
+    if(!p||e.touches.length!==1||p.vertical||!isActive())return;
+    const t=findFinger(e.touches,p.id);
+    if(!t)return;
+    const dx=t.clientX-p.x,dy=t.clientY-p.y;
+    if(!p.horizontal){
+      if(Math.abs(dy)>8&&Math.abs(dy)>Math.abs(dx)*1.2){p.vertical=true;return;}
+      if(Math.abs(dx)<3||Math.abs(dx)<Math.abs(dy)*.9)return;
+      p.horizontal=true;
+      frame.dataset.dragging='true';
+    }
+    if(e.cancelable)e.preventDefault();
+    const now=performance.now(),dt=Math.max(9,now-p.lastT);
+    p.velocity=p.velocity*.65+((t.clientX-p.lastX)/dt)*.35;
+    p.lastX=t.clientX;p.lastT=now;
+    let next=index-dx/step();
+    if(next<0)next*=.2;
+    if(next>4)next=4+(next-4)*.2;
+    visual=next;
+    schedule();
+  },{passive:false});
+  function finishFinger(e,cancelled=false){
+    if(!finger)return;
+    const t=findFinger(e.changedTouches,finger.id);
+    if(!t)return;
+    const p=finger;finger=null;
+    if(!p.horizontal){frame.dataset.dragging='false';return}
+    frame.dataset.dragging='false';
+    suppressClick=true;
+    clearTimeout(suppressHandle);
+    suppressHandle=setTimeout(()=>{suppressClick=false},480);
+    const dx=t.clientX-p.x;
+    let steps=cancelled?0:Math.round(-(dx+p.velocity*98)/step());
+    if(!cancelled&&steps===0&&Math.abs(dx)>=12)steps=dx>0?-1:1;
+    steps=Math.max(-2,Math.min(2,steps));
+    if(frameToken){cancelAnimationFrame(frameToken);frameToken=0}
+    request(index+steps);
+  }
+  frame.addEventListener('touchend',e=>finishFinger(e),{passive:true});
+  frame.addEventListener('touchcancel',e=>finishFinger(e,true),{passive:true});
+
   frame.addEventListener('click',e=>{
     if(!suppressClick)return;
     suppressClick=false;
