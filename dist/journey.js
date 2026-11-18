@@ -88,10 +88,11 @@
     next.setAttribute('aria-label',index===stops.length-1?'继续阅读相遇之后的后记':'前往下一站');
     afterwordTrigger.hidden = index !== stops.length-1;
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
-    photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected)); });
+    photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected && page.dataset.journeyCoverflow !== 'on')); });
     range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
     updatePhotoFallback(); updateNotePreview();
     if (announce) status.textContent = '第' + (index+1) + '站，共5站。' + stop.period + '，' + stop.title + '。';
+    page.dispatchEvent(new CustomEvent('winter:journey-stop',{detail:{index,animate}}));
     if (animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
   }
   function paint(value) {
@@ -131,7 +132,7 @@
   }
   function stopMotion() { cancelSpring(); releaseSwipe(); cancelText(); velocity = 0; goal = index; paint(index); }
   function swipeStart(event) {
-    if (!active || disposed || swipe || noteDialog.open || credits.open || event.isPrimary === false || (event.button !== undefined && event.button !== 0) || event.target.closest?.('a,button,input,textarea')) return;
+    if (page.dataset.journeyCoverflow === 'on' || !active || disposed || swipe || noteDialog.open || credits.open || event.isPrimary === false || (event.button !== undefined && event.button !== 0) || event.target.closest?.('a,button,input,textarea')) return;
     cancelSpring(); goal = index; paint(index);
     swipe = { id:event.pointerId, x:event.clientX, y:event.clientY, lastX:event.clientX, width:frame.getBoundingClientRect().width, horizontal:false };
   }
@@ -164,6 +165,10 @@
     else { editing = null; closeNotes(); closeCredits(); }
   }
 
+  listen(page,'winter:journey-select-stop',event => {
+    const target=Number(event.detail?.index);
+    if (Number.isFinite(target)) selectStop(target);
+  });
   stopButtons.forEach(button => listen(button,'click',() => selectStop(Number(button.dataset.journeyStop))));
   listen(previous,'click',() => selectStop(index-1));
   listen(next,'click',() => {
