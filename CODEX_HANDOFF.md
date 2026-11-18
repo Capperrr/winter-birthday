@@ -29,12 +29,12 @@ git rev-parse HEAD
 - 照片需要完整显示、不可裁切成白色相框；草地静态、文字可读；`prefers-reduced-motion` 和 iPad 竖屏优先。更改资源时更新 `dist/index.html` 的查询参数。
 - 正式网站 `main` 仍禁止未经授权修改；此交接描述**预览分支**。
 
-## 2026-11-18 · 深色 About Me 开场 + Home 2.5D 景深
+## 2026-11-18 · 深色 About Me 开场 + Home 恢复静态照片
 
-- About Me 第一幕的七张照片 Coverflow 已升级为深蓝黑色电影感摄影展，样式在 `dist/about-entry.css` 中按 `data-about-theme="night"` 限定；`dist/about-entry.js` 在开场设为 night，翻到“25”便利贴时切回 paper。**纸张便利贴必须保持原暖色、不改内容和保存方式**，七张真实照片保持原色。
-- Home 加入 `dist/living-depth.js` 与 `dist/living-depth.css`：复制原山景图片做 0–61% 高度渐隐的远景空间层（仅微量视差）、分层散射光和薄雾。**原始整张瑞士照片始终固定，特别是草地绝不移动**。不会加入假草、改变真实山峰或复刻整片 WebGL 场景。
-- 该设计是轻量 **2.5D photographic parallax**，不是完整三维山体模型；有 `prefers-reduced-motion` 降级，只在 Home 有效。Morning/Night 和既有水波纹应完整保留。
-- 更改这些文件后，须更新 `dist/index.html` 的缓存查询参数；真实 iPad 检验交互与性能，不要把部署 READY 当成设备测试通过。
+- About Me 第一幕是深蓝黑色电影感七张照片摄影展，`dist/about-entry.css` 中以 `data-about-theme="night"` 限定；进入「25」便利贴时切回原暖色纸张，保留原照片、文字和保存机制。
+- **最新用户指示：取消 Home 新加的所有 2.5D 景深 / Parallax。** `dist/living-depth.js` 与 `dist/living-depth.css` 已删除，`dist/index.html` 不再引用它们。不要擅自恢复远山复制图层、跟随指针的景深与视差效果。
+- Home 保留原瑞士真实静态山野照片、Morning/Night、柔和云雾与昼夜光影、切换光波和原文字。草地不动。
+- iPad 实测仍需进行；Vercel READY 不是设备测试通过。
 
 ## 当前已整合的完整交互（不是单独展示 demo）
 
