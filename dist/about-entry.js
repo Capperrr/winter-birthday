@@ -238,11 +238,13 @@
   function showIntro(reset=true){
     if(reset){selected=3;position=3}
     about.dataset.aboutMode='intro';
+    shell.dataset.aboutTheme='night';
     about.scrollTop=0;
     setCardPositions();
   }
   function showNotes(){
     about.dataset.aboutMode='notes';
+    shell.dataset.aboutTheme='paper';
     about.scrollTop=0;
     const heading=notesHeading.querySelector('h2');
     heading?.setAttribute('tabindex','-1');
