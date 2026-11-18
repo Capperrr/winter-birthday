@@ -21,6 +21,14 @@ git rev-parse HEAD
 
 如果 Codex 云环境无法切换分支，应在 Codex 的仓库/分支选择器中明确选择 `Capperrr/winter-birthday` 和 `preview/living-landscape-home-20261116`；绝不将过时的 `main` 视作最新版。
 
+## 2026-11-18 · About Me 与 Journey 双 3D Coverflow 更新
+
+- **About Me 顺序**：点 About Me 首先进入由 `dist/about-entry.js`、`dist/about-entry.css` 提供的七张真实照片 3D Coverflow 开场。点击“翻开下一页 · 25 岁的便利贴”后才进入原本用 22 张可编辑便利贴排成“25”的页面。再次点击 About Me 或便利贴顶部返回按钮，可以回到七张照片。原照片点击放大的弹窗依然保留。**星空后 19 张照片墙是完全不同的模块，绝不能搬到 About Me 开场。**
+- **Journey**：`dist/journey-coverflow.js`、`dist/journey-coverflow.css` 将五站照片变成独立、无白色底板、无胶带的 3D 拖动卡片；右边轻薄玻璃信笺保持视觉独立，并在每次站点切换时同步标题、正文、提问和签名；底部进度导航/留给 Gwen 的文字原功能保留。`dist/journey.js` 通过 `winter:journey-select-stop` 和 `winter:journey-stop` 两个事件与新 3D 浏览交互同步，避免生成第二份错位文案数据。
+- **仅选择少量效果**：Journey 侧重 3D Coverflow，右侧透明玻璃只加入非常轻的鼠标聚光、不到 2.4 度的 3D 倾斜。不要添加持续运行的流光边框、光标拖尾、极光背景、乱码打字或新拟态按钮。iPad 触摸不触发玻璃鼠标聚光。
+- 照片需要完整显示、不可裁切成白色相框；草地静态、文字可读；`prefers-reduced-motion` 和 iPad 竖屏优先。更改资源时更新 `dist/index.html` 的查询参数。
+- 正式网站 `main` 仍禁止未经授权修改；此交接描述**预览分支**。
+
 ## 当前已整合的完整交互（不是单独展示 demo）
 
 ### Home
