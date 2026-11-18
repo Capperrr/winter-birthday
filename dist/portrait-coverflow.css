@@ -1,0 +1,279 @@
+/* WINTER / About Me — seven-moment 3D Coverflow.
+   Only the opened photo viewer changes; the hand-pinned wall stays intact. */
+.portrait-lightbox[data-coverflow="on"]{
+  box-sizing:border-box;
+  width:min(935px,calc(100vw - 26px));
+  max-width:935px;
+  max-height:calc(100dvh - 26px);
+  padding:clamp(12px,2.1vw,24px) clamp(12px,2.5vw,29px) clamp(15px,2.6vw,27px);
+  overflow-x:hidden;
+  overflow-y:auto;
+  border:1px solid rgba(244,236,225,.49);
+  border-radius:clamp(16px,2.1vw,26px);
+  background:
+    radial-gradient(ellipse 63% 60% at 52% 32%,rgba(175,167,206,.37),transparent 85%),
+    linear-gradient(135deg,rgba(19,34,47,.96),rgba(35,46,63,.96) 56%,rgba(30,39,49,.98));
+  color:#f4f0e8;
+  box-shadow:0 38px 130px rgba(5,12,23,.80),inset 0 1px rgba(255,255,255,.13);
+  -webkit-backdrop-filter:blur(24px) saturate(112%);
+  backdrop-filter:blur(24px) saturate(112%);
+}
+.portrait-lightbox[data-coverflow="on"]::backdrop{
+  background:rgba(6,17,27,.80);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-head{
+  position:relative;z-index:3;
+  margin-bottom:2px;
+  color:#d6d8da;
+  letter-spacing:.17em;
+}
+.portrait-lightbox[data-coverflow="on"] #portrait-close{
+  color:#fff8ef;
+  border:1px solid rgba(255,255,255,.3);
+  background:rgba(237,245,249,.12);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+.portrait-lightbox[data-coverflow="on"] #portrait-close:hover{
+  background:rgba(237,245,249,.24);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-print{
+  position:relative;
+  box-sizing:border-box;
+  width:100%;
+  max-width:none;
+  margin:0 auto;
+  padding:0;
+  background:transparent;
+  box-shadow:none;
+  transform:none;
+  isolation:isolate;
+}
+.portrait-lightbox[data-coverflow="on"] #portrait-large-image{display:none!important}
+.portrait-coverflow{
+  --portrait-aura:rgba(185,183,217,.30);
+  position:relative;
+  width:100%;
+  height:clamp(275px,48svh,472px);
+  overflow:hidden;
+  touch-action:pan-y pinch-zoom;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  perspective:1100px;
+  perspective-origin:50% 50%;
+  cursor:grab;
+  border-radius:clamp(12px,1.6vw,21px);
+  background:
+    radial-gradient(ellipse 48% 54% at 50% 48%,var(--portrait-aura),transparent 84%),
+    radial-gradient(ellipse 95% 100% at 50% 105%,rgba(202,195,217,.13),transparent 64%);
+  transition:background-color 550ms ease;
+}
+.portrait-coverflow.is-dragging{cursor:grabbing}
+.portrait-coverflow::before{
+  content:'';
+  position:absolute;
+  inset:8% 0 18%;
+  z-index:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse 48% 42% at 50% 58%,rgba(246,231,217,.15),transparent 78%);
+  filter:blur(18px);
+}
+.portrait-coverflow::after{
+  content:'';
+  position:absolute;
+  z-index:1;
+  pointer-events:none;
+  left:6%;right:6%;bottom:11%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(240,239,239,.16) 32%,rgba(240,239,239,.16) 68%,transparent);
+}
+.portrait-coverflow-cards{
+  position:absolute;
+  inset:0;
+  perspective:1100px;
+  transform-style:preserve-3d;
+}
+.portrait-coverflow-card{
+  --portrait-transform:translate3d(-50%,-50%,0) rotateY(0deg) scale(1);
+  position:absolute;
+  top:47%;
+  left:50%;
+  z-index:var(--portrait-z,1);
+  display:flex;
+  flex-direction:column;
+  width:clamp(152px,23.5vw,233px);
+  padding:clamp(7px,.72vw,10px);
+  padding-bottom:clamp(11px,1vw,16px);
+  margin:0;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.44);
+  border-radius:15px;
+  background:linear-gradient(145deg,rgba(240,239,246,.65),rgba(213,215,229,.45));
+  box-shadow:
+    0 23px 55px rgba(2,15,27,.31),
+    0 7px 19px rgba(6,19,32,.24),
+    inset 0 1px rgba(255,255,255,.68);
+  color:#f7f4f2;
+  cursor:pointer;
+  transform:var(--portrait-transform);
+  transform-style:preserve-3d;
+  transform-origin:center center;
+  opacity:var(--portrait-opacity,1);
+  filter:blur(var(--portrait-blur,0px)) saturate(var(--portrait-saturate,1));
+  scale:1!important;
+  transition:
+    transform 760ms cubic-bezier(.2,1.15,.22,1),
+    opacity 380ms ease,
+    filter 490ms ease,
+    box-shadow 460ms ease;
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.portrait-coverflow.is-dragging .portrait-coverflow-card{
+  transition:none!important;
+}
+.portrait-coverflow-card[data-selected="true"]{
+  background:linear-gradient(140deg,rgba(255,255,255,.90),rgba(236,239,248,.74));
+  border-color:rgba(255,253,248,.85);
+  box-shadow:
+    0 28px 65px rgba(0,10,27,.48),
+    0 10px 26px rgba(7,19,40,.27),
+    inset 0 1px rgba(255,255,255,.93);
+}
+.portrait-coverflow-photo{
+  display:block;
+  width:100%;
+  aspect-ratio:4/5;
+  flex:none;
+  border-radius:9px;
+  background-color:rgba(202,205,220,.33);
+  background-image:image-set(
+    url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),
+    url('assets/winter-photo-sheet.webp') type('image/webp'));
+  background-size:400% 200%;
+  background-repeat:no-repeat;
+  background-position:var(--tile-x,0%) var(--tile-y,0%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);
+  pointer-events:none;
+}
+.portrait-coverflow-card[data-index="1"] .portrait-coverflow-photo{
+  background-image:url('assets/winter-about-second-photo.webp');
+  background-size:cover;
+  background-position:center;
+}
+.portrait-coverflow-card-title{
+  display:block;
+  overflow:hidden;
+  padding:clamp(8px,1vw,11px) 2px 0;
+  color:#254252;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font:500 clamp(13px,1.65vw,18px)/1.2 'Caveat',cursive;
+  text-align:center;
+  pointer-events:none;
+}
+.portrait-coverflow-card-subtitle{
+  display:block;
+  overflow:hidden;
+  padding-top:3px;
+  color:#4b5b69;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font:400 clamp(9px,1.1vw,11px)/1.45 var(--cn-serif);
+  text-align:center;
+  pointer-events:none;
+}
+.portrait-coverflow-card[data-selected="true"] .portrait-coverflow-card-title{color:#17394e}
+.portrait-coverflow-card[data-selected="true"] .portrait-coverflow-card-subtitle{color:#3b5361}
+.portrait-coverflow-card:focus-visible{
+  outline:2px solid #f7ecd6;
+  outline-offset:4px;
+}
+.portrait-coverflow-dots{
+  position:absolute;
+  z-index:25;
+  bottom:4%;
+  left:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transform:translateX(-50%);
+}
+.portrait-coverflow-dot{
+  display:block;
+  width:8px;
+  height:8px;
+  min-width:8px;
+  min-height:8px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(231,232,238,.35);
+  box-shadow:none;
+  cursor:pointer;
+  transition:background-color 260ms ease,width 320ms cubic-bezier(.2,.9,.2,1);
+}
+.portrait-coverflow-dot[aria-current="true"]{
+  width:25px;
+  border-radius:12px;
+  background:rgba(250,246,234,.89);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-title{
+  margin-top:8px;
+  color:#fff4e5;
+  font-size:clamp(25px,3vw,36px);
+  text-shadow:0 2px 15px rgba(0,0,0,.27);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-zh{
+  margin:2px 0 0;
+  color:#e1e2e3;
+  font-size:clamp(10px,1.2vw,13px);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-controls{
+  width:min(550px,100%);
+  margin:14px auto 0;
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-controls button{
+  border:1px solid rgba(241,239,236,.27);
+  background:rgba(241,243,245,.10);
+  color:#f5f3f2;
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-controls button:hover{
+  background:rgba(241,243,245,.22);
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-controls span{
+  color:#f0eadd;
+  letter-spacing:.13em;
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-lightbox-hint{
+  color:#c2ced1;
+  font-size:11px;
+  margin-top:10px;
+}
+.portrait-lightbox[data-coverflow="on"] .portrait-coverflow-card:active,
+.portrait-lightbox[data-coverflow="on"] .portrait-coverflow-dot:active{scale:1!important}
+@media(max-width:600px){
+  .portrait-lightbox[data-coverflow="on"]{padding:11px 9px 16px}
+  .portrait-coverflow{height:clamp(255px,47svh,390px)}
+  .portrait-coverflow-card{width:clamp(150px,43vw,188px);padding:6px 6px 11px}
+  .portrait-coverflow-card-title{font-size:16px}
+  .portrait-coverflow-card-subtitle{font-size:10px}
+  .portrait-lightbox[data-coverflow="on"] .portrait-lightbox-controls button{font-size:10px;padding:8px 11px}
+  .portrait-coverflow-dots{bottom:2.5%}
+}
+@media(max-height:570px){
+  .portrait-coverflow{height:clamp(230px,50svh,315px)}
+  .portrait-coverflow-card{width:clamp(135px,18vw,170px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .portrait-lightbox[data-coverflow="on"] .portrait-coverflow-card,
+  .portrait-lightbox[data-coverflow="on"] .portrait-coverflow-dot{transition:none!important}
+}
