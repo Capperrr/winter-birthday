@@ -147,7 +147,7 @@
       envelopeStage.inert = true;
     }
     document.querySelector('meta[name="theme-color"]').content = route === 'finale' ? '#f3eee4' : route === 'afterword' ? '#1c2b3a' : route === 'journey' ? '#f0efe9' : route === 'cake' ? '#16282a' : ['unlock', 'letter'].includes(route) ? '#eee7d4' : page === 'about' ? '#eae7d9' : page === 'destination' ? '#a0acb9' : '#193b31';
-    document.title = route === 'finale' ? '很荣幸参与你的25岁 — WINTER' : route === 'afterword' ? '而我偏偏在那里遇见了你 — WINTER' : route === 'journey' ? '你走过的路，我们走一遍 — WINTER & GWEN' : route === 'cake' ? '为你点亮生日 — WINTER' : route === 'letter' ? '两个国家，都有和你一起的时光 — WINTER' : route === 'unlock' ? 'Happy ____ WINTERRRR' : page === 'about' ? '写给25岁的自己 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
+    document.title = route === 'finale' ? '很荣幸参与你的25岁 — WINTER' : route === 'afterword' ? '而我偏偏在那里遇见了你 — WINTER' : route === 'journey' ? '你走过的路，我陪你再走一遍 — WINTER & GWEN' : route === 'cake' ? '为你点亮生日 — WINTER' : route === 'letter' ? '两个国家，都有和你一起的时光 — WINTER' : route === 'unlock' ? 'Happy ____ WINTERRRR' : page === 'about' ? '写给25岁的自己 — WINTER' : page === 'destination' ? '一封生日来信 — WINTER' : 'For WINTER — 生日快乐';
     if ((previousRoute === 'cake') !== (route === 'cake')) document.dispatchEvent(new CustomEvent('winter:celebration-route', { detail: { active: route === 'cake' } }));
     if ((previousRoute === 'journey') !== (route === 'journey')) document.dispatchEvent(new CustomEvent('winter:journey-route', { detail: { active: route === 'journey' } }));
     if (updateHistory && location.hash !== '#' + route) history.pushState(null, '', '#' + route);
