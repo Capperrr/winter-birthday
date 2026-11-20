@@ -98,7 +98,7 @@
     if(!viewport.height||!rect.height)return;
     const target=page.scrollTop+rect.top-viewport.top-Math.min(110,viewport.height*.14);
     storyNavigationUntil=performance.now()+(smooth?900:160);
-    page.scrollTo({top:Math.max(0,target),behavior:smooth&&!calm()?'smooth':'instant'});
+    page.scrollTo({top:Math.max(0,target),behavior:smooth&&!calm()?'smooth':'auto'});
   }
   function watchStoryScroll(){
     storyScrollFrame=0;
