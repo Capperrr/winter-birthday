@@ -27,6 +27,81 @@
     { key:'southampton', label:'南安普顿', chapter:'ACROSS THE SEA', period:'硕士 · 英国南安普顿', title:'南安普顿大学', fact:'University of Southampton', photo:'southampton', caption:'南安普顿大学 · Highfield 校区影像', credit:'Roger Davies · CC BY-SA 2.0', prose:'后来，你走到了南安普顿。在今年，我跟你一起也走到了南安普顿。读书之外的日子，你热爱生活，带着好奇心去探索这个世界。我想听你慢慢讲。我总在你的照片里看见充满了生命力的你，这让我很是喜欢。', question:'在南安普顿，哪一片、哪一天的天空最让你想念？', english:'Somehow, our paths led us here together.' },
     { key:'qide', label:'相遇', chapter:'WHERE OUR STORY BEGAN', period:'相遇 · 深圳南山', title:'天利名城 · 启德', fact:'你来到深圳工作的地方，也是我认识你的地方', photo:'together', caption:'深圳 · 夜色里的街景', credit:'珍藏影像', prose:'走到这里，终于也是我在场的一页。毕业后的这两年，你来到深圳工作，也是在这里我认识了你。从相遇这一页开始，想和你一起走到 destination。', question:'如果把我们相遇的日子留在这一页，你最想写下哪一个瞬间？', english:'Of all the places, I am glad I met you here.' }
   ];
+
+  // Five chapters are rendered from this *same* stops array. On wide screens
+  // the real page scrolls past these letters while the left 3D photos stick.
+  // On narrow screens the original single-letter view remains scroll-friendly.
+  const story=document.createElement('div');
+  story.className='journey-sticky-story';
+  story.setAttribute('aria-label','五段旅程的滚动来信');
+  const storyPanels=stops.map((stop,i)=>{
+    const section=document.createElement('section');
+    section.className='journey-story-card';
+    section.dataset.storyStop=String(i);
+    const headingId='journey-story-heading-'+i;
+    section.setAttribute('aria-labelledby',headingId);
+    function add(tag,cls,txt,parent=section){
+      const el=document.createElement(tag);el.className=cls;el.textContent=txt;parent.append(el);return el;
+    }
+    add('p','journey-chapter',String(i+1).padStart(2,'0')+' / 05 · '+stop.chapter);
+    add('p','journey-period',stop.period);
+    const heading=add('h3','',stop.title);heading.id=headingId;
+    if(stop.fact)add('p','journey-fact',stop.fact);
+    add('p','journey-prose',stop.prose);
+    const question=document.createElement('div');
+    question.className='journey-question';add('span','', '我想知道',question);
+    add('p','',stop.question,question);section.append(question);
+    const signature=document.createElement('p');
+    signature.className='journey-signature';
+    const line=document.createElement('span');line.textContent=stop.english;
+    const signed=document.createElement('span');signed.textContent=' — Gwen';
+    signature.append(line,signed);section.append(signature);
+    const write=add('button','journey-story-write','把这一段，慢慢讲给 Gwen');
+    write.type='button';
+    write.setAttribute('aria-label','为'+stop.period+'这一站留言');
+    write.addEventListener('click',()=>{
+      selectStop(i,false,'story');
+      noteButton.click();
+    });
+    const saved=add('p','journey-story-saved','');
+    saved.hidden=true;
+    story.append(section);
+    return {section,saved};
+  });
+  body.before(story);
+  page.dataset.stickyStory='on';
+  const storyMedia=window.matchMedia('(min-width:761px)');
+  let storyNavigationUntil=0;
+  let storyScrollFrame=0;
+  function canStory(){return storyMedia.matches&&!page.hidden&&active&&!disposed;}
+  function moveToStory(i,smooth){
+    if(!canStory())return;
+    const viewport=page.getBoundingClientRect();
+    const rect=storyPanels[i].section.getBoundingClientRect();
+    if(!viewport.height||!rect.height)return;
+    const target=page.scrollTop+rect.top-viewport.top-Math.min(110,viewport.height*.14);
+    storyNavigationUntil=performance.now()+(smooth?900:160);
+    page.scrollTo({top:Math.max(0,target),behavior:smooth&&!calm()?'smooth':'instant'});
+  }
+  function watchStoryScroll(){
+    storyScrollFrame=0;
+    if(!canStory()||noteDialog.open||credits.open||performance.now()<storyNavigationUntil)return;
+    const bounds=page.getBoundingClientRect(),readingLine=bounds.top+bounds.height*.50;
+    let nearest=0,distance=Infinity;
+    storyPanels.forEach(({section},i)=>{
+      const r=section.getBoundingClientRect();
+      const gap=Math.abs((r.top+r.bottom)/2-readingLine);
+      if(gap<distance){distance=gap;nearest=i}
+    });
+    if(nearest!==index)selectStop(nearest,true,'story');
+  }
+  listen(page,'scroll',()=>{
+    if(!storyScrollFrame)storyScrollFrame=requestAnimationFrame(watchStoryScroll);
+  },{passive:true});
+  listen(story,'pointerdown',()=>{storyNavigationUntil=0},{passive:true});
+  listen(story,'touchstart',()=>{storyNavigationUntil=0},{passive:true});
+  listen(page,'wheel',()=>{storyNavigationUntil=0},{passive:true});
+
   // Retain legacy note IDs so previous browser notes are not discarded.
   const allowedKeys = ['dazhou','dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
   const notes = Object.create(null);
@@ -63,6 +138,11 @@
     const preview = byId('journey-saved-preview');
     preview.hidden = !answer;
     preview.textContent = answer ? '你留在这里的话：' + answer.replace(/\s+/g,' ').slice(0,42) + (answer.length > 42 ? '…' : '') : '';
+    storyPanels.forEach(({saved},i)=>{
+      const note=notes[stops[i].key]||'';
+      saved.hidden=!note;
+      saved.textContent=note?'你留在这里的话：'+note:'';
+    });
   }
   function updatePhotoFallback() { byId('journey-photo-fallback').hidden = !brokenPhotos.has(stops[index].photo); }
   function renderStop(value, animate = true, announce = true) {
@@ -112,13 +192,14 @@
     if (Math.abs(goal-position) < .0006 && Math.abs(velocity) < .006) { paint(goal); velocity = 0; lastSpring = null; return; }
     springFrame = requestAnimationFrame(spring);
   }
-  function selectStop(value, animate = true) {
+  function selectStop(value, animate = true, source='controls') {
     if (!active || disposed || noteDialog.open || credits.open) return;
     releaseSwipe();
     const target = Math.max(0,Math.min(stops.length-1,Math.round(value)));
     cancelSpring();
     if (target !== index) renderStop(target,animate);
     goal = target;
+    if(source!=='story')moveToStory(target,animate);
     if (!animate || calm() || document.hidden || Math.abs(position-goal) < .0001) { paint(goal); velocity = 0; return; }
     springFrame = requestAnimationFrame(spring);
   }
@@ -161,7 +242,8 @@
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     stopMotion();
-    if (active) renderStop(index,false,false);
+    if (active) { renderStop(index,false,false); storyNavigationUntil=0; }
+    else if(storyScrollFrame){cancelAnimationFrame(storyScrollFrame);storyScrollFrame=0;}
     else { editing = null; closeNotes(); closeCredits(); }
   }
 
