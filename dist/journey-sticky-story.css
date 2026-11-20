@@ -184,3 +184,148 @@
 @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
  .app-shell[data-destination="journey"] .journey-story-card{background:rgba(232,243,244,.90)}
 }
+
+
+/* 2026-11-20 · FINAL JOURNEY CLEANUP
+   Remove the enormous rectangular glass footer seen on iPad.
+   The controls remain available, but no glass plate sits behind them.
+   The final afterword prompt lives OUTSIDE the progress navigation. */
+.app-shell[data-destination="journey"] .journey-page .journey-navigation{
+  position:relative;
+  z-index:4;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  margin:clamp(14px,3svh,28px) auto clamp(8px,2svh,22px)!important;
+  padding:clamp(10px,2svh,18px) clamp(8px,1.6vw,20px)!important;
+  border:none!important;
+  border-top:1px solid rgba(232,243,237,.22)!important;
+  border-radius:0!important;
+  background:none!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  isolation:isolate;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-navigation::before,
+.app-shell[data-destination="journey"] .journey-page .journey-navigation::after{
+  display:none!important;
+}
+/* Keep the original manual station navigation, but not a bulky panel. */
+.app-shell[data-destination="journey"] .journey-page .journey-navigation-top,
+.app-shell[data-destination="journey"] .journey-page .journey-track,
+.app-shell[data-destination="journey"] .journey-page .journey-stops,
+.app-shell[data-destination="journey"] .journey-page .journey-bottomline{
+  position:relative;
+  max-width:100%;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-bottomline{
+  border-top:0;
+  margin-top:clamp(10px,1.5svh,17px);
+}
+.app-shell[data-destination="journey"] .journey-page .journey-next-chapter[hidden]{
+  display:none!important;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-next-chapter{
+  box-sizing:border-box;
+  width:min(100%,780px);
+  flex:0 0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(7px,1.2svh,14px);
+  margin:clamp(15px,4svh,40px) auto clamp(27px,6svh,65px);
+  padding:clamp(16px,3svh,28px) 15px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  text-align:center;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-next-overline{
+  margin:0;
+  color:rgba(233,242,234,.78);
+  font:500 10px/1.8 var(--sans);
+  letter-spacing:.22em;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-next-message{
+  margin:0;
+  color:#fffaf0;
+  font:400 clamp(21px,2.4vw,33px)/1.65 var(--cn-serif);
+  letter-spacing:.055em;
+  text-shadow:0 2px 14px rgba(6,23,28,.37);
+}
+.app-shell[data-destination="journey"] .journey-page .journey-afterword-trigger{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(13px,2vw,21px);
+  width:auto;
+  max-width:100%;
+  min-width:145px;
+  min-height:47px;
+  margin:clamp(5px,1svh,11px) 0 0;
+  padding:11px 23px;
+  border:1px solid rgba(244,242,231,.69);
+  border-radius:999px;
+  background:rgba(248,249,243,.93);
+  color:#264850;
+  box-shadow:0 5px 18px rgba(5,27,33,.13);
+  font:500 12px/1.6 var(--cn-serif);
+  letter-spacing:.08em;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:transform .22s ease,background-color .22s ease,box-shadow .22s ease;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-afterword-trigger>span{
+  font-size:18px;
+}
+.app-shell[data-destination="journey"] .journey-page .journey-afterword-trigger:hover{
+  background:#fffdf7;
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(5,27,33,.16);
+}
+.app-shell[data-destination="journey"] .journey-page .journey-afterword-trigger:focus-visible{
+  outline:2px solid #fff7db;
+  outline-offset:4px;
+}
+/* The photograph gently leaves the stage when the footer enters, instead
+   of floating over the progress controls as in the reported iPad screenshot. */
+@media(min-width:761px){
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"][data-reading-end="true"] .journey-frame{
+   opacity:0;
+   pointer-events:none;
+   transition:opacity .38s ease!important;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-frame{
+   transition:opacity .38s ease;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-navigation{
+   grid-area:rail;
+   align-self:start;
+ }
+}
+/* Restore room to read and operate on smaller iPad/mobile viewports. */
+@media(max-width:760px){
+ .app-shell[data-destination="journey"] .journey-page .journey-navigation{
+   margin:10px 0 0!important;
+   padding:17px 7px 5px!important;
+ }
+ .app-shell[data-destination="journey"] .journey-page .journey-next-chapter{
+   margin-top:12px;
+   padding:20px 15px 36px;
+ }
+ .app-shell[data-destination="journey"] .journey-page .journey-next-message{
+   font-size:clamp(21px,5.6vw,26px);
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .app-shell[data-destination="journey"] .journey-page .journey-frame,
+ .app-shell[data-destination="journey"] .journey-page .journey-afterword-trigger{
+   transition:none!important;
+ }
+}
