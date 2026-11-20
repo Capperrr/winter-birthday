@@ -30,11 +30,10 @@
   <link rel="stylesheet" href="gesture-controls.css?v=gesture-01">
   <link rel="stylesheet" href="winter-refinement.css?v=art-touch-20261116">
   <link rel="stylesheet" href="living-home.css?v=header-toggle-20261117">
-  <link rel="stylesheet" href="winter-spatial-depth.css?v=sharp-parallax-20261120-2">
   <link rel="stylesheet" href="living-water.css?v=lake-light-wave-20261117">
   <link rel="stylesheet" href="cake-five-candles.css?v=pinch-hint-20261117">
   <link rel="stylesheet" href="journey-coverflow.css?v=lower-complete-photos-20261119">
-  <link rel="stylesheet" href="journey-sticky-story.css?v=chapter-scroll-20261120">
+  <link rel="stylesheet" href="journey-sticky-story.css?v=chapter-scroll-20261120-clean">
   <link rel="stylesheet" href="about-entry.css?v=midnight-gallery-20261118">
   <link rel="stylesheet" href="cosmos-glass-album.css?v=constellation-20261120">
   <script src="app.js?v=journey-title-20261119" defer></script>
@@ -44,7 +43,6 @@
   <script src="journey-coverflow.js?v=ipad-touch-20261118" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="living-home.js?v=header-toggle-20261117" defer></script>
-  <script src="winter-spatial-depth.js?v=sharp-parallax-20261120" defer></script>
   <script src="living-interactions.js?v=home-touch-type-1" defer></script>
   <script src="living-water.js?v=lake-light-wave-20261117" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
@@ -523,10 +521,14 @@
       <div class="journey-track" id="journey-track"><span class="journey-track-base" aria-hidden="true"></span><span class="journey-track-ink" aria-hidden="true"></span><input id="journey-position" type="range" min="0" max="400" step="any" value="0" aria-label="选择人生旅程中的一站" aria-valuetext="第1站，四川达州" aria-describedby="journey-range-help"></div>
       <p class="sr-only" id="journey-range-help">可以拖动，也可以使用左右方向键逐站移动，Home 到第一站，End 到最后一站。</p>
       <div class="journey-stops" id="journey-stops"><button type="button" data-journey-stop="0" style="--stop-position:0" aria-current="step"><span>01</span>四川达州</button><button type="button" data-journey-stop="1" style="--stop-position:.25"><span>02</span>初中和高中</button><button type="button" data-journey-stop="2" style="--stop-position:.5"><span>03</span>南岸</button><button type="button" data-journey-stop="3" style="--stop-position:.75"><span>04</span>南安普顿</button><button type="button" data-journey-stop="4" style="--stop-position:1"><span>05</span>相遇</button></div>
-      <button type="button" class="journey-afterword-trigger" id="journey-afterword-trigger" hidden>最后一站之后 · 还有一封信想对你说 <span aria-hidden="true">↗</span></button>
       <div class="journey-bottomline"><span id="journey-ending">那些我还没参与的日子，想听你慢慢讲。</span><button type="button" id="journey-credits-open" aria-haspopup="dialog">影像：Nyx Ning · CC BY-SA 3.0</button></div>
     </section>
   </div>
+  <footer class="journey-next-chapter" id="journey-next-chapter" hidden>
+    <p class="journey-next-overline">THE STORY CONTINUES</p>
+    <p class="journey-next-message">有几句话想对你说</p>
+    <button type="button" class="journey-afterword-trigger" id="journey-afterword-trigger" aria-label="前往下一页，阅读几句话">下一页 <span aria-hidden="true">→</span></button>
+  </footer>
   <p class="sr-only" id="journey-status" role="status" aria-live="polite" aria-atomic="true"></p>
   <dialog class="journey-note-dialog" id="journey-note-dialog" aria-labelledby="journey-note-title" aria-describedby="journey-note-question journey-note-storage">
     <form id="journey-note-form"><div class="journey-note-top"><span>WINTER'S SIDE OF THE STORY</span><button type="button" id="journey-note-close" aria-label="关闭这张纸条">×</button></div><h3 id="journey-note-title">从你熟悉的街区开始。</h3><p id="journey-note-question">如果有一天我和你一起到了四川达州，你想带我从哪里开始走？</p><label class="sr-only" for="journey-note-input">写下这一站想讲给 Gwen 的话</label><textarea id="journey-note-input" maxlength="500" rows="6" placeholder="从你想起的第一件小事，慢慢写起。"></textarea><div class="journey-note-meta"><span id="journey-note-storage">只保存在当前浏览器，尚未发送。</span><span id="journey-note-count">0 / 500</span></div><div class="journey-note-actions"><button type="button" id="journey-note-cancel">先留白</button><button type="submit">留在这一站</button></div><p id="journey-note-feedback" role="status" aria-live="polite"></p></form>
