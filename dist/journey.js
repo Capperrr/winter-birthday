@@ -17,6 +17,7 @@
   const credits = byId('journey-credit-dialog');
   const stopButtons = Array.from(page.querySelectorAll('[data-journey-stop]'));
   const afterwordTrigger = byId('journey-afterword-trigger');
+  const nextChapter = byId('journey-next-chapter');
   const photos = Array.from(page.querySelectorAll('[data-photo-key]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const storageKey = 'winter-journey-notes-v1';
@@ -168,7 +169,7 @@
     previous.disabled = index === 0;
     next.disabled = false;
     next.setAttribute('aria-label',index===stops.length-1?'继续阅读相遇之后的后记':'前往下一站');
-    afterwordTrigger.hidden = index !== stops.length-1;
+    nextChapter.hidden = index !== stops.length-1;
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
     photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected && page.dataset.journeyCoverflow !== 'on')); });
     range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
