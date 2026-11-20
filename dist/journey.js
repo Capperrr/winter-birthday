@@ -28,6 +28,23 @@
     { key:'qide', label:'相遇', chapter:'WHERE OUR STORY BEGAN', period:'相遇 · 深圳南山', title:'天利名城 · 启德', fact:'你来到深圳工作的地方，也是我认识你的地方', photo:'together', caption:'深圳 · 夜色里的街景', credit:'珍藏影像', prose:'走到这里，终于也是我在场的一页。毕业后的这两年，你来到深圳工作，也是在这里我认识了你。从相遇这一页开始，想和你一起走到 destination。', question:'如果把我们相遇的日子留在这一页，你最想写下哪一个瞬间？', english:'Of all the places, I am glad I met you here.' }
   ];
 
+  // Retain legacy note IDs so previous browser notes are not discarded.
+  const allowedKeys = ['dazhou','dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
+  const notes = Object.create(null);
+  const brokenPhotos = new Set();
+  const removers = [];
+  let active = false;
+  let disposed = false;
+  let index = 0;
+  let position = 0;
+  let goal = 0;
+  let velocity = 0;
+  let springFrame = null;
+  let lastSpring = null;
+  let swipeFrame = null;
+  let swipe = null;
+  let textAnimation = null;
+  let editing = null;
   // Five chapters are rendered from this *same* stops array. On wide screens
   // the real page scrolls past these letters while the left 3D photos stick.
   // On narrow screens the original single-letter view remains scroll-friendly.
@@ -102,23 +119,7 @@
   listen(story,'touchstart',()=>{storyNavigationUntil=0},{passive:true});
   listen(page,'wheel',()=>{storyNavigationUntil=0},{passive:true});
 
-  // Retain legacy note IDs so previous browser notes are not discarded.
-  const allowedKeys = ['dazhou','dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
-  const notes = Object.create(null);
-  const brokenPhotos = new Set();
-  const removers = [];
-  let active = false;
-  let disposed = false;
-  let index = 0;
-  let position = 0;
-  let goal = 0;
-  let velocity = 0;
-  let springFrame = null;
-  let lastSpring = null;
-  let swipeFrame = null;
-  let swipe = null;
-  let textAnimation = null;
-  let editing = null;
+
 
   try {
     const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
