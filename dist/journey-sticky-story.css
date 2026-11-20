@@ -1,0 +1,186 @@
+/* WINTER / 2026-11-20 — genuine sticky scroll storytelling.
+ * The existing 3D photo stage pins while the five original letters are read.
+ * Uses the original scrollable Journey page; no window/body scroll lock.
+ * Small screens preserve the previous touch-friendly chapter navigator.
+ */
+@media(min-width:761px){
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"]{
+   overflow-y:auto;
+   overscroll-behavior-y:auto;
+   -webkit-overflow-scrolling:touch;
+   scroll-behavior:auto;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout{
+   display:grid;
+   position:relative;
+   flex:0 0 auto;
+   height:auto;
+   min-height:0;
+   grid-template-areas:"photo letter" "rail rail";
+   grid-template-columns:minmax(0,1.09fr) minmax(0,1fr);
+   grid-template-rows:auto auto;
+   align-items:stretch;
+   column-gap:clamp(37px,5.3vw,80px);
+   row-gap:clamp(32px,7svh,75px);
+   overflow:visible;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-frame{
+   position:sticky!important;
+   align-self:start;
+   top:clamp(18px,8svh,90px);
+   width:100%;
+   height:clamp(310px,66svh,660px);
+   min-height:0;
+   margin:0;
+   transform:none!important;
+   contain:layout;
+   overflow:hidden!important;
+   clip-path:inset(0 0 0 0 round 5px);
+   z-index:1;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter{
+   display:block;
+   width:100%;
+   min-width:0;
+   height:auto;
+   min-height:0;
+   margin:0!important;
+   padding:0!important;
+   position:relative;
+   align-self:stretch;
+   overflow:visible!important;
+   border:0!important;
+   border-radius:0!important;
+   box-shadow:none!important;
+   background:transparent!important;
+   -webkit-backdrop-filter:none!important;
+   backdrop-filter:none!important;
+   transform:none!important;
+   transition:none!important;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter::before,
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter::after{
+   display:none!important;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter-body,
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter>.journey-write,
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter>.journey-saved-preview{
+   display:none!important;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-sticky-story{
+   display:flex;
+   flex-direction:column;
+   align-items:stretch;
+   justify-content:flex-start;
+   gap:clamp(50px,11svh,130px);
+   width:100%;
+   padding:clamp(15px,9svh,95px) 0 clamp(38px,13svh,140px);
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card{
+   display:flex;
+   flex-direction:column;
+   justify-content:center;
+   box-sizing:border-box;
+   width:100%;
+   min-height:clamp(370px,66svh,730px);
+   padding:clamp(24px,3vw,43px);
+   margin:0;
+   border:1px solid rgba(255,255,255,.28);
+   border-radius:24px 20px 26px 20px;
+   color:#092937;
+   background:linear-gradient(145deg,rgba(255,255,255,.32),rgba(247,252,251,.22) 47%,rgba(239,246,246,.17));
+   -webkit-backdrop-filter:blur(27px) brightness(1.26) saturate(100%);
+   backdrop-filter:blur(27px) brightness(1.26) saturate(100%);
+   box-shadow:0 18px 36px rgba(4,29,37,.14),0 6px 14px rgba(7,32,42,.09),inset 0 1px rgba(255,255,255,.47);
+   transition:border-color .55s ease,box-shadow .55s ease,background-color .55s ease;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card[data-active="true"]{
+   border-color:rgba(255,255,255,.46);
+   box-shadow:0 24px 40px rgba(4,29,37,.20),0 6px 17px rgba(7,32,42,.10),inset 0 1px rgba(255,255,255,.57);
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-chapter{
+   margin:0 0 12px;
+   color:#274b58;letter-spacing:.19em;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-period{
+   margin:0 0 9px;color:#244955;font-weight:500;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card h3{
+   margin:0 0 12px;
+   color:#082431;
+   font:500 clamp(23px,2.2vw,32px)/1.46 var(--cn-serif);
+   letter-spacing:.025em;text-wrap:balance;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-fact{
+   color:#244955;margin:0 0 13px;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-prose{
+   color:#0a2936;
+   font:500 clamp(13px,1.08vw,15px)/2.02 var(--cn-serif);
+   letter-spacing:.02em;
+   text-shadow:0 1px 1px rgba(255,255,255,.30);
+   overflow-wrap:anywhere;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-question{
+   margin:clamp(14px,2svh,22px) 0 0;
+   padding:12px 12px 12px 15px;
+   border-left:2px solid rgba(75,112,119,.53);
+   background:rgba(255,255,255,.08);
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-question>span{font:600 9px/1.5 var(--cn-serif);color:#244754}
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-question>p{
+   margin:7px 0 0;
+   color:#092936;
+   font:500 12px/1.9 var(--cn-serif);
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-signature{
+   margin:12px 0 0;color:#294e58;font:20px/1.5 'Caveat',cursive;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-write{
+   display:block;
+   flex:none;
+   width:100%;
+   min-height:45px;
+   margin:clamp(12px,2.5svh,22px) 0 0;
+   padding:13px 0 0;
+   border:0;
+   border-top:1px solid rgba(72,110,111,.18);
+   background:transparent;
+   color:#285665;
+   font:500 11px/1.8 var(--cn-serif);
+   text-align:left;
+   cursor:pointer;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-write:hover{color:#0d3d4f}
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-saved{
+   color:#355862;font:400 11px/1.9 var(--cn-serif);overflow-wrap:anywhere;
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-navigation{
+   grid-area:rail;
+   width:100%;
+   margin:0 0 25px;
+   position:relative;
+ }
+}
+@media (min-width:761px) and (max-width:1040px){
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout{
+   grid-template-columns:minmax(0,1fr) minmax(0,1.02fr);
+   column-gap:clamp(27px,4vw,48px);
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-frame{
+   height:clamp(310px,57svh,580px);
+ }
+ .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card{
+   min-height:clamp(390px,68svh,690px);
+   padding:clamp(22px,2.4vw,31px);
+ }
+}
+@media(max-width:760px){
+ .app-shell[data-destination="journey"] .journey-sticky-story{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .app-shell[data-destination="journey"] .journey-story-card{transition:none!important}
+}
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+ .app-shell[data-destination="journey"] .journey-story-card{background:rgba(232,243,244,.90)}
+}
