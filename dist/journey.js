@@ -101,8 +101,15 @@
     storyNavigationUntil=performance.now()+(smooth?900:160);
     page.scrollTo({top:Math.max(0,target),behavior:smooth&&!calm()?'smooth':'auto'});
   }
+  function syncReadingEnd(){
+    const nav=page.querySelector('.journey-navigation');
+    const pageBox=page.getBoundingClientRect();
+    const navBox=nav?.getBoundingClientRect();
+    page.dataset.readingEnd=String(Boolean(canStory()&&navBox&&navBox.top<pageBox.bottom-45&&navBox.bottom>pageBox.top));
+  }
   function watchStoryScroll(){
     storyScrollFrame=0;
+    syncReadingEnd();
     if(!canStory()||noteDialog.open||credits.open||performance.now()<storyNavigationUntil)return;
     const bounds=page.getBoundingClientRect(),readingLine=bounds.top+bounds.height*.50;
     let nearest=0,distance=Infinity;
@@ -245,9 +252,12 @@
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     stopMotion();
-    if (active) { renderStop(index,false,false); storyNavigationUntil=0; }
-    else if(storyScrollFrame){cancelAnimationFrame(storyScrollFrame);storyScrollFrame=0;}
-    else { editing = null; closeNotes(); closeCredits(); }
+    if (active) { renderStop(index,false,false); storyNavigationUntil=0; requestAnimationFrame(syncReadingEnd); }
+    else {
+      page.dataset.readingEnd='false';
+      if(storyScrollFrame){cancelAnimationFrame(storyScrollFrame);storyScrollFrame=0;}
+      editing = null; closeNotes(); closeCredits();
+    }
   }
 
   listen(page,'winter:journey-select-stop',event => {
@@ -336,7 +346,7 @@
   });
   listen(document,'winter:journey-route',event => activate(Boolean(event.detail?.active)));
   listen(document,'visibilitychange',() => { if (document.hidden && active) stopMotion(); });
-  listen(window,'resize',() => { if (active) stopMotion(); },{passive:true});
+  listen(window,'resize',() => { if (active) { stopMotion(); requestAnimationFrame(syncReadingEnd); } },{passive:true});
   const preferenceChanged = () => { if (active && calm()) stopMotion(); };
   listen(reduced,'change',preferenceChanged);
   const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(preferenceChanged) : null;
