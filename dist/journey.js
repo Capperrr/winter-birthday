@@ -149,6 +149,7 @@
   function renderStop(value, animate = true, announce = true) {
     index = Math.max(0,Math.min(stops.length - 1,Math.round(value)));
     const stop = stops[index];
+    storyPanels.forEach(({section},i)=>{section.dataset.active=String(i===index)});
     cancelText();
     body.scrollTop = 0;
     page.dataset.stop = String(index);
