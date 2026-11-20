@@ -1,3 +1,12 @@
+# 最新用户要求：2026-11-20 14:16 · 撤销有破绽景深、清理 Journey 结尾
+
+- **Home：撤销 2026-11-20 刚加的纸片剪影景深。** 用户实际 iPad 截图显示树丛像生硬裁切的纸片，这是不可接受的。已删除 `dist/winter-spatial-depth.js`、`dist/winter-spatial-depth.css`，并从 `dist/index.html` 解除引用。原瑞士静态山野图、Morning/Night、光波和原文案保留。**绝不可恢复硬边剪影、粗糙多边形或只靠模糊处理的假景深。**
+- **Journey：删除最后一块笨重的长方形毛玻璃导航底板。** `dist/journey-sticky-story.css` 为 `.journey-navigation` 清除背景、模糊、边框、阴影，仅留下没有大卡片底板的进度条和简洁导航。
+- **最后一站结尾文案改为「有几句话想对你说」**。在导航后独立的 `footer#journey-next-chapter` 中，以该文案配一个明确的 **「下一页 →」** 按钮。按钮沿用 `#journey-afterword-trigger` 的原事件，进入原有后记，不增加多余大玻璃框；前四站隐藏该 footer。
+- **修复截图里的末尾照片和导航重叠**：`dist/journey.js` 监测导航进入滚动视窗时设置 `data-reading-end`，大屏 `journey-frame` 柔和淡出，回到正文再出现。保留全部五张 3D 照片、原来的信笺内容、站点控制和留言。
+- 原有深色 About Me、19 张照片聚合后星图展开、五蜡烛摄像头捏合点火与水波纹均不变。
+- **旧交接文档里的“重新做 Home 视差”已被此次用户实际截图和撤销指示取代。** 仅改预览分支，不触碰正式版 main；不要称 Vercel READY 为 iPad 实测通过。
+
 # 最新指示：2026-11-20 · 真实前后景层次 + 固定式滚动叙事
 
 - **用户重新明确要求实现真正可感知的 Home 空间视差**。以前删除的 `living-depth.js/css` 因只是模糊/整张背景复制而被否决；**现在采用新的 `dist/winter-spatial-depth.js/css`**，只取原始瑞士照片的真实树林/近处枝叶剪影作不同速度前后分层，远处雪山与整张草地保持清晰和静止。不得以 CSS 模糊、单张缩放、WebGL 假山/草地替代。不调整原字体、文案、Morning/Night、切换光波。
