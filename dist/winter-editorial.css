@@ -404,11 +404,11 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
    Use full source-size poster, without a washed-out translucent veil.
    No blur, no moving grass, no cutout/parallax. */
 .app-shell[data-page="home"] .landscape{
-  background-image:url("assets/winter-sunrise-master98.webp")!important;
+  background-image:url("assets/winter-poster-corner-retouch.svg"),url("assets/winter-sunrise-master98.webp")!important;
   background-color:#63839a;
-  background-repeat:no-repeat!important;
-  background-position:center center!important;
-  background-size:cover!important;
+  background-repeat:no-repeat,no-repeat!important;
+  background-position:center center,center center!important;
+  background-size:cover,cover!important;
   filter:none!important;
   opacity:1!important;
   transform:none!important;
