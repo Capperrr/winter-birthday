@@ -34,7 +34,7 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
 /* New poster Home, replacing only its image plane, never the personal photos. */
 .app-shell[data-page="home"] .landscape{
   background-color:#678ca6;
-  background-image:url("assets/winter-sunrise-hd.avif");
+  background-image:url("assets/winter-sunrise-master98.webp");
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center 51%;
@@ -357,7 +357,7 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
  * Never fake fidelity with a new silhouette or color-block reconstruction.
  */
 .app-shell[data-page="home"] .landscape{
-  background-image:url("assets/winter-sunrise-hd.avif");
+  background-image:url("assets/winter-sunrise-master98.webp");
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center center;
@@ -404,7 +404,7 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
    Use full source-size poster, without a washed-out translucent veil.
    No blur, no moving grass, no cutout/parallax. */
 .app-shell[data-page="home"] .landscape{
-  background-image:url("assets/winter-sunrise-hd.avif")!important;
+  background-image:url("assets/winter-sunrise-master98.webp")!important;
   background-color:#63839a;
   background-repeat:no-repeat!important;
   background-position:center center!important;
