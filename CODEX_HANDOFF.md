@@ -1,3 +1,12 @@
+# 最新指示：2026-11-21 · 只升级顶部导航与 Journey 右侧清透玻璃
+
+- 新增 `dist/winter-liquid-glass.css`，在 `dist/index.html` 的其他样式之后加载，**不修改 HTML 结构和 JS 逻辑**。顶部导航 `.glass-nav` 保留原有三个 tab、44px+ 点击区域、活动胶囊动画，采用约 2px 背景模糊、180% 饱和度、极薄轻着色、细腻冷暖色边缘光和双层内侧反射；深色 About Me／Cake 使用较深的玻璃材质，浅色页面使用浅色材质；文字颜色沿用已有的路由变量确保可读。
+- Journey **宽屏真正展示的滚动故事信笺是 `.journey-story-card`**，窄屏的旧信笺是 `.journey-letter`。二者都需要统一的薄玻璃材质，取消旧的 27–34px 大范围模糊而采用 2px blur + 180% saturation + 1.06 brightness 的清透版本，保留原文、五站切换、留言与摄影内容。
+- 这版没有借助跨浏览器不稳定的 SVG backdrop displacement，因此实现的是**低模糊、边缘高光与轻微冷暖色散感**，不可谎称完整物理光学折射或实时采样背景亮度。浏览器不支持 backdrop-filter 时保留有对比度的浅色降级。
+- **绝对不要重新添加 Journey 底部长方形毛玻璃导航面板**：`.journey-navigation`、`#journey-next-chapter` 和「有几句话想对你说 / 下一页」不受液态玻璃样式影响。
+- 不恢复已被否决的纸片状景深；Home 原瑞士照片、Morning/Night、About Me 深色摄影展、19 张星图式照片、原文字体文案、蜡烛逐根手势点亮等全部保留。
+- 所有真实 iPad Safari／竖屏／横屏交互仍须设备实测，不要将 GitHub 检查或 Vercel READY 说成真机测试成功。
+
 # 最新用户要求：2026-11-20 14:16 · 撤销有破绽景深、清理 Journey 结尾
 
 - **Home：撤销 2026-11-20 刚加的纸片剪影景深。** 用户实际 iPad 截图显示树丛像生硬裁切的纸片，这是不可接受的。已删除 `dist/winter-spatial-depth.js`、`dist/winter-spatial-depth.css`，并从 `dist/index.html` 解除引用。原瑞士静态山野图、Morning/Night、光波和原文案保留。**绝不可恢复硬边剪影、粗糙多边形或只靠模糊处理的假景深。**
