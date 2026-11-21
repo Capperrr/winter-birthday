@@ -1,3 +1,12 @@
+# 2026-11-21 · Home 海报锐度修复（当前最终指令，覆盖下方旧版本）
+
+- **用户的 iPad 反馈：上一版 Home 海报严重发灰、发糊。** 根因之一是之前 `dist/assets/winter-sunrise-original.avif` 文件只有约 25 KB，线条损失明显，1440px 在 iPad 高屏幕上可能被进一步放大。
+- **当前正式使用 `dist/assets/winter-sunrise-master98.webp`**：由同一张用户认可的 `winter_sunrise_linefield.png` 原海报高质量编码生成，**1672×941px，468,166 bytes，WebP quality 98**；对应 Git blob `b3b3ea626aef8e3da5572882ec13cef2701eeca9`。比 25KB 版本显著保留更多细光栅细节。
+- `dist/winter-editorial.css` 最后覆盖 Home 原海报显示和 `landscape-shade`、云雾、光晕等，**Morning 不加 blur、opacity 蒙层或 parallax、不放大整张图**。`dist/index.html` 提前 preload 高质量 WebP 并刷新 CSS 缓存。Night 保留用户点击后的变暗效果。
+- 这是同一张**原图的高保真压缩版**，不是旧的替代 SVG；不应重新绘制简化山峰。没有声称从 1672px 素材中凭空生成真正 4K 细节。
+- 只在 `preview/winter-editorial-20261121` 修改。旧版预览和正式 `main` 保持不变。所有 iPad 视觉效果仍需用户实机确认。
+- 以下历史交接若写 `winter-sunrise-original.avif`、`winter-editorial-linefield.svg` 是 Home 当前素材，或建议重新添加景深，**一律以本节最新内容为准**。
+
 # 2026-11-21 · 用户截图纠错：必须使用原光栅海报
 用户明确指出：此前网页的简化山丘 SVG 与其认可的艺术海报完全不同。
 **新视觉来源：`dist/assets/winter-sunrise-original.avif`，由用户确认的 `winter_sunrise_linefield.png` 原图压缩得到，保留同一张海报的叶片、日出、雪山和密集光栅线条。**
