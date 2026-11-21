@@ -1,3 +1,11 @@
+# 2026-11-21 · 用户截图纠错：必须使用原光栅海报
+用户明确指出：此前网页的简化山丘 SVG 与其认可的艺术海报完全不同。
+**新视觉来源：`dist/assets/winter-sunrise-original.avif`，由用户确认的 `winter_sunrise_linefield.png` 原图压缩得到，保留同一张海报的叶片、日出、雪山和密集光栅线条。**
+`dist/winter-editorial.css` Home 背景已改用该真实海报文件；`dist/winter-editorial-linefield.svg` 仅为旧尝试，不再在 Home 中引用。
+Home 额外写实云层 `.moving-clouds`、雾层、光晕及日间蒙层已禁用，避免覆盖原图。
+保留网站自带的 For you / WINTER 标题、诗句、导航和 Morning/Night；Night 手动切换可以给原图加深色调。
+只改独立试验分支 `preview/winter-editorial-20261121`，不可覆盖旧预览或正式版 main。
+
 # LATEST HANDOFF — 2026-11-21 ART EXPERIMENT
 Use `preview/winter-editorial-20261121` for the independent new art direction. This branch loads `dist/winter-editorial.css` last and uses `dist/assets/winter-editorial-linefield.svg` as optical Home art. Palette: blue `#09318D`, white `#FFFFFF`, pink `#FD91CC`; Night uses `#02070A`, `#0297DE`, `#FC734D`. It is a newly rendered vector adaptation of the visual proposal, not a binary copy of the ChatGPT-generated PNG. Read `EDITORIAL_ART_DIRECTION_2026-11-21.md`. Original prior preview and main must not be touched. Retain 19-memory expanding cluster, deep About Me, Journey's 3D photos and minimal ending, Morning/Night, lake ripple and all five camera-hand-gesture candle ignitions.
 
