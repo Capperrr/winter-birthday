@@ -34,7 +34,7 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
 /* New poster Home, replacing only its image plane, never the personal photos. */
 .app-shell[data-page="home"] .landscape{
   background-color:#678ca6;
-  background-image:url("assets/winter-editorial-linefield.svg");
+  background-image:url("assets/winter-sunrise-original.avif");
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center 51%;
@@ -346,5 +346,56 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
   .app-shell[data-page="home"] .landscape{
     transition:none!important;
     animation:none!important;
+  }
+}
+
+
+/* 2026-11-21 — SCREENSHOT CORRECTION
+ * Use the real original generated poster raster, NOT the substitute SVG.
+ * The cloud layer and screen wash were hiding the original top-left leaves,
+ * natural upper-right sunrise and linefield detail on the iPad screenshot.
+ * Never fake fidelity with a new silhouette or color-block reconstruction.
+ */
+.app-shell[data-page="home"] .landscape{
+  background-image:url("assets/winter-sunrise-original.avif");
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center center;
+  filter:none;
+}
+.app-shell[data-page="home"] .landscape img{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+.app-shell[data-page="home"] .landscape-shade{
+  background:none!important;
+  opacity:0!important;
+}
+.app-shell[data-page="home"] .moving-clouds,
+.app-shell[data-page="home"] .moving-clouds *,
+.app-shell[data-page="home"] .living-cloudsheet,
+.app-shell[data-page="home"] .living-haze,
+.app-shell[data-page="home"] .living-sun,
+.app-shell[data-page="home"] .living-firefly{
+  display:none!important;
+  animation:none!important;
+}
+.app-shell[data-page="home"] .cover-edge{
+  box-shadow:none!important;
+}
+.app-shell[data-page="home"] .living-preview-tag{
+  display:none!important;
+}
+/* Night is an intentional user-toggled tint, not the default image rendering. */
+.app-shell[data-page="home"][data-living-time="night"] .landscape{
+  filter:brightness(.42) saturate(.96) hue-rotate(7deg);
+}
+.app-shell[data-page="home"][data-living-time="night"] .living-nightshade{
+  background:linear-gradient(180deg,rgba(2,7,10,.14),rgba(2,7,10,.22));
+  opacity:.36;
+}
+@media(prefers-reduced-motion:reduce){
+  .app-shell[data-page="home"] .landscape{
+    transition:none!important;
   }
 }
