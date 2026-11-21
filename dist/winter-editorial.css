@@ -440,3 +440,8 @@ body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
 @media(prefers-reduced-motion:reduce){
  .app-shell[data-page="home"] .landscape{transition:none!important;animation:none!important;}
 }
+
+/* The approved Home poster is original artwork, not the previous Unsplash photograph. */
+.app-shell[data-page="home"] .photo-credit{
+  display:none!important;
+}
