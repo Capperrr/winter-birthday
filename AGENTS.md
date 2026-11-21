@@ -1,3 +1,6 @@
+# ART EXPERIMENT OVERRIDE — 2026-11-21
+This branch is `preview/winter-editorial-20261121`, forked from the full existing `preview/living-landscape-home-20261116`. This experiment is user-approved and **supersedes only the earlier Home-photo rule here**: the Home now displays a generative optical-linefield mountain vector illustration, not the original alpine photograph. Other chapters' real photographs, fonts, user prose, camera/gesture processes, lake ripple, 19-photo memory cluster and complete routing remain. The prior preview branch and `main` MUST remain unchanged. Read `EDITORIAL_ART_DIRECTION_2026-11-21.md` before making further changes.
+
 # WINTER — Codex project instructions (preview branch)
 
 ## Safe branch / source of truth
