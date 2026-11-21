@@ -1,0 +1,350 @@
+/*
+ * WINTER / THE ART OF BEING YOU
+ * Editorial blue-white-pink art direction; optional isolated experiment.
+ * Palette 03 in the light narrative: cobalt #09318D (60),
+ * cloud-white #FFFFFF (30), pink #FD91CC (10).
+ * Palette 02 at night: midnight #02070A, electric blue #0297DE,
+ * ember orange #FC734D.
+ *
+ * No image cropping, camera changes, gestures or story copy changes.
+ * The HOME is a newly redrawn scalable linefield version of the user's
+ * experimental optical mountain poster (not a fake photo-depth effect).
+ */
+:root{
+  --w-art-blue:#09318D;
+  --w-art-white:#FFFFFF;
+  --w-art-pink:#FD91CC;
+  --w-art-sky:#0593C6;
+  --w-art-midnight:#02070A;
+  --w-art-electric:#0297DE;
+  --w-art-orange:#FC734D;
+  --w-art-pale:#F4F9FE;
+  --w-art-ink:#08254D;
+}
+html{background:#f2f6fe}
+body{background:linear-gradient(135deg,#ecf3fd,#fff 47%,#f5ebf9);}
+/* Ultra-fine editorial frame: no large extra cards or glass backdrops. */
+.app-shell{
+  border-radius:clamp(12px,1.6vw,22px);
+  box-shadow:0 22px 65px rgba(10,37,83,.11),0 1px 1px rgba(255,255,255,.53) inset;
+}
+.app-shell .site-header{
+  gap:clamp(10px,2vw,27px);
+}
+/* New poster Home, replacing only its image plane, never the personal photos. */
+.app-shell[data-page="home"] .landscape{
+  background-color:#678ca6;
+  background-image:url("assets/winter-editorial-linefield.svg");
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center 51%;
+  filter:none;
+  transition:filter 1200ms ease,background-position 1200ms ease;
+}
+.app-shell[data-page="home"] .landscape img,
+.app-shell[data-page="home"] .landscape source{
+  opacity:0!important;
+  visibility:hidden!important;
+}
+.app-shell[data-page="home"] .landscape-shade{
+  background:
+    linear-gradient(180deg,rgba(4,27,72,.21),transparent 24%,rgba(9,32,72,.05) 56%,rgba(5,30,49,.30));
+  opacity:.57;
+}
+.app-shell[data-page="home"] .cover-edge{
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);
+}
+/* Quiet graphic art: leave the parallel lines visible, not covered by fog. */
+.app-shell[data-page="home"] .living-cloudsheet,
+.app-shell[data-page="home"] .living-haze{
+  opacity:0!important;
+  animation:none!important;
+}
+.app-shell[data-page="home"] .living-sun{
+  opacity:.10;
+  animation:none;
+}
+/* A tiny editor's rule, no interactive controls or extra UI. */
+.app-shell[data-page="home"] .home-panel .cover-copy{
+  max-width:min(1040px,96%);
+  padding-block:clamp(12px,2vh,24px);
+  transform:translateY(-1.7svh);
+}
+.app-shell[data-page="home"] .cover-title .intro{
+  color:#ffdded;
+  text-shadow:0 2px 10px rgba(12,28,76,.44);
+}
+.app-shell[data-page="home"]{
+  --living-title-low:#d8e8ff;
+  --living-title-mid:#ffffff;
+  --living-title-bright:#fff9fc;
+  --living-verse-ink:#ffffff;
+  --nav-ink:#f3f9ff;
+  --nav-active:#fff;
+  --nav-selected:rgba(255,255,255,.18);
+}
+.app-shell[data-page="home"] .cover-title .name,
+.app-shell[data-page="home"] .cover-title .living-letter{
+  color:#fff;
+  text-shadow:none;
+}
+.app-shell[data-page="home"] .cover-title .living-letter{
+  filter:drop-shadow(0 4px 12px rgba(4,21,59,.47));
+}
+.app-shell[data-page="home"] .living-poem{
+  color:var(--living-verse-ink);
+  text-shadow:0 1px 3px rgba(2,14,39,.70),0 5px 24px rgba(3,19,53,.49);
+  letter-spacing:.15em;
+}
+.app-shell[data-page="home"] .gift-dedication{
+  color:rgba(255,255,255,.91);
+  text-shadow:0 1px 5px rgba(5,26,66,.57);
+  font-weight:500;
+}
+.app-shell[data-page="home"] .cover-caption .caption-line{
+  background:rgba(255,255,255,.64);
+}
+.app-shell[data-page="home"] .cover-caption .caption-star{
+  color:#fd91cc;
+  text-shadow:0 1px 8px rgba(9,36,75,.42);
+}
+/* Original Morning/Night mechanism remains. Darken art uniformly for Night,
+   never detach mountain slices or use blur to pretend to be 3D. */
+.app-shell[data-page="home"][data-living-time="night"]{
+  --living-title-low:#b3ccf9;
+  --living-title-mid:#f5f8ff;
+  --living-title-bright:#fff3f9;
+  --living-verse-ink:#f2f7ff;
+  --nav-active:#fff;
+}
+.app-shell[data-page="home"][data-living-time="night"] .landscape{
+  filter:brightness(.37) saturate(1.16) hue-rotate(11deg);
+}
+.app-shell[data-page="home"][data-living-time="night"] .landscape-shade{
+  opacity:.18;
+}
+.app-shell[data-page="home"][data-living-time="night"] .living-nightshade{
+  opacity:.45;
+  background:linear-gradient(180deg,rgba(1,8,24,.18),rgba(1,8,29,.42));
+}
+.app-shell[data-page="home"][data-living-time="night"] .cover-title .intro{color:#fd91cc}
+.app-shell[data-page="home"][data-living-time="night"] .living-moon{
+  opacity:.78;
+  box-shadow:0 0 19px 4px rgba(169,202,255,.20),0 0 70px 26px rgba(2,151,222,.15);
+}
+.app-shell[data-page="home"][data-living-time="night"] .living-stars{opacity:.73;}
+/* Make the Morning/Night switch match the new editorial navigation. */
+.app-shell[data-page="home"] .living-ui{
+  border:1px solid rgba(255,255,255,.60);
+  background:rgba(9,49,141,.31);
+  box-shadow:inset 0 1px rgba(255,255,255,.25),0 8px 25px rgba(5,25,67,.17);
+  -webkit-backdrop-filter:blur(2px) saturate(175%);
+  backdrop-filter:blur(2px) saturate(175%);
+}
+.app-shell[data-page="home"] .living-segment,
+.app-shell[data-page="home"] .living-ui .living-segment{
+  background:rgba(4,24,83,.26);
+}
+.app-shell[data-page="home"] .living-active-indicator{
+  background:#FCFFFF;
+  box-shadow:0 1px 8px rgba(6,20,62,.15);
+}
+.app-shell[data-page="home"] .living-segment button[aria-pressed="true"]{
+  color:var(--w-art-blue);
+}
+/* The shared liquid navigation adjusts without changing its controls. */
+.app-shell[data-page="home"] .glass-nav{
+  --wg-wash:rgba(9,49,141,.27);
+  --wg-selection:rgba(252,255,255,.25);
+  --wg-edge-top:rgba(255,255,255,.76);
+  --wg-edge-bottom:rgba(253,145,204,.32);
+  box-shadow:0 10px 26px rgba(8,32,91,.14),inset 0 1px rgba(255,255,255,.48);
+}
+.app-shell[data-page="home"] .brand{
+  color:#ffffff;
+  text-shadow:0 2px 6px rgba(4,29,78,.37);
+}
+.app-shell[data-page="home"] .brand-symbol{stroke:#fff;}
+
+/* ── About Me / private midnight exhibition ── */
+.app-shell[data-page="about"][data-about-theme="night"]{
+  background:#02070A;
+  color:#fff;
+  --nav-material:rgba(8,22,40,.39);
+  --nav-ink:#e8f5ff;
+  --nav-active:#fff;
+}
+.app-shell[data-page="about"][data-about-theme="night"] #panel-about[data-about-mode="intro"]{
+  background:
+    radial-gradient(ellipse 62% 54% at 47% 43%,rgba(2,151,222,.19),transparent 78%),
+    radial-gradient(ellipse 27% 36% at 80% 82%,rgba(253,145,204,.14),transparent 87%),
+    linear-gradient(153deg,#02070A 0%,#0a1e47 54%,#02070A 100%);
+}
+.app-shell[data-page="about"][data-about-theme="night"] .winter-about-stage{
+  border-color:rgba(170,224,255,.37);
+  background:
+    radial-gradient(ellipse 55% 74% at 50% 42%,rgba(2,151,222,.13),transparent 86%),
+    rgba(9,25,65,.36);
+  box-shadow:0 26px 66px rgba(0,4,15,.36),inset 0 1px rgba(252,255,255,.26);
+}
+.app-shell[data-page="about"][data-about-theme="night"] .winter-about-entry-kicker{
+  color:#c6dfff;
+  letter-spacing:.21em;
+}
+.app-shell[data-page="about"][data-about-theme="night"] .winter-about-entry h2{color:#fff}
+.app-shell[data-page="about"][data-about-theme="night"] .winter-about-entry-description{color:#d2e5f6}
+.app-shell[data-page="about"][data-about-theme="night"] .winter-about-to-notes{
+  color:#09318D;
+  border-color:rgba(255,255,255,.88);
+  background:linear-gradient(105deg,#fff,#f2f9ff 66%,#ffe0ef);
+  box-shadow:0 13px 31px rgba(2,13,35,.23);
+}
+/* Paper phase still looks like real paper, simply cleaner and cooler. */
+.app-shell[data-page="about"][data-about-theme="paper"] .about-panel{
+  --paper:#FCFFFF;
+  --ink:#09318D;
+}
+.app-shell[data-page="about"][data-about-theme="paper"] .about-heading h2,
+.app-shell[data-page="about"][data-about-theme="paper"] .about-heading .heading-dot{
+  color:#09318D;
+}
+
+/* ── Journey: editorial blue / clear glass / the original five photos ── */
+.app-shell[data-destination="journey"]{
+  background-color:#09318D;
+  background-image:
+    linear-gradient(109deg,rgba(2,14,48,.50),rgba(9,49,141,.26) 49%,rgba(2,29,68,.53)),
+    url("assets/journey-atmosphere.svg"),
+    url("assets/swiss-alps.webp");
+  background-position:center,center,center;
+  background-size:cover,cover,cover;
+  --nav-ink:#e9f5ff;
+  --nav-active:#fff;
+  --nav-selected:rgba(255,255,255,.20);
+}
+.app-shell[data-destination="journey"] .journey-heading h2{
+  color:#FCFFFF;
+  text-shadow:0 3px 18px rgba(3,17,57,.33);
+}
+.app-shell[data-destination="journey"] .journey-heading::before{
+  background:linear-gradient(180deg,#FD91CC,#FFFFFF 60%,rgba(255,255,255,.06));
+}
+.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card,
+.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter{
+  border-color:rgba(255,255,255,.52);
+}
+.app-shell[data-destination="journey"] .journey-page .journey-navigation{
+  background:none!important;
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+}
+.app-shell[data-destination="journey"] .journey-next-message{
+  color:#fff;
+  text-shadow:0 3px 20px rgba(2,18,54,.42);
+}
+.app-shell[data-destination="journey"] .journey-afterword-trigger{
+  background:#FCFFFF;
+  border-color:#FCFFFF;
+  color:#09318D;
+}
+
+/* ── Cosmos: deep blue universe with a little pink, not new photo frames ── */
+#winter-cosmos-dialog{
+  background:#02070A;
+  color:#FCFFFF;
+}
+#winter-cosmos-dialog .cosmos-root{
+  background:
+    radial-gradient(ellipse 70% 54% at 52% 23%,rgba(9,49,141,.75),transparent 82%),
+    radial-gradient(ellipse 32% 38% at 78% 77%,rgba(253,145,204,.12),transparent 88%),
+    linear-gradient(145deg,#02070A,#07183f 62%,#02070A);
+}
+#winter-cosmos-dialog .cosmos-overline{
+  color:#bed5f5;
+}
+#winter-cosmos-dialog .cosmos-prologue h2,
+#winter-cosmos-dialog .cosmos-quote{
+  color:#FCFFFF;
+}
+#winter-cosmos-dialog .cosmos-continue{
+  color:#FCFFFF;
+  border-color:rgba(189,217,250,.45);
+  background:rgba(9,49,141,.19);
+}
+#winter-cosmos-dialog .cosmos-continue:hover{
+  border-color:rgba(253,145,204,.65);
+  background:rgba(9,49,141,.33);
+}
+#winter-cosmos-dialog .cosmos-constellation-album .photo-memory{
+  box-shadow:0 12px 30px rgba(0,4,26,.39),0 0 0 1px rgba(186,221,255,.09);
+}
+/* ── Birthday: candlelight stays warm, camera/gesture untouched ── */
+.app-shell[data-destination="cake"]{
+  --nav-ink:#e0eeff;
+  --nav-active:#fff;
+  --nav-selected:rgba(2,151,222,.18);
+  --w-art-accent:#FC734D;
+}
+.app-shell[data-destination="cake"] .glass-nav{
+  --wg-wash:rgba(2,7,10,.29);
+  --wg-edge-bottom:rgba(252,115,77,.28);
+}
+/* ── Final letter: white editorial paper instead of beige UI chrome ── */
+.app-shell[data-destination="finale"]{
+  background-color:#FCFFFF;
+  background-image:
+    radial-gradient(ellipse 75% 61% at 89% 7%,rgba(253,145,204,.10),transparent 84%),
+    linear-gradient(135deg,#fff,#F5F8FD 58%,#ECF3FB);
+  color:#09318D;
+  --nav-ink:#09318D;
+  --nav-active:#071F5A;
+}
+.app-shell[data-destination="finale"] .birthday-finale{
+  color:#15336d;
+}
+.app-shell[data-destination="finale"] .finale-paper-noise{
+  opacity:.12;
+}
+/* Focus, legibility and input hit areas remain strong on every background. */
+.app-shell button:focus-visible,
+#winter-cosmos-dialog button:focus-visible{
+  outline:2px solid #FD91CC;
+  outline-offset:3px;
+}
+/* Small editorial cue: no mass decoration in already dense layouts. */
+@media(min-width:761px){
+  .app-shell[data-page="home"] .home-panel .cover-copy{
+    transform:translateY(-2svh);
+  }
+}
+@media(max-width:760px){
+  .app-shell{
+    border-radius:12px;
+  }
+  .app-shell[data-page="home"] .landscape{
+    background-position:56% center;
+  }
+  .app-shell[data-page="home"] .home-panel .cover-copy{
+    max-width:100%;
+    transform:translateY(-2svh);
+  }
+  .app-shell[data-page="home"] .cover-title .intro{
+    color:#ffe5f2;
+  }
+  .app-shell[data-page="home"] .living-poem{
+    color:#fff;
+    font-size:clamp(12px,3.6vw,18px);
+  }
+  .app-shell[data-page="home"] .glass-nav{
+    box-shadow:0 4px 13px rgba(5,20,55,.12),inset 0 1px rgba(255,255,255,.43);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .app-shell[data-page="home"] .landscape{
+    transition:none!important;
+    animation:none!important;
+  }
+}
