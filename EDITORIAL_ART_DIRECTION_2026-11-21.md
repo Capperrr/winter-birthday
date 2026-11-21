@@ -1,8 +1,16 @@
+# 2026-11-21 · 用户截图纠错：必须使用原光栅海报
+用户明确指出：此前网页的简化山丘 SVG 与其认可的艺术海报完全不同。
+**新视觉来源：`dist/assets/winter-sunrise-original.avif`，由用户确认的 `winter_sunrise_linefield.png` 原图压缩得到，保留同一张海报的叶片、日出、雪山和密集光栅线条。**
+`dist/winter-editorial.css` Home 背景已改用该真实海报文件；`dist/winter-editorial-linefield.svg` 仅为旧尝试，不再在 Home 中引用。
+Home 额外写实云层 `.moving-clouds`、雾层、光晕及日间蒙层已禁用，避免覆盖原图。
+保留网站自带的 For you / WINTER 标题、诗句、导航和 Morning/Night；Night 手动切换可以给原图加深色调。
+只改独立试验分支 `preview/winter-editorial-20261121`，不可覆盖旧预览或正式版 main。
+
 # WINTER — The Art of Being You
 **Isolated visual redesign experiment · 2026-11-21**
 
 ## Visual concept
-Editorial generative-art birthday exhibition. The HOME uses `dist/assets/winter-editorial-linefield.svg`: a **new vector interpretation** of the approved optical-linefield mountain poster produced in chat (the generated PNG was not silently represented as having been uploaded). It consists of 367 unbroken cubic-curve parallel lines, four broad deformation fields and cool-to-warm Swiss-Alpine-inspired gradient masses. It does not claim to be the original source photograph, the exact PNG raster, or actual 3D geometry.
+Editorial generative-art birthday exhibition. **Updated after direct iPad screenshot comparison:** Home now uses `dist/assets/winter-sunrise-original.avif`, a browser-optimized copy of the actual image the user approved, preserving its leaves, sunrise, snow mountains and parallel fine-line raster artwork. The older `dist/assets/winter-editorial-linefield.svg` was a rejected stand-in and is no longer used by Home. This is artwork, not real 3D geography.
 
 ## Color system
 - **Primary 03 (60 / 30 / 10 emphasis):** Cobalt `#09318D`; White `#FFFFFF`; Bubblegum Pink `#FD91CC`.
