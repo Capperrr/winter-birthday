@@ -1,3 +1,11 @@
+# 最新：首页角落文字清理（2026-11-21）
+
+- 仅限实验分支 `preview/winter-editorial-20261121`。保留首页左上角的原生 WINTER. 品牌标识，不修改任何原有文案或生日交互。
+- 删掉了实验海报不适用的旧版 Unsplash 摄影署名链接（原 `.photo-credit`），但保留左下角 `TAKE A BREATH / STAY A WHILE`。
+- 原艺术海报 WebP `dist/assets/winter-sunrise-master98.webp` **没有重编码，也没有大改构图**。新增透明 `dist/assets/winter-poster-corner-retouch.svg`，精确修补海报右上角内嵌 `WINTER` 和左下角 `HOME STUDY` 的狭小区域；CSS 两层背景同尺寸对齐，不允许恢复另一个版本的山丘或压缩成 25KB。
+- 新 CSS 查询参数 `poster-clean-corners-20261121`，不影响 Morning/Night。不要将两处局部修补解释成全画面的新图像生成。原始图保留以便回滚。
+- 需要在 iPad 上实际检查两处文字是否完全消失、线条是否连贯；不能把代码检查或 READY 当成真机测试。
+
 # 2026-11-21 · Home 海报锐度修复（当前最终指令，覆盖下方旧版本）
 
 - **用户的 iPad 反馈：上一版 Home 海报严重发灰、发糊。** 根因之一是之前 `dist/assets/winter-sunrise-original.avif` 文件只有约 25 KB，线条损失明显，1440px 在 iPad 高屏幕上可能被进一步放大。
