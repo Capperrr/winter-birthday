@@ -1,3 +1,6 @@
+# APPROVED VISUAL EXPERIMENT — 2026-11-21
+For the isolated branch `preview/winter-editorial-20261121`, the user explicitly approved a blue/white/pink editorial redesign and use of an optical-linefield mountain art interpretation on Home, replacing Home's original photographic appearance. All other personal/real photographs, original user-written prose, and key interactions must be preserved. Color treatment and files are documented in `EDITORIAL_ART_DIRECTION_2026-11-21.md`. Earlier photographic guidance still applies to all other branches and chapters.
+
 # WINTER — visual design and interaction guidelines
 
 This document is the project's design brief for future AI-assisted edits. It does not change browser behaviour.
