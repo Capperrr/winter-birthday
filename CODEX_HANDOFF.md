@@ -1,3 +1,6 @@
+# LATEST HANDOFF — 2026-11-21 ART EXPERIMENT
+Use `preview/winter-editorial-20261121` for the independent new art direction. This branch loads `dist/winter-editorial.css` last and uses `dist/assets/winter-editorial-linefield.svg` as optical Home art. Palette: blue `#09318D`, white `#FFFFFF`, pink `#FD91CC`; Night uses `#02070A`, `#0297DE`, `#FC734D`. It is a newly rendered vector adaptation of the visual proposal, not a binary copy of the ChatGPT-generated PNG. Read `EDITORIAL_ART_DIRECTION_2026-11-21.md`. Original prior preview and main must not be touched. Retain 19-memory expanding cluster, deep About Me, Journey's 3D photos and minimal ending, Morning/Night, lake ripple and all five camera-hand-gesture candle ignitions.
+
 # 最新指示：2026-11-21 · 只升级顶部导航与 Journey 右侧清透玻璃
 
 - 新增 `dist/winter-liquid-glass.css`，在 `dist/index.html` 的其他样式之后加载，**不修改 HTML 结构和 JS 逻辑**。顶部导航 `.glass-nav` 保留原有三个 tab、44px+ 点击区域、活动胶囊动画，采用约 2px 背景模糊、180% 饱和度、极薄轻着色、细腻冷暖色边缘光和双层内侧反射；深色 About Me／Cake 使用较深的玻璃材质，浅色页面使用浅色材质；文字颜色沿用已有的路由变量确保可读。
