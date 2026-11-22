@@ -119,6 +119,7 @@
     const plane = node('div','film-plane',world);
     plane.dataset.role = role;
     plane.style.setProperty('--plane-z',depth+'px');
+    plane.style.setProperty('--plane-order',String(depth+220));
     plane.style.setProperty('--plane-pan',String(pan));
     plane.style.setProperty('--plane-fit',((perspective-depth)/perspective).toFixed(5));
     return image(plane,artwork(path)).decode();
@@ -225,9 +226,8 @@
     const wasSuspended = suspended;
     const isReader = cosmos.open;
     const lightbox = document.getElementById('cosmos-photo-lightbox');
-    const camera = targetKey === 'cake' && (
-      shell.dataset.cakeCamera === 'on' || cake.dataset.filmCameraPending === 'true'
-    );
+    const camera = ((targetKey === 'cake' || targetKey === 'creator') && shell.dataset.cakeCamera === 'on') ||
+      (targetKey === 'cake' && cake.dataset.filmCameraPending === 'true');
     suspended = camera || document.hidden || !motionOn() ||
       (isReader ? !lightbox.hidden || document.getElementById('winter-art-export')?.open : shell.dataset.motionPaused === 'true');
     shell.dataset.filmPaused = String(suspended);
@@ -318,7 +318,7 @@
     archButton.querySelector('span').textContent = '回到山谷';
     try {
       if (quality()==='still' || navigator.connection?.saveData) throw new Error('Static camera');
-      const {crossArch:animate} = await import('./winter-arch.js?v=2');
+      const {crossArch:animate} = await import('./winter-arch.js?v=2.1');
       if (signal.aborted) return;
       await animate(proscenium,signal,{
         night:shell.dataset.livingTime==='night',

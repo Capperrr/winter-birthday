@@ -32,17 +32,17 @@
 .film-shot {
   position: absolute;
   inset: 0;
-  perspective: 1200px;
   opacity: 0;
   transition: opacity .85s var(--film-ease);
 }
 .film-shot[data-exposure="in"] { opacity: 1; }
 .film-shot[data-exposure="out"] { opacity: 0; }
-.film-planes { position: absolute; inset: 0; transform-style: preserve-3d; }
+.film-planes { position: absolute; inset: 0; }
 .film-plane {
   position: absolute;
   inset: 0;
-  transform: translate3d(
+  z-index: var(--plane-order);
+  transform: perspective(1200px) translate3d(
     calc(var(--camera-x,0px) * var(--plane-pan)),
     calc(var(--camera-y,0px) * var(--plane-pan)),
     calc(var(--plane-z) + var(--camera-z,0px))
@@ -246,6 +246,7 @@
   background: radial-gradient(ellipse 54% 44% at 62% 43%,#78a3c235,#82a5ca15 41%,transparent 67%);
 }
 .app-shell[data-film-scene="cake"] .grand-cake-intro { text-shadow: 0 2px 31px #040f19; }
+.film-shot[data-shot="cake"] [data-role="atmosphere"] { opacity: .31; mask-image: linear-gradient(#000 0%,#000 29%,transparent 67%); }
 
 .app-shell[data-film-scene="letter"] { --film-shade: linear-gradient(90deg,#0b1e25b0,#0b1e2570 60%,#152530a0); }
 .app-shell[data-film-scene="letter"] .letter-page-header h2 { color: var(--film-ink); text-shadow: 0 2px 18px #071624; }
@@ -307,6 +308,7 @@
 .cosmos-root[data-film-scene="universe"] #cosmos-stars { opacity: .39; }
 .cosmos-root[data-film-scene="universe"] .cosmos-stage-apod { background: #0913237b; }
 .cosmos-root[data-film-scene="universe"] .cosmos-prologue h2 { font-size: clamp(1.8rem,4.4vw,3.6rem); text-shadow: 0 2px 24px #06111fe5; }
+.cosmos-stage h2[tabindex="-1"]:focus { outline: none; }
 .cosmos-root .cosmos-particle-pair { height: 94px; margin: 0; align-items: center; gap: clamp(25px,17vw,245px); }
 .cosmos-root .cosmos-particle-pair i {
   --particle-x: 78px; --particle-y: 10px;

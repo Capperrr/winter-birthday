@@ -26,7 +26,6 @@ export async function crossArch(host,signal,{night,start}) {
   const renderer = new THREE.WebGLRenderer({
     canvas, antialias:false, alpha:false, powerPreference:'default', preserveDrawingBuffer:false
   });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1,1.5));
   renderer.setClearColor(0x142631);
 
   const scene = new THREE.Scene();
@@ -137,6 +136,8 @@ export async function crossArch(host,signal,{night,start}) {
       if (disposed) return;
       const width = host.clientWidth, h = host.clientHeight;
       if (!width || !h) return;
+      const pixelBudget = (navigator.hardwareConcurrency || 8) <= 4 ? 1150000 : 1800000;
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1,1.45,Math.sqrt(pixelBudget/(width*h))));
       renderer.setSize(width,h,false);
       camera.aspect = width/h;
       // Match a cover crop while retaining enough vertical field for portraits.

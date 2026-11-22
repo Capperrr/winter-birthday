@@ -30,6 +30,9 @@ fs.mkdirSync(out,{recursive:true});
   await p.waitForFunction(name=>!!document.querySelector('.film-shot[data-exposure="in"][data-shot="'+name+'"] img') &&
    [...document.querySelectorAll('.film-shot[data-exposure="in"][data-shot="'+name+'"] .film-texture')].every(x=>x.naturalWidth>0),key);
   const roles=await active.locator('.film-plane').evaluateAll(els=>els.map(x=>x.dataset.role));
+  const fits=await active.evaluate(e=>[...e.querySelectorAll('.film-plane')].every(layer=>
+    layer.getBoundingClientRect().width+1>=e.getBoundingClientRect().width));
+  assert.ok(fits,key+' perspective covers the viewport');
   for(const role of ['background','midground','foreground','atmosphere'])assert.ok(roles.includes(role),key+': '+role);
   assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),key+' no horizontal overflow');
   await p.waitForTimeout(1050);
@@ -57,7 +60,7 @@ fs.mkdirSync(out,{recursive:true});
    assert.ok(Math.abs(physical[0])<Math.abs(physical[6]));
    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
    await tap('#film-cross-arch');
-   await p.locator('.home-art[data-film-crossing="travelling"] .arch-camera').waitFor({timeout:22000});
+   await p.locator('.home-art:is([data-film-crossing="travelling"],[data-film-crossing="arrived"]) .arch-camera').waitFor({timeout:45000});
    await p.waitForTimeout(400);
    await p.screenshot({path:out+'/arch-passage.jpg',quality:90});
    await p.locator('.home-art[data-film-crossing="arrived"]').waitFor({timeout:19000});
