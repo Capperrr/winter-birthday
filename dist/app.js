@@ -16,6 +16,7 @@
   const envelopeButton = document.getElementById('open-envelope');
   const envelopeCard = document.getElementById('gift-envelope');
   const unfoldSheet = document.getElementById('unfold-sheet');
+  const innerLetter = document.getElementById('envelope-letter');
   const letterPage = document.getElementById('letter-page');
   const letterTitle = document.getElementById('letter-page-title');
   const unlockPage = document.getElementById('unlock-page');
@@ -65,6 +66,7 @@
     if (openingAnimation) openingAnimation.cancel();
     openingAnimation = null;
     unfoldSheet.hidden = true;
+    innerLetter?.removeAttribute('data-transferred');
   }
 
   function showPage(requestedRoute, updateHistory = false) {
@@ -176,12 +178,6 @@
     if (currentRoute !== 'destination' || !birthdayAccepted || shell.dataset.destination !== 'envelope' || openingTimer !== null) return;
     envelopeButton.disabled = true;
     if (reducedMotion.matches) { finishUnfolding(); return; }
-    const frame = shell.getBoundingClientRect();
-    const card = envelopeCard.getBoundingClientRect();
-    const x = card.left - frame.left;
-    const y = card.top - frame.top;
-    const scaleX = card.width / (frame.width || 1);
-    const scaleY = card.height / (frame.height || 1);
     shell.dataset.destination = 'untying';
     openingTimer = setTimeout(() => {
       openingTimer = null;
@@ -190,16 +186,31 @@
       openingTimer = setTimeout(() => {
         openingTimer = null;
         if (currentRoute !== 'destination' || shell.dataset.destination !== 'opening') return;
+        const frame = shell.getBoundingClientRect();
+        const paper = innerLetter || envelopeCard;
+        const rect = paper.getBoundingClientRect();
+        const width = paper.offsetWidth || rect.width;
+        const height = paper.offsetHeight || rect.height;
+        const tilt = new DOMMatrixReadOnly(getComputedStyle(envelopeCard).transform);
+        const x = rect.left - frame.left + (rect.width - tilt.a * width - tilt.c * height) / 2;
+        const y = rect.top - frame.top + (rect.height - tilt.b * width - tilt.d * height) / 2;
+        const angle = Math.atan2(tilt.b, tilt.a);
+        const scaleX = width / (frame.width || 1);
+        const scaleY = height / (frame.height || 1);
+        const start = `translate(${x}px,${y}px) rotate(${angle}rad) scale(${scaleX},${scaleY})`;
         unfoldSheet.hidden = false;
-        const start = 'translate(' + x + 'px,' + y + 'px) scale(' + scaleX + ',' + scaleY + ') rotate(-3deg)';
+        innerLetter?.setAttribute('data-transferred', '');
         if (typeof unfoldSheet.animate === 'function') {
-          openingAnimation = unfoldSheet.animate([{ transform: start, opacity: 1, borderRadius: '5px' }, { transform: 'translate(0,0) scale(1,1) rotate(0deg)', opacity: 1, borderRadius: '10px' }], { duration: 900, easing: 'cubic-bezier(.22,.72,.22,1)', fill: 'forwards' });
+          openingAnimation = unfoldSheet.animate([
+            { transform: start, borderRadius: '3px' },
+            { transform: 'translate(0,0) rotate(0rad) scale(1,1)', borderRadius: '10px' }
+          ], { duration: 900, easing: 'cubic-bezier(.22,.72,.22,1)', fill: 'forwards' });
         }
         openingTimer = setTimeout(() => {
           openingTimer = null;
           if (currentRoute === 'destination' && shell.dataset.destination === 'opening') finishUnfolding();
         }, 930);
-      }, 420);
+      }, 620);
     }, 620);
   });
   document.getElementById('back-to-envelope').addEventListener('click', () => {

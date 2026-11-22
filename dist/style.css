@@ -214,18 +214,43 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [role='tabpanel']
   .envelope-scene { width: min(80vw, 65svh); margin-bottom: 28px; }
 }
 /* Birthday greeting, opening the letter, and the shared-air page. */
-.destination-stage { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(16px); transition: opacity 1100ms ease, transform 1100ms ease, visibility 0ms linear 1100ms; }
-.app-shell[data-destination='envelope'] .destination-stage, .app-shell[data-destination='opening'] .destination-stage { opacity: 1; visibility: visible; pointer-events: auto; transform: none; transition: opacity 1100ms ease, transform 1100ms ease, visibility 0ms; }
+.destination-stage { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .7s ease, visibility 0ms linear .7s; }
+.app-shell:is([data-destination='envelope'],[data-destination='untying'],[data-destination='opening']) .destination-stage {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .7s ease, visibility 0ms;
+}
 .open-envelope { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; padding: 0; border: 0; border-radius: inherit; background: transparent; cursor: pointer; }
 .open-envelope:disabled { cursor: default; }
 .open-envelope:focus-visible { outline: 2px solid #657e57; outline-offset: 9px; }
-.keepsake-envelope { perspective: 1000px; transition: transform 650ms ease, box-shadow 650ms ease; }
-.keepsake-envelope:has(.open-envelope:hover:not(:disabled)) { transform: rotate(-1.7deg) translateY(-4px); box-shadow: 1px 3px 4px #324b4024, 5px 25px 38px -10px #263d465e; }
+.keepsake-envelope { --envelope-card: linear-gradient(173deg,#f2eddb,#ede6ce 72%,#e9e2c9); perspective: 1000px; }
+.keepsake-envelope::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: var(--envelope-card);
+  pointer-events: none;
+}
+.envelope-letter {
+  position: absolute;
+  inset: 5% 10% 6%;
+  border-radius: 3px;
+  background: var(--envelope-leaf);
+  box-shadow: 0 -7px 24px #08162042;
+  transform: translateY(3%);
+  transition: transform .42s cubic-bezier(.24,.7,.22,1) .2s;
+  pointer-events: none;
+}
+.keepsake-envelope :is(.envelope-address,.envelope-label,.envelope-fiber,.pressed-flower,.envelope-flap) { z-index: 2; }
+.app-shell[data-destination='opening'] .envelope-letter { transform: translateY(-26%); }
+.envelope-letter[data-transferred] { visibility: hidden; }
 .envelope-flap { transform-origin: center top; backface-visibility: hidden; transition: transform 750ms cubic-bezier(.2,.6,.2,1); }
 .wax-seal { transition: opacity 300ms ease, transform 450ms ease; }
 .envelope-help { margin: 13px 0 0; color: #455e51; font-size: 10px; letter-spacing: 1.5px; }
 .envelope-help > span { margin-left: 8px; }
-.app-shell[data-destination='opening'] .keepsake-envelope { transform: rotate(0deg) translateY(-7px) scale(1.025); }
 .app-shell[data-destination='opening'] .envelope-flap { transform: rotateX(165deg); }
 .app-shell[data-destination='opening'] .wax-seal { opacity: 0; transform: translate(-50%, -90%) rotate(9deg) scale(.75); }
 .birthday-dialog { isolation: isolate; position: fixed; width: min(420px, calc(100% - 42px)); padding: 32px 35px 30px; overflow: hidden; border: 1px solid #ffffefbf; border-radius: 26px; color: #405442; background: linear-gradient(145deg, #f7f3e5e8, #e7eadce6); box-shadow: 0 22px 80px #213b3438, inset 0 1px 0 #fffef4; text-align: center; }

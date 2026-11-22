@@ -313,27 +313,27 @@
   position:relative;
   scrollbar-color:#8aada190 transparent;
 }
-.app-shell[data-destination='journey'] .journey-chapter{
+.app-shell[data-destination='journey'] .journey-letter-body .journey-chapter{
   color:#274b58;
   letter-spacing:.19em;
 }
-.app-shell[data-destination='journey'] .journey-period,
-.app-shell[data-destination='journey'] .journey-fact{color:#244955;font-weight:500}
-.app-shell[data-destination='journey'] .journey-letter h3{
+.app-shell[data-destination='journey'] .journey-letter-body .journey-period,
+.app-shell[data-destination='journey'] .journey-letter-body .journey-fact{color:#244955;font-weight:500}
+.app-shell[data-destination='journey'] .journey-letter-body h3{
   color:#082431;
   text-shadow:0 1px 1px rgba(255,255,255,.38);
   font-weight:500;
   font-size:clamp(22px,2.05vw,31px);
   letter-spacing:.025em;
 }
-.app-shell[data-destination='journey'] .journey-prose{
+.app-shell[data-destination='journey'] .journey-letter-body .journey-prose{
   color:#0a2936;
   text-shadow:0 1px 1px rgba(255,255,255,.38);
   font-weight:500;
   font-size:clamp(12px,1vw,14px);
   line-height:2.02;
 }
-.app-shell[data-destination='journey'] .journey-question{
+.app-shell[data-destination='journey'] .journey-letter-body .journey-question{
   margin-top:clamp(13px,2vh,22px);
   padding:12px 12px 12px 15px;
   border-top:0;
@@ -341,9 +341,9 @@
   border-radius:0 10px 10px 0;
   background:rgba(255,255,255,.08);
 }
-.app-shell[data-destination='journey'] .journey-question > span{color:#244754;font-weight:600}
-.app-shell[data-destination='journey'] .journey-question p{color:#092936;font-weight:500;text-shadow:0 1px 1px rgba(255,255,255,.37)}
-.app-shell[data-destination='journey'] .journey-signature{color:#294e58}
+.app-shell[data-destination='journey'] .journey-letter-body .journey-question > span{color:#244754;font-weight:600}
+.app-shell[data-destination='journey'] .journey-letter-body .journey-question p{color:#092936;font-weight:500;text-shadow:0 1px 1px rgba(255,255,255,.37)}
+.app-shell[data-destination='journey'] .journey-letter-body .journey-signature{color:#294e58}
 .app-shell[data-destination='journey'] .journey-write{
   border-top:1px solid rgba(72,110,111,.18);
   color:#2e5c66;
@@ -444,8 +444,8 @@
     overflow:visible;
     padding:0;
   }
-  .app-shell[data-destination='journey'] .journey-letter h3{font-size:clamp(23px,5.8vw,29px)}
-  .app-shell[data-destination='journey'] .journey-prose{font-size:13px}
+  .app-shell[data-destination='journey'] .journey-letter-body h3{font-size:clamp(23px,5.8vw,29px)}
+  .app-shell[data-destination='journey'] .journey-letter-body .journey-prose{font-size:13px}
   .app-shell[data-destination='journey'] .journey-navigation{
     margin:0 3px 8px;
     padding:16px 13px 12px;

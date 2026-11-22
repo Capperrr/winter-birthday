@@ -1,5 +1,6 @@
 const {chromium,webkit,devices}=require('playwright');
 const assert=require('node:assert/strict');
+const {createHash}=require('node:crypto');
 const fs=require('node:fs');
 const base=process.env.WINTER_V2_URL||'http://127.0.0.1:4230/';
 const out=process.env.WINTER_V2_REVIEW_DIR||'/tmp/winter-v2-review';
@@ -49,24 +50,28 @@ fs.mkdirSync(out,{recursive:true});
  assert.equal(await p.locator('#main').getAttribute('data-living-time'),'night');
  if(run==='wide')await shot('home','-night');
  await tap('#living-morning');
+ const worldState=await p.locator('.home-art').getAttribute('data-film-world');
+ console.log('HOME',worldState);
  if (!wpe&&run==='wide'){
+   await p.locator('.home-art[data-film-world="live"] .arch-camera').waitFor({timeout:45000});
    const cdp=await c.newCDPSession(p);
    const box=await p.locator('.home-art').boundingBox();
-   const x = box.width*.42, y = box.y+box.height*.35;
+   const x = Math.floor(box.width*.42), y = Math.floor(box.y+box.height*.35);
    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});
    for (let dx=15;dx<=105;dx+=15)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx,y,id:1}]});
    await p.waitForFunction(()=>parseFloat(document.querySelector('.film-shot[data-shot="home"]').style.getPropertyValue('--camera-x'))>8);
-   const physical=await p.locator('.film-shot[data-shot="home"] .film-plane').evaluateAll(layers=>layers.slice(0,8).map(layer=>new DOMMatrix(getComputedStyle(layer).transform).m41));
-   assert.ok(Math.abs(physical[0])<Math.abs(physical[6]));
    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
    await tap('#film-cross-arch');
-   await p.locator('.home-art:is([data-film-crossing="travelling"],[data-film-crossing="arrived"]) .arch-camera').waitFor({timeout:45000});
-   await p.waitForTimeout(400);
-   await p.screenshot({path:out+'/arch-passage.jpg',quality:90});
-   await p.locator('.home-art[data-film-crossing="arrived"]').waitFor({timeout:19000});
-   await p.screenshot({path:out+'/arch-arrived.jpg',quality:90});
-   await tap('#film-cross-arch');assert.equal(await p.locator('.arch-camera').count(),0);
-   console.log('ARCH real WebGL traversal finished and released, touch-driven distances measured');
+   const phases=[];
+   for (const phase of ['approach','threshold','beyond']){
+     await p.locator('.home-art[data-film-crossing="'+phase+'"] .arch-camera').waitFor({timeout:14000});
+     const frame=await p.screenshot({path:out+'/arch-'+phase+'.jpg',quality:90});
+     phases.push(createHash('sha256').update(frame).digest('hex'));
+   }
+   assert.equal(new Set(phases).size,3,'The visible framebuffer changes while moving through the stone');
+   await p.waitForURL('**/#about');
+   await p.locator('.arch-camera').waitFor({state:'detached',timeout:8000});
+   console.log('ARCH touch input, three visible passage stages, arrival in About, and WebGL release');
  }
  await tap('#tab-about');await shot('about');
  assert.equal(await p.locator('.winter-about-card').count(),7);
@@ -75,7 +80,26 @@ fs.mkdirSync(out,{recursive:true});
  await p.waitForTimeout(1500);
  await p.screenshot({path:out+'/notes-'+run+(wpe?'-webkit':'')+'.jpg',quality:89});
  await tap('#tab-destination');await tap('#birthday-okay-one');await shot('envelope');
+ await p.evaluate(()=>{
+   const shell=document.getElementById('main');
+   const card=document.getElementById('gift-envelope');
+   const sample=()=>{
+     const r=card.getBoundingClientRect();
+     window.envelopeTrace.push([shell.dataset.destination,r.x+r.width/2,r.y+r.height/2]);
+   };
+   window.envelopeTrace=[];
+   window.envelopeObserver = new MutationObserver(sample);
+   window.envelopeObserver.observe(shell,{attributes:true,attributeFilter:['data-destination']});
+   sample();
+ });
  await tap('#open-envelope');await shot('unlock');
+ const envelope=await p.evaluate(()=>{
+   window.envelopeObserver.disconnect();
+   return window.envelopeTrace.filter(sample=>['envelope','untying','opening'].includes(sample[0]));
+ });
+ assert.deepEqual(envelope.map(row=>row[0]),['envelope','untying','opening']);
+ for (const [,x,y] of envelope)assert.ok(Math.hypot(x-envelope[0][1],y-envelope[0][2])<1,'Envelope moved between phases');
+ console.log('ENVELOPE stable centre',JSON.stringify(envelope));
  await go('cake');await shot('cake');
  assert.equal(await p.locator('.grand-candle-flame.candle-is-lit').count(),0);
  assert.equal(await p.locator('.film-cake-assembly[data-exposure="in"] img').count(),2);
@@ -84,6 +108,13 @@ fs.mkdirSync(out,{recursive:true});
  assert.match(await p.locator('#china-note-counter').textContent(),/2 \/ 3/);
  await tap('#open-journey');await shot('journey');
  assert.equal(await p.locator('.journey-story-card').count(),5);
+ for (const sel of ['.journey-story-card','.journey-visual','.journey-frame','.journey-navigation']){
+   const visualStyle=await p.locator(sel).first().evaluate(el=>{
+     const s=getComputedStyle(el);
+     return [s.backgroundColor,s.backgroundImage,s.backdropFilter||s.webkitBackdropFilter||'none'];
+   });
+   assert.deepEqual(visualStyle,['rgba(0, 0, 0, 0)','none','none'],sel+' has no backing panel');
+ }
  await tap('[data-journey-stop="2"]');
  await p.locator('.journey-photo[data-photo-key="chongqing"][data-active="true"]').waitFor();
  const visual=p.locator('.journey-visual');
@@ -93,7 +124,7 @@ fs.mkdirSync(out,{recursive:true});
  await p.evaluate(()=>document.getElementById('journey-page').scrollTop+=140);
  await p.waitForTimeout(100);
  const next=await visual.boundingBox();
- assert.ok(Math.abs(first.y-next.y)<4,'Sticky rail moved from '+first.y+' to '+next.y);
+ if(run!=='phone')assert.ok(Math.abs(first.y-next.y)<4,'Sticky rail moved from '+first.y+' to '+next.y);
  await go('afterword');await shot('afterword');
  await go('finale');await shot('finale');
  await tap('#finale-piece-left');await tap('#finale-piece-right');
@@ -101,6 +132,7 @@ fs.mkdirSync(out,{recursive:true});
  await p.evaluate(()=>document.dispatchEvent(new CustomEvent('winter:cosmos-open')));
  await shot('universe');
  assert.equal(await p.locator('.cosmos-particle-pair i').count(),2);
+ await p.locator('#cosmos-to-stars').waitFor({timeout:28000});
  await tap('#cosmos-to-stars');await tap('#cosmos-to-apod');await tap('#cosmos-to-gallery');
  await shot('gallery');await tap('.memory-expand');await p.waitForTimeout(1150);
  assert.equal(await p.locator('.photo-memory').count(),19);

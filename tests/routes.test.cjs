@@ -19,11 +19,11 @@ function start({ hash = '', storage = {}, session = {}, rejectSave = false, redu
     showModal() { this.open = true; }
     close() { this.open = false; this.fire('close'); }
     setSelectionRange() {}
-    getBoundingClientRect() { return this.id === 'gift-envelope' ? { left: 310, top: 260, width: 540, height: 342 } : { left: 16, top: 16, width: 1200, height: 800 }; }
+    getBoundingClientRect() { if (this.id === 'envelope-letter') return { left: 355, top: 210, width: 446, height: 301 }; return this.id === 'gift-envelope' ? { left: 310, top: 260, width: 540, height: 342 } : { left: 16, top: 16, width: 1200, height: 800 }; }
     animate(keyframes, options) { const animation = { cancelled: false, cancel() { this.cancelled = true; } }; animations.push({ target: this, keyframes, options, animation }); return animation; }
   }
   let focused;
-  for (const id of ['main', 'page-tabs', 'view-toggle', 'view-label', 'view-status', 'scene-footer', 'scene-photo', 'dream-photo', 'note-editor', 'note-status', 'note-input', 'editor-title', 'character-count', 'editor-close', 'editor-cancel', 'note-form', 'birthday-dialog', 'envelope-stage', 'open-envelope', 'letter-page', 'letter-page-title', 'memory-wall', 'memory-china', 'memory-uk', 'birthday-okay-one', 'back-to-envelope', 'gift-envelope', 'unfold-sheet', 'unlock-page', 'unlock-page-title', 'birthday-word', 'unlock-error', 'cake-dialog', 'birthday-cake', 'birthday-unlock-form', 'cake-dialog-close', 'cake-page', 'journey-page', 'journey-title', 'open-journey', 'journey-return', 'journey-afterword', 'afterword-back', 'afterword-home', 'afterword-continue', 'birthday-finale', 'finale-back', 'finale-home']) new Element(id);
+  for (const id of ['main', 'page-tabs', 'view-toggle', 'view-label', 'view-status', 'scene-footer', 'scene-photo', 'dream-photo', 'note-editor', 'note-status', 'note-input', 'editor-title', 'character-count', 'editor-close', 'editor-cancel', 'note-form', 'birthday-dialog', 'envelope-stage', 'open-envelope', 'letter-page', 'letter-page-title', 'memory-wall', 'memory-china', 'memory-uk', 'birthday-okay-one', 'back-to-envelope', 'gift-envelope', 'envelope-letter', 'unfold-sheet', 'unlock-page', 'unlock-page-title', 'birthday-word', 'unlock-error', 'cake-dialog', 'birthday-cake', 'birthday-unlock-form', 'cake-dialog-close', 'cake-page', 'journey-page', 'journey-title', 'open-journey', 'journey-return', 'journey-afterword', 'afterword-back', 'afterword-home', 'afterword-continue', 'birthday-finale', 'finale-back', 'finale-home']) new Element(id);
   const tabs = ['about', 'home', 'destination'].map(page => { const e = new Element('tab-' + page); e.dataset.page = page; return e; });
   const panels = ['about', 'home', 'destination'].map(page => new Element('panel-' + page));
   const notes = Array.from({ length: 22 }, (_, i) => { const e = new Element(); e.dataset.noteId = String(i + 1); e.classes = ['sticky-note', i % 2 ? 'sage' : 'butter']; e.noteText = new Element(); e.querySelector = () => e.noteText; return e; });
@@ -41,7 +41,8 @@ function start({ hash = '', storage = {}, session = {}, rejectSave = false, redu
   const localStorage = { getItem: key => storage[key] || null, setItem: (key, value) => { if (rejectSave) throw new Error('Storage blocked'); storage[key] = value; } };
   const sessionStorage = { getItem: key => session[key] || null, setItem: (key, value) => { session[key] = value; } };
   class CustomEvent { constructor(type, options = {}) { this.type = type; this.detail = options.detail; } }
-  runInNewContext(source, { document, window, history, location, localStorage, sessionStorage, CustomEvent, setTimeout: (callback, delay) => { const id = nextTimer++; timers.set(id, { callback, delay }); return id; }, clearTimeout: id => timers.delete(id), requestAnimationFrame: callback => callback() });
+  class DOMMatrixReadOnly { constructor() { this.a = this.d = 1; this.b = this.c = 0; } }
+  runInNewContext(source, { document, window, history, location, localStorage, sessionStorage, CustomEvent, DOMMatrixReadOnly, getComputedStyle: () => ({transform:"none"}), setTimeout: (callback, delay) => { const id = nextTimer++; timers.set(id, { callback, delay }); return id; }, clearTimeout: id => timers.delete(id), requestAnimationFrame: callback => callback() });
   return { elements, tabs, panels, notes, sceneCopy, countries, document, window, location, storage, session, timers, animations, runTimers: () => { const pending = Array.from(timers.values()); timers.clear(); pending.forEach(timer => timer.callback()); }, focused: () => focused };
 }
 
@@ -80,6 +81,8 @@ app.runTimers();
 assert.equal(el('unfold-sheet').hidden, false);
 assert.equal(app.animations.length, 1);
 assert.equal(app.animations[0].options.duration, 900);
+assert.match(app.animations[0].keyframes[0].transform,/^translate\(339px,194px\) rotate\(0rad\)/);
+assert.equal(el("envelope-letter").attributes["data-transferred"], "");
 app.runTimers();
 assert.equal(el('main').dataset.destination, 'unlock');
 assert.equal(app.location.hash, '#unlock');
@@ -87,6 +90,7 @@ assert.equal(el('unlock-page').hidden, false);
 assert.equal(el('letter-page').hidden, true);
 assert.equal(el('unfold-sheet').hidden, true);
 assert.equal(app.animations[0].animation.cancelled, true);
+assert.equal(el("envelope-letter").attributes["data-transferred"], undefined);
 assert.equal(app.focused(), el('unlock-page-title'));
 el('birthday-cake').fire('click');
 assert.equal(el('cake-dialog').open, true);

@@ -19,7 +19,6 @@
   const cards=order.map(([key])=>track.querySelector('.journey-photo[data-photo-key="'+key+'"]'));
   if(cards.some(card=>!card))return;
   const quiet=window.matchMedia('(prefers-reduced-motion:reduce)');
-  const fine=window.matchMedia('(hover:hover) and (pointer:fine)');
   let index=Number(page.dataset.stop||0);
   let visual=index;
   let drag=null;
@@ -70,13 +69,10 @@
       const tilt=-sign*Math.min(62,abs*36);
       const scale=Math.max(.72,1-Math.min(abs,3)*.112);
       const opacity=abs>2.9?0:Math.max(.15,1-Math.max(0,abs-.1)*.23);
-      const blur=Math.max(0,abs-1.4)*.50;
       card.style.setProperty('--jcf-transform',
         'translate3d(calc(-50% + '+x.toFixed(2)+'px),calc(-50% + '+y.toFixed(2)+'px),'+z.toFixed(2)+'px) rotateY('+tilt.toFixed(1)+'deg) scale('+scale.toFixed(3)+')');
       card.style.setProperty('--jcf-z',String(Math.round(95-abs*15)));
       card.style.setProperty('--jcf-opacity',opacity.toFixed(3));
-      card.style.setProperty('--jcf-blur',blur.toFixed(2)+'px');
-      card.style.setProperty('--jcf-saturation',(1-Math.min(abs,3)*.10).toFixed(2));
       card.style.setProperty('--jcf-hit',abs<=2.3?'auto':'none');
       card.tabIndex=abs<=1.5?0:-1;
     });
@@ -216,29 +212,9 @@
   },true);
   frame.addEventListener('dragstart',e=>e.preventDefault());
 
-  // Only two tasteful extras: a faint glass spotlight and <2.4 degree tilt.
-  function glassMove(e){
-    if(!isActive()||!fine.matches||quiet.matches||shell.dataset.motion==='off'||e.pointerType!=='mouse')return;
-    const rect=letter.getBoundingClientRect();
-    if(!rect.width||!rect.height)return;
-    const x=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
-    const y=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
-    letter.style.setProperty('--jcf-spotlight-x',(x*100).toFixed(1)+'%');
-    letter.style.setProperty('--jcf-spotlight-y',(y*100).toFixed(1)+'%');
-    letter.style.setProperty('--jcf-spotlight-opacity','1');
-    letter.style.setProperty('--jcf-tilt-x',((.5-y)*2.3).toFixed(2)+'deg');
-    letter.style.setProperty('--jcf-tilt-y',((x-.5)*2.3).toFixed(2)+'deg');
-  }
-  function glassReset(){
-    letter.style.setProperty('--jcf-spotlight-opacity','0');
-    letter.style.setProperty('--jcf-tilt-x','0deg');
-    letter.style.setProperty('--jcf-tilt-y','0deg');
-  }
-  letter.addEventListener('pointermove',glassMove,{passive:true});
-  letter.addEventListener('pointerleave',glassReset,{passive:true});
   window.addEventListener('resize',()=>{if(!drag)render()},{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){drag=null;frame.dataset.dragging='false';glassReset()}});
-  new MutationObserver(()=>{if(!isActive()){drag=null;frame.dataset.dragging='false';glassReset()}else render();}).observe(shell,{attributes:true,attributeFilter:['data-destination']});
-  if(quiet.addEventListener)quiet.addEventListener('change',()=>{glassReset();render()});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){drag=null;frame.dataset.dragging='false'}});
+  new MutationObserver(()=>{if(!isActive()){drag=null;frame.dataset.dragging='false'}else render();}).observe(shell,{attributes:true,attributeFilter:['data-destination']});
+  if(quiet.addEventListener)quiet.addEventListener('change',()=>{render()});
   render();
 })();

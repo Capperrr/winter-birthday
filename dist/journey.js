@@ -86,17 +86,28 @@
   });
   body.before(story);
   page.dataset.stickyStory='on';
-  const compactStory=window.matchMedia('(max-width: 950px) and (orientation: portrait), (max-width:760px)');
-  const visual=page.querySelector('.journey-visual');
+  const compactStory=window.matchMedia('(max-width: 760px)');
   let storyNavigationUntil=0;
   let storyScrollFrame=0;
+  let storyEdges=[];
+  function measureStory(){
+    if(page.hidden){storyEdges=[];return;}
+    const top=page.getBoundingClientRect().top;
+    const scrolled=page.scrollTop;
+    storyEdges=storyPanels.map(({section})=>section.getBoundingClientRect().bottom-top+scrolled);
+  }
+  if(typeof ResizeObserver==='function'){
+    const storyObserver=new ResizeObserver(measureStory);
+    [page,story,...storyPanels.map(({section})=>section)].forEach(section=>storyObserver.observe(section));
+    removers.push(()=>storyObserver.disconnect());
+  }
   function canStory(){return !page.hidden&&active&&!disposed;}
   function moveToStory(i,smooth){
     if(!canStory())return;
     const viewport=page.getBoundingClientRect();
     const rect=storyPanels[i].section.getBoundingClientRect();
     if(!viewport.height||!rect.height)return;
-    const offset=compactStory.matches?(visual?.offsetHeight||0)+15:Math.min(96,viewport.height*.16);
+    const offset=Math.min(96,viewport.height*.16);
     const target=page.scrollTop+rect.top-viewport.top-offset;
     const animated=smooth&&!calm();
     storyNavigationUntil=performance.now()+(animated?750:100);
@@ -105,17 +116,10 @@
   function watchStoryScroll(){
     storyScrollFrame=0;
     if(!canStory()||noteDialog.open||credits.open||performance.now()<storyNavigationUntil)return;
-    const bounds=page.getBoundingClientRect();
-    const readingLine=compactStory.matches
-      ? Math.min(bounds.bottom-60,Math.max(bounds.top+30,(visual?.getBoundingClientRect().bottom||0)+45))
-      : bounds.top+bounds.height*.52;
-    let nearest=stops.length-1;
-    for(let i=0;i<storyPanels.length;i++){
-      if(storyPanels[i].section.getBoundingClientRect().bottom>readingLine){
-        nearest=i;
-        break;
-      }
-    }
+    if(!storyEdges.length)measureStory();
+    const readingLine=page.scrollTop+page.clientHeight*(compactStory.matches?.48:.52);
+    const firstBelow=storyEdges.findIndex(edge=>edge>readingLine);
+    const nearest=firstBelow<0?stops.length-1:firstBelow;
     if(nearest!==index)selectStop(nearest,true,'story');
   }
   listen(page,'scroll',()=>{
@@ -343,7 +347,7 @@
   });
   listen(document,'winter:journey-route',event => activate(Boolean(event.detail?.active)));
   listen(document,'visibilitychange',() => { if (document.hidden && active) stopMotion(); });
-  listen(window,'resize',() => { if (active) { stopMotion(); requestAnimationFrame(watchStoryScroll); } },{passive:true});
+  listen(window,'resize',() => { if (active) { stopMotion(); measureStory(); requestAnimationFrame(watchStoryScroll); } },{passive:true});
   const preferenceChanged = () => { if (active && calm()) stopMotion(); };
   listen(reduced,'change',preferenceChanged);
   const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(preferenceChanged) : null;

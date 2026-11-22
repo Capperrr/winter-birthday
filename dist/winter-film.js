@@ -5,7 +5,6 @@
   const hero = document.querySelector('.home-art');
   const cosmos = document.getElementById('winter-cosmos-dialog');
   const cosmosRoot = document.getElementById('cosmos-root');
-  const journey = document.getElementById('journey-page');
   const cake = document.getElementById('cake-page');
   const cakeSlot = document.getElementById('cake-art-slot');
   const archButton = document.getElementById('film-cross-arch');
@@ -90,7 +89,14 @@
   let position = [0, 0, 0];
   let pointer = [0, 0];
   let drag;
-  let pass;
+  let homeWorld;
+  let worldRequest;
+  let worldController;
+  let worldUnavailable = false;
+  let flight = null;
+  let bridge = null;
+  const entryLabel = archButton.querySelector('span');
+  const entryStatus = document.getElementById('film-entry-status');
   let slate;
   let suspended = false;
 
@@ -103,7 +109,9 @@
       return ({'cosmos-gallery':'gallery','cosmos-creator':'creator','cosmos-closing':'closing'})[globeStage] || 'universe';
     }
     const page = shell.dataset.page;
-    return page === 'destination' ? shell.dataset.destination || 'envelope' : page || 'home';
+    if (page !== 'destination') return page || 'home';
+    const chapter = shell.dataset.destination;
+    return ['greeting','envelope','untying','opening'].includes(chapter) ? 'envelope' : chapter || 'envelope';
   }
 
   function image(parent, source) {
@@ -141,10 +149,9 @@
   }
 
   function pose() {
-    const drift = active?.key === 'journey' ? Math.min(1,journey.scrollTop/Math.max(1,journey.scrollHeight-journey.clientHeight)) : 0;
-    // The same small optical push is shared by the scene cuts and scroll rail.
-    return [pointer[0]*(active?.budget === 'quiet' ? .7 : 1) - drift*17,
-      pointer[1] + drift*5, active?.key === 'home' ? 17 : 9 + drift*35];
+    if (active?.key === 'journey') return [0,0,0];
+    const strength = active?.budget === 'quiet' ? .7 : 1;
+    return [pointer[0]*strength,pointer[1],active?.key==='home'?17:9];
   }
 
   function project() {
@@ -164,7 +171,7 @@
 
   function render(now) {
     cameraFrame = 0;
-    if (!active || suspended || active.budget === 'still' || document.hidden || pass) return;
+    if (!active || suspended || active.budget === 'still' || document.hidden || (active.key==='home' && homeWorld)) return;
     const fraction = 1 - Math.exp(-Math.min(42,now-(localFrameTime||now-16))/153);
     localFrameTime = now;
     const goal = pose();
@@ -180,7 +187,7 @@
   }
 
   function wake() {
-    if (!cameraFrame && active?.budget !== 'still' && !suspended && !pass) {
+    if (!cameraFrame && active?.budget !== 'still' && !suspended && !(active?.key==='home' && homeWorld)) {
       localFrameTime = 0;
       cameraFrame = requestAnimationFrame(render);
     }
@@ -234,6 +241,7 @@
     shell.dataset.filmReady = key;
     cosmosRoot.dataset.filmReady = key;
     retire(previous);
+    if (key==='about') releaseBridge(true);
     updateFreeze();
   }
 
@@ -247,6 +255,7 @@
       (isReader ? !lightbox.hidden || document.getElementById('winter-art-export')?.open : shell.dataset.motionPaused === 'true');
     shell.dataset.filmPaused = String(suspended);
     cosmosRoot.dataset.filmPaused = String(suspended);
+    homeWorld?.pause(suspended);
     if (suspended) {
       cancelAnimationFrame(cameraFrame);
       cameraFrame = 0;
@@ -273,20 +282,25 @@
 
   function sync() {
     const key = id();
-    if (pass && !motionOn()) endPass();
     if (key !== visible) {
-      if (visible === 'home') endPass();
+      if (visible === 'home') closeWorld();
+      if (key!=='about') releaseBridge(false);
       visible = key;
       shell.dataset.filmScene = key;
       cosmosRoot.dataset.filmScene = key;
     }
     if (key === 'cake') assembleCake();
     setShot(key,quality());
+    if (key==='home' && !document.hidden) {
+      if (quality()==='still') closeWorld();
+      else if (!worldUnavailable) bootWorld();
+    }
+    homeWorld?.setNight(shell.dataset.livingTime==='night');
     updateFreeze();
   }
 
   function pointerMove(event) {
-    if (!active || suspended || active.budget === 'still' || pass) return;
+    if (!active || suspended || active.budget === 'still' || flight || active.key==='journey') return;
     if (event.pointerType === 'mouse') {
       if (event.target.closest('input, textarea, .is-dragging, dialog[open] canvas')) return;
       pointer = [(event.clientX/innerWidth-.5)*-62,(event.clientY/innerHeight-.5)*-25];
@@ -296,9 +310,10 @@
       if (Math.abs(dx)<9) return;
       pointer = [Math.max(-37,Math.min(37,dx*.36)),Math.max(-14,Math.min(14,dy*.28))];
     } else return;
+    if (visible==='home') homeWorld?.gaze(-pointer[0]/28,-pointer[1]/13);
     wake();
   }
-  function resetPointer() { drag=null;pointer=[0,0];wake(); }
+  function resetPointer() { drag=null;pointer=[0,0];homeWorld?.gaze(0,0);wake(); }
 
   // A background drag is optional. Gesture surfaces for portraits, the photos,
   // the paper puzzle and painting keep all of their own input and pan handling.
@@ -309,55 +324,113 @@
   document.addEventListener('pointercancel',resetPointer,{passive:true});
   document.addEventListener('pointerup',e=>{if (drag?.id===e.pointerId) resetPointer();},{passive:true});
   document.documentElement.addEventListener('pointerleave',resetPointer,{passive:true});
-  journey.addEventListener('scroll',wake,{passive:true});
+  const relief = document.querySelector('.portal-relief');
+  relief.decode().then(()=>relief.closest('.cover-title').dataset.relief='ready').catch(()=>{});
 
-  function endPass() {
-    if (!pass) return;
-    pass.abort();
-    pass = null;
+  function clearEntry() {
+    flight = null;
     hero.removeAttribute('data-film-crossing');
-    proscenium.querySelectorAll('.arch-camera,.arch-still').forEach(item=>item.remove());
     archButton.setAttribute('aria-pressed','false');
     archButton.removeAttribute('aria-busy');
-    archButton.querySelector('span').textContent = '穿过石拱';
+    entryLabel.textContent = '进入 Winter 世界';
+    entryStatus.textContent = '';
+  }
+
+  function closeWorld() {
+    worldController?.abort();
+    worldController = null;
+    worldRequest = null;
+    homeWorld = null;
+    hero.dataset.filmWorld = 'layers';
+    clearEntry();
+  }
+
+  function bootWorld() {
+    if (worldRequest) return worldRequest;
+    const control = new AbortController();
+    worldController = control;
+    hero.dataset.filmWorld = 'loading';
+    worldRequest = import('./winter-arch.js?v=winter-world-1')
+      .then(({createWinterWorld})=>createWinterWorld(proscenium,control.signal,{
+        night:shell.dataset.livingTime==='night',
+        phase(name) { if (flight) hero.dataset.filmCrossing = name; },
+        onFailure() { worldUnavailable=true;closeWorld();wake(); }
+      }))
+      .then(world=>{
+        if (control.signal.aborted) return null;
+        homeWorld = world;
+        hero.dataset.filmWorld = 'live';
+        world.gaze(-pointer[0]/28,-pointer[1]/13);
+        world.setNight(shell.dataset.livingTime==='night');
+        world.pause(suspended);
+        return world;
+      })
+      .catch(()=>{
+        if (!control.signal.aborted) {
+          hero.dataset.filmWorld='layers';
+          worldUnavailable=true;
+          wake();
+        }
+        return null;
+      });
+    return worldRequest;
+  }
+
+  function releaseBridge(animate) {
+    if (!bridge) return;
+    const old = bridge;
+    bridge = null;
+    if (animate) old.node.classList.add('film-bridge-out');
+    const remove = () => {clearTimeout(old.timeout);old.control.abort();old.node.remove();};
+    if (animate) setTimeout(remove,630);
+    else remove();
+  }
+
+  function openAbout() {
+    const canvas = proscenium.querySelector('.arch-camera.is-visible');
+    if (canvas && worldController) {
+      releaseBridge(false);
+      const holder = node('div','film-bridge',ground);
+      holder.append(canvas);
+      bridge = {node:holder,control:worldController,timeout:setTimeout(()=>releaseBridge(true),2600)};
+      homeWorld?.pause(true);
+      worldController = null;
+      homeWorld = null;
+      worldRequest = null;
+    }
+    clearEntry();
+    document.getElementById('tab-about').click();
+  }
+
+  function cancelFlight() {
+    homeWorld?.reset();
+    clearEntry();
     resetPointer();
   }
 
   async function crossArch() {
-    if (pass) {endPass();return;}
+    if (flight) {cancelFlight();return;}
     if (visible!=='home') return;
-    const controller = new AbortController();
-    pass = controller;
-    const signal = controller.signal;
+    if (quality()==='still' || worldUnavailable) {openAbout();return;}
+    const token = {};
+    flight = token;
     hero.dataset.filmCrossing = 'loading';
     archButton.setAttribute('aria-pressed','true');
     archButton.setAttribute('aria-busy','true');
-    archButton.querySelector('span').textContent = '正在进入云谷…';
-    const started = () => {
-      archButton.removeAttribute('aria-busy');
-      archButton.querySelector('span').textContent = '回到山谷';
-    };
-    try {
-      if (quality()==='still' || navigator.connection?.saveData) throw new Error('Static camera');
-      const {crossArch:animate} = await import('./winter-arch.js?v=2.1');
-      if (signal.aborted) return;
-      await animate(proscenium,signal,{
-        night:shell.dataset.livingTime==='night',
-        start:()=>{hero.dataset.filmCrossing='travelling';started();}
-      });
-      if (!signal.aborted) hero.dataset.filmCrossing='arrived';
-    } catch (_) {
-      if (signal.aborted) return;
-      const still = node('img','arch-still',proscenium);
-      still.alt = '';
-      still.src = artwork('home/through');
-      hero.dataset.filmCrossing = 'still';
-      started();
-    }
+    entryLabel.textContent = '正在准备镜头…';
+    entryStatus.textContent = '正在准备通往森林温室的场景。';
+    const world = await bootWorld();
+    if (flight!==token || visible!=='home') return;
+    if (!world) {openAbout();return;}
+    archButton.removeAttribute('aria-busy');
+    entryLabel.textContent = '返回入口';
+    entryStatus.textContent = '正在穿越石拱。按退出键可返回入口。';
+    hero.dataset.filmCrossing = 'approach';
+    if (await world.cross() && flight===token && visible==='home') openAbout();
   }
 
   archButton.addEventListener('click',crossArch);
-  window.addEventListener('keydown',e=>{if (e.key==='Escape' && pass) endPass();});
+  window.addEventListener('keydown',e=>{if (e.key==='Escape' && flight) cancelFlight();});
   document.addEventListener('click',e=>{
     if (targetKey!=='cake' || !e.target.closest('#winter-cake-camera-enable,#winter-gesture-start')) return;
     cake.dataset.filmCameraPending='true';
@@ -371,16 +444,10 @@
   document.addEventListener('winter:camera-ready',()=>{cake.dataset.filmCameraPending='false';updateFreeze();});
   document.addEventListener('winter:cosmos-stage',e=>{globeStage=e.detail?.stage || 'cosmos-intro';sync();});
   cosmos.addEventListener('close',sync);
-  document.addEventListener('visibilitychange',()=>{
-    if (document.hidden) {if(pass)endPass();updateFreeze();}
-    else sync();
-  });
-  [reduce,compact,portrait,tallCake].forEach(query=>query.addEventListener('change',()=>{
-    if (reduce.matches && pass) endPass();
-    sync();
-  }));
+  document.addEventListener('visibilitychange',sync);
+  [reduce,compact,portrait,tallCake].forEach(query=>query.addEventListener('change',sync));
   new MutationObserver(sync).observe(shell,{
-    attributes:true,attributeFilter:['data-page','data-destination','data-about-theme','data-motion','data-motion-paused','data-cake-camera']
+    attributes:true,attributeFilter:['data-page','data-destination','data-about-theme','data-motion','data-motion-paused','data-cake-camera','data-living-time']
   });
   new MutationObserver(updateFreeze).observe(document.getElementById('cosmos-photo-lightbox'),{attributes:true,attributeFilter:['hidden']});
   const exportDialog = document.getElementById('winter-art-export');

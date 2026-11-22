@@ -32,6 +32,7 @@
 .film-shot {
   position: absolute;
   inset: 0;
+  z-index: 0;
   opacity: 0;
   transition: opacity .85s var(--film-ease);
 }
@@ -127,45 +128,111 @@
 .home-art .living-stage { z-index: 2; }
 .home-art :is(.home-sky-light,.home-sunset) { display: none; }
 .home-art::after { z-index: 3; }
+/* Keep the lettering in the left-hand bank of the valley, clear of the open arch. */
 .app-shell[data-page="home"] .home-panel .cover-copy {
   grid-area: 1 / 1;
-  z-index: 4;
+  z-index: 6;
   align-self: end;
-  margin: 0;
-  width: fit-content;
+  width: min(44vw,645px);
   max-width: calc(100% - var(--gallery-edge) * 2);
-  padding: 0 0 clamp(39px,7svh,108px);
-  margin-inline: var(--gallery-edge);
+  padding: 0 0 clamp(27px,5.6svh,82px);
+  margin: 0 var(--gallery-edge);
   color: var(--film-ink);
-  text-shadow: 0 3px 29px #040a12bc;
+  pointer-events: none;
+  text-shadow: 0 2px 16px #07121b;
 }
-.app-shell[data-page="home"] .cover-title .intro { color: #f3d9b0; font-size: clamp(3rem,5.9vw,6.4rem); }
-.app-shell[data-page="home"] .cover-title .name { font-size: clamp(5.8rem,12.5vw,14.6rem); letter-spacing: -.058em; }
-.app-shell[data-page="home"] .living-poem { margin-top: clamp(23px,3.2vw,45px); color: #f0eee6; }
-.app-shell[data-page="home"] .gift-dedication { color: var(--film-gold); margin-top: 18px; }
+.portal-heading { position: relative; transition: opacity .52s var(--film-ease); }
+.portal-overline {
+  margin: 0 0 .42rem;
+  color: #e1eef5;
+  font: 500 clamp(.76rem,1.05vw,.94rem)/1.4 var(--sans);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+}
+.app-shell[data-page="home"] .cover-title {
+  position: relative;
+  display: grid;
+  align-items: end;
+  width: 100%;
+}
+.app-shell[data-page="home"] .cover-title .name {
+  grid-area: 1 / 1;
+  margin: 0;
+  color: #f1f2e9;
+  font-size: clamp(4.6rem,11.4vw,11rem);
+  line-height: .82;
+  letter-spacing: -.065em;
+  text-shadow: 0 1px #fff8e5,0 7px 21px #030b13c2;
+}
+.cover-title[data-relief="ready"] .name { opacity: 0; }
+.app-shell[data-entrance="home"] .cover-title[data-relief="ready"] .name { animation: none; }
+.portal-relief {
+  grid-area: 1 / 1;
+  display: block;
+  width: 106%;
+  max-width: none;
+  height: auto;
+  margin-left: -3.1%;
+  opacity: 0;
+  filter: drop-shadow(0 4px 5px #09131c90);
+}
+.cover-title[data-relief="ready"] .portal-relief { opacity: 1; }
+.app-shell[data-entrance="home"] .cover-title[data-relief="ready"] .portal-relief {
+  animation: reveal-carving 1.45s .14s var(--film-ease) both;
+}
+@keyframes reveal-carving {
+  from { opacity: 0; clip-path: inset(5% 100% 0 0); }
+  to { opacity: 1; clip-path: inset(0 -2% -10% -2%); }
+}
+.app-shell[data-page="home"] .cover-title .intro {
+  position: absolute;
+  right: 0;
+  bottom: -.57em;
+  z-index: 1;
+  margin: 0;
+  color: #f1d9b4;
+  font-size: clamp(1.75rem,3.1vw,3.45rem);
+  transform: rotate(-5deg);
+}
+.app-shell[data-page="home"] .living-poem {
+  margin: clamp(20px,2.6vw,34px) 0 0;
+  color: #f6f4ec;
+  font-size: clamp(1rem,1.32vw,1.3rem);
+  line-height: 1.8;
+}
+.app-shell[data-page="home"] .gift-dedication { color: #e1cfb2; margin: .68rem 0 0; font-size: .82rem; }
+.film-arch-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 172px;
+  min-height: 46px;
+  margin-top: clamp(14px,2vh,24px);
+  padding: 0 15px;
+  border: 1px solid #d7e7ed98;
+  border-radius: 2px;
+  background: #071821d6;
+  color: #f4f4e8;
+  font: 500 .91rem/1.35 var(--cn-serif);
+  pointer-events: auto;
+  transition: background .2s, transform .2s;
+}
+.film-arch-button b { font-weight: 500; font-size: 1.04rem; color: #d1e6ed; }
+.film-arch-button:hover,.film-arch-button:focus-visible { background: #1d3b49; }
+.film-arch-button:active { transform: translateY(1px); }
 .home-catalog {
   position: relative;
-  z-index: 4;
+  z-index: 6;
   grid-area: 2 / 1;
   margin: 0 var(--gallery-edge);
   padding: 11px 0 max(15px,env(safe-area-inset-bottom));
   border-top: 1px solid #f0eee14a;
   color: var(--film-ink);
 }
-.home-catalog-copy em { color: var(--film-muted); }
-.home-controls .film-arch-button {
-  min-height: 44px;
-  padding: 0 13px;
-  border: 1px solid #f0d8b26f;
-  border-radius: 2px;
-  background: #07121b80;
-  color: var(--film-ink);
-  font: .77rem/1.35 var(--cn-serif);
-  white-space: nowrap;
-}
-.film-arch-button b { margin-left: 8px; font-weight: 500; color: var(--film-gold); }
-.film-arch-button:active { scale: .97; }
-.arch-camera,.arch-still {
+.home-catalog-copy em { color: #e4eaf0; opacity: 1; }
+.home-catalog-copy p { font-size: .72rem; }
+.arch-camera {
   position: absolute;
   inset: 0;
   z-index: 5;
@@ -174,16 +241,27 @@
   opacity: 0;
   transition: opacity .5s var(--film-ease);
 }
-.arch-camera.is-visible,.arch-still { opacity: 1; }
-.arch-still { object-fit: cover; }
-.home-art[data-film-crossing] ~ .cover-copy { transition: opacity .55s var(--film-ease); }
-.home-art:is([data-film-crossing="travelling"],[data-film-crossing="arrived"],[data-film-crossing="still"]) ~ .cover-copy { opacity: 0; }
-.home-art[data-film-crossing="travelling"] .living-stage { opacity: .17; }
-.app-shell[data-living-time="night"] .film-proscenium {
-  filter: brightness(.64) saturate(.77);
+.arch-camera.is-visible { opacity: 1; }
+.home-art[data-film-world="live"] .film-shot { visibility: hidden; }
+.home-art:is([data-film-crossing="approach"],[data-film-crossing="threshold"],[data-film-crossing="beyond"],[data-film-crossing="arrived"]) ~ .cover-copy .portal-heading { opacity: 0; }
+.home-art[data-film-crossing]:not([data-film-crossing="idle"]) ~ .home-catalog { border-color: #d7e7ed33; }
+.app-shell[data-living-time="night"] .home-art:not([data-film-world="live"]) .film-proscenium {
+  filter: brightness(.66) saturate(.8);
   transition: filter 1.15s var(--film-ease);
 }
-.app-shell[data-living-time="night"] .home-art { --film-shade: linear-gradient(180deg,#09182e21,transparent 31%,#071322ee); }
+.app-shell[data-living-time="night"] .home-art {
+  --film-shade: linear-gradient(0deg,#06131ee0,transparent 55%),linear-gradient(90deg,#07131fc1,transparent 61%);
+}
+.film-bridge {
+  position: absolute;
+  inset: var(--gallery-header) 0 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity .65s var(--film-ease);
+}
+.film-bridge-out { opacity: 0; }
+.film-bridge canvas { display: block; width: 100%; height: 100%; }
 
 .app-shell[data-film-scene="about"] { --film-shade: radial-gradient(ellipse at 55% 36%,transparent,#08161c8c 65%,#0b151df0); }
 .app-shell[data-page="about"][data-film-ready="about"] .winter-about-entry {
@@ -193,14 +271,16 @@
 .app-shell[data-page="about"][data-film-ready="about"] .winter-about-entry::before { opacity: .23; }
 .app-shell[data-page="about"][data-film-ready="about"] .winter-about-entry::after { background: none; }
 .app-shell[data-page="about"][data-about-theme="paper"][data-film-ready="about"] .about-panel {
-  background: linear-gradient(90deg,#f1e9d5f2,#e9decae8 76%,#e6dfcc9e);
+  background: url("assets/winter-v2/home/snow-relief.webp") right 2.2vw top 2.2vw / min(18vw,210px) no-repeat,
+    linear-gradient(100deg,#edf0eefc,#e4e9e9f4 76%,#c6d6d7b0);
 }
 .app-shell[data-page="about"] .winter-about-entry-head { text-shadow: 0 2px 18px #061419a0; }
 
-.app-shell[data-film-scene="envelope"] { --film-shade: linear-gradient(0deg,#091820b2,transparent 65%); }
+.app-shell[data-film-scene="envelope"] { --film-shade: linear-gradient(0deg,#091820dc,transparent 62%); }
 .app-shell[data-film-scene="envelope"] .letter-kicker {
-  color: var(--film-gold);
-  text-shadow: 0 2px 18px #111615b8;
+  color: #f7e7c8;
+  font-size: .83rem;
+  text-shadow: 0 2px 16px #0c151e;
 }
 .app-shell[data-film-scene="envelope"] .letter-glow { opacity: .38; }
 .app-shell[data-film-scene="envelope"] .destination-copy { color: var(--film-ink); text-shadow: 0 2px 13px #091619a8; }
@@ -262,22 +342,32 @@
 .app-shell[data-film-scene="letter"] .letter-journey-invitation :is(p,h3,button) { color: inherit; }
 .app-shell[data-film-scene="letter"] .puppy-parade::before { background: linear-gradient(180deg,transparent,#233a3bd8 70%); }
 
-.app-shell[data-film-scene="journey"] { --film-shade: linear-gradient(90deg,#0a1725a8,#0a172554 56%,#0a1725cb); }
+.app-shell[data-film-scene="journey"] { --film-shade: linear-gradient(90deg,#0a17254a 0%,#0c192754 33%,#0d1925bc 61%,#0b1723da 100%); }
 .app-shell[data-film-scene="journey"] :is(.journey-heading h2,.journey-eyebrow,.journey-return,.journey-next-message,.journey-afterword-trigger) {
   color: var(--film-ink);
 }
 .app-shell[data-film-scene="journey"] .journey-heading { border-color: #f2f0e755; }
-.app-shell[data-film-scene="journey"] .journey-visual {
-  padding: 12px 11px 9px;
-  background: #0d1b25ea;
-  border-bottom: 1px solid #c3d2da33;
+/* Ink is read directly over a shaded valley, with free-standing photographic prints. */
+.app-shell[data-film-scene="journey"] .journey-story-card {
+  --story-border: #c8d7df3c;
+  color: #f0eee6;
 }
-.app-shell[data-film-scene="journey"] .journey-story-card { background: #f2e8d8eb; }
+.app-shell[data-film-scene="journey"] .journey-story-card[data-active="true"] { --story-border: #dac3a88c; }
+.app-shell[data-film-scene="journey"] .journey-story-card :is(h3,.journey-prose,.journey-question p) { color: #fffbf3; }
+.app-shell[data-film-scene="journey"] .journey-story-card :is(.journey-fact,.journey-story-saved) { color: #dfe8ec; }
+.app-shell[data-film-scene="journey"] .journey-story-card :is(.journey-period,.journey-question > span,.journey-signature,.journey-story-write) { color: #f2dab5; }
 .app-shell[data-film-scene="journey"] :is(.journey-stops button,.journey-arrows button,#journey-count,#journey-credits-open) { color: #e5e4d9; }
 .app-shell[data-film-scene="journey"] .journey-track-base { background: #a8b7c37a; }
 .app-shell[data-film-scene="journey"] .journey-track-ink { background: #d3bc98; }
 .app-shell[data-film-scene="journey"] .journey-stops button[aria-current="step"] { color: var(--film-gold); }
-.app-shell[data-film-scene="journey"] .journey-frame .journey-photo-caption { color: #f1e7d5; text-shadow: 0 1px 7px #131d23; background: #0e1a2499; }
+.app-shell[data-film-scene="journey"] .journey-frame .journey-photo-caption {
+  color: #f5efe3;
+  text-align: center;
+  text-shadow: 0 1px 7px #07121b,0 1px 1px #07121b;
+}
+.app-shell[data-film-scene="journey"] .journey-photo-caption p { font-size: .82rem; }
+.app-shell[data-film-scene="journey"] .journey-stops button { font-size: clamp(.75rem,.95vw,.9rem); }
+.app-shell[data-film-scene="journey"] #journey-credits-open { font-size: .75rem; }
 .app-shell[data-film-scene="afterword"] { --film-shade: linear-gradient(90deg,#09192379,transparent 65%); }
 .app-shell[data-film-scene="afterword"] .afterword-copy {
   background: #f1e7d8f0;
@@ -288,7 +378,7 @@
 .app-shell[data-film-scene="afterword"] .afterword-back { color: var(--film-ink); }
 .app-shell[data-film-scene="afterword"] .letter-paper-light { opacity: .32; }
 
-.app-shell[data-film-scene="finale"] { --film-shade: linear-gradient(180deg,#161f2892 0%,transparent 37%,#0f181e8f); }
+.app-shell[data-film-scene="finale"] { --film-shade: linear-gradient(180deg,#111c26d6 0%,#14212c25 39%,#0f181ea8); }
 .app-shell[data-film-scene="finale"] .birthday-finale,
 .app-shell[data-film-scene="finale"] .finale-intro { background: transparent; color: var(--film-ink); }
 .app-shell[data-film-scene="finale"] #birthday-finale-title { color: var(--film-ink); }
@@ -345,24 +435,101 @@
 .cosmos-closing .cosmos-continue { background: #08162189; }
 .film-closing-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 18px; }
 
-@media (max-width: 950px) and (orientation: portrait) {
-  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(5.2rem,15vw,11.6rem); }
+/* Readable type on the light paper and on dark photographic surfaces. */
+.app-shell[data-page="about"] :is(.winter-about-stage-status,.winter-about-entry-kicker,.winter-about-to-notes) {
+  color: #e7edf2;
+  font-size: .9rem;
+}
+.app-shell[data-about-theme="paper"] :is(.notes-footnote,.winter-about-notes-back,.page-eyebrow) { color: #324c5a; }
+.app-shell[data-about-theme="paper"] .notes-footnote { font-size: 1rem; line-height: 1.8; }
+.app-shell[data-page="about"] .portrait-lightbox-hint { font-size: .92rem; }
+.birthday-dialog .birthday-overline { color: #435849; font-size: .8rem; }
+.birthday-dialog .birthday-actions button { font-size: .91rem; color: #fffdf3; background: #4a654e; }
+.app-shell[data-film-scene="envelope"] .destination-love-note {
+  color: #fff8ea;
+  font-size: clamp(1rem,1.4vw,1.21rem);
+  text-shadow: 0 2px 12px #071216;
+}
+.app-shell[data-film-scene="envelope"] .letter-postscript { color: #e9d9be; font-size: .74rem; letter-spacing: .16em; }
+.envelope-address { color: #3a4e43; }
+.envelope-address > p { color: #4d6050; font-size: clamp(1.03rem,1.5vw,1.33rem); }
+.app-shell[data-film-scene="unlock"] .unlock-overline { font-size: .84rem; color: #465748; }
+.app-shell[data-film-scene="unlock"] .unlock-help { font-size: clamp(.98rem,1.28vw,1.13rem); color: #384b41; }
+.app-shell[data-film-scene="unlock"] .unlock-error { font-size: .9rem; color: #852e2d; }
+.app-shell[data-film-scene="unlock"] .cake-click-hint :is(.hint-copy,small) { font-size: .87rem; color: #354638; }
+.app-shell[data-film-scene="cake"] .grand-cake-intro > p { color: #f5e4c9; font-size: .84rem; }
+.app-shell[data-film-scene="cake"] .winter-cake-camera-enable {
+  color: #fff7e5;
+  font-size: clamp(.86rem,1.12vw,1rem);
+  background: #102434ed;
+}
+.app-shell[data-film-scene="cake"] :is(.winter-candle-pinch-hint,.winter-candle-pinch-hint small,.winter-cake-camera-note) {
+  color: #fff8e6;
+  font-size: .84rem;
+}
+.app-shell[data-film-scene="letter"] :is(.country-name,.letter-lake figcaption,.letter-page-header .page-eyebrow) { color: #eaf0f1; font-size: .86rem; }
+.app-shell[data-film-scene="letter"] :is(.memory-place,.memory-note-counter) { color: #3b524a; font-size: .88rem; }
+.app-shell[data-film-scene="letter"] .memory-letter-text {
+  color: #203242;
+  font-size: clamp(1.03rem,1.41vw,1.25rem);
+  line-height: 1.88;
+}
+.app-shell[data-film-scene="afterword"] .afterword-line {
+  color: #263d41;
+  font-size: clamp(1.02rem,1.5vw,1.25rem);
+  line-height: 1.85;
+}
+.app-shell[data-film-scene="finale"] :is(.finale-help,.finale-header p,.finale-heading p,.finale-subtitle,.finale-phone-question) {
+  color: #fbf4e6;
+  text-shadow: 0 2px 12px #07121b;
+  font-size: clamp(1rem,1.35vw,1.22rem);
+}
+.cosmos-root[data-film-scene] :is(.cosmos-apod-note,.constellation-hint,.cosmos-overline,.cosmos-intro-foot) {
+  color: #e0e9ef;
+  text-shadow: 0 1px 13px #07121b;
+}
+.cosmos-root[data-film-scene] .cosmos-overline { font-size: .84rem; }
+.cosmos-root[data-film-scene] :is(.cosmos-apod-note,.constellation-hint,.cosmos-continue) { font-size: .91rem; }
+#winter-cosmos-dialog[data-film-scene="gallery"] .cosmos-gallery-head p:not(.cosmos-overline) {
+  color: #edf1f1;
+  font-size: clamp(1rem,1.42vw,1.19rem);
+}
+#winter-cosmos-dialog[data-film-scene="gallery"] .cosmos-gallery-head {
+  background: url("assets/winter-v2/home/snow-relief.webp") right center / 110px auto no-repeat;
+}
+.cosmos-root[data-film-scene="creator"] :is(.creator-instruction,.creator-camera-row span,.creator-brush-row label,.creator-brush-row output) {
+  color: #efeee8;
+  font-size: .89rem;
+}
+.cosmos-root[data-film-scene="creator"] :is(.creator-toolbar-title,.creator-footer-nav button,.creator-buttons button,.creator-camera-row button) {
+  color: #fff7e7;
+  font-size: .86rem;
+}
+.cosmos-root[data-film-scene="closing"] .cosmos-continue { color: #f7f1e8; }
+
+@media (orientation: portrait) {
   .home-composition { min-height: max(550px,calc(100svh - var(--gallery-header))); }
-  .app-shell[data-film-scene="journey"] .journey-visual { padding: 6px 9px 1px; }
+  .app-shell[data-page="home"] .home-panel .cover-copy { width: min(68vw,580px); }
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(4.6rem,16vw,10rem); }
+}
+@media (max-width: 760px) {
+  .app-shell[data-film-scene="journey"] {
+    --film-shade: linear-gradient(180deg,#0a17257d,#0b1826d9 39%,#0c1721ef);
+  }
+  #winter-cosmos-dialog[data-film-scene="gallery"] .cosmos-gallery-head { background-size: 69px auto; }
 }
 @media (max-width: 650px) {
   .home-catalog { align-items: flex-end; gap: 7px; flex-wrap: wrap; }
   .home-catalog-copy { flex: 1 1 100%; }
   .home-controls { min-width: 0; }
-  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(4.45rem,17vw,8rem); }
-  .app-shell[data-page="home"] .cover-title .intro { font-size: 3.6rem; }
-  .app-shell[data-page="home"] .home-panel .cover-copy { padding-bottom: 42px; }
-  .app-shell[data-page="home"] .living-poem { font-size: .98rem; }
+  .app-shell[data-page="home"] .home-panel .cover-copy { width: 79vw; padding-bottom: 26px; }
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(4rem,17vw,7.8rem); }
+  .app-shell[data-page="home"] .cover-title .intro { font-size: 2.15rem; }
   .app-shell[data-film-scene="afterword"] .afterword-copy { padding: 29px 21px; }
   .app-shell[data-film-scene="envelope"] .destination-stage { padding-top: 22px; }
   .cosmos-root .cosmos-particle-pair i { width: 76px; height: 76px; --particle-x: 37px; }
   .cosmos-root .cosmos-particle-pair i:last-child { --particle-x: -37px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .film-shot,.film-plane,.film-plane img,.arch-camera,.arch-still,.cosmos-root .cosmos-particle-pair i { animation: none !important;transition: none !important; }
+  .film-shot,.film-plane,.film-plane img,.arch-camera,.portal-heading,.portal-relief,.cosmos-root .cosmos-particle-pair i { animation: none !important;transition: none !important; }
 }

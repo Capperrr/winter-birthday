@@ -150,10 +150,7 @@
 .keepsake-envelope > .string-knot:focus-visible{outline:2px solid #8b886c!important;outline-offset:4px!important}
 
 /* Envelope: remove visual-only click rings and wax-circle ornament, keep the paper and ribbon intact. */
-.app-shell[data-destination='envelope'] .wax-seal,
-.app-shell[data-destination='opening'] .wax-seal,
-.app-shell[data-destination='envelope'] .envelope-help,
-.app-shell[data-destination='opening'] .envelope-help {display:none!important}
+.keepsake-envelope .wax-seal,.destination-stage .envelope-help {display:none}
 .app-shell[data-destination='envelope'] .keepsake-envelope .string-knot,
 .app-shell[data-destination='opening'] .keepsake-envelope .string-knot {
   outline:0!important;border:0!important;box-shadow:none!important;background:transparent!important;

@@ -93,18 +93,9 @@
   from { translate: -13px 0; opacity: .25; }
   to { translate: 0; opacity: 1; }
 }
-.app-shell[data-destination="journey"][data-ambient]:not([data-ambient="off"]) .journey-visual::before {
-  animation: gallery-reflection 29s -4s ease-in-out infinite;
-}
 .app-shell[data-destination="journey"][data-ambient="on"] .journey-story-card[data-arrived="true"] .journey-period {
   animation: print-from-baseline .64s var(--entrance-ease) both;
 }
-@keyframes gallery-reflection {
-  0%,100% { opacity: .24; transform: translate3d(-4%,1%,0); }
-  47% { opacity: .94; transform: translate3d(6%,-2%,0); }
-  72% { opacity: .54; transform: translate3d(3%,2%,0); }
-}
-
 /* Gather the picture planes on entrance. Their inner prints float independently of expansion. */
 #winter-cosmos-dialog[data-entrance="memories"] #cosmos-gallery .photo-wall:not([data-expanded="true"]) .photo-memory {
   animation: collect-prints 1.08s calc(var(--photo-index) * 42ms) var(--entrance-ease) both;
@@ -189,7 +180,7 @@
 
 .app-shell[data-ambient="paused"] :is(.home-sky-light,.home-sunset,.living-star,.winter-about-card-image,.cake-night-light,.letter-paper-light),
 #winter-cosmos-dialog[data-ambient="paused"] .photo-memory-frame,
-[data-ambient="paused"] :is(.winter-about-entry,.journey-visual)::before { animation-play-state: paused !important; }
+[data-ambient="paused"] .winter-about-entry::before { animation-play-state: paused !important; }
 [data-ambient="limited"] .living-star:nth-child(even) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {
   .app-shell[data-entrance] :is(.living-letter,.intro,.living-poem span,.gift-dedication,.winter-about-card-image,.winter-about-context,.journey-heading h2,.journey-photographs,.grand-cake-tableau,.grand-cake-intro,.afterword-heading,.afterword-line,.gwen-afterword-ink,.letter-page-header h2,.letter-lake),
