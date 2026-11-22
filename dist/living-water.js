@@ -1,5 +1,4 @@
-/* WINTER preview: real-photo lake refraction and Morning/Night light waves.
-   Meadow photograph stays completely still. No perpetual rendering loops. */
+/* Brief light exposure for Morning/Night, local refraction for the lake. */
 (()=>{
   'use strict';
   const shell=document.getElementById('main');
@@ -19,11 +18,11 @@
       if(next===time)return;
       time=next;
       if(cleanup){cleanup();cleanup=null}
-      if(reduced.matches||document.hidden||shell.dataset.page!=='home')return;
+      if(reduced.matches||document.hidden||shell.dataset.page!=='home'||shell.dataset.motion==='off')return;
       const wrapper=document.createElement('div');
       wrapper.className='winter-light-wave winter-light-wave--'+next;
       wrapper.setAttribute('aria-hidden','true');
-      wrapper.innerHTML='<span class="winter-light-glow"></span><i></i><i></i><i></i>';
+      wrapper.innerHTML='<span class="winter-light-glow"></span>';
       stage.append(wrapper);
       const remove=()=>wrapper.remove();
       cleanup=remove;
@@ -47,9 +46,9 @@
   // Conservative lake-water polygon on the original photograph (relative 0..1).
   // Forest, bank, sky and meadow are excluded from effects.
   const lake=[
-    [.32,.57],[.45,.555],[.67,.545],[.80,.555],
-    [.85,.595],[.82,.645],[.75,.688],[.69,.72],
-    [.56,.738],[.43,.714],[.35,.663],[.29,.604]
+    [.34,.61],[.45,.58],[.65,.568],[.80,.579],
+    [.835,.604],[.80,.646],[.73,.69],[.66,.724],
+    [.56,.722],[.445,.697],[.375,.66]
   ];
   const ripples=[];
   const lifetime=1470,maxRipples=3;
@@ -97,8 +96,10 @@
   function samplePoint(clientX,clientY){
     if(!geometry)return null;
     const g=geometry;
-    const x=clientX-g.rect.left,y=clientY-g.rect.top;
-    if(x<0||y<0||x>g.rect.width||y>g.rect.height)return null;
+    // The new lake is an in-flow print, so scrolling can move it without resizing it.
+    const rect=img.getBoundingClientRect();
+    const x=clientX-rect.left,y=clientY-rect.top;
+    if(x<0||y<0||x>rect.width||y>rect.height)return null;
     const u=(x-g.offsetX)/g.coverW, v=(y-g.offsetY)/g.coverH;
     return insidePolygon(u,v)?{x:x*dpr,y:y*dpr,u,v}:null;
   }

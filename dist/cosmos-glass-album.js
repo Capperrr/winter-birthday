@@ -53,6 +53,7 @@
   });
   function set(value) {
     expanded = value;
+    if (value) gallery.closest('dialog')?.removeAttribute('data-entrance');
     wall.dataset.expanded = String(value);
     toggle.textContent = value ? '收拢回忆 ↙' : '展开回忆 ↗';
     toggle.setAttribute('aria-expanded', String(value));

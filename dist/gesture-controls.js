@@ -124,6 +124,7 @@ startButton.addEventListener('click',startCamera);
 stopButton.addEventListener('click',()=>stopCamera());
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopCamera('摄像头已暂停')});
 document.addEventListener('winter:cake-lit',()=>{selectMode('touch');relocate()});
+document.addEventListener('winter:cake-lights-out',()=>{if(stream)stopCamera()});
 window.addEventListener('pagehide',()=>stopCamera());
 function stageActive(id){return cosmos?.open && !$(id)?.hidden && $(id)?.classList.contains('is-active')}
 function emitParticle(action){document.dispatchEvent(new CustomEvent('winter:gesture-particle',{detail:{action}}))}

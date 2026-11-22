@@ -309,8 +309,6 @@
       return true;
     });
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-    if (elapsed >= 2.5 && !ready) showContinue();
-    if (elapsed >= 13) { setPhase('finished'); cancelFrame(); stillFestival(); showContinue(); return; }
     frame = requestAnimationFrame(draw);
   }
   function startFireworks() {
@@ -322,11 +320,23 @@
     page.dataset.reduced = 'false';
     setPhase('fireworks');
     elapsed = 0; nextRocket = .65; lastFrame = 0;
+    // Flight physics can step slowly on a tablet. Story progress uses real time.
+    later(() => {
+      if (phase === 'fireworks' && !ready) showContinue();
+    }, 2500);
+    later(() => {
+      if (phase !== 'fireworks') return;
+      setPhase('finished');
+      cancelFrame();
+      stillFestival();
+      if (!ready) showContinue();
+    }, 13000);
     if (!document.hidden) frame = requestAnimationFrame(draw);
   }
   function extinguish() {
     if (!active || phase !== 'waiting') return;
     setPhase('thanks');
+    document.dispatchEvent(new CustomEvent('winter:cake-lights-out'));
     status.textContent = '蜡烛熄灭了。这些话，想认真地说给你听。';
     later(startFireworks, 10000);
   }

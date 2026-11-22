@@ -187,7 +187,8 @@
   72% { opacity: .53; transform: translate3d(-3%,2%,0); }
 }
 
-[data-ambient="paused"] :is(.home-sky-light,.home-sunset,.living-star,.winter-about-card-image,.photo-memory-frame,.cake-night-light,.letter-paper-light),
+.app-shell[data-ambient="paused"] :is(.home-sky-light,.home-sunset,.living-star,.winter-about-card-image,.cake-night-light,.letter-paper-light),
+#winter-cosmos-dialog[data-ambient="paused"] .photo-memory-frame,
 [data-ambient="paused"] :is(.winter-about-entry,.journey-visual)::before { animation-play-state: paused !important; }
 [data-ambient="limited"] .living-star:nth-child(even) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {

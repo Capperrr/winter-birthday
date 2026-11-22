@@ -19,7 +19,8 @@
 .app-shell[data-destination='cake'] .lighter-instructions{display:none}
 .winter-cake-camera-enable{position:absolute;z-index:8;top:clamp(104px,12%,132px);right:clamp(15px,4vw,52px);max-width:245px;min-height:44px;padding:10px 16px;border:1px solid #faf5e8a0;border-radius:28px;background:#112536b8;color:#f4eee5;font:400 11px/1.6 var(--cn-serif);letter-spacing:.2px;backdrop-filter:blur(10px);cursor:pointer}
 .winter-cake-camera-enable:active{scale:.98}.winter-cake-camera-enable span{margin-left:8px}
-.app-shell[data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable{display:none}
+.app-shell[data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable,
+.cake-page:not([data-cake-state='unlit']) .winter-cake-camera-enable{display:none}
 .winter-cake-camera-note{position:absolute;z-index:9;top:clamp(155px,19%,190px);right:clamp(15px,4vw,52px);max-width:240px;color:#f0e9df;font:11px/1.7 var(--cn-serif);text-shadow:0 1px 4px #071321;pointer-events:none}
 .winter-cake-camera-note:empty{display:none}
 @media(max-width:760px){

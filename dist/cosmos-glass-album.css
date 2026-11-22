@@ -54,7 +54,7 @@
   overflow: visible;
   background: transparent;
   box-shadow: none;
-  transform: translate3d(var(--stack-x),var(--stack-y),0) translate(-50%,-50%) rotate(var(--stack-angle)) scale(var(--stack-scale));
+  transform: translate3d(calc(var(--stack-x) + var(--memory-pan-x,0px)),calc(var(--stack-y) + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--stack-angle)) scale(calc(var(--stack-scale) * var(--memory-fit,1)));
   transition: transform .74s cubic-bezier(.22,.78,.23,1);
   cursor: pointer;
   z-index: var(--stack-depth);
@@ -90,7 +90,7 @@
 }
 #cosmos-gallery .photo-memory-title, #cosmos-gallery .photo-memory-caption { display: none; }
 #cosmos-gallery .photo-wall[data-expanded="true"] .photo-memory {
-  transform: translate3d(calc(var(--arc-x) * 1cqw),calc(var(--arc-y) * 1cqh),0) translate(-50%,-50%) rotate(var(--arc-angle));
+  transform: translate3d(calc(var(--arc-x) * 1cqw + var(--memory-pan-x,0px)),calc(var(--arc-y) * 1cqh + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--arc-angle)) scale(var(--memory-fit,1));
   cursor: zoom-in;
   transition-delay: var(--open-delay);
 }
@@ -119,10 +119,10 @@
   #cosmos-gallery .photo-wall { --open-unit: .193cqw; --stack-scale: 1.56; height: clamp(445px,60svh,550px); }
   #cosmos-gallery .photo-wall .photo-memory { max-width: 21cqw; }
   #cosmos-gallery .photo-wall[data-expanded="true"] .photo-memory {
-    transform: translate3d(calc(var(--phone-x) * 1cqw),calc(var(--phone-y) * 1cqh),0) translate(-50%,-50%) rotate(var(--arc-angle));
+    transform: translate3d(calc(var(--phone-x) * 1cqw + var(--memory-pan-x,0px)),calc(var(--phone-y) * 1cqh + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--arc-angle)) scale(var(--memory-fit,1));
   }
   #cosmos-gallery .photo-wall:not([data-expanded="true"]) .photo-memory {
-    transform: translate3d(calc(var(--stack-x) * .66),calc(var(--stack-y) * .72),0) translate(-50%,-50%) rotate(var(--stack-angle)) scale(var(--stack-scale));
+    transform: translate3d(calc(var(--stack-x) * .66 + var(--memory-pan-x,0px)),calc(var(--stack-y) * .72 + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--stack-angle)) scale(calc(var(--stack-scale) * var(--memory-fit,1)));
   }
 }
 @media (prefers-reduced-motion: reduce) {

@@ -10,7 +10,7 @@
 .app-shell[data-destination="journey"] .journey-page::before,
 .app-shell[data-destination="journey"] .journey-heading::before { content: none; }
 .journey-page[data-sticky-story="on"] .journey-heading,
-.journey-page[data-sticky-story="on"] .journey-layout { width: min(1320px,100%); }
+.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout { width: min(1320px,100%); }
 .journey-page[data-sticky-story="on"] .journey-heading {
   align-items: end;
   flex: none;
@@ -26,7 +26,7 @@
   letter-spacing: -.045em;
 }
 .app-shell[data-destination="journey"] .journey-return { color: #3e5a71; border-color: #4d6b8247; font-size: .81rem; }
-.journey-page[data-sticky-story="on"] .journey-layout {
+.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout {
   display: grid;
   flex: 0 0 auto;
   height: auto;
@@ -38,6 +38,7 @@
 }
 .journey-visual {
   grid-area: photo;
+  align-self: start;
   position: sticky;
   top: 12px;
   isolation: isolate;
@@ -165,7 +166,7 @@
 .journey-visual .journey-track-base { background: #4b698339; box-shadow: none; }
 .journey-visual .journey-track-ink { background: #456485; }
 .journey-visual .journey-stops { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px; margin: 0; width: 100%; border-top: 1px solid #3859753b; }
-.journey-visual .journey-stops button { position: static; transform: none; min-height: 44px; color: #46637b; padding: 5px 3px; }
+.journey-visual .journey-stops button { position: relative; inset: auto; translate: none; min-height: 44px; color: #46637b; padding: 5px 3px; }
 .journey-visual .journey-stops button > span { display: none; }
 .journey-visual .journey-stops button[aria-current="step"] { color: #173f73; border-bottom: 1px solid currentColor; font-weight: 600; }
 .journey-visual .journey-bottomline { margin: 0; padding: 0; justify-content: flex-start; border: 0; }
@@ -187,7 +188,7 @@
 }
 
 @media (max-width: 950px) and (orientation: portrait), (max-width: 760px) {
-  .journey-page[data-sticky-story="on"] .journey-layout { grid-template: "photo" auto "letter" auto / minmax(0,1fr); gap: 20px; }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout { grid-template: "photo" auto "letter" auto / minmax(0,1fr); gap: 20px; }
   .journey-visual { top: 0; padding: 7px 0 5px; border-bottom: 1px solid #35557235; }
   .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-frame { height: clamp(148px,24svh,310px); }
   .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-photo { height: 82%; }

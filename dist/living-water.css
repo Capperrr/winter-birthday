@@ -48,36 +48,11 @@
     rgba(192,218,249,.05) 43%,
     transparent 65%);
 }
-.winter-light-wave i{
-  position:absolute;
-  top:64%;
-  left:50%;
-  width:clamp(130px,19vw,330px);
-  aspect-ratio:1;
-  border:1px solid rgba(255,228,177,.42);
-  border-radius:50%;
-  box-shadow:0 0 34px 3px rgba(255,226,170,.10),inset 0 0 25px rgba(247,218,181,.08);
-  opacity:0;
-  transform:translate(-50%,-50%) scaleX(.86) scaleY(.31);
-  animation:winter-radiant-ring 1130ms cubic-bezier(.16,.58,.24,1) both;
-}
-.winter-light-wave--night i{
-  border-color:rgba(207,230,255,.45);
-  box-shadow:0 0 34px rgba(196,221,255,.12),inset 0 0 22px rgba(209,230,255,.07);
-}
-.winter-light-wave i:nth-of-type(2){animation-delay:125ms}
-.winter-light-wave i:nth-of-type(3){animation-delay:250ms}
 @keyframes winter-light-spread{
   0%{transform:translate(-50%,-50%) scale(.16);opacity:0}
   20%{opacity:.65}
   68%{opacity:.38}
   100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}
-}
-@keyframes winter-radiant-ring{
-  0%{opacity:0;transform:translate(-50%,-50%) scaleX(.5) scaleY(.15)}
-  20%{opacity:.57}
-  65%{opacity:.32}
-  100%{opacity:0;transform:translate(-50%,-50%) scaleX(6) scaleY(2.0)}
 }
 @media(prefers-reduced-motion:reduce){
   .winter-light-wave{display:none!important}
