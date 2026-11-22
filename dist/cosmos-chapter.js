@@ -6,7 +6,7 @@
  const canvas=document.getElementById('cosmos-stars');
  const ctx=canvas.getContext('2d',{alpha:true});
  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)');
- const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery','cosmos-creator'].map(id=>document.getElementById(id));
+ const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery','cosmos-creator','cosmos-closing'].map(id=>document.getElementById(id));
  const wishes=[
    '蜡烛会灭，你会有黑夜，但我会为你点灯。',
    '希望比起过去的时间，未来的日子里能够更幸福。',
@@ -76,6 +76,7 @@
  function showStage(n){
    clearTimeout(introTimer);
     current=n;
+    dialog.dataset.filmScene=n===3?'gallery':n===4?'creator':n===5?'closing':'universe';
     const intro=document.getElementById('cosmos-intro');
     intro.classList.remove('is-complete');
     if(n===0){void intro.offsetWidth;introTimer=setTimeout(()=>{if(dialog.open&&current===0)intro.classList.add('is-complete')},reduced?.matches?0:10900);}
@@ -157,6 +158,9 @@
   document.getElementById('cosmos-gallery-home').addEventListener('click',()=>{
    dialog.close();location.hash='#home';
  });
+ document.getElementById('cosmos-to-closing').addEventListener('click',()=>showStage(5));
+ document.getElementById('cosmos-closing-back').addEventListener('click',()=>showStage(4));
+ document.getElementById('cosmos-closing-home').addEventListener('click',()=>{dialog.close();location.hash='#home';});
  document.querySelectorAll('[data-wish]').forEach(button=>button.addEventListener('click',()=>{
    const index=Number(button.dataset.wish);
    button.classList.add('is-lit');

@@ -20,30 +20,6 @@
   ) scale(calc(var(--plane-fit) * var(--depth-bleed)));
 }
 .depth-texture { display: block; width: 100%; height: 100%; object-fit: fill; }
-.home-art { overflow: clip; touch-action: pan-y pinch-zoom; }
-.home-depth-stage { z-index: 1; transition: opacity .38s ease; }
-.home-art .living-stage { z-index: 2; }
-.home-art[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .home-depth-stage { opacity: 1; }
-.home-depth-stage [data-depth-role="midground"] {
-  mask-image: linear-gradient(to bottom, transparent 14%,#000 29%,#000 59%,transparent 82%);
-}
-.home-depth-stage [data-depth-role="subject"] {
-  mask-image: linear-gradient(to bottom, transparent 41%,#000 60%);
-}
-.home-depth-stage [data-depth-role="foreground"] { clip-path: polygon(0 0,45% 0,45% 29%,0 31%); }
-.home-depth-air {
-  background: radial-gradient(ellipse 35% 23% at 77% 31%,#f7c89619,transparent 80%);
-  opacity: .55;
-}
-[data-living-time="night"] .home-depth-stage .depth-texture {
-  filter: brightness(.74) saturate(.79) hue-rotate(8deg);
-}
-.home-depth-stage .depth-texture { transition: filter .9s ease; }
-[data-living-time="night"] .home-depth-air { opacity: 0; }
-.home-art:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .living-stage {
-  transform: translate3d(calc(var(--depth-camera-x,0px) * .41),calc(var(--depth-camera-y,0px) * .35),0);
-}
-
 /* The B photo rail retains authentic separate place photographs at real Z depths. */
 .journey-photo { container-type: size; }
 .app-shell[data-destination="journey"] .journey-frame:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .journey-photographs {
@@ -81,21 +57,6 @@
   --memory-fit: 1;
 }
 
-/* Native cake, slate, and clean alpine background. The wick/camera use the original locked view. */
-.cake-depth-stage { --depth-bleed: 1.032; z-index: 1; }
-.cake-depth-stage [data-depth-role="midground"] { mask-image: linear-gradient(transparent 71%,#000 90%); }
-.cake-depth-stage [data-depth-role="contact"] {
-  --depth-bleed: 1;
-  background: radial-gradient(ellipse 11% 3% at 49.8% var(--cake-foot,83.6%),#061320a8,#0b182752 51%,transparent 92%);
-}
-.cake-depth-stage[data-aspect="portrait"] { --cake-foot: 87.8%; }
-#cake-art-slot .cake-depth-stage [data-depth-role="subject"] { --depth-bleed: 1; }
-#cake-art-slot .grand-candles-overlay { z-index: 2; }
-#cake-art-slot[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .cake-depth-stage { opacity: 1; }
-#cake-art-slot[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .grand-cake-photograph { opacity: 0; }
-#cake-art-slot[data-depth-mode="locked"] .cake-depth-stage { opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .depth-stage { display: none; }
-  #cake-art-slot .grand-cake-photograph { opacity: 1; }
-  .app-shell[data-cake-camera="on"][data-cake-cutout="ready"] #cake-art-slot .grand-cake-photograph { opacity: 0; }
 }

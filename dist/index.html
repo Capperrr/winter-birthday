@@ -8,7 +8,7 @@
   <meta name="description" content="For you, WINTER. 把你喜欢的山野，和想对你说的话，做成一份25岁的生日礼物。">
   <title>For WINTER — 生日快乐</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/home-original.png" as="image">
+  <link rel="preload" href="assets/winter-v2/home/still.webp" as="image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&amp;family=Cormorant+Garamond:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;family=Caveat:wght@400&amp;family=Noto+Serif+SC:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -51,15 +51,17 @@
   <script src="portrait-coverflow.js?v=ipad-touch-20261118" defer></script>
   <script src="about-entry.js?v=living-gallery-20261122" defer></script>
   <script src="gwen-handwriting-phone.js?v=art-touch-20261116" defer></script>
-  <script src="cosmos-chapter.js?v=living-gallery-20261122" defer></script>
+  <script src="cosmos-chapter.js?v=winter-v2" defer></script>
   <script src="cosmos-glass-album.js?v=living-gallery-20261122-2" defer></script>
   <script src="gesture-controls.js?v=depth-20261122" defer></script>
   <script src="cake-cutout.js?v=art-touch-20261116" defer></script>
   <script src="creator-studio.js?v=art-touch-20261116" defer></script>
   <script src="cake-five-candles.js?v=pinch-hint-20261117" defer></script>
   <script src="ambient.js?v=living-gallery-20261122" defer></script>
-  <link rel="stylesheet" href="cinematic-scenes.css?v=depth-20261122-2">
-  <script src="cinematic-scenes.js?v=depth-20261122-2" defer></script>
+  <link rel="stylesheet" href="cinematic-scenes.css?v=winter-v2">
+  <script src="cinematic-scenes.js?v=winter-v2" defer></script>
+  <link rel="stylesheet" href="winter-film.css?v=2">
+  <script src="winter-film.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -134,9 +136,8 @@
         <div class="home-composition">
           <figure class="home-art">
             <picture class="landscape" id="scene-photo">
-              <img src="assets/home-original.png" alt="树叶下的夕照雪山与草坡，细密光栅线条穿过山谷" width="3344" height="1882" decoding="async" fetchpriority="high">
+              <img src="assets/winter-v2/home/still.webp" alt="巨大的岩石拱门悬在云谷之上，瀑布从远处的山崖流下。" width="1672" height="941" decoding="async" fetchpriority="high">
             </picture>
-            <img class="home-retouch" src="assets/winter-poster-corner-retouch.svg" alt="" width="1672" height="941" aria-hidden="true">
             <div class="living-stage" aria-hidden="true">
               <div class="home-sky-light"></div>
               <div class="home-sunset"></div>
@@ -151,6 +152,7 @@
           <footer class="home-catalog" id="scene-footer">
             <div class="home-catalog-copy scene-copy"><p>A Personal Exhibition</p><em>A little universe made for you.</em></div>
             <div class="home-controls">
+              <button class="film-arch-button" type="button" id="film-cross-arch" aria-pressed="false"><span>穿过石拱</span><b aria-hidden="true">↗</b></button>
       <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false" aria-label="隐藏文字，只看风景">
         <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg>
         <span id="view-label">只看风景</span>
@@ -498,7 +500,16 @@
         <div class="creator-camera-row"><button type="button" id="winter-creator-camera-enable">开启摄像头 · 隔空画画</button><span id="winter-creator-camera-status" role="status" aria-live="polite">也可以直接用手指绘画</span></div>
         </div>
       </div>
-      <div class="creator-footer-nav"><button class="creator-previous" type="button" id="cosmos-creator-back">← 再看看那些普通日子</button><button class="creator-home" type="button" id="cosmos-gallery-home">带着这张画，再从 Home 走一遍 ↗</button></div>
+      <div class="creator-footer-nav"><button class="creator-previous" type="button" id="cosmos-creator-back">← 再看看那些普通日子</button><button class="creator-home" type="button" id="cosmos-gallery-home">带着这张画，再从 Home 走一遍 ↗</button><button class="creator-previous" type="button" id="cosmos-to-closing">在山野里收尾 →</button></div>
+    </section>
+    <section id="cosmos-closing" class="cosmos-stage cosmos-closing" aria-labelledby="cosmos-closing-title">
+      <p class="closing-intro">For you</p>
+      <h2 id="cosmos-closing-title">WINTER</h2>
+      <img src="assets/handwriting/gwen-love.png" width="376" height="142" decoding="async" loading="lazy" alt="I love u. · Gwen 亲笔">
+      <div class="film-closing-actions">
+        <button class="cosmos-continue" id="cosmos-closing-back" type="button">← 回到画室</button>
+        <button class="cosmos-continue" id="cosmos-closing-home" type="button">回到 Home <span aria-hidden="true">↗</span></button>
+      </div>
     </section>
     <div id="cosmos-photo-lightbox" role="dialog" aria-modal="true" aria-label="放大查看回忆照片" hidden>
       <button class="cosmos-lightbox-close" id="cosmos-lightbox-close" type="button" aria-label="关闭照片">×</button>

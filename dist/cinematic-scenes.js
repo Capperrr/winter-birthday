@@ -2,20 +2,16 @@
   'use strict';
 
   const shell = document.getElementById('main');
-  const home = document.querySelector('.home-art');
   const chapter = document.getElementById('journey-page');
   const journey = document.querySelector('.journey-frame');
   const portraits = document.querySelector('.winter-about-stage');
   const cosmos = document.getElementById('winter-cosmos-dialog');
   const memories = document.getElementById('cosmos-photo-wall');
   const lightbox = document.getElementById('cosmos-photo-lightbox');
-  const cake = document.getElementById('cake-page');
-  const cakeSlot = document.getElementById('cake-art-slot');
-  if (!shell || !home || !chapter || !journey || !cosmos || !memories || !cake || !cakeSlot) return;
+  if (!shell || !chapter || !journey || !cosmos || !memories) return;
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const compact = matchMedia('(max-width: 640px)');
-  const portraitCake = matchMedia('(max-width:760px), (max-aspect-ratio:4/5)');
   const perspective = 1200;
   const supportsDepth = CSS.supports('transform-style', 'preserve-3d');
   const controllers = new Map();
@@ -27,12 +23,9 @@
     {key:'together',    aspect:1200/820,  pose:[-3, 2,11]}
   ];
   let active = '';
-  let filmAssets;
-  let birthdayAssets;
   let scrollModule;
   let storyTrack;
   let storyProgress = 0;
-  let birthdayLocked = false;
 
   function enabled() {
     return supportsDepth && !reduced.matches && shell.dataset.motion !== 'off' &&
@@ -62,60 +55,6 @@
     img.decoding = 'async';
     img.src = src;
     return {layer, ready:img.decode()};
-  }
-
-  function loadHome() {
-    if (filmAssets) return filmAssets;
-    filmAssets = (async () => {
-      const stage = element('div','depth-stage home-depth-stage',home);
-      stage.setAttribute('aria-hidden','true');
-      const world = element('div','depth-world',stage);
-      const distance = plate(world, 'background', -156, .22, 'assets/scenes/home-distant.webp');
-      const sky = plate(world, 'midground', -56, .46, 'assets/scenes/home-valley.webp');
-      const meadow = plate(world, 'subject', 48, .69, 'assets/scenes/home-valley.webp');
-      const branches = plate(world, 'foreground', 166, 1.09, 'assets/scenes/home-branches.webp');
-      const air = plate(world, 'atmosphere', 66, .53);
-      air.layer.classList.add('home-depth-air');
-      try {
-        await Promise.all([distance.ready,sky.ready,meadow.ready,branches.ready]);
-        home.dataset.depthReady = 'true';
-        if (active === 'home') controllers.get('home').dolly(20);
-      } catch (_) {
-        stage.remove();
-        home.dataset.depthReady = 'failed';
-      }
-    })();
-    return filmAssets;
-  }
-
-  function loadBirthday() {
-    const variant = portraitCake.matches ? 'portrait' : 'wide';
-    if (birthdayAssets?.variant === variant) return birthdayAssets.promise;
-    cakeSlot.dataset.depthReady = 'loading';
-    const scenery = variant === 'portrait' ? 'assets/cinematic-cake-empty-portrait.webp' : 'assets/cinematic-cake-empty.webp';
-    const promise = (async () => {
-      const stage = element('div','depth-stage cake-depth-stage',cakeSlot);
-      stage.setAttribute('aria-hidden','true');
-      stage.dataset.aspect = variant;
-      const world = element('div','depth-world',stage);
-      const backdrop = plate(world, 'background', -92, .29, scenery);
-      const slate = plate(world, 'midground', -22, .66, scenery);
-      plate(world, 'contact', -2, 0);
-      // The cake and existing wick SVG hold the original geometry in both camera modes.
-      const pastry = plate(world, 'subject', 0, 0, 'assets/birthday-render/cake-' + variant + '.webp');
-      stage.style.setProperty('--depth-camera-z','0px');
-      try {
-        await Promise.all([backdrop.ready,slate.ready,pastry.ready]);
-        if (birthdayAssets?.variant !== variant) { stage.remove(); return; }
-        cakeSlot.querySelectorAll('.cake-depth-stage').forEach(node => { if (node !== stage) node.remove(); });
-        cakeSlot.dataset.depthReady = 'true';
-      } catch (_) {
-        stage.remove();
-        if (birthdayAssets?.variant === variant) cakeSlot.dataset.depthReady = 'failed';
-      }
-    })();
-    birthdayAssets = {variant,promise};
-    return promise;
   }
 
   function loadJourneyPhoto({key,aspect}) {
@@ -236,8 +175,7 @@
           ['x','y','z','yaw'].forEach(prop => host.style.removeProperty('--depth-camera-' + prop));
         } else wake();
       },
-      track(next) { path = next; wake(); },
-      dolly(distance) { path = [0,0,distance]; wake(); }
+      track(next) { path = next; wake(); }
     };
   }
 
@@ -278,10 +216,8 @@
     });
   }
 
-  controllers.set('home',camera(home,home,{drag:true}));
   controllers.set('journey',camera(journey,journey,{amplitude:.62}));
   controllers.set('memories',camera(memories,memories,{drag:true,amplitude:.78,suppressClick:true}));
-  controllers.set('cake',camera(cakeSlot,cakeSlot,{amplitude:.43}));
   if (portraits) controllers.set('about',camera(portraits,portraits,{amplitude:.38}));
   memories.querySelectorAll('.photo-memory').forEach((photo,index) => {
     const z = -126 + (index%6)*39;
@@ -294,42 +230,24 @@
     const gallery = cosmos.open && document.getElementById('cosmos-gallery').classList.contains('is-active');
     const selected = gallery ? 'memories' : cosmos.open ? '' : shell.dataset.page === 'destination' ? shell.dataset.destination : shell.dataset.page;
     active = enabled() && !document.hidden ? selected : '';
-    if (selected !== 'cake') birthdayLocked = false;
     if (active !== 'journey' && storyTrack) { storyTrack.kill(); storyTrack = null; storyProgress = 0; }
 
     controllers.forEach((controller,key) => {
       const paused = key === 'memories' ? !lightbox?.hidden : shell.dataset.motionPaused === 'true';
-      const locked = key === 'cake' && (
-        birthdayLocked || shell.dataset.cakeCamera === 'on' || cake.dataset.cakeState !== 'unlit'
-      );
-      controller.set(active === key && !paused ? locked ? 'locked' : mode() : 'off');
+      controller.set(active === key && !paused ? mode() : 'off');
     });
-    if (active === 'home') loadHome();
     if (active === 'journey') { followJourney(); startScrollTrack(); }
-    if (active === 'cake' && !birthdayLocked && shell.dataset.cakeCamera !== 'on') loadBirthday();
   }
 
-  document.addEventListener('click',event => {
-    if (shell.dataset.destination !== 'cake' || !event.target.closest('#winter-cake-camera-enable,#winter-gesture-start')) return;
-    birthdayLocked = true;
-    sync();
-  },true);
-  document.addEventListener('winter:camera-stopped',() => {
-    if (cake.dataset.cakeState !== 'unlit') return;
-    birthdayLocked = false;
-    sync();
-  });
   chapter.addEventListener('winter:journey-stop',followJourney);
   document.addEventListener('winter:cosmos-stage',sync);
   document.addEventListener('visibilitychange',sync);
   reduced.addEventListener('change',sync);
   compact.addEventListener('change',sync);
-  portraitCake.addEventListener('change',sync);
   new MutationObserver(sync).observe(shell,{
-    attributes:true,attributeFilter:['data-page','data-destination','data-motion','data-motion-paused','data-cake-camera']
+    attributes:true,attributeFilter:['data-page','data-destination','data-motion','data-motion-paused']
   });
   new MutationObserver(sync).observe(cosmos,{attributes:true,attributeFilter:['open']});
-  new MutationObserver(sync).observe(cake,{attributes:true,attributeFilter:['data-cake-state']});
   if (lightbox) new MutationObserver(sync).observe(lightbox,{attributes:true,attributeFilter:['hidden']});
   sync();
 })();
