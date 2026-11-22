@@ -96,9 +96,11 @@
     const promise = (async () => {
       const stage = element('div','depth-stage cake-depth-stage',cakeSlot);
       stage.setAttribute('aria-hidden','true');
+      stage.dataset.aspect = variant;
       const world = element('div','depth-world',stage);
       const backdrop = plate(world, 'background', -92, .29, scenery);
       const slate = plate(world, 'midground', -22, .66, scenery);
+      plate(world, 'contact', -2, 0);
       // The cake and existing wick SVG hold the original geometry in both camera modes.
       const pastry = plate(world, 'subject', 0, 0, 'assets/birthday-render/cake-' + variant + '.webp');
       stage.style.setProperty('--depth-camera-z','0px');
@@ -289,11 +291,10 @@
   });
 
   function sync() {
-    const last = active;
     const gallery = cosmos.open && document.getElementById('cosmos-gallery').classList.contains('is-active');
     const selected = gallery ? 'memories' : cosmos.open ? '' : shell.dataset.page === 'destination' ? shell.dataset.destination : shell.dataset.page;
     active = enabled() && !document.hidden ? selected : '';
-    if (last === 'cake' && selected !== 'cake') birthdayLocked = false;
+    if (selected !== 'cake') birthdayLocked = false;
     if (active !== 'journey' && storyTrack) { storyTrack.kill(); storyTrack = null; storyProgress = 0; }
 
     controllers.forEach((controller,key) => {
@@ -313,6 +314,11 @@
     birthdayLocked = true;
     sync();
   },true);
+  document.addEventListener('winter:camera-stopped',() => {
+    if (cake.dataset.cakeState !== 'unlit') return;
+    birthdayLocked = false;
+    sync();
+  });
   chapter.addEventListener('winter:journey-stop',followJourney);
   document.addEventListener('winter:cosmos-stage',sync);
   document.addEventListener('visibilitychange',sync);

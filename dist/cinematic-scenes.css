@@ -84,6 +84,11 @@
 /* Native cake, slate, and clean alpine background. The wick/camera use the original locked view. */
 .cake-depth-stage { --depth-bleed: 1.032; z-index: 1; }
 .cake-depth-stage [data-depth-role="midground"] { mask-image: linear-gradient(transparent 71%,#000 90%); }
+.cake-depth-stage [data-depth-role="contact"] {
+  --depth-bleed: 1;
+  background: radial-gradient(ellipse 11% 3% at 49.8% var(--cake-foot,83.6%),#061320a8,#0b182752 51%,transparent 92%);
+}
+.cake-depth-stage[data-aspect="portrait"] { --cake-foot: 87.8%; }
 #cake-art-slot .cake-depth-stage [data-depth-role="subject"] { --depth-bleed: 1; }
 #cake-art-slot .grand-candles-overlay { z-index: 2; }
 #cake-art-slot[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .cake-depth-stage { opacity: 1; }

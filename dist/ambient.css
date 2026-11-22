@@ -129,7 +129,7 @@
   z-index: 2;
   inset: 9% 3% 24%;
   pointer-events: none;
-  background: radial-gradient(ellipse at 70% 42%,#6c9fc858,#5f91bd27 38%,transparent 70%);
+  background: radial-gradient(ellipse 56% 55% at 61% 44%,#6c9fc858,#5f91bd27 34%,transparent 68%);
   opacity: .34;
 }
 .app-shell[data-entrance="cake"] .cake-page[data-cake-state="unlit"] .grand-cake-tableau { animation: night-exposure 1.46s var(--entrance-ease) both; }
