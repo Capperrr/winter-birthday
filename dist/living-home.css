@@ -1,0 +1,173 @@
+/* A's full-frame artwork. The photograph and its retouch share the same, stationary bounds. */
+.app-shell[data-page="home"] {
+  --gallery-ink: #1a3349;
+  --gallery-rule: #183a5130;
+  --gallery-paper: #f2f1ec;
+  background: var(--gallery-paper);
+}
+.app-shell[data-page="home"][data-living-time="night"] {
+  --gallery-ink: #f5faff;
+  --gallery-rule: #ccdfe53b;
+  --gallery-paper: #0c1723;
+}
+.app-shell[data-page="home"] .home-panel { display: block; overflow: auto; animation: none; }
+.home-composition {
+  display: grid;
+  max-width: 1840px;
+  margin-inline: auto;
+  padding: 15px var(--gallery-edge) 20px;
+}
+.home-art {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-area: 1 / 1;
+  margin: 0;
+  aspect-ratio: 3344 / 1882;
+  width: 100%;
+  background: #536879;
+}
+.app-shell[data-page="home"] .home-art .landscape {
+  position: relative;
+  grid-area: 1 / 1;
+  inset: auto;
+  z-index: auto;
+  opacity: 1;
+  transform: none;
+}
+.app-shell[data-page="home"] .home-art .landscape img,
+.home-retouch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
+  animation: none;
+  transform: none;
+  transition: filter .9s cubic-bezier(.2,.76,.26,1);
+}
+.home-retouch { position: absolute; inset: 0; pointer-events: none; }
+.app-shell[data-page="home"][data-living-time="night"] .home-art .landscape img,
+.app-shell[data-living-time="night"] .home-retouch { filter: brightness(.74) saturate(.79) hue-rotate(8deg); }
+.living-stage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.home-sky-light, .home-sunset, .living-stars { position: absolute; pointer-events: none; }
+.home-sky-light {
+  inset: -7% 8% auto 27%;
+  height: 43%;
+  background: radial-gradient(ellipse at 54% 39%, #c2e1f378, #b7d5ef25 44%, transparent 72%);
+  opacity: .28;
+}
+.home-sunset {
+  inset: 16% -10% auto 54%;
+  height: 39%;
+  background: radial-gradient(ellipse at 74% 43%, #ffd6a2b5, #ffba7b43 40%, transparent 72%);
+  opacity: .22;
+}
+.living-stars { inset: 0; opacity: 0; transition: opacity 1.3s ease; }
+.living-star {
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #f1f8ff;
+  box-shadow: 0 0 3px #e2eeff84;
+  opacity: .44;
+}
+[data-living-time="night"] .living-stars { opacity: 1; }
+[data-living-time="night"] .home-sunset { visibility: hidden; }
+[data-living-time="night"] .home-sky-light { background: radial-gradient(ellipse at 60% 32%, #9bccea6e, #88bedb18 45%, transparent 72%); }
+
+.app-shell[data-page="home"] .home-panel .cover-copy {
+  position: relative;
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: start;
+  z-index: 2;
+  width: max-content;
+  max-width: 100%;
+  margin: 5% 0 0 7%;
+  padding: 0;
+  text-align: left;
+  color: #fcffff;
+  text-shadow: 0 2px 14px #0d253b7a;
+  pointer-events: none;
+}
+.app-shell[data-page="home"] .cover-title { display: block; margin: 0; font-weight: 500; }
+.app-shell[data-page="home"] .cover-title .intro {
+  display: block;
+  margin: 0 0 .24em .12em;
+  color: inherit;
+  font: 400 clamp(2.4rem,5vw,5.2rem)/.9 'Allura',cursive;
+  letter-spacing: 0;
+}
+.app-shell[data-page="home"] .cover-title .name {
+  display: block;
+  margin: 0;
+  color: inherit;
+  font: 500 clamp(5rem,11.05vw,13.8rem)/.75 var(--serif);
+  letter-spacing: -.057em;
+  white-space: nowrap;
+}
+.cover-title .living-letter { display: inline-block; }
+.app-shell[data-page="home"] .living-poem {
+  margin: clamp(18px,2.8vw,44px) 0 0 2px;
+  font: 400 clamp(.97rem,1.24vw,1.27rem)/1.94 var(--cn-serif);
+  letter-spacing: .08em;
+  color: inherit;
+}
+.living-poem span { display: block; }
+.app-shell[data-page="home"] .gift-dedication {
+  margin: clamp(12px,1.6vw,22px) 0 0 2px;
+  font: 600 .61rem/1.5 var(--sans);
+  letter-spacing: .11em;
+  color: inherit;
+}
+.home-catalog { display: flex; gap: 14px; justify-content: space-between; align-items: center; padding-top: 8px; color: var(--gallery-ink); }
+.home-catalog-copy p { margin: 0; font: 600 .66rem/1.45 var(--sans); letter-spacing: .13em; text-transform: uppercase; }
+.home-catalog-copy em { display: inline-block; margin-top: 3px; font: italic 500 clamp(1.05rem,1.9vw,1.5rem)/1.12 var(--serif); opacity: .8; }
+.home-controls { display: flex; flex-shrink: 0; align-items: center; gap: 12px; }
+.living-segment { display: flex; gap: 8px; align-items: center; }
+.living-segment button, .home-controls .view-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: inherit;
+  font: 500 .78rem/1.3 var(--sans);
+  opacity: .74;
+}
+.living-segment button[aria-pressed="true"] { box-shadow: inset 0 -1px currentColor; opacity: 1; font-weight: 600; }
+.home-controls .view-toggle { min-width: 44px; padding: 8px; }
+.home-controls .view-toggle span, .living-switch-indicator, .living-segment-indicator { display: none; }
+.app-shell[data-view="scenery"] .home-catalog .view-toggle { visibility: visible; }
+.living-touch-ripple { display: none; }
+@media (max-width: 870px) {
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(5rem,12vw,10rem); }
+}
+@media (max-width: 600px) {
+  .home-composition { row-gap: 22px; padding-top: 21px; }
+  .home-art { grid-area: 2 / 1; }
+  .app-shell[data-page="home"] .home-panel .cover-copy { grid-area: 1 / 1; margin: 18px 0 0 5%; color: var(--gallery-ink); text-shadow: none; }
+  .app-shell[data-page="home"] .cover-title .intro { font-size: 2.6rem; }
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(4.25rem,16.7vw,6.4rem); }
+  .app-shell[data-page="home"] .living-poem { margin-top: 22px; font-size: .92rem; letter-spacing: .065em; }
+  .app-shell[data-page="home"] .gift-dedication { font-size: .54rem; }
+  .home-catalog { gap: 6px; padding-top: 0; }
+  .home-catalog-copy p { font-size: .56rem; letter-spacing: .09em; }
+  .home-catalog-copy em { font-size: 1rem; }
+  .home-controls, .living-segment { gap: 2px; }
+  .living-segment button { font-size: .71rem; padding-inline: 5px; }
+}
+@media (min-width: 601px) and (max-width: 870px) and (orientation: portrait) {
+  .home-composition { min-height: calc(92svh - var(--gallery-header)); align-content: center; padding-block: 35px; }
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(5.3rem,13.3vw,10rem); }
+  .home-catalog { padding-top: 13px; }
+}

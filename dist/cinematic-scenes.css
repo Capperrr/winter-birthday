@@ -1,0 +1,101 @@
+/* 1200px camera. Planes compensate for projection at rest, then translate at different rates. */
+.depth-stage {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  perspective: 1200px;
+  pointer-events: none;
+  opacity: 0;
+  --depth-bleed: 1.052;
+}
+.depth-world { position: absolute; inset: 0; transform-style: preserve-3d; }
+.depth-plane {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(
+    calc(var(--depth-camera-x,0px) * var(--plane-pan)),
+    calc(var(--depth-camera-y,0px) * var(--plane-pan)),
+    calc(var(--plane-z) + var(--depth-camera-z,0px))
+  ) scale(calc(var(--plane-fit) * var(--depth-bleed)));
+}
+.depth-texture { display: block; width: 100%; height: 100%; object-fit: fill; }
+.home-art { overflow: clip; touch-action: pan-y pinch-zoom; }
+.home-depth-stage { z-index: 1; transition: opacity .38s ease; }
+.home-art .living-stage { z-index: 2; }
+.home-art[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .home-depth-stage { opacity: 1; }
+.home-depth-stage [data-depth-role="midground"] {
+  mask-image: linear-gradient(to bottom, transparent 14%,#000 29%,#000 59%,transparent 82%);
+}
+.home-depth-stage [data-depth-role="subject"] {
+  mask-image: linear-gradient(to bottom, transparent 41%,#000 60%);
+}
+.home-depth-stage [data-depth-role="foreground"] { clip-path: polygon(0 0,45% 0,45% 29%,0 31%); }
+.home-depth-air {
+  background: radial-gradient(ellipse 35% 23% at 77% 31%,#f7c89619,transparent 80%);
+  opacity: .55;
+}
+[data-living-time="night"] .home-depth-stage .depth-texture {
+  filter: brightness(.74) saturate(.79) hue-rotate(8deg);
+}
+.home-depth-stage .depth-texture { transition: filter .9s ease; }
+[data-living-time="night"] .home-depth-air { opacity: 0; }
+.home-art:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .living-stage {
+  transform: translate3d(calc(var(--depth-camera-x,0px) * .41),calc(var(--depth-camera-y,0px) * .35),0);
+}
+
+/* The B photo rail retains authentic separate place photographs at real Z depths. */
+.journey-photo { container-type: size; }
+.app-shell[data-destination="journey"] .journey-frame:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .journey-photographs {
+  transform: translate3d(var(--depth-camera-x,0px),var(--depth-camera-y,0px),var(--depth-camera-z,0px))
+    rotateY(var(--depth-camera-yaw,0deg));
+  transform-style: preserve-3d;
+}
+.journey-depth-stage {
+  inset: 50% auto auto 50%;
+  width: min(100%,calc(100cqh * var(--journey-aspect)));
+  aspect-ratio: var(--journey-aspect);
+  translate: -50% -50%;
+  --depth-bleed: 1.04;
+  transition: opacity .32s ease;
+}
+.journey-frame:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .journey-photo[data-depth-ready="true"][data-active="true"] .journey-depth-stage { opacity: 1; }
+.winter-about-stage[data-depth-mode="full"] {
+  perspective-origin: calc(50% + var(--depth-camera-x,0px) * 1.8) calc(50% + var(--depth-camera-y,0px));
+}
+
+/* Each original memory photo has a separate plane, and its front is still the real photograph. */
+#cosmos-gallery .photo-wall { touch-action: pan-y pinch-zoom; }
+#cosmos-gallery .photo-wall:is([data-depth-mode="quiet"],[data-depth-mode="full"]) {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+}
+#cosmos-gallery .photo-wall:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .photo-memory {
+  --memory-z: var(--camera-photo-z,0px);
+  --memory-fit: var(--camera-photo-fit,1);
+  --memory-pan-x: calc(var(--depth-camera-x,0px) * var(--camera-photo-pan,.5));
+  --memory-pan-y: calc(var(--depth-camera-y,0px) * var(--camera-photo-pan,.5));
+}
+#cosmos-gallery .photo-wall[data-depth-mode="quiet"] .photo-memory {
+  --memory-z: 0px;
+  --memory-fit: 1;
+}
+
+/* Native cake, slate, and clean alpine background. The wick/camera use the original locked view. */
+.cake-depth-stage { --depth-bleed: 1.032; z-index: 1; }
+.cake-depth-stage [data-depth-role="midground"] { mask-image: linear-gradient(transparent 71%,#000 90%); }
+.cake-depth-stage [data-depth-role="contact"] {
+  --depth-bleed: 1;
+  background: radial-gradient(ellipse 11% 3% at 49.8% var(--cake-foot,83.6%),#061320a8,#0b182752 51%,transparent 92%);
+}
+.cake-depth-stage[data-aspect="portrait"] { --cake-foot: 87.8%; }
+#cake-art-slot .cake-depth-stage [data-depth-role="subject"] { --depth-bleed: 1; }
+#cake-art-slot .grand-candles-overlay { z-index: 2; }
+#cake-art-slot[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .cake-depth-stage { opacity: 1; }
+#cake-art-slot[data-depth-ready="true"]:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .grand-cake-photograph { opacity: 0; }
+#cake-art-slot[data-depth-mode="locked"] .cake-depth-stage { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .depth-stage { display: none; }
+  #cake-art-slot .grand-cake-photograph { opacity: 1; }
+  .app-shell[data-cake-camera="on"][data-cake-cutout="ready"] #cake-art-slot .grand-cake-photograph { opacity: 0; }
+}

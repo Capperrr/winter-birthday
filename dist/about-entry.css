@@ -1,0 +1,141 @@
+/* Seven real photographs in a midnight room. The 25-shaped notes keep their own paper surface. */
+.app-shell[data-page="about"][data-about-theme="night"] { background: #111b29; color: #f5f0e8; }
+.app-shell[data-page="about"][data-about-theme="night"] .about-backdrop { opacity: 0; }
+#panel-about[data-about-mode="intro"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  height: 100%;
+  padding: 22px var(--gallery-edge) 33px;
+  overflow: auto;
+  background: transparent;
+}
+#panel-about[data-about-mode="intro"] > :not(.winter-about-entry):not(#portrait-lightbox),
+#panel-about[data-about-mode="notes"] > .winter-about-entry { display: none !important; }
+.winter-about-entry {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(205px,.69fr) minmax(0,1.75fr);
+  align-items: center;
+  gap: clamp(15px,3.6vw,55px);
+  width: min(1420px,100%);
+  min-height: min(690px,100%);
+  margin-inline: auto;
+}
+.winter-about-entry::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: -8% -1% -8% 16%;
+  background: radial-gradient(ellipse at 62% 43%, #526c9c6b, #31496c33 35%, transparent 73%);
+  opacity: .52;
+}
+.winter-about-context {
+  position: relative;
+  z-index: 3;
+  align-self: center;
+  padding-left: clamp(13px,2.15vw,32px);
+  border-left: 1px solid #c6d8ea39;
+}
+.winter-about-entry-kicker { margin: 0 0 12px; color: #b5cde3; font: 600 .72rem/1.45 var(--sans); letter-spacing: .16em; }
+.winter-about-context h2 {
+  margin: 0;
+  max-width: 10em;
+  color: #faf7ee;
+  font: 500 clamp(1.75rem,2.7vw,2.9rem)/1.52 var(--cn-serif);
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+.winter-about-current-name { margin: 21px 0 2px; color: #f2eee6; font: italic 500 clamp(1.35rem,2.3vw,2rem)/1.1 var(--serif); }
+.winter-about-stage-status { min-height: 22px; margin: 8px 0 12px; color: #b8cadd; font: .71rem/1.55 var(--cn-serif); }
+.winter-about-stage {
+  position: relative;
+  min-width: 0;
+  height: clamp(310px,63svh,615px);
+  perspective: 1250px;
+  touch-action: pan-y pinch-zoom;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.winter-about-stage.is-dragging { cursor: grabbing; }
+.app-shell #panel-about .winter-about-card {
+  position: absolute;
+  top: 50%;
+  left: 49%;
+  display: block;
+  width: clamp(175px,min(32vw,40svh),360px);
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  scale: 1 !important;
+  cursor: pointer;
+  transform: var(--entry-transform,translate3d(-50%,-50%,0));
+  opacity: var(--entry-opacity,1);
+  z-index: var(--entry-z,2);
+  backface-visibility: hidden;
+}
+.winter-about-card-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5;
+  border: 1px solid #e9f1fe2c;
+  background: #1c2c3c url('assets/winter-photo-sheet.webp') var(--tile-x,0%) var(--tile-y,0%)/400% 200% no-repeat;
+  background-image: image-set(url('assets/winter-photo-sheet-ultra.avif') type('image/avif'),url('assets/winter-photo-sheet.webp') type('image/webp'));
+  box-shadow: 0 17px 33px #050c1c50;
+  pointer-events: none;
+}
+.winter-about-card[data-index="1"] .winter-about-card-image {
+  background-image: url('assets/winter-about-second-photo.webp');
+  background-position: 50% 50%;
+  background-size: cover;
+}
+.winter-about-card-english, .winter-about-card-chinese { display: none; }
+.winter-about-entry-nav { display: flex; gap: 9px; }
+.winter-about-entry-nav button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #ccdae540;
+  border-radius: 50%;
+  color: #f5eee4;
+  background: transparent;
+  font: 400 1.5rem/1 var(--sans);
+}
+.winter-about-entry-nav button:disabled { opacity: .35; cursor: default; }
+.winter-about-to-notes, .winter-about-notes-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  border-radius: 0;
+  font: .84rem/1.45 var(--cn-serif);
+}
+.winter-about-to-notes { margin-top: 12px; color: #c5dced; }
+.winter-about-notes-back { margin: 0 auto 12px; color: #436079; }
+@media (max-width: 900px) and (orientation: portrait), (max-width: 730px) {
+  #panel-about[data-about-mode="intro"] { justify-content: start; }
+  .winter-about-entry { grid-template-columns: minmax(0,1fr); gap: 11px; min-height: 0; }
+  .winter-about-context h2 { max-width: none; }
+  .winter-about-stage { height: clamp(295px,47svh,565px); }
+  .app-shell #panel-about .winter-about-card { width: clamp(173px,min(52vw,36svh),348px); }
+}
+@media (max-width: 600px) {
+  .winter-about-current-name { margin-top: 13px; }
+  .winter-about-entry-nav { display: inline-flex; }
+  .winter-about-to-notes { margin: 0 0 0 13px; }
+  .winter-about-stage { height: clamp(275px,68vw,400px); }
+  .app-shell #panel-about .winter-about-card { width: clamp(151px,47vw,237px); }
+}

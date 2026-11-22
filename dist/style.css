@@ -325,3 +325,28 @@ a:focus-visible, button:focus-visible, textarea:focus-visible, [role='tabpanel']
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .app-shell[data-view='scenery'] .landscape img { transform: none; }
 }
+
+
+/* iPad / Safari: avoid scrolling the document away from the full-screen stage.
+   For short viewports, retain normal document scrolling so controls stay reachable. */
+@supports (height: 100dvh) {
+  @media (min-height: 650px) {
+    html { height: 100%; overflow: hidden; overscroll-behavior-y: none; }
+    body {
+      height: 100dvh;
+      min-height: 0;
+      overflow: hidden;
+      overscroll-behavior-y: none;
+    }
+    .app-shell {
+      height: calc(100dvh - 32px);
+      min-height: 0;
+    }
+  }
+  @media (min-height: 650px) and (max-width: 760px) {
+    .app-shell {
+      height: calc(100dvh - max(10px, env(safe-area-inset-top)) - max(10px, env(safe-area-inset-bottom)));
+    }
+  }
+}
+/* Browsers without dynamic viewport units keep ordinary scrolling, not a trap. */

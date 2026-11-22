@@ -237,3 +237,7 @@
 
 .birthday-finale{transition:opacity 400ms ease}
 .app-shell[data-phone="open"] .birthday-finale{opacity:.18;pointer-events:none}
+
+/* About Me: replace only the second polaroid and its enlarged photo. */
+.keepsake-mosaic .portrait-pin[data-portrait="1"] .portrait-thumb{background-image:url('assets/winter-about-second-photo.webp')!important;background-position:50% 50%!important;background-size:cover!important}
+#portrait-lightbox[data-portrait="1"] #portrait-large-image{background-image:url('assets/winter-about-second-photo.webp')!important;background-position:50% 50%!important;background-size:cover!important}

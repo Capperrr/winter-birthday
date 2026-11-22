@@ -83,3 +83,46 @@
  .winter-wick-spark{animation:none;opacity:0}
  .cake-page .grand-candle-flame.candle-is-lit{animation:none!important}
 }
+
+/* Five-wick AR gesture cue — anchored above the candle flames by JS.
+   Bottom edge never touches any wick; disappears once pinching/lighting starts. */
+.winter-candle-pinch-hint{
+ position:absolute;
+ z-index:10;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:9px;
+ width:max-content;
+ max-width:min(310px,calc(100% - 28px));
+ padding:10px 16px 11px;
+ color:#f8f2e9;
+ border:1px solid rgba(255,247,225,.26);
+ border-radius:21px;
+ background:linear-gradient(135deg,rgba(13,34,51,.43),rgba(18,42,57,.28));
+ box-shadow:0 9px 26px rgba(4,20,39,.12),inset 0 1px rgba(255,255,255,.15);
+ backdrop-filter:blur(11px) saturate(110%);
+ -webkit-backdrop-filter:blur(11px) saturate(110%);
+ transform:translate(-50%,-100%);
+ white-space:nowrap;
+ text-align:center;
+ pointer-events:none;
+ font:500 clamp(11px,1.05vw,14px)/1.3 "PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+ letter-spacing:.055em;
+ text-shadow:0 1px 5px rgba(0,13,28,.65);
+}
+.winter-candle-pinch-hint[hidden]{display:none!important}
+.winter-candle-pinch-hint span:not(.winter-pinch-glyph){display:flex;flex-direction:column;gap:4px}
+.winter-candle-pinch-hint small{font-size:clamp(8px,.75vw,10px);font-weight:400;letter-spacing:.025em;color:#e6e8e6;opacity:.93}
+.winter-candle-pinch-hint .winter-pinch-glyph{font-size:23px;line-height:1;color:#f9dca5}
+.cake-page[data-cake-state]:not([data-cake-state='unlit']) .winter-candle-pinch-hint{
+ display:none!important;
+}
+@media(max-width:760px),(max-aspect-ratio:4/5){
+ .winter-candle-pinch-hint{max-width:min(250px,calc(100% - 30px));padding:8px 12px 9px;gap:6px;font-size:11px}
+ .winter-candle-pinch-hint .winter-pinch-glyph{font-size:18px}
+ .winter-candle-pinch-hint small{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .winter-candle-pinch-hint{transition:none!important;animation:none!important}
+}

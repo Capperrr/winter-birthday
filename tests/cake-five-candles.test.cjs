@@ -38,7 +38,7 @@ function harness(camera=true){
     dispatchEvent(event){for(const listener of listeners.get(event.type)||[])listener(event)}
   };
   const window={WINTER_GESTURES:{active:camera},setTimeout(fn){fn();return 1},addEventListener(){}};
-  vm.runInNewContext(script,{document,window,innerWidth:1000,innerHeight:600,CustomEvent:Event,MutationObserver:class{observe(){}},performance:{now(){return now}},getComputedStyle:node=>({display:node.shown?'block':'none'}),setTimeout(fn){fn();return 1}});
+  vm.runInNewContext(script,{document,window,innerWidth:1000,innerHeight:600,CustomEvent:Event,MutationObserver:class{observe(){}},performance:{now(){return now}},getComputedStyle:node=>({display:node.shown?'block':'none'}),requestAnimationFrame(){return 1},cancelAnimationFrame(){},setTimeout(fn){fn();return 1}});
   document.addEventListener('winter:air-five-complete',e=>{assert.equal(e.detail.litCount,5);done++});
   const send=(x,y,pinching=true)=>{
     now+=100;

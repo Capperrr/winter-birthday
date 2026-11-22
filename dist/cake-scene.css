@@ -12,8 +12,6 @@
 .cake-page::before, .cake-page::after { content:''; position:absolute; z-index:1; pointer-events:none; opacity:0; }
 .cake-page::before { inset:0 0 54%; background:url('assets/living-clouds.webp') center 34% / 90% auto no-repeat; mix-blend-mode:screen; }
 .cake-page::after { inset:43% 14% 27%; background:linear-gradient(110deg,transparent 30%,#96b3c631 49%,transparent 72%); mix-blend-mode:screen; }
-.app-shell[data-motion='on'][data-destination='cake'] .cake-page::before { opacity:.026; animation:night-cloud-drift 72s ease-in-out infinite alternate; }
-.app-shell[data-motion='on'][data-destination='cake'] .cake-page::after { animation:lake-light-breathe 19s ease-in-out infinite; }
 .grand-cake-tableau { position:absolute; inset:0; z-index:0; transition:opacity 1000ms ease; }
 .grand-scene-plane { position:absolute; left:0; top:0; width:100%; height:100%; }
 .grand-cake-photograph, .grand-candles-overlay { position:absolute; inset:0; display:block; width:100%; height:100%; }

@@ -16,6 +16,35 @@ progress.setAttribute('aria-live','polite');
 progress.setAttribute('aria-label','已点燃的生日蜡烛');
 progress.innerHTML='<span class="winter-candle-count">0 / 5</span>';
 page.appendChild(progress);
+// Small invitation above the REAL wick positions, not over their flames.
+// This is an air-camera pinch cue; it never receives taps or blocks the tool.
+const pinchHint=document.createElement('div');
+pinchHint.className='winter-candle-pinch-hint';
+pinchHint.setAttribute('aria-hidden','true');
+pinchHint.innerHTML='<span class="winter-pinch-glyph" aria-hidden="true">✧</span><span>手指在此处捏合即可<small>开启镜头后，捏合手指移动打火机</small></span>';
+pinchHint.hidden=true;
+page.appendChild(pinchHint);
+let hintFrame=0;
+function placeHint(){
+ if(hintFrame)cancelAnimationFrame(hintFrame);
+ hintFrame=requestAnimationFrame(()=>{
+  hintFrame=0;
+  if(page.hidden||!current())return;
+  const wicks=screenWicks();
+  if(wicks.length!==5)return;
+  const bounds=page.getBoundingClientRect();
+  const centerX=wicks.reduce((sum,p)=>sum+p.x,0)/wicks.length-bounds.left;
+  const wickTop=Math.min(...wicks.map(p=>p.y))-bounds.top;
+  // The *bottom* of the hint stays at least 27px above the first wick.
+  pinchHint.style.left=Math.min(bounds.width-95,Math.max(95,centerX)).toFixed(1)+'px';
+  pinchHint.style.top=Math.max(72,wickTop-30).toFixed(1)+'px';
+ });
+}
+function updateHint(){
+ const visible=current()&&lit.size===0&&!held;
+ pinchHint.hidden=!visible;
+ if(visible)placeHint();
+}
 const text=progress.querySelector('.winter-candle-count');
 const lit=new Set();
 let held=false,handName=null,started=0,handWasPinching=false,releaseFrames=0,missedFrames=0;
@@ -30,6 +59,7 @@ function updateProgress(){
  text.textContent=lit.size+' / 5';
  progress.dataset.complete=String(lit.size===5);
  progress.hidden=!current()&&lit.size===0;
+ updateHint();
 }
 function reset(){
  lit.clear();finished=false;release();exitRequired=false;lastWick=null;ignitionTime=0;clearCandidate();
@@ -43,6 +73,7 @@ function release(){
  lighter.setAttribute('aria-pressed','false');
  if(current())page.dataset.lighter='resting';
  clearCandidate();
+ updateHint();
 }
 function screenWicks(){
  const root=[...page.querySelectorAll('.grand-candles-overlay')].find(el=>getComputedStyle(el).display!=='none'&&el.getBoundingClientRect().width>1);
@@ -88,6 +119,7 @@ function pickUp(hand){
  tip={x:base.x,y:base.y};
  held=true;handName=hand.hand;releaseFrames=0;missedFrames=0;
  started=clock();page.dataset.lighter='dragging';lighter.setAttribute('aria-pressed','true');
+ updateHint();
  positionLighter({x:hand.x*innerWidth,y:hand.y*innerHeight});
 }
 function flash(pos){
@@ -161,5 +193,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)release()})
 window.addEventListener('resize',()=>{if(held)release()},{passive:true});
 new MutationObserver(()=>{if(page.dataset.cakeState==='unlit'&&lit.size===5)reset();else updateProgress();})
  .observe(page,{attributes:true,attributeFilter:['data-cake-state','hidden']});
+window.addEventListener('resize',placeHint,{passive:true});
+window.addEventListener('orientationchange',placeHint,{passive:true});
 updateProgress();
 })();
