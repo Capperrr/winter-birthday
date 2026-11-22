@@ -1,491 +1,173 @@
-/* WINTER / LIVING LANDSCAPE • isolated concept branch, never changes production main.
-   Photo-first world: static meadow photograph, changing light and animated sky. */
-:root{--living-ease:cubic-bezier(.22,.77,.2,1)}
-.app-shell[data-page="home"] .landscape img{
-  filter:saturate(.94) contrast(1.02) brightness(.97);
-  transform:translate3d(var(--living-shift-x,0px),var(--living-shift-y,0px),0) scale(1.05);
-  transition:filter 1.5s ease,transform .35s ease-out;
-  will-change:transform;
+/* A's full-frame artwork. The photograph and its retouch share the same, stationary bounds. */
+.app-shell[data-page="home"] {
+  --gallery-ink: #1a3349;
+  --gallery-rule: #183a5130;
+  --gallery-paper: #f2f1ec;
+  background: var(--gallery-paper);
 }
-.app-shell[data-page="home"][data-view="scenery"] .landscape img{filter:saturate(1.08) brightness(1.02);transform:translate3d(var(--living-shift-x,0px),var(--living-shift-y,0px),0) scale(1.055)}
-.app-shell[data-page="home"] .landscape-shade{opacity:.81}
-.living-stage{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:1;transition:opacity .8s ease;isolation:isolate}
-.app-shell:not([data-page="home"]) .living-stage{opacity:0;visibility:hidden}
-.living-cloudsheet{position:absolute;inset:-5% -16% 36%;pointer-events:none;opacity:.58;
-  background:radial-gradient(ellipse 23% 10% at 27% 20%,#fff9 0%,#eef5fff0 26%,#edf3fe00 100%),
-             radial-gradient(ellipse 18% 9% at 59% 15%,#f8fbffa8 0%,#ffffff00 96%),
-             radial-gradient(ellipse 23% 7% at 88% 39%,#edf5ffe0 0%,#fff0 100%);
-  filter:blur(14px);
-  transform:translate3d(var(--living-cloud-x,0px),var(--living-cloud-y,0px),0);
-  animation:living-cloud-drift 64s linear infinite alternate;
-  mix-blend-mode:screen;
+.app-shell[data-page="home"][data-living-time="night"] {
+  --gallery-ink: #f5faff;
+  --gallery-rule: #ccdfe53b;
+  --gallery-paper: #0c1723;
 }
-.living-haze{position:absolute;inset:13% -10% 14%;opacity:.28;
-  background:linear-gradient(180deg,transparent 37%,#d9ede944 53%,#f3f6e274 69%,transparent 77%);
-  transform:translateY(0);
-  filter:blur(24px);
-  animation:living-haze-sway 19s ease-in-out infinite alternate;
+.app-shell[data-page="home"] .home-panel { display: block; overflow: auto; animation: none; }
+.home-composition {
+  display: grid;
+  max-width: 1840px;
+  margin-inline: auto;
+  padding: 15px var(--gallery-edge) 20px;
 }
-.living-sun{position:absolute;inset:0;opacity:.35;mix-blend-mode:screen;
-  background:radial-gradient(ellipse 74% 69% at 6% 5%,#fff5c9b5,transparent 68%),
-             linear-gradient(111deg,transparent 10%,#fffadd28 20%,transparent 31%,#fff5ce13 34%,transparent 49%);
-  animation:living-sun-breathe 16s ease-in-out infinite;
+.home-art {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-area: 1 / 1;
+  margin: 0;
+  aspect-ratio: 3344 / 1882;
+  width: 100%;
+  background: #536879;
 }
-.living-nightshade{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity 1700ms ease;
-  background:linear-gradient(180deg,#051b438d,#051b3d74 37%,#04162e99 67%,#01101bbd),radial-gradient(ellipse 60% 60% at 83% 6%,#3c6c9d70,transparent 70%);
-  mix-blend-mode:multiply;
+.app-shell[data-page="home"] .home-art .landscape {
+  position: relative;
+  grid-area: 1 / 1;
+  inset: auto;
+  z-index: auto;
+  opacity: 1;
+  transform: none;
 }
-.living-moon{position:absolute;width:clamp(35px,5vw,69px);aspect-ratio:1;right:13%;top:13%;border-radius:100%;opacity:0;transform:translateY(7px);
-  background:radial-gradient(circle at 39% 34%,#fffaf1,#d7e6e8 72%,#91b6c8);box-shadow:0 0 31px 13px #b8e4ff42,0 0 100px 48px #86bcff1c;transition:opacity 1500ms ease,transform 1800ms ease;
+.app-shell[data-page="home"] .home-art .landscape img,
+.home-retouch {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none;
+  animation: none;
+  transform: none;
+  transition: filter .9s cubic-bezier(.2,.76,.26,1);
 }
-.living-stars{position:absolute;inset:0;opacity:0;transition:opacity 1700ms ease}
-.living-star{position:absolute;left:var(--sx);top:var(--sy);width:var(--ss);height:var(--ss);border-radius:100%;background:#eaf6f8;box-shadow:0 0 8px 1px #eaf6f888;animation:living-star-glint var(--sd) ease-in-out var(--delay) infinite alternate}
-.living-firefly{position:absolute;left:var(--fx);top:var(--fy);width:3px;height:3px;border-radius:50%;background:#f4e8a4;box-shadow:0 0 11px 3px #f8e6a979;opacity:0;animation:living-firefly var(--ft) ease-in-out var(--fd) infinite;transition:opacity 1s ease}
-.app-shell[data-living-time="night"] .living-nightshade{opacity:1}
-.app-shell[data-living-time="night"] .living-moon{opacity:.89;transform:translateY(0)}
-.app-shell[data-living-time="night"] .living-stars{opacity:1}
-.app-shell[data-living-time="night"] .living-cloudsheet{opacity:.20}
-.app-shell[data-living-time="night"] .living-sun{opacity:0}
-.app-shell[data-living-time="night"] .living-firefly{opacity:1}
-.app-shell[data-living-time="night"] .landscape img{filter:brightness(.64) saturate(.73) hue-rotate(9deg)}
-.app-shell[data-living-time="night"] .cover-title .name{color:#e8edde;text-shadow:0 4px 21px #06162d66}
-.app-shell[data-living-time="night"] .cover-title .intro{color:#f1eacf}
-.app-shell[data-living-time="night"] .landscape-shade{opacity:.32}
-.living-ui{position:absolute;bottom:clamp(68px,9vh,104px);left:50%;z-index:5;display:flex;align-items:center;gap:12px;transform:translateX(-50%);
-  width:max-content;max-width:calc(100vw - 42px);padding:7px 9px;border-radius:999px;
-  color:#fff9e9;background:linear-gradient(135deg,#1a4034a6,#0d2938ad);border:1px solid #fffbda54;
-  box-shadow:inset 0 1px #fff7c64c,0 9px 28px #10241e4a;
-  backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);
-  transition:opacity .42s ease,visibility .42s ease,transform .42s var(--living-ease);}
-.app-shell:not([data-page="home"]) .living-ui{opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,12px)}
-.living-segment{display:flex;align-items:center;gap:4px;padding:3px;border-radius:999px;background:#0d241a6e}
-.living-segment button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;min-width:95px;padding:5px 12px;border:0;border-radius:999px;background:transparent;color:#fff8e6c9;letter-spacing:.03em;font:500 11px/1.3 'DM Sans',sans-serif;cursor:pointer;touch-action:manipulation;transition:color .25s ease,background .25s ease,box-shadow .25s ease}
-.living-segment button[aria-pressed="true"]{color:#284337;background:#f1eee2;box-shadow:0 2px 9px #0002}
-.living-segment button:focus-visible,.living-reset:focus-visible{outline:2px solid white;outline-offset:3px}
-.living-segment svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
-.living-preview-tag{position:absolute;right:clamp(18px,3.4vw,43px);bottom:clamp(14px,2.5vw,27px);z-index:4;color:#fff8e8b8;font:500 9px/1.8 'DM Sans',sans-serif;letter-spacing:.16em;text-shadow:0 1px 6px #091d2aa2}
-@keyframes living-cloud-drift{from{translate:-3% 0}to{translate:7% 1%}}
-@keyframes living-haze-sway{from{transform:translate3d(-2%,0,0) scale(1)}to{transform:translate3d(2%,-2%,0) scale(1.05)}}
-@keyframes living-sun-breathe{0%,100%{opacity:.22}50%{opacity:.45}}
-@keyframes living-star-glint{0%{opacity:.24;transform:scale(.75)}100%{opacity:.94;transform:scale(1.4)}}
-@keyframes living-firefly{0%,100%{opacity:0;transform:translate3d(0,0,0)}30%,60%{opacity:.93}100%{transform:translate3d(8px,-28px,0)}}
-@media(max-width:760px){
- .living-ui{bottom:clamp(72px,12vh,113px);gap:8px;padding:6px 8px}
- .living-segment button{min-width:70px;min-height:38px;padding:5px 8px;font-size:10px}
- .living-preview-tag{font-size:8px;bottom:10px;right:13px}
+.home-retouch { position: absolute; inset: 0; pointer-events: none; }
+.app-shell[data-page="home"][data-living-time="night"] .home-art .landscape img,
+.app-shell[data-living-time="night"] .home-retouch { filter: brightness(.74) saturate(.79) hue-rotate(8deg); }
+.living-stage { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.home-sky-light, .home-sunset, .living-stars { position: absolute; pointer-events: none; }
+.home-sky-light {
+  inset: -7% 8% auto 27%;
+  height: 43%;
+  background: radial-gradient(ellipse at 54% 39%, #c2e1f378, #b7d5ef25 44%, transparent 72%);
+  opacity: .28;
 }
-@media(max-height:650px){.living-ui{bottom:56px}}
-@media(prefers-reduced-motion:reduce){
- .living-stage *{animation:none!important;transition:none!important}
- .living-ui{transition:none}
+.home-sunset {
+  inset: 16% -10% auto 54%;
+  height: 39%;
+  background: radial-gradient(ellipse at 74% 43%, #ffd6a2b5, #ffba7b43 40%, transparent 72%);
+  opacity: .22;
 }
+.living-stars { inset: 0; opacity: 0; transition: opacity 1.3s ease; }
+.living-star {
+  position: absolute;
+  left: var(--sx);
+  top: var(--sy);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: #f1f8ff;
+  box-shadow: 0 0 3px #e2eeff84;
+  opacity: .44;
+}
+[data-living-time="night"] .living-stars { opacity: 1; }
+[data-living-time="night"] .home-sunset { visibility: hidden; }
+[data-living-time="night"] .home-sky-light { background: radial-gradient(ellipse at 60% 32%, #9bccea6e, #88bedb18 45%, transparent 72%); }
 
-/* WINTER Home / centered cinematic typography (preview only).
-   The meadow is part of the original photograph and never moves. */
-.app-shell[data-page="home"] .landscape img,
-.app-shell[data-page="home"][data-view="scenery"] .landscape img{
-  transform:scale(1.05);
-  will-change:auto;
-  transition:filter 1.5s ease;
+.app-shell[data-page="home"] .home-panel .cover-copy {
+  position: relative;
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: start;
+  z-index: 2;
+  width: max-content;
+  max-width: 100%;
+  margin: 5% 0 0 7%;
+  padding: 0;
+  text-align: left;
+  color: #fcffff;
+  text-shadow: 0 2px 14px #0d253b7a;
+  pointer-events: none;
 }
-.app-shell[data-page="home"] .home-panel{
-  justify-content:center;
-  align-items:center;
+.app-shell[data-page="home"] .cover-title { display: block; margin: 0; font-weight: 500; }
+.app-shell[data-page="home"] .cover-title .intro {
+  display: block;
+  margin: 0 0 .24em .12em;
+  color: inherit;
+  font: 400 clamp(2.4rem,5vw,5.2rem)/.9 'Allura',cursive;
+  letter-spacing: 0;
 }
-.app-shell[data-page="home"] .home-panel .cover-copy{
-  box-sizing:border-box;
-  width:100%;
-  max-width:1100px;
-  margin:0;
-  padding:clamp(16px,3vh,36px) clamp(22px,5vw,70px);
-  text-align:center;
-  transform:translateY(-3svh);
+.app-shell[data-page="home"] .cover-title .name {
+  display: block;
+  margin: 0;
+  color: inherit;
+  font: 500 clamp(5rem,11.05vw,13.8rem)/.75 var(--serif);
+  letter-spacing: -.057em;
+  white-space: nowrap;
 }
-.app-shell[data-page="home"] .cover-title{
-  width:100%;
-  margin:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:0;
-  font-weight:400;
-  text-align:center;
+.cover-title .living-letter { display: inline-block; }
+.app-shell[data-page="home"] .living-poem {
+  margin: clamp(18px,2.8vw,44px) 0 0 2px;
+  font: 400 clamp(.97rem,1.24vw,1.27rem)/1.94 var(--cn-serif);
+  letter-spacing: .08em;
+  color: inherit;
 }
-.app-shell[data-page="home"] .cover-title .intro{
-  display:block;
-  margin:0 0 clamp(7px,1.8vh,19px);
-  font-family:'Allura','Caveat',cursive;
-  font-weight:400;
-  font-style:normal;
-  font-size:clamp(58px,6.6vw,100px);
-  line-height:1.1;
-  letter-spacing:.015em;
-  color:#fff2da;
-  text-shadow:0 3px 22px #2033445e;
-  animation:living-intro-appear 1.4s ease-out both;
+.living-poem span { display: block; }
+.app-shell[data-page="home"] .gift-dedication {
+  margin: clamp(12px,1.6vw,22px) 0 0 2px;
+  font: 600 .61rem/1.5 var(--sans);
+  letter-spacing: .11em;
+  color: inherit;
 }
-.app-shell[data-page="home"] .cover-title .name{
-  display:block;
-  max-width:100%;
-  margin:0;
-  font-family:'Cormorant Garamond',Georgia,serif;
-  font-weight:400;
-  font-size:clamp(76px,11.8vw,194px);
-  line-height:.9;
-  letter-spacing:.16em;
-  padding-left:.16em;
-  color:#fff3df;
-  text-shadow:0 5px 27px #162b3b55;
-  animation:living-name-appear 2.15s cubic-bezier(.22,.65,.2,1) .45s both;
+.home-catalog { display: flex; gap: 14px; justify-content: space-between; align-items: center; padding-top: 8px; color: var(--gallery-ink); }
+.home-catalog-copy p { margin: 0; font: 600 .66rem/1.45 var(--sans); letter-spacing: .13em; text-transform: uppercase; }
+.home-catalog-copy em { display: inline-block; margin-top: 3px; font: italic 500 clamp(1.05rem,1.9vw,1.5rem)/1.12 var(--serif); opacity: .8; }
+.home-controls { display: flex; flex-shrink: 0; align-items: center; gap: 12px; }
+.living-segment { display: flex; gap: 8px; align-items: center; }
+.living-segment button, .home-controls .view-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  color: inherit;
+  font: 500 .78rem/1.3 var(--sans);
+  opacity: .74;
 }
-.app-shell[data-page="home"] .cover-caption{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:clamp(13px,2vw,24px);
-  margin:clamp(24px,4.3vh,43px) 0 0;
-  animation:living-verse-appear 1.2s ease-out 1.55s both;
+.living-segment button[aria-pressed="true"] { box-shadow: inset 0 -1px currentColor; opacity: 1; font-weight: 600; }
+.home-controls .view-toggle { min-width: 44px; padding: 8px; }
+.home-controls .view-toggle span, .living-switch-indicator, .living-segment-indicator { display: none; }
+.app-shell[data-view="scenery"] .home-catalog .view-toggle { visibility: visible; }
+.living-touch-ripple { display: none; }
+@media (max-width: 870px) {
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(5rem,12vw,10rem); }
 }
-.app-shell[data-page="home"] .cover-caption .caption-line{
-  display:block;
-  width:clamp(55px,8vw,120px);
-  height:1px;
-  background:#fff3e5a3;
+@media (max-width: 600px) {
+  .home-composition { row-gap: 22px; padding-top: 21px; }
+  .home-art { grid-area: 2 / 1; }
+  .app-shell[data-page="home"] .home-panel .cover-copy { grid-area: 1 / 1; margin: 18px 0 0 5%; color: var(--gallery-ink); text-shadow: none; }
+  .app-shell[data-page="home"] .cover-title .intro { font-size: 2.6rem; }
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(4.25rem,16.7vw,6.4rem); }
+  .app-shell[data-page="home"] .living-poem { margin-top: 22px; font-size: .92rem; letter-spacing: .065em; }
+  .app-shell[data-page="home"] .gift-dedication { font-size: .54rem; }
+  .home-catalog { gap: 6px; padding-top: 0; }
+  .home-catalog-copy p { font-size: .56rem; letter-spacing: .09em; }
+  .home-catalog-copy em { font-size: 1rem; }
+  .home-controls, .living-segment { gap: 2px; }
+  .living-segment button { font-size: .71rem; padding-inline: 5px; }
 }
-.app-shell[data-page="home"] .cover-caption .caption-star{
-  color:#fff2d5;
-  font-size:clamp(16px,2vw,24px);
-  line-height:1;
-  text-shadow:0 0 16px #fff7de88;
+@media (min-width: 601px) and (max-width: 870px) and (orientation: portrait) {
+  .home-composition { min-height: calc(92svh - var(--gallery-header)); align-content: center; padding-block: 35px; }
+  .app-shell[data-page="home"] .cover-title .name { font-size: clamp(5.3rem,13.3vw,10rem); }
+  .home-catalog { padding-top: 13px; }
 }
-.app-shell[data-page="home"] .living-poem{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:clamp(5px,.8vh,9px);
-  margin:clamp(21px,3.4vh,38px) 0 0;
-  color:#fdf0df;
-  font:400 clamp(17px,2.05vw,27px)/1.8 'Noto Serif SC','Songti SC',serif;
-  letter-spacing:.14em;
-  text-shadow:0 3px 18px #0c253c8c;
-  animation:living-verse-appear 1.5s ease-out 1.85s both;
-}
-.app-shell[data-page="home"] .living-poem span{display:block}
-.app-shell[data-page="home"] .gift-dedication{
-  display:block;
-  margin:clamp(19px,3.5vh,35px) 0 0;
-  color:#f9eddaa6;
-  font-size:10px;
-  line-height:1.5;
-  text-align:center;
-  letter-spacing:.22em;
-  animation:living-verse-appear 1.2s ease-out 2.25s both;
-}
-.app-shell[data-page="home"] .gift-dedication>span{
-  display:inline;
-  margin:0;
-  color:inherit;
-  font-size:inherit;
-  letter-spacing:inherit;
-}
-.app-shell[data-living-time="night"] .living-poem{color:#f3ebdf}
-.app-shell[data-living-time="night"] .cover-caption .caption-line{background:#e9ecf2aa}
-.app-shell[data-living-time="night"] .cover-caption .caption-star{color:#f5e9cd}
-.app-shell[data-living-time="night"] .cover-title .name{color:#f5ede1;text-shadow:0 4px 25px #03183288}
-.app-shell[data-living-time="night"] .cover-title .intro{color:#f5e9ce}
-.app-shell[data-living-time="night"] .gift-dedication{color:#e7e9ddad}
-/* Desktop toggles float in the upper-right, clear of the site navigation. */
-@media (min-width:761px){
-  .app-shell[data-page="home"] .living-ui{
-    top:clamp(102px,13vh,143px);
-    right:clamp(25px,4.2vw,75px);
-    bottom:auto;
-    left:auto;
-    transform:none;
-  }
-  .app-shell:not([data-page="home"]) .living-ui{
-    transform:translateY(12px);
-  }
-}
-@media (max-width:760px){
-  .app-shell[data-page="home"] .home-panel .cover-copy{
-    padding:15px clamp(15px,5vw,30px);
-    transform:translateY(-4svh);
-  }
-  .app-shell[data-page="home"] .cover-title .intro{
-    font-size:clamp(43px,10.5vw,68px);
-    margin-bottom:12px;
-  }
-  .app-shell[data-page="home"] .cover-title .name{
-    font-size:clamp(47px,12.2vw,86px);
-    letter-spacing:.10em;
-    padding-left:.10em;
-    animation-name:living-name-appear-mobile;
-  }
-  .app-shell[data-page="home"] .cover-caption{margin-top:24px}
-  .app-shell[data-page="home"] .living-poem{
-    margin-top:20px;
-    font-size:clamp(13px,3.7vw,19px);
-    letter-spacing:.07em;
-    line-height:1.85;
-  }
-  .app-shell[data-page="home"] .gift-dedication{
-    margin-top:22px;
-    font-size:8px;
-    letter-spacing:.12em;
-  }
-}
-@media (max-height:620px){
-  .app-shell[data-page="home"] .home-panel .cover-copy{transform:none;padding-block:8px}
-  .app-shell[data-page="home"] .cover-title .intro{font-size:clamp(35px,6vh,60px);margin-bottom:5px}
-  .app-shell[data-page="home"] .cover-title .name{font-size:clamp(44px,11vw,110px)}
-  .app-shell[data-page="home"] .cover-caption{margin-top:12px}
-  .app-shell[data-page="home"] .living-poem{margin-top:10px;font-size:clamp(12px,2.5vh,18px);gap:0}
-  .app-shell[data-page="home"] .gift-dedication{margin-top:12px}
-}
-@keyframes living-intro-appear{
-  from{opacity:0;transform:translateY(17px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@keyframes living-name-appear{
-  from{opacity:0;letter-spacing:.30em;transform:translateY(13px)}
-  to{opacity:1;letter-spacing:.16em;transform:translateY(0)}
-}
-@keyframes living-name-appear-mobile{
-  from{opacity:0;letter-spacing:.21em;transform:translateY(10px)}
-  to{opacity:1;letter-spacing:.10em;transform:translateY(0)}
-}
-@keyframes living-verse-appear{
-  from{opacity:0;transform:translateY(12px)}
-  to{opacity:1;transform:translateY(0)}
-}
-@media(prefers-reduced-motion:reduce){
-  .app-shell[data-page="home"] .cover-title .intro,
-  .app-shell[data-page="home"] .cover-title .name,
-  .app-shell[data-page="home"] .cover-caption,
-  .app-shell[data-page="home"] .living-poem,
-  .app-shell[data-page="home"] .gift-dedication{animation:none!important}
-}
-
-
-/* ─── WINTER Home: fingertip tracking and spring button gestures ─── */
-.app-shell[data-page="home"] .living-feedback-button{
-  position:relative;
-  isolation:isolate;
-  overflow:hidden;
-  touch-action:manipulation;
-  -webkit-tap-highlight-color:transparent;
-  scale:1;
-  transition:scale 180ms ease,translate 420ms cubic-bezier(.2,.82,.18,1),color 280ms ease,background-color 280ms ease,box-shadow 220ms ease;
-}
-.app-shell[data-page="home"] .living-feedback-button.living-pressing{
-  scale:.94;
-  box-shadow:0 1px 4px rgba(4,20,24,.14);
-}
-.app-shell[data-page="home"] .glass-nav button.living-feedback-button:active{
-  transform:none;
-}
-.living-touch-glow{
-  position:absolute;
-  z-index:4;
-  border-radius:50%;
-  display:block;
-  pointer-events:none;
-  opacity:.28;
-  transform:translate(-50%,-50%) scale(.12);
-  transform-origin:center;
-  background:radial-gradient(circle,rgba(255,252,222,.95) 0%,rgba(253,226,181,.56) 34%,rgba(255,250,239,0) 71%);
-  box-shadow:0 0 22px rgba(255,247,218,.12) inset;
-  will-change:left,top,transform,opacity;
-}
-.app-shell[data-page="home"][data-living-time="night"] .living-touch-glow{
-  background:radial-gradient(circle,rgba(219,234,255,.96),rgba(169,200,250,.48) 35%,rgba(219,233,255,0) 71%);
-}
-.app-shell[data-page="home"] .living-segment{
-  position:relative;
-  isolation:isolate;
-  background:rgba(23,55,43,.64);
-  transition:background-color 280ms ease;
-}
-.app-shell[data-page="home"] .living-active-indicator{
-  position:absolute;
-  z-index:0;
-  top:3px;
-  bottom:3px;
-  left:3px;
-  width:calc((100% - 6px)/2);
-  border-radius:999px;
-  background:#f6e6cc;
-  box-shadow:0 3px 14px rgba(8,31,35,.22),inset 0 1px rgba(255,255,255,.65);
-  pointer-events:none;
-  transform-origin:center;
-  transition:background-color 280ms ease,box-shadow 280ms ease;
-}
-.app-shell[data-page="home"] .living-segment button{
-  z-index:1;
-  background:transparent!important;
-  box-shadow:none!important;
-}
-.app-shell[data-page="home"] .living-segment button[aria-pressed="true"]{
-  color:#254739;
-  font-weight:600;
-}
-.app-shell[data-page="home"] .living-segment button:not([aria-pressed="true"]){color:#f4f2dfd9}
-.app-shell[data-page="home"][data-living-time="night"] .living-segment{
-  background:rgba(12,32,43,.77);
-}
-.app-shell[data-page="home"][data-living-time="night"] .living-active-indicator{
-  background:#c4d9cc;
-  box-shadow:0 3px 16px rgba(3,21,41,.32),inset 0 1px rgba(255,255,255,.74);
-}
-.app-shell[data-page="home"][data-living-time="night"] .living-segment button[aria-pressed="true"]{
-  color:#173c42;
-}
-@keyframes living-spring-fallback{
-  0%{scale:.94}
-  32%{scale:1.055}
-  53%{scale:.982}
-  72%{scale:1.015}
-  100%{scale:1}
-}
-.app-shell[data-page="home"] .living-feedback-button.living-spring-fallback{
-  animation:living-spring-fallback 800ms linear both;
-}
-
-/* ─── WINTER Home: multi-layer lettering and warm/cool light ─── */
-.app-shell[data-page="home"]{
-  --living-title-low:#f5d7ad;
-  --living-title-mid:#fff5db;
-  --living-title-bright:#fffdf2;
-  --living-verse-ink:#ffedd6;
-}
-.app-shell[data-page="home"][data-living-time="night"]{
-  --living-title-low:#a5bedf;
-  --living-title-mid:#e5eaff;
-  --living-title-bright:#fff7e8;
-  --living-verse-ink:#e8e7ef;
-}
-.app-shell[data-page="home"] .cover-title .intro{
-  position:relative;
-  color:#fff0ce;
-  text-shadow:0 1px 17px rgba(255,213,160,.46),0 4px 20px rgba(3,28,39,.45);
-  animation:living-intro-script 1.6s cubic-bezier(.19,.78,.24,1) .10s both;
-  transition:color 850ms ease,text-shadow 850ms ease;
-}
-.app-shell[data-page="home"][data-living-time="night"] .cover-title .intro{
-  color:#eee7fa;
-  text-shadow:0 2px 18px rgba(209,213,255,.43),0 4px 21px rgba(5,18,48,.62);
-}
-.app-shell[data-page="home"] .cover-title .name:has(.living-letter){
-  display:flex;
-  justify-content:center;
-  align-items:baseline;
-  gap:clamp(2px,.62vw,12px);
-  width:100%;
-  max-width:100%;
-  margin:0;
-  padding-left:0;
-  letter-spacing:0;
-  animation:none;
-  perspective:760px;
-  transform:none;
-  color:var(--living-title-mid);
-}
-.app-shell[data-page="home"] .cover-title .living-letter{
-  position:relative;
-  display:inline-block;
-  flex:none;
-  color:var(--living-title-mid);
-  background-image:linear-gradient(109deg,
-    var(--living-title-low) 0%,
-    var(--living-title-mid) 31%,
-    var(--living-title-bright) 51%,
-    var(--living-title-mid) 68%,
-    var(--living-title-low) 100%);
-  background-size:240% 100%;
-  background-position:100% 0;
-  background-clip:text;
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:none;
-  filter:drop-shadow(0 4px 10px rgba(10,34,42,.29));
-  transform-origin:50% 78%;
-  backface-visibility:hidden;
-  animation:
-    living-letter-reveal 1450ms cubic-bezier(.16,.81,.21,1) var(--letter-delay,480ms) both,
-    living-letter-gleam 2400ms cubic-bezier(.22,.79,.21,1) var(--gleam-delay,1100ms) both;
-}
-.app-shell[data-page="home"] .living-poem{
-  color:var(--living-verse-ink);
-  animation:none;
-  transition:color 850ms ease;
-  text-shadow:0 3px 20px rgba(7,35,44,.64),0 1px 7px rgba(25,47,37,.24);
-}
-.app-shell[data-page="home"] .living-poem span{
-  display:block;
-  animation:living-poem-focus 1.25s cubic-bezier(.18,.79,.22,1) 1.78s both;
-}
-.app-shell[data-page="home"] .living-poem span:nth-child(2){
-  animation-delay:2.04s;
-}
-.app-shell[data-page="home"] .cover-caption .caption-star{
-  animation:living-star-stamp 900ms cubic-bezier(.18,.85,.25,1) 1.45s both;
-}
-.app-shell[data-page="home"] .gift-dedication{transition:color 800ms ease}
-@keyframes living-intro-script{
-  0%{opacity:0;clip-path:inset(0 100% 0 0);transform:translate3d(-11px,13px,0);filter:blur(3px)}
-  45%{opacity:1;filter:blur(0)}
-  100%{opacity:1;clip-path:inset(0 0 0 0);transform:translate3d(0,0,0);filter:blur(0)}
-}
-@keyframes living-letter-reveal{
-  0%{opacity:0;transform:translate3d(0,27px,0) rotateX(-28deg) scale(.91);filter:blur(8px)}
-  60%{opacity:1;transform:translate3d(0,-3px,0) rotateX(4deg) scale(1.02);filter:blur(0)}
-  100%{opacity:1;transform:translate3d(0,0,0) rotateX(0) scale(1);filter:drop-shadow(0 4px 10px rgba(10,34,42,.29))}
-}
-@keyframes living-letter-gleam{
-  from{background-position:100% 0}
-  to{background-position:0% 0}
-}
-@keyframes living-poem-focus{
-  0%{opacity:0;transform:translate3d(0,16px,0);filter:blur(7px);letter-spacing:.24em}
-  70%{opacity:1;filter:blur(0)}
-  100%{opacity:1;transform:none;filter:blur(0);letter-spacing:inherit}
-}
-@keyframes living-star-stamp{
-  from{opacity:0;transform:rotate(-24deg) scale(.55);filter:blur(4px)}
-  to{opacity:1;transform:rotate(0) scale(1);filter:blur(0)}
-}
-@media(max-width:760px){
-  .app-shell[data-page="home"] .cover-title .name:has(.living-letter){
-    gap:clamp(0px,.25vw,3px);
-    letter-spacing:0;
-    padding-left:0;
-  }
-  .app-shell[data-page="home"] .living-poem span{
-    animation-duration:950ms;
-  }
-}
-@media(prefers-reduced-motion:reduce){
-  .app-shell[data-page="home"] .living-feedback-button,
-  .app-shell[data-page="home"] .living-active-indicator{transition:none!important}
-  .app-shell[data-page="home"] .living-feedback-button.living-pressing{scale:1}
-  .app-shell[data-page="home"] .cover-title .intro,
-  .app-shell[data-page="home"] .cover-title .name,
-  .app-shell[data-page="home"] .cover-title .living-letter,
-  .app-shell[data-page="home"] .living-poem,
-  .app-shell[data-page="home"] .living-poem span,
-  .app-shell[data-page="home"] .cover-caption .caption-star{
-    animation:none!important;
-    opacity:1!important;
-    transform:none!important;
-    filter:none!important;
-    clip-path:none!important;
-  }
-  .living-touch-glow{display:none!important}
-}
-
-/* Position the Morning / Night control directly beneath About Me / Home / Destination. */
-.site-header .living-ui,.app-shell[data-page="home"] .site-header .living-ui{position:relative;grid-column:2;grid-row:2;justify-self:center;align-self:center;left:auto;top:auto;right:auto;bottom:auto;transform:none;width:max-content;max-width:100%;padding:3px 5px;margin-top:6px;z-index:5}
-.app-shell:not([data-page="home"]) .site-header .living-ui{display:none}
-.site-header .living-segment button{min-height:36px}
-@media(max-width:760px){.site-header .living-ui,.app-shell[data-page="home"] .site-header .living-ui{grid-column:1/-1;grid-row:3;justify-self:center;margin-top:1px;padding:2px 4px}.site-header:has(.living-ui){row-gap:9px}.site-header .living-segment button{min-height:36px;min-width:95px}}

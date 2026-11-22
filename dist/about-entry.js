@@ -14,21 +14,22 @@
   intro.className='winter-about-entry';
   intro.setAttribute('aria-label','About Me 第一章 · 七个瞬间');
   intro.innerHTML=
-    '<p class="winter-about-entry-kicker">THE SEVEN MOMENTS · WINTER, AT TWENTY-FIVE</p>'+
-    '<h2 tabindex="-1">关于你，先从这些瞬间开始。</h2>'+
-    '<p class="winter-about-entry-description">轻轻滑动这些珍藏的照片，再翻开写给25岁自己的那一页。</p>'+
-    '<div class="winter-about-stage" role="region" aria-label="七张生活照片的 3D 卡片轮播，左右滑动或点击旁边照片切换">'+
-      '<span class="winter-about-stage-status" aria-live="polite"></span></div>'+
-    '<div class="winter-about-entry-bottom">'+
+    '<div class="winter-about-context">'+
+      '<p class="winter-about-entry-kicker">About Me</p>'+
+      '<h2 tabindex="-1">关于你，先从这些瞬间开始。</h2>'+
+      '<p class="winter-about-current-name" aria-hidden="true"></p>'+
+      '<p class="winter-about-stage-status" aria-live="polite"></p>'+
       '<div class="winter-about-entry-nav" aria-label="切换照片">'+
         '<button type="button" class="winter-about-previous" aria-label="上一张照片">‹</button>'+
         '<button type="button" class="winter-about-next" aria-label="下一张照片">›</button>'+
       '</div>'+
-      '<button type="button" class="winter-about-to-notes">翻开下一页 · 25 岁的便利贴 <span aria-hidden="true">↗</span></button>'+
-    '</div>';
+      '<button type="button" class="winter-about-to-notes">写给 25 岁的自己 <span aria-hidden="true">↗</span></button>'+
+    '</div>'+
+    '<div class="winter-about-stage" role="region" aria-label="七张生活照片，左右滑动或点击旁边照片切换"></div>';
   about.prepend(intro);
   const stage=intro.querySelector('.winter-about-stage');
   const status=intro.querySelector('.winter-about-stage-status');
+  const currentName=intro.querySelector('.winter-about-current-name');
   const previous=intro.querySelector('.winter-about-previous');
   const next=intro.querySelector('.winter-about-next');
   const toNotes=intro.querySelector('.winter-about-to-notes');
@@ -37,15 +38,12 @@
   back.type='button';
   back.textContent='← 回到七个瞬间';
   notesHeading.after(back);
-  const swatches=[
-    'rgba(167,185,200,.34)','rgba(205,180,148,.32)','rgba(206,166,168,.27)',
-    'rgba(148,190,185,.30)','rgba(197,174,181,.26)','rgba(146,180,202,.29)','rgba(170,170,202,.28)'
-  ];
   const cards=pins.map((pin,i)=>{
     const item=document.createElement('button');
     item.type='button';
     item.className='winter-about-card';
     item.dataset.index=String(i);
+    item.style.setProperty('--entry-i',String(Math.abs(i-3)));
     item.setAttribute('aria-label','第 '+(i+1)+' 张照片：'+(pin.querySelector('.portrait-words small')?.textContent||''));
     const photo=document.createElement('span');
     photo.className='winter-about-card-image';
@@ -66,9 +64,11 @@
   let position=3;
   let pointer=null;
   let frame=0;
+  let settleFrame=0;
+  let announced=-1;
   let clickSuppression=0;
   function distance(){
-    return Math.min(190,Math.max(90,stage.getBoundingClientRect().width*.225));
+    return Math.min(196,Math.max(90,stage.clientWidth*.24));
   }
   function setCardPositions(){
     frame=0;
@@ -77,36 +77,67 @@
       const d=i-position;
       const magnitude=Math.abs(d),sign=Math.sign(d);
       const factor=(1-Math.exp(-magnitude*.83))/(1-Math.exp(-.83));
-      const x=sign*space*factor,y=Math.min(23,magnitude*8);
-      const depth=-Math.min(295,magnitude*86);
-      const angle=-sign*Math.min(58,magnitude*34);
+      const x=sign*space*factor,y=d*7;
+      const depth=-Math.min(298,magnitude*78);
+      const angle=-sign*Math.min(41,magnitude*21);
       const scale=Math.max(.69,1-Math.min(magnitude,3)*.115);
       const opacity=magnitude>3.05?0:Math.max(.21,1-Math.max(0,magnitude-.2)*.24);
-      const blur=Math.max(0,magnitude-1.6)*.4;
+
       card.style.setProperty('--entry-transform',
         'translate3d(calc(-50% + '+x.toFixed(2)+'px),calc(-50% + '+y.toFixed(2)+'px),'+depth.toFixed(2)+'px) rotateY('+angle.toFixed(1)+'deg) scale('+scale.toFixed(3)+')');
       card.style.setProperty('--entry-opacity',opacity.toFixed(3));
       card.style.setProperty('--entry-z',String(Math.round(50-magnitude*9)));
-      card.style.setProperty('--entry-blur',blur.toFixed(2)+'px');
-      card.style.setProperty('--entry-sat',(1-Math.min(magnitude,3)*.12).toFixed(2));
+      card.dataset.near=String(magnitude>.75 && magnitude<1.25);
       card.dataset.current=String(i===selected);
       card.tabIndex=magnitude<=2.3?0:-1;
       card.style.pointerEvents=magnitude<=2.4?'auto':'none';
     });
-    stage.style.setProperty('--entry-light',swatches[selected]);
-    previous.disabled=selected===0;
-    next.disabled=selected===cards.length-1;
-    status.textContent=String(selected+1).padStart(2,'0')+' / 07　·　'+cards[selected].querySelector('.winter-about-card-chinese').textContent;
+    if (announced !== selected) {
+      announced=selected;
+      previous.disabled=selected===0;
+      next.disabled=selected===cards.length-1;
+      currentName.textContent=cards[selected].querySelector('.winter-about-card-english').textContent;
+      status.textContent=String(selected+1).padStart(2,'0')+' / 07　·　'+cards[selected].querySelector('.winter-about-card-chinese').textContent;
+    }
   }
   function schedule(){
     if(frame)return;
     frame=requestAnimationFrame(setCardPositions);
   }
+  function stopSettle(){
+    if(settleFrame) cancelAnimationFrame(settleFrame);
+    settleFrame=0;
+  }
   function choose(i){
     selected=Math.min(cards.length-1,Math.max(0,Math.round(i)));
-    position=selected;
     stage.classList.remove('is-dragging');
+    stopSettle();
+    if(reduce.matches||shell.dataset.motion==='off'||Math.abs(position-selected)<.02){
+      position=selected;
+      setCardPositions();
+      return;
+    }
+    let last=performance.now(), velocity=0;
+    function settle(now){
+      settleFrame=0;
+      if(about.hidden||document.hidden||about.dataset.aboutMode!=='intro'){
+        position=selected;
+        return;
+      }
+      const dt=Math.min(.032,(now-last)/1000);
+      last=now;
+      velocity+=(182*(selected-position)-23*velocity)*dt;
+      position+=velocity*dt;
+      if(Math.abs(selected-position)<.003&&Math.abs(velocity)<.02){
+        position=selected;
+        setCardPositions();
+        return;
+      }
+      setCardPositions();
+      settleFrame=requestAnimationFrame(settle);
+    }
     setCardPositions();
+    settleFrame=requestAnimationFrame(settle);
   }
   previous.addEventListener('click',()=>choose(selected-1));
   next.addEventListener('click',()=>choose(selected+1));
@@ -141,6 +172,7 @@
       if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){p.vertical=true;return;}
       if(Math.abs(dx)<7||Math.abs(dx)<Math.abs(dy)*1.2)return;
       p.active=true;
+      stopSettle();
       stage.classList.add('is-dragging');
       try{stage.setPointerCapture(event.pointerId)}catch(_){}
     }
@@ -200,6 +232,7 @@
       if(Math.abs(dy)>8&&Math.abs(dy)>Math.abs(dx)*1.2){p.vertical=true;return}
       if(Math.abs(dx)<3||Math.abs(dx)<Math.abs(dy)*.9)return;
       p.horizontal=true;
+      stopSettle();
       stage.classList.add('is-dragging');
     }
     if(event.cancelable)event.preventDefault();
@@ -236,6 +269,7 @@
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
   },true);
   function showIntro(reset=true){
+    stopSettle();
     if(reset){selected=3;position=3}
     about.dataset.aboutMode='intro';
     shell.dataset.aboutTheme='night';
@@ -243,6 +277,7 @@
     setCardPositions();
   }
   function showNotes(){
+    stopSettle();
     about.dataset.aboutMode='notes';
     shell.dataset.aboutTheme='paper';
     about.scrollTop=0;
@@ -260,10 +295,11 @@
   function syncRoute(){
     const now=shell.dataset.page==='about'&&!about.hidden;
     if(now&&!wasAbout)showIntro(true);
+    else if(!now)stopSettle();
     wasAbout=now;
   }
   new MutationObserver(syncRoute).observe(shell,{attributes:true,attributeFilter:['data-page']});
   window.addEventListener('resize',()=>{if(!about.hidden)setCardPositions()},{passive:true});
-  if(reduce.addEventListener)reduce.addEventListener('change',()=>{if(!about.hidden)setCardPositions()});
+  if(reduce.addEventListener)reduce.addEventListener('change',()=>{if(!about.hidden)choose(selected)});
   syncRoute();
 })();

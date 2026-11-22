@@ -46,9 +46,7 @@
   let swipe = null;
   let textAnimation = null;
   let editing = null;
-  // Five chapters are rendered from this *same* stops array. On wide screens
-  // the real page scrolls past these letters while the left 3D photos stick.
-  // On narrow screens the original single-letter view remains scroll-friendly.
+  // Use the same stops, notes and controls for the continuous reading view.
   const story=document.createElement('div');
   story.className='journey-sticky-story';
   story.setAttribute('aria-label','五段旅程的滚动来信');
@@ -88,36 +86,36 @@
   });
   body.before(story);
   page.dataset.stickyStory='on';
-  const storyMedia=window.matchMedia('(min-width:761px)');
+  const compactStory=window.matchMedia('(max-width: 950px) and (orientation: portrait), (max-width:760px)');
+  const visual=page.querySelector('.journey-visual');
   let storyNavigationUntil=0;
   let storyScrollFrame=0;
-  function canStory(){return storyMedia.matches&&!page.hidden&&active&&!disposed;}
+  function canStory(){return !page.hidden&&active&&!disposed;}
   function moveToStory(i,smooth){
     if(!canStory())return;
     const viewport=page.getBoundingClientRect();
     const rect=storyPanels[i].section.getBoundingClientRect();
     if(!viewport.height||!rect.height)return;
-    const target=page.scrollTop+rect.top-viewport.top-Math.min(110,viewport.height*.14);
-    storyNavigationUntil=performance.now()+(smooth?900:160);
-    page.scrollTo({top:Math.max(0,target),behavior:smooth&&!calm()?'smooth':'auto'});
-  }
-  function syncReadingEnd(){
-    const nav=page.querySelector('.journey-navigation');
-    const pageBox=page.getBoundingClientRect();
-    const navBox=nav?.getBoundingClientRect();
-    page.dataset.readingEnd=String(Boolean(canStory()&&navBox&&navBox.top<pageBox.bottom-45&&navBox.bottom>pageBox.top));
+    const offset=compactStory.matches?(visual?.offsetHeight||0)+15:Math.min(96,viewport.height*.16);
+    const target=page.scrollTop+rect.top-viewport.top-offset;
+    const animated=smooth&&!calm();
+    storyNavigationUntil=performance.now()+(animated?750:100);
+    page.scrollTo({top:Math.max(0,target),behavior:animated?'smooth':'auto'});
   }
   function watchStoryScroll(){
     storyScrollFrame=0;
-    syncReadingEnd();
     if(!canStory()||noteDialog.open||credits.open||performance.now()<storyNavigationUntil)return;
-    const bounds=page.getBoundingClientRect(),readingLine=bounds.top+bounds.height*.50;
-    let nearest=0,distance=Infinity;
-    storyPanels.forEach(({section},i)=>{
-      const r=section.getBoundingClientRect();
-      const gap=Math.abs((r.top+r.bottom)/2-readingLine);
-      if(gap<distance){distance=gap;nearest=i}
-    });
+    const bounds=page.getBoundingClientRect();
+    const readingLine=compactStory.matches
+      ? Math.min(bounds.bottom-60,Math.max(bounds.top+30,(visual?.getBoundingClientRect().bottom||0)+45))
+      : bounds.top+bounds.height*.52;
+    let nearest=stops.length-1;
+    for(let i=0;i<storyPanels.length;i++){
+      if(storyPanels[i].section.getBoundingClientRect().bottom>readingLine){
+        nearest=i;
+        break;
+      }
+    }
     if(nearest!==index)selectStop(nearest,true,'story');
   }
   listen(page,'scroll',()=>{
@@ -183,7 +181,7 @@
     updatePhotoFallback(); updateNotePreview();
     if (announce) status.textContent = '第' + (index+1) + '站，共5站。' + stop.period + '，' + stop.title + '。';
     page.dispatchEvent(new CustomEvent('winter:journey-stop',{detail:{index,animate}}));
-    if (animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
+    if (!canStory() && animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
   }
   function paint(value) {
     position = Math.max(0,Math.min(stops.length-1,value));
@@ -252,9 +250,8 @@
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     stopMotion();
-    if (active) { renderStop(index,false,false); storyNavigationUntil=0; requestAnimationFrame(syncReadingEnd); }
+    if (active) { renderStop(index,false,false); storyNavigationUntil=0; }
     else {
-      page.dataset.readingEnd='false';
       if(storyScrollFrame){cancelAnimationFrame(storyScrollFrame);storyScrollFrame=0;}
       editing = null; closeNotes(); closeCredits();
     }
@@ -346,7 +343,7 @@
   });
   listen(document,'winter:journey-route',event => activate(Boolean(event.detail?.active)));
   listen(document,'visibilitychange',() => { if (document.hidden && active) stopMotion(); });
-  listen(window,'resize',() => { if (active) { stopMotion(); requestAnimationFrame(syncReadingEnd); } },{passive:true});
+  listen(window,'resize',() => { if (active) { stopMotion(); requestAnimationFrame(watchStoryScroll); } },{passive:true});
   const preferenceChanged = () => { if (active && calm()) stopMotion(); };
   listen(reduced,'change',preferenceChanged);
   const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(preferenceChanged) : null;
