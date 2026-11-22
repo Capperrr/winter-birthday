@@ -42,11 +42,6 @@
   position: absolute;
   inset: 0;
   z-index: var(--plane-order);
-  transform: perspective(1200px) translate3d(
-    calc(var(--camera-x,0px) * var(--plane-pan)),
-    calc(var(--camera-y,0px) * var(--plane-pan)),
-    calc(var(--plane-z) + var(--camera-z,0px))
-  ) scale(calc(var(--plane-fit) * 1.075));
 }
 .film-texture {
   display: block;

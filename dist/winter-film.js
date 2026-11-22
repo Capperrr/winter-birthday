@@ -118,10 +118,9 @@
   function plate(world,[role,path,depth,pan]) {
     const plane = node('div','film-plane',world);
     plane.dataset.role = role;
-    plane.style.setProperty('--plane-z',depth+'px');
+    plane.dataset.depth = String(depth);
+    plane.dataset.pan = String(pan);
     plane.style.setProperty('--plane-order',String(depth+220));
-    plane.style.setProperty('--plane-pan',String(pan));
-    plane.style.setProperty('--plane-fit',((perspective-depth)/perspective).toFixed(5));
     return image(plane,artwork(path)).decode();
   }
 
@@ -148,6 +147,21 @@
       pointer[1] + drift*5, active?.key === 'home' ? 17 : 9 + drift*35];
   }
 
+  function project() {
+    if (active.budget === 'still') return;
+    const [x,y,z] = position;
+    const horizontal = Math.max(-innerWidth*.035,Math.min(innerWidth*.035,x));
+    // Project each flat photographic plane through the same focal distance.
+    // Explicit projected matrices keep Safari from flattening a fading scene.
+    active.planes.forEach(({element,depth,pan})=>{
+      const projection = perspective/(perspective-depth-z);
+      const widthFit = ((perspective-depth)/perspective)*1.115;
+      element.style.transform = 'translate3d(' + (horizontal*pan*projection).toFixed(2) + 'px,' +
+        (y*pan*projection).toFixed(2) + 'px,0) scale(' + (widthFit*projection).toFixed(5) + ')';
+    });
+    active.frame.style.setProperty('--camera-x',horizontal.toFixed(2)+'px');
+  }
+
   function render(now) {
     cameraFrame = 0;
     if (!active || suspended || active.budget === 'still' || document.hidden || pass) return;
@@ -161,7 +175,7 @@
       needsFrame = true;
       return value+difference*fraction;
     });
-    ['x','y','z'].forEach((axis,index) => active.frame.style.setProperty('--camera-' + axis,position[index].toFixed(2)+'px'));
+    project();
     if (needsFrame) cameraFrame = requestAnimationFrame(render);
   }
 
@@ -213,8 +227,9 @@
     const previous = active?.frame;
     position = [0, 0, key === 'home' ? -36 : -24];
     pointer = [0,0];
-    frame.style.setProperty('--camera-z', position[2]+'px');
-    active = {frame,key,budget:frame.dataset.quality};
+    const planes = Array.from(world.children, element=>({element,depth:Number(element.dataset.depth),pan:Number(element.dataset.pan)}));
+    active = {frame,key,budget:frame.dataset.quality,planes};
+    project();
     frame.dataset.exposure = 'in';
     shell.dataset.filmReady = key;
     cosmosRoot.dataset.filmReady = key;
@@ -303,6 +318,7 @@
     hero.removeAttribute('data-film-crossing');
     proscenium.querySelectorAll('.arch-camera,.arch-still').forEach(item=>item.remove());
     archButton.setAttribute('aria-pressed','false');
+    archButton.removeAttribute('aria-busy');
     archButton.querySelector('span').textContent = '穿过石拱';
     resetPointer();
   }
@@ -315,14 +331,19 @@
     const signal = controller.signal;
     hero.dataset.filmCrossing = 'loading';
     archButton.setAttribute('aria-pressed','true');
-    archButton.querySelector('span').textContent = '回到山谷';
+    archButton.setAttribute('aria-busy','true');
+    archButton.querySelector('span').textContent = '正在进入云谷…';
+    const started = () => {
+      archButton.removeAttribute('aria-busy');
+      archButton.querySelector('span').textContent = '回到山谷';
+    };
     try {
       if (quality()==='still' || navigator.connection?.saveData) throw new Error('Static camera');
       const {crossArch:animate} = await import('./winter-arch.js?v=2.1');
       if (signal.aborted) return;
       await animate(proscenium,signal,{
         night:shell.dataset.livingTime==='night',
-        start:()=>{hero.dataset.filmCrossing='travelling';}
+        start:()=>{hero.dataset.filmCrossing='travelling';started();}
       });
       if (!signal.aborted) hero.dataset.filmCrossing='arrived';
     } catch (_) {
@@ -331,6 +352,7 @@
       still.alt = '';
       still.src = artwork('home/through');
       hero.dataset.filmCrossing = 'still';
+      started();
     }
   }
 
