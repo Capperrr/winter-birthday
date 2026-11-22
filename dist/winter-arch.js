@@ -152,6 +152,7 @@ export async function createWinterWorld(host, signal, {night = false, phase, onF
     }
     textures.forEach(texture => texture.dispose());
     renderer.dispose();
+    renderer.forceContextLoss();
     canvas.remove();
   }
 
@@ -364,16 +365,17 @@ export async function createWinterWorld(host, signal, {night = false, phase, onF
       }
     }
 
-    const budget = (navigator.hardwareConcurrency || 8) <= 4 ? 560000 : 820000;
-    function size() {
+    let budget = (navigator.hardwareConcurrency || 8) <= 4 ? 560000 : 820000;
+    let missedFrames = 0;
+    function size(redraw = true) {
       const w = host.clientWidth, h = host.clientHeight;
       if (!w || !h || stopped) return;
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1,1.25,Math.sqrt(budget/(w*h))));
-      renderer.setSize(w,h,false);
+      const ratio = Math.min(devicePixelRatio || 1,1.25,Math.sqrt(budget/(w*h)));
+      renderer.setDrawingBufferSize(w,h,ratio);
       camera.aspect = w/h;
       camera.zoom = Math.max(1,camera.aspect/aspect);
       camera.updateProjectionMatrix();
-      if (!paused) draw(0);
+      if (redraw && !paused) draw(0);
     }
 
     tick = now => {
@@ -383,12 +385,19 @@ export async function createWinterWorld(host, signal, {night = false, phase, onF
       if (!last || now-last >= interval-3) {
         const elapsedTime = last ? (now-last)/1000 : 1/30;
         last = now;
+        // Real frame pressure, rather than a browser name, determines the resolution.
+        missedFrames = elapsedTime > .067 ? missedFrames+1 : Math.max(0,missedFrames-2);
+        if (missedFrames === 8 && budget > 285000) {
+          budget = Math.max(285000,Math.floor(budget*.74));
+          missedFrames = 0;
+          size(false);
+        }
         draw(Math.min(.10,elapsedTime),elapsedTime);
       }
       if (stage!=='arrived') schedule();
     };
     host.append(canvas);
-    resizeObserver = new ResizeObserver(size);
+    resizeObserver = new ResizeObserver(()=>size());
     resizeObserver.observe(host);
     size();
     canvas.classList.add('is-visible');

@@ -362,10 +362,15 @@
 .app-shell[data-film-scene="journey"] .journey-stops button[aria-current="step"] { color: var(--film-gold); }
 .app-shell[data-film-scene="journey"] .journey-frame .journey-photo-caption {
   color: #f5efe3;
-  text-align: center;
+  text-align: left;
   text-shadow: 0 1px 7px #07121b,0 1px 1px #07121b;
 }
-.app-shell[data-film-scene="journey"] .journey-photo-caption p { font-size: .82rem; }
+.app-shell[data-film-scene="journey"] #journey-photo-caption {
+  color: #f9f4e8;
+  font-size: .83rem;
+  line-height: 1.55;
+  letter-spacing: .035em;
+}
 .app-shell[data-film-scene="journey"] .journey-stops button { font-size: clamp(.75rem,.95vw,.9rem); }
 .app-shell[data-film-scene="journey"] #journey-credits-open { font-size: .75rem; }
 .app-shell[data-film-scene="afterword"] { --film-shade: linear-gradient(90deg,#09192379,transparent 65%); }

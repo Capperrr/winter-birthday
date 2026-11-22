@@ -350,7 +350,7 @@
     const control = new AbortController();
     worldController = control;
     hero.dataset.filmWorld = 'loading';
-    worldRequest = import('./winter-arch.js?v=winter-world-1')
+    worldRequest = import('./winter-arch.js?v=winter-world-2')
       .then(({createWinterWorld})=>createWinterWorld(proscenium,control.signal,{
         night:shell.dataset.livingTime==='night',
         phase(name) { if (flight) hero.dataset.filmCrossing = name; },
