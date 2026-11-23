@@ -439,18 +439,6 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-.app-shell[data-film-scene="cake"] .winter-cake-live {
-  inset: auto auto max(25px,6svh) var(--gallery-edge);
-  width: clamp(98px,13vw,175px);
-  aspect-ratio: 4 / 3;
-  border: 3px solid #e9e3d6;
-  border-radius: 2px;
-  box-shadow: 0 12px 28px #060a0d6b;
-  z-index: 5;
-}
-.app-shell[data-film-scene="cake"] .winter-cake-live::after { content: none; }
-.app-shell[data-film-scene="cake"] .cake-page:not([data-cake-state="unlit"]) .winter-cake-live { opacity: 0; }
-
 .cosmos-root[data-film-scene="gallery"] { --chapter-relief: url("assets/winter-v2/plaster/prints.webp"); }
 .cosmos-root[data-film-scene="creator"] { --chapter-relief: url("assets/winter-v2/plaster/cover.webp"); }
 .cosmos-root[data-film-scene="closing"] { --chapter-relief: url("assets/winter-v2/plaster/dedication.webp"); }

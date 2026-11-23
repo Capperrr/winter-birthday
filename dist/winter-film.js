@@ -4,15 +4,12 @@
   const shell = document.getElementById('main');
   const cosmos = document.getElementById('winter-cosmos-dialog');
   const cosmosRoot = document.getElementById('cosmos-root');
-  const cake = document.getElementById('cake-page');
-  const cakeSlot = document.getElementById('cake-art-slot');
   if (!shell || !cosmosRoot || !cosmos) return;
 
   const assets = 'assets/winter-v2/';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const compact = matchMedia('(max-width: 650px)');
   const portrait = matchMedia('(max-aspect-ratio: 4/5)');
-  const tallCake = matchMedia('(max-width: 760px), (max-aspect-ratio: 4/5)');
   const perspective = 1200;
 
   const artwork = path => assets + path + '.webp';
@@ -28,7 +25,6 @@
   const sky = layout('cosmos','61% 49%','stars_sparse');
   const scenes = {
     unlock:layout('unlock','52% 49%','fog_far_silver'),
-    cake:layout('cake','54% 54%','stars_sparse'),
     universe:sky
   };
   scenes.universe.planes.push(['near-fog','air/fog_near_blue',139,.92]);
@@ -59,7 +55,6 @@
   let localFrameTime = 0;
   let position = [0, 0, 0];
   let pointer = [0, 0];
-  let slate;
   let suspended = false;
 
   const motionOn = () => !reduce.matches && shell.dataset.motion !== 'off' && !document.hidden;
@@ -169,7 +164,7 @@
     targetQuality = qualityKey;
     const request = ++mountRequest;
     const config = scenes[key];
-    const mode = config ? 'projection' : 'plaster';
+    const mode = config || key === 'cake' ? 'projection' : 'plaster';
     shell.dataset.filmMode = mode;
     cosmosRoot.dataset.filmMode = mode;
     if (!config) {
@@ -219,9 +214,7 @@
     const wasSuspended = suspended;
     const isReader = cosmos.open;
     const lightbox = document.getElementById('cosmos-photo-lightbox');
-    const camera = ((targetKey === 'cake' || targetKey === 'creator') && shell.dataset.cakeCamera === 'on') ||
-      (targetKey === 'cake' && cake.dataset.filmCameraPending === 'true');
-    suspended = camera || document.hidden || !motionOn() ||
+    suspended = document.hidden || !motionOn() ||
       (isReader ? !lightbox.hidden || document.getElementById('winter-art-export')?.open : shell.dataset.motionPaused === 'true');
     shell.dataset.filmPaused = String(suspended);
     cosmosRoot.dataset.filmPaused = String(suspended);
@@ -234,21 +227,6 @@
     }
   }
 
-  function assembleCake() {
-    const variant = tallCake.matches ? 'portrait' : 'wide';
-    if (slate?.dataset.aspect === variant) return;
-    const slot = node('div','film-cake-assembly',cakeSlot);
-    slot.dataset.aspect = variant;
-    slot.setAttribute('aria-hidden','true');
-    const rock = image(slot,artwork('cake/slab-' + variant));
-    rock.classList.add('film-stone');
-    const dessert = image(slot,'assets/birthday-render/cake-' + variant + '.webp');
-    dessert.classList.add('film-pastry');
-    slate?.remove();
-    slate = slot;
-    Promise.all([rock.decode(),dessert.decode()]).then(()=>{slot.dataset.exposure='in';}).catch(()=>slot.remove());
-  }
-
   function sync() {
     const key = id();
     if (key !== visible) {
@@ -256,7 +234,6 @@
       shell.dataset.filmScene = key;
       cosmosRoot.dataset.filmScene = key;
     }
-    if (key === 'cake') assembleCake();
     setShot(key,quality());
     updateFreeze();
   }
@@ -271,23 +248,12 @@
     pointer=[0,0];
     wake();
   },{passive:true});
-  document.addEventListener('click',e=>{
-    if (targetKey!=='cake' || !e.target.closest('#winter-cake-camera-enable,#winter-gesture-start')) return;
-    cake.dataset.filmCameraPending='true';
-    updateFreeze();
-  },true);
-  document.addEventListener('winter:camera-stopped',()=>{
-    cake.dataset.filmCameraPending='false';
-    if (visible!=='cake') return;
-    updateFreeze();
-  });
-  document.addEventListener('winter:camera-ready',()=>{cake.dataset.filmCameraPending='false';updateFreeze();});
   document.addEventListener('winter:cosmos-stage',e=>{globeStage=e.detail?.stage || 'cosmos-intro';sync();});
   cosmos.addEventListener('close',sync);
   document.addEventListener('visibilitychange',sync);
-  [reduce,compact,portrait,tallCake].forEach(query=>query.addEventListener('change',sync));
+  [reduce,compact,portrait].forEach(query=>query.addEventListener('change',sync));
   new MutationObserver(sync).observe(shell,{
-    attributes:true,attributeFilter:['data-page','data-destination','data-about-theme','data-motion','data-motion-paused','data-cake-camera','data-living-time']
+    attributes:true,attributeFilter:['data-page','data-destination','data-about-theme','data-motion','data-motion-paused','data-living-time']
   });
   new MutationObserver(updateFreeze).observe(document.getElementById('cosmos-photo-lightbox'),{attributes:true,attributeFilter:['hidden']});
   const exportDialog = document.getElementById('winter-art-export');

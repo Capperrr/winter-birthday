@@ -11,10 +11,15 @@
   const lines = Array.from(document.querySelectorAll('#cake-thanks-lines > p'));
   const canvas = document.getElementById('cake-fireworks');
   const scenePlane = document.getElementById('cake-art-slot');
-  const candleTarget = document.getElementById('candle-ignition-target');
-  const flameAnchor = document.getElementById('lighter-flame-anchor');
-  const instruction = document.getElementById('lighter-instruction-copy');
-  const instructionBox = document.getElementById('lighter-instructions');
+  const cameraEnable = document.getElementById('winter-cake-camera-enable');
+  const cameraNote = document.getElementById('winter-cake-camera-note');
+  const setting = document.getElementById('cake-setting');
+  const slab = document.getElementById('cake-slab');
+  const pastry = document.getElementById('cake-pastry');
+  const lighterImage = document.getElementById('cake-lighter-image');
+  const lighterRest = lighter.querySelector('.lighter-rest');
+  const lighterArt = lighter.querySelector('.lighter-art').viewBox.baseVal;
+  const contact = document.getElementById('cake-slab-contact');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const portraitQuery = window.matchMedia('(max-width:760px), (max-aspect-ratio:4/5)');
   const palette = ['#e9d6a5', '#dce8dc', '#b7d1b5', '#a8cdd2', '#d3af7d'];
@@ -33,21 +38,91 @@
   let particles = [];
   let rockets = [];
   let disposed = false;
-  let geometry = null;
-  let grip = null;
-  let dragFrame = null;
-  let heatTimer = null;
-  let pointerClick = false;
+  let loadedAspect = '';
+  let artworkLoad = null;
 
-  // The same map sizes the photograph, wicks, touch target and tool landing.
+  // The slab, cake, wicks and lighter use the same native artwork viewBox.
+  const scenes = {
+    wide: { width: 1536, height: 1024, lighter: [1265, 840], contact: '83.6%' },
+    portrait: { width: 1024, height: 1536, lighter: [822, 1365], contact: '87.9%' }
+  };
+
+  function setSceneReady(value) {
+    if (page.dataset.sceneReady !== String(value)) {
+      page.dataset.sceneReady = String(value);
+      cameraEnable.disabled = !value;
+    }
+  }
+
+  function loadSvgImage(element, url, signal) {
+    if (element.dataset.loadedSource === url && element.getAttribute('href') === url) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      function cleanup() {
+        element.removeEventListener('load', onLoad);
+        element.removeEventListener('error', onError);
+        signal.removeEventListener('abort', onAbort);
+      }
+      function onLoad() {
+        cleanup();
+        element.dataset.loadedSource = url;
+        resolve();
+      }
+      function onError() {
+        cleanup();
+        reject(new Error('Could not load ' + url));
+      }
+      function onAbort() {
+        cleanup();
+        reject(signal.reason);
+      }
+      element.addEventListener('load', onLoad);
+      element.addEventListener('error', onError);
+      signal.addEventListener('abort', onAbort);
+      if (element.getAttribute('href') === url) element.removeAttribute('href');
+      element.setAttribute('href', url);
+    });
+  }
+
+  async function prepareArtwork(aspect) {
+    if (artworkLoad?.aspect === aspect || loadedAspect === aspect) return;
+    artworkLoad?.controller.abort();
+    const controller = new AbortController();
+    const { signal } = controller;
+    artworkLoad = { aspect, controller };
+    loadedAspect = '';
+    setSceneReady(false);
+    status.textContent = '正在载入蛋糕场景…';
+    if (!setting.getAttribute('src')) setting.src = 'assets/winter-v2/cake/still.webp';
+    try {
+      await Promise.all([
+        setting.decode(),
+        loadSvgImage(slab, 'assets/winter-v2/cake/slab-' + aspect + '.webp', signal),
+        loadSvgImage(pastry, 'assets/birthday-render/cake-' + aspect + '.webp', signal),
+        loadSvgImage(lighterImage, 'assets/birthday-render/lighter.webp', signal)
+      ]);
+      if (!active || signal.aborted) return;
+      loadedAspect = aspect;
+      setSceneReady(true);
+      status.textContent = '';
+      if (shell.dataset.cakeCamera !== 'on') cameraNote.textContent = '';
+    } catch (_) {
+      if (active && !signal.aborted) {
+        controller.abort();
+        status.textContent = '蛋糕场景载入失败，请重新进入或刷新页面。';
+        cameraNote.textContent = status.textContent;
+      }
+    } finally {
+      if (artworkLoad?.controller === controller) artworkLoad = null;
+    }
+  }
+
   function layoutScene() {
     if (!active) return;
     const rect = page.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     const tall = portraitQuery.matches;
-    const map = tall
-      ? { width: 1024, height: 1536, lighter: [822, 1365], target: [605, 525, 226, 88] }
-      : { width: 1536, height: 1024, lighter: [1265, 840], target: [980, 157, 236, 80] };
+    const aspect = tall ? 'portrait' : 'wide';
+    const map = scenes[aspect];
     const contain = !tall && rect.width / rect.height > 1.92;
     const scale = (contain ? Math.min : Math.max)(rect.width / map.width, rect.height / map.height);
     const x = (rect.width - map.width * scale) / 2;
@@ -56,99 +131,22 @@
     scenePlane.style.height = map.height * scale + 'px';
     scenePlane.style.left = x + 'px';
     scenePlane.style.top = y + 'px';
-    const landingX = Math.max(tall ? 44 : 56, Math.min(rect.width - (tall ? 44 : 56), x + map.lighter[0] * scale));
-    lighter.style.left = (landingX - x) / (map.width * scale) * 100 + '%';
-    lighter.style.top = map.lighter[1] / map.height * 100 + '%';
-    if (tall) {
-      instructionBox.style.left = instructionBox.style.top = instructionBox.style.width = '';
-    } else {
-      const labelWidth = Math.min(220, rect.width * .23);
-      const right = landingX + 65;
-      instructionBox.style.left = (right + labelWidth < rect.width - 18 ? right : landingX - labelWidth - 65) + 'px';
-      instructionBox.style.top = y + map.lighter[1] * scale - 72 + 'px';
-      instructionBox.style.width = labelWidth + 'px';
-    }
-    const [tx, ty, tw, th] = map.target;
-    const target = { left: rect.left + x + tx * scale, top: rect.top + y + ty * scale, width: tw * scale, height: Math.max(44, th * scale) };
-    candleTarget.style.left = target.left - rect.left + 'px';
-    candleTarget.style.top = target.top - rect.top + 'px';
-    candleTarget.style.width = target.width + 'px';
-    candleTarget.style.height = target.height + 'px';
-    shell.dataset.sceneFit = contain ? 'contain' : 'cover';
-    geometry = { rect, target };
-  }
+    scenePlane.setAttribute('viewBox', '0 0 ' + map.width + ' ' + map.height);
+    scenePlane.dataset.aspect = aspect;
+    contact.setAttribute('cy', map.contact);
 
-  function clearHeat() {
-    if (heatTimer !== null) { clearTimeout(heatTimer); timers.delete(heatTimer); }
-    heatTimer = null;
-    page.dataset.nearCandles = 'false';
-  }
-  function releaseGrip() {
-    const previous = grip;
-    grip = null;
-    if (dragFrame !== null) cancelAnimationFrame(dragFrame);
-    dragFrame = null;
-    try { if (previous && lighter.hasPointerCapture?.(previous.id)) lighter.releasePointerCapture(previous.id); } catch (_) {}
-  }
-  function putBack(animate = true) {
-    clearHeat(); releaseGrip();
-    page.dataset.lighter = animate && !calm() ? 'returning' : 'resting';
-    lighter.style.setProperty('--lighter-dx', '0px');
-    lighter.style.setProperty('--lighter-dy', '0px');
-    lighter.setAttribute('aria-pressed', 'false');
-    candleTarget.disabled = true; candleTarget.tabIndex = -1;
-    instruction.textContent = '';
-  }
-  function nearCandles(x, y, padding = 8) {
-    const t = geometry?.target;
-    return Boolean(t && x >= t.left - padding && x <= t.left + t.width + padding && y >= t.top - padding && y <= t.top + t.height + padding);
-  }
-  function paintGrip() {
-    dragFrame = null;
-    if (!grip || !active || phase !== 'unlit') return;
-    const g = grip;
-    const rect = geometry.rect;
-    const dx = Math.max(rect.left + 4 - g.box.left, Math.min(rect.left + rect.width - 4 - (g.box.left + g.box.width), g.lastX - g.startX));
-    const dy = Math.max(rect.top + 76 - g.box.top, Math.min(rect.top + rect.height - 8 - (g.box.top + g.box.height), g.lastY - g.startY));
-    lighter.style.setProperty('--lighter-dx', dx + 'px');
-    lighter.style.setProperty('--lighter-dy', dy + 'px');
-    g.near = nearCandles(g.flameX + dx, g.flameY + dy, g.type === 'touch' ? 12 : 8);
-    page.dataset.nearCandles = String(g.near);
-    if (g.near && heatTimer === null) heatTimer = later(() => { heatTimer = null; if (grip?.near) lightCake(); }, 180);
-    else if (!g.near) clearHeat();
-  }
-  function pickUp(event) {
-    if (!active || phase !== 'unlit' || !shell?.dataset.cakeTouchUnlocked || shell.dataset.cakeTouchUnlocked !== 'true' || document.hidden || grip || event.isPrimary === false || (event.button !== undefined && event.button !== 0)) return;
-    event.preventDefault(); pointerClick = true;
-    layoutScene();
-    const box = lighter.getBoundingClientRect();
-    const flame = flameAnchor.getBoundingClientRect();
-    const wasHeld = page.dataset.lighter === 'held';
-    grip = { id: event.pointerId, type: event.pointerType, startX: event.clientX, startY: event.clientY, lastX: event.clientX, lastY: event.clientY, box, flameX: flame.left + flame.width / 2, flameY: flame.top + flame.height / 2, moved: false, near: false, wasHeld };
-    page.dataset.lighter = 'dragging';
-    lighter.setAttribute('aria-pressed', 'true');
-    candleTarget.disabled = false; candleTarget.tabIndex = 0;
-    instruction.textContent = '正在移动火焰，靠近蜡烛就会点亮';
-    try { lighter.setPointerCapture?.(event.pointerId); } catch (_) {}
-  }
-  function moveTool(event) {
-    if (!grip || event.pointerId !== grip.id || !active || phase !== 'unlit') return;
-    grip.lastX = event.clientX; grip.lastY = event.clientY;
-    if (Math.hypot(event.clientX - grip.startX, event.clientY - grip.startY) > 8) grip.moved = true;
-    if (event.cancelable) event.preventDefault();
-    if (dragFrame === null) dragFrame = requestAnimationFrame(paintGrip);
-  }
-  function dropTool(event) {
-    if (!grip || event.pointerId !== grip.id) return;
-    grip.lastX = event.clientX ?? grip.lastX; grip.lastY = event.clientY ?? grip.lastY;
-    if (Math.hypot(grip.lastX - grip.startX, grip.lastY - grip.startY) > 8) grip.moved = true;
-    if (dragFrame !== null) cancelAnimationFrame(dragFrame);
-    paintGrip();
-    if (grip?.near) { lightCake(); return; }
-    if (grip && !grip.moved) {
-      // One-tap fallback for iPads and phones; dragging remains fully supported.
-      lightCake();
-    } else putBack();
+    const margin = tall ? 44 : 56;
+    const landing = Math.max(margin, Math.min(rect.width - margin, x + map.lighter[0] * scale));
+    const centerX = (landing - x) / scale;
+    const widthPx = tall ? (rect.width <= 350 ? 66 : 76)
+      : rect.height <= 650 ? 74 : Math.max(78, Math.min(108, rect.width * .062));
+    const toolScale = widthPx / (scale * lighterArt.width);
+    const top = map.lighter[1] - lighterArt.height * toolScale;
+    const centerY = (map.lighter[1] + top) / 2;
+    const left = centerX - lighterArt.width * toolScale / 2;
+    lighterRest.setAttribute('transform',
+      'rotate(-4 ' + centerX + ' ' + centerY + ') translate(' + left + ' ' + top + ') scale(' + toolScale + ')');
+    prepareArtwork(aspect);
   }
 
   function listen(target, name, handler, options) {
@@ -350,13 +348,10 @@
   function lightCake(source) {
     // Lighting is strictly air-gesture-only after a live camera and hand recogniser are ready.
     if (!active || phase !== 'unlit' || source !== 'air' || shell.dataset.cakeCamera !== 'on' || shell.dataset.cakeHandReady !== 'true') return;
-    clearHeat(); releaseGrip();
     page.dataset.lighter = 'igniting';
-    candleTarget.disabled = true; candleTarget.tabIndex = -1;
     setPhase('lighting');
-    lighter.disabled = true;
     later(() => {
-      setPhase('lit'); lighter.hidden = true;
+      setPhase('lit'); lighter.setAttribute('display', 'none');
       shell.dataset.cakeTouchUnlocked='true';
       document.dispatchEvent(new CustomEvent('winter:cake-lit'));
       status.textContent = '蜡烛点亮了。';
@@ -364,7 +359,7 @@
     }, calm() ? 0 : 760);
   }
   function stopResources() {
-    putBack(false);
+    lighter.removeAttribute('transform');
     timers.forEach(id => clearTimeout(id)); timers.clear();
     cancelFrame(); particles = []; rockets = [];
     if (dialog.open) dialog.close();
@@ -374,22 +369,26 @@
   }
   function reset() {
     stopResources(); ready = false;
-    next.hidden = true; lighter.hidden = false; lighter.disabled = false;
+    next.hidden = true; lighter.removeAttribute('display');
+    page.dataset.lighter = 'resting';
     shell.dataset.cakeTouchUnlocked='false';
     status.textContent = '';
     page.dataset.reduced = String(calm());
     setPhase('unlit'); elapsed = 0;
-    pointerClick = false;
   }
   function activate(value) {
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     reset();
     if (active) { layoutScene(); resize?.observe(page); }
-    else resize?.disconnect();
+    else {
+      artworkLoad?.controller.abort();
+      artworkLoad = null;
+      resize?.disconnect();
+    }
   }
   function visibilityChange() {
-    if (document.hidden) { cancelFrame(); if (phase === 'unlit') putBack(false); }
+    if (document.hidden) cancelFrame();
     else if (active && phase === 'fireworks' && frame === null) { lastFrame = 0; frame = requestAnimationFrame(draw); }
   }
   function reducedChange() {
@@ -398,30 +397,14 @@
   }
   const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(() => {
     if (!active) return;
-    if (grip || page.dataset.lighter === 'held') putBack(false);
     layoutScene();
     if (!['fireworks','finished'].includes(phase)) return;
     if (!fitCanvas()) { staticFinish(); return; }
     if (phase === 'finished') stillFestival();
   }) : null;
   listen(document, 'winter:air-five-complete', event => { if (event.detail?.litCount===5) lightCake('air'); });
-  listen(lighter, 'pointerdown', pickUp);
-  listen(window, 'pointermove', moveTool, { passive: false });
-  listen(window, 'pointerup', dropTool);
-  listen(lighter, 'pointercancel', () => { if (grip) putBack(); });
-  listen(lighter, 'touchmove', event => { if (grip && event.cancelable) event.preventDefault(); }, { passive: false });
-  listen(window, 'pointercancel', event => { if (grip && event.pointerId === grip.id) putBack(); });
-  listen(lighter, 'lostpointercapture', () => { if (grip) putBack(); });
-  listen(window, 'keydown', event => { if (event.key === 'Escape' && phase === 'unlit' && active) putBack(); });
-  listen(lighter, 'click', event => {
-    // Clicking, Enter/Space and older browsers all have a direct ignition path.
-    if (event.detail === 0 || typeof window.PointerEvent !== 'function') { lightCake(); return; }
-    if (pointerClick) { pointerClick = false; return; }
-    if (phase === 'unlit') lightCake();
-  });
-  listen(candleTarget, 'click', () => { if (['held','dragging'].includes(page.dataset.lighter)) lightCake(); });
-  listen(portraitQuery, 'change', () => { if (active) { putBack(false); layoutScene(); } });
-  if (!resize) listen(window, 'resize', () => { if (active) { putBack(false); layoutScene(); } });
+  listen(portraitQuery, 'change', layoutScene);
+  if (!resize) listen(window, 'resize', layoutScene);
   listen(confirm, 'click', confirmBlow);
   listen(dialog, 'cancel', event => { event.preventDefault(); confirmBlow(); });
   listen(next, 'click', () => { if (active && ready) document.dispatchEvent(new CustomEvent('winter:celebration-complete')); });
@@ -431,8 +414,9 @@
   const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(reducedChange) : null;
   motionObserver?.observe(shell, { attributes: true, attributeFilter: ['data-motion'] });
   listen(window, 'pagehide', event => {
-    if (event.persisted) { cancelFrame(); if (phase === 'unlit') putBack(false); return; }
+    if (event.persisted) { cancelFrame(); return; }
     active = false; stopResources(); disposed = true;
+    artworkLoad?.controller.abort();
     resize?.disconnect(); motionObserver?.disconnect(); removers.forEach(remove => remove());
   });
   listen(window, 'pageshow', () => { if (active) layoutScene(); visibilityChange(); });

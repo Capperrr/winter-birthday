@@ -3,6 +3,7 @@
  const $=id=>document.getElementById(id);
  const stage=$('cosmos-creator'),canvas=$('winter-creator-canvas');
  const cakeEnable=$('winter-cake-camera-enable'),cakeNote=$('winter-cake-camera-note');
+ const cakePage=$('cake-page'),cakePreview=$('winter-cake-preview'),previewToggle=$('winter-cake-preview-toggle');
  const creatorEnable=$('winter-creator-camera-enable'),creatorStatus=$('winter-creator-camera-status');
  if(!stage||!canvas)return;
  const shell=$('main'),controls=$('winter-creator-colours');
@@ -10,7 +11,7 @@
  const brush=$('winter-creator-brush'),brushSize=$('winter-creator-brush-size');
  const eraseButton=$('winter-creator-erase'),clearButton=$('winter-creator-clear');
  const saveButton=$('winter-creator-save'),hello=$('creator-hello');
- const cakeVideo=$('winter-cake-video'),creatorVideo=$('winter-creator-video');
+ const creatorVideo=$('winter-creator-video');
  let color='#232323',size=8,eraser=false,drawing=false,last=null,firstDraw=0,helloTimer=0;
  let fingerPos={Right:null,Left:null},leftPalmStart=0,leftPalmDone=false,handDrawLast=0;
  const colors=[...controls.querySelectorAll('[data-colour]')];
@@ -85,22 +86,34 @@
  canvas.addEventListener('pointerdown',pointerStart);
  canvas.addEventListener('pointermove',pointerMove);
  for(const ev of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(ev,()=>{drawing=false;last=null});
+ function updateCakePreview(stream) {
+  cakePreview.dataset.visible = String(Boolean(stream && previewToggle.getAttribute('aria-pressed') === 'true'));
+ }
+ previewToggle.addEventListener('click', () => {
+  const enabled = previewToggle.getAttribute('aria-pressed') !== 'true';
+  previewToggle.setAttribute('aria-pressed', String(enabled));
+  updateCakePreview(window.WINTER_GESTURES?.stream);
+ });
  function stopVideos(){
-  for(const vid of [creatorVideo,cakeVideo]){
-   if(!vid)continue;
-   vid.pause();vid.srcObject=null;
-  }
+  updateCakePreview(null);
+  previewToggle.hidden = true;
+  creatorVideo.pause();creatorVideo.srcObject=null;
   shell.dataset.cakeCamera='off';stage.dataset.camera='off';
   creatorEnable.textContent='开启摄像头 · 隔空画画';
-  cakeNote.textContent='';
+  if (cakePage.dataset.sceneReady === 'true') cakeNote.textContent='';
  }
  document.addEventListener('winter:camera-ready',e=>{
   const stream=e.detail?.stream;
   if(!stream)return;
-  if(cakeVideo){cakeVideo.srcObject=stream;cakeVideo.play().catch(()=>{});}
-  if(creatorVideo){creatorVideo.srcObject=stream;creatorVideo.play().catch(()=>{});}
-  shell.dataset.cakeCamera='on';stage.dataset.camera='on';
-  cakeNote.textContent='正在准备识别…';
+  if (activeCake()) {
+   shell.dataset.cakeCamera = 'on';
+   previewToggle.hidden = false;
+   updateCakePreview(stream);
+   cakeNote.textContent = '正在准备识别…';
+   return;
+  }
+  creatorVideo.srcObject=stream;creatorVideo.play().catch(()=>{});
+  stage.dataset.camera='on';
   creatorEnable.textContent='镜头已开启 · 点击关闭';
   creatorStatus.textContent='镜头已开启；手势识别加载后即可隔空绘画。';
  });
@@ -112,6 +125,7 @@
   const api=window.WINTER_GESTURES;
   const btn=source==='cake'?cakeEnable:creatorEnable;
   const label=source==='cake'?cakeNote:creatorStatus;
+  if (source === 'cake' && cakePage.dataset.sceneReady !== 'true') return;
   if(api?.active){
    if(source==='creator'){api.stop('已关闭摄像头；触摸仍可绘画');return}
    if(shell?.dataset.cakeHandReady==='true'){label.textContent='';return;}
@@ -120,7 +134,7 @@
   if(!api?.enableCamera){label.textContent='当前浏览器不支持摄像头手势识别';return}
   btn.disabled=true;label.textContent='正在申请摄像头权限…';
   try{await api.enableCamera();if(source==='cake'&&!api.active)label.textContent='摄像头未能开启，请检查权限后重试'}catch(_){label.textContent='摄像头未能开启，请检查权限后重试'}
-  finally{btn.disabled=false}
+  finally{btn.disabled=source==='cake' && cakePage.dataset.sceneReady!=='true'}
  }
  cakeEnable?.addEventListener('click',()=>activateCamera('cake'));
  creatorEnable?.addEventListener('click',()=>activateCamera('creator'));
@@ -231,8 +245,8 @@
    if(window.WINTER_GESTURES?.active)window.WINTER_GESTURES.stop('已离开创作页面，摄像头自动关闭');
  });
  document.addEventListener('winter:hand-model-unavailable',()=>{
-  cakeNote.textContent='识别未就绪，检查网络后重新开启摄像头';
-  creatorStatus.textContent='隔空识别未就绪，仍可触摸画画。';
+  if (activeCake()) cakeNote.textContent='识别未就绪，检查网络后重新开启摄像头';
+  else creatorStatus.textContent='隔空识别未就绪，仍可触摸画画。';
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopFinger()});
 })();

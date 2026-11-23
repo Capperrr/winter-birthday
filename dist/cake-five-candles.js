@@ -4,10 +4,15 @@
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
-const page=$('cake-page'),shell=$('main'),lighter=$('grand-lighter'),anchor=$('lighter-flame-anchor');
-if(!page||!shell||!lighter||!anchor)return;
+const page=$('cake-page'),shell=$('main'),plane=$('cake-art-slot');
+const lighter=$('grand-lighter'),anchor=$('lighter-flame-anchor');
+if(!page||!shell||!plane||!lighter||!anchor)return;
 const flamesWide=[...page.querySelectorAll('.candles-wide .grand-candle-flame')];
 const flamesTall=[...page.querySelectorAll('.candles-tall .grand-candle-flame')];
+const wickMaps = {
+ wide: readWicks('wide'),
+ portrait: readWicks('tall')
+};
 if(flamesWide.length!==5||flamesTall.length!==5){console.warn('WINTER: expected exactly five candle wicks per aspect ratio');return;}
 const progress=document.createElement('div');
 progress.className='winter-candle-progress';
@@ -30,7 +35,9 @@ function placeHint(){
  hintFrame=requestAnimationFrame(()=>{
   hintFrame=0;
   if(page.hidden||!current())return;
-  const wicks=screenWicks();
+  const view = sceneView();
+  if(!view)return;
+  const wicks = wickMaps[plane.dataset.aspect].map(wick => toScreen(wick, view));
   if(wicks.length!==5)return;
   const bounds=page.getBoundingClientRect();
   const centerX=wicks.reduce((sum,p)=>sum+p.x,0)/wicks.length-bounds.left;
@@ -47,13 +54,12 @@ function updateHint(){
 }
 const text=progress.querySelector('.winter-candle-count');
 const lit=new Set();
-let held=false,handName=null,started=0,handWasPinching=false,releaseFrames=0,missedFrames=0;
-let base={x:0,y:0},tip={x:0,y:0},lastDX=0,lastDY=0,candidate=-1,dwellStart=0;
-let ignitionTime=0,lastWick=null,lastSpacing=28,exitRequired=false,finished=false;
-let sparkleTimer=0,trail=null;
+let held=false,handName=null,releaseFrames=0,missedFrames=0;
+let base={x:0,y:0},tip={x:0,y:0},candidate=-1,dwellStart=0;
+let ignitionTime=0,lastWick=null,exitRequired=false,finished=false;
 const clock=()=>performance.now();
 const current=()=>shell.dataset.destination==='cake'&&!page.hidden && page.dataset.cakeState==='unlit';
-const canIgnite=()=>current()&&shell.dataset.cakeCamera==='on'&&shell.dataset.cakeHandReady==='true'&&window.WINTER_GESTURES?.active===true;
+const canIgnite=()=>current()&&page.dataset.sceneReady==='true'&&shell.dataset.cakeCamera==='on'&&shell.dataset.cakeHandReady==='true'&&window.WINTER_GESTURES?.active===true;
 const clearCandidate=()=>{candidate=-1;dwellStart=0;};
 function updateProgress(){
  text.textContent=lit.size+' / 5';
@@ -67,60 +73,54 @@ function reset(){
  updateProgress();
 }
 function release(){
- held=false;handName=null;handWasPinching=false;releaseFrames=0;missedFrames=0;
- lighter.style.setProperty('--lighter-dx','0px');
- lighter.style.setProperty('--lighter-dy','0px');
- lighter.setAttribute('aria-pressed','false');
+ held=false;handName=null;releaseFrames=0;missedFrames=0;
+ lighter.removeAttribute('transform');
  if(current())page.dataset.lighter='resting';
  clearCandidate();
  updateHint();
 }
-function screenWicks(){
- const root=[...page.querySelectorAll('.grand-candles-overlay')].find(el=>getComputedStyle(el).display!=='none'&&el.getBoundingClientRect().width>1);
- if(!root)return [];
- const rect=root.getBoundingClientRect(),view=root.viewBox.baseVal;
- if(!view?.width||!view?.height)return [];
- const elements=[...root.querySelectorAll('.grand-candle-flame')];
- return elements.map((flame,i)=>{
-  const match=flame.style.transformOrigin.match(/([\d.]+)px\s+([\d.]+)px/);
-  if(!match)return null;
-  // getScreenCTM includes CSS layout/translation where supported. In Safari,
-  // the geometry fallback uses the SVG element's final bounding rectangle.
-  const rawX=+match[1],rawY=+match[2];
-  let x=rect.left+(rawX-view.x)/view.width*rect.width;
-  let y=rect.top+(rawY-view.y)/view.height*rect.height;
-  try{
-   const point=root.createSVGPoint();point.x=rawX;point.y=rawY;
-   const matrix=root.getScreenCTM();
-   if(matrix){const pos=point.matrixTransform(matrix);if(Number.isFinite(pos.x)&&Number.isFinite(pos.y)){x=pos.x;y=pos.y;}}
-  }catch(_){}
-  return {x,y,index:i};
- }).filter(Boolean);
+function readWicks(aspect) {
+ return [...plane.querySelectorAll('.candles-' + aspect + ' .grand-candle-wick')]
+  .map((line, index) => ({x: Number(line.getAttribute('x2')), y: Number(line.getAttribute('y2')), index}));
 }
-function positionLighter(point){
- if(!held)return;
- // Stable low-pass filter prevents camera hand jitter from flickering the tool.
- tip.x+=(point.x-tip.x)*.55;
- tip.y+=(point.y-tip.y)*.55;
- const r=page.getBoundingClientRect();
- tip.x=Math.min(r.right-5,Math.max(r.left+5,tip.x));
- tip.y=Math.min(r.bottom-15,Math.max(r.top+55,tip.y));
- lastDX=tip.x-base.x;
- lastDY=tip.y-base.y;
- lighter.style.setProperty('--lighter-dx',lastDX.toFixed(1)+'px');
- lighter.style.setProperty('--lighter-dy',lastDY.toFixed(1)+'px');
- checkIgnition();
+function sceneView() {
+ if (page.dataset.sceneReady !== 'true') return null;
+ const bounds = plane.getBoundingClientRect();
+ if (!bounds.width) return null;
+ return {x: bounds.left, y: bounds.top, scale: bounds.width / plane.viewBox.baseVal.width};
 }
-function pickUp(hand){
- if(!canIgnite()||held||finished)return;
- const frame=anchor.getBoundingClientRect();
- if(!frame.width&&!frame.height)return;
- base={x:frame.left+frame.width/2,y:frame.top+frame.height/2};
- tip={x:base.x,y:base.y};
- held=true;handName=hand.hand;releaseFrames=0;missedFrames=0;
- started=clock();page.dataset.lighter='dragging';lighter.setAttribute('aria-pressed','true');
+function toScene(point, view) {
+ return {x: (point.x - view.x) / view.scale, y: (point.y - view.y) / view.scale};
+}
+function toScreen(point, view) {
+ return {x: view.x + point.x * view.scale, y: view.y + point.y * view.scale};
+}
+function positionLighter(hand) {
+ const view = sceneView();
+ if (!held || !view) return;
+ const rect = page.getBoundingClientRect();
+ const point = toScene({
+  x: Math.min(rect.right - 5, Math.max(rect.left + 5, hand.x * innerWidth)),
+  y: Math.min(rect.bottom - 15, Math.max(rect.top + 55, hand.y * innerHeight))
+ }, view);
+ // Smooth the hand position in the same SVG units used by the physical wicks.
+ tip.x += (point.x - tip.x) * .55;
+ tip.y += (point.y - tip.y) * .55;
+ lighter.setAttribute('transform', 'translate(' + (tip.x - base.x) + ' ' + (tip.y - base.y) + ')');
+ checkIgnition(view);
+}
+function pickUp(hand) {
+ if (!canIgnite() || held || finished) return;
+ const view = sceneView();
+ if (!view) return;
+ const frame = anchor.getBoundingClientRect();
+ if (!frame.width && !frame.height) return;
+ base = toScene({x: frame.left + frame.width / 2, y: frame.top + frame.height / 2}, view);
+ tip = {...base};
+ held = true; handName = hand.hand; releaseFrames = 0; missedFrames = 0;
+ page.dataset.lighter = 'dragging';
  updateHint();
- positionLighter({x:hand.x*innerWidth,y:hand.y*innerHeight});
+ positionLighter(hand);
 }
 function flash(pos){
  const spark=document.createElement('i');
@@ -131,42 +131,41 @@ function flash(pos){
  spark.addEventListener('animationend',()=>spark.remove(),{once:true});
  setTimeout(()=>spark.remove(),900);
 }
-function lightOne(index,location){
- if(lit.has(index)||finished||!canIgnite())return;
- lit.add(index);clearCandidate();exitRequired=true;lastWick=location;ignitionTime=clock();
- for(const root of [flamesWide,flamesTall])root[index].classList.add('candle-is-lit');
+function lightOne(wick, view) {
+ if (lit.has(wick.index) || finished || !canIgnite()) return;
+ lit.add(wick.index);
+ clearCandidate();
+ exitRequired = true;
+ lastWick = wick.index;
+ ignitionTime = clock();
+ for (const root of [flamesWide, flamesTall]) root[wick.index].classList.add('candle-is-lit');
  updateProgress();
- flash(location);
- if(lit.size===5){
-  finished=true;
-  page.dataset.lighter='igniting';
-  release();
-  // Complete ONLY after five independent wick collisions.
-  window.setTimeout(()=>{
-   if(shell.dataset.destination==='cake'&&page.dataset.cakeState==='unlit'&&shell.dataset.cakeCamera==='on')
-    document.dispatchEvent(new CustomEvent('winter:air-five-complete',{detail:{litCount:5}}));
-  },360);
+ flash(toScreen(wick, view));
+ if (lit.size === 5) {
+  finished = true;
+  held = false;
+  // Completing on the fifth contact avoids losing it if the camera stops immediately.
+  document.dispatchEvent(new CustomEvent('winter:air-five-complete', {detail: {litCount: 5}}));
  }
 }
-function checkIgnition(){
- if(!held||!canIgnite()||finished)return;
- const wicks=screenWicks();
- if(wicks.length!==5)return;
- const spacing=Math.min(...wicks.slice(1).map((p,i)=>Math.hypot(p.x-wicks[i].x,p.y-wicks[i].y)));
- lastSpacing=Number.isFinite(spacing)?spacing:28;
- // A wick is counted only when the lighter's flame is the nearest to it.
- const nearest=wicks.map(p=>({...p,d:Math.hypot(tip.x-p.x,tip.y-p.y)})).sort((a,b)=>a.d-b.d)[0];
- if(!nearest){clearCandidate();return;}
- const radius=Math.min(27,Math.max(11,lastSpacing*.40));
- if(exitRequired){
-  if(lastWick&&Math.hypot(tip.x-lastWick.x,tip.y-lastWick.y)>Math.max(15,lastSpacing*.68))exitRequired=false;
-  else return;
+function checkIgnition(view) {
+ if (!held || !canIgnite() || finished) return;
+ const wicks = wickMaps[plane.dataset.aspect];
+ if (wicks.length !== 5) return;
+ const spacing = Math.min(...wicks.slice(1).map((point, index) => Math.hypot(point.x - wicks[index].x, point.y - wicks[index].y)));
+ const nearest = wicks.map(wick => ({...wick, distance: Math.hypot(tip.x - wick.x, tip.y - wick.y)}))
+  .sort((a, b) => a.distance - b.distance)[0];
+ const radius = Math.min(27 / view.scale, Math.max(11 / view.scale, spacing * .40));
+ if (exitRequired) {
+  const previous = wicks[lastWick];
+  if (Math.hypot(tip.x - previous.x, tip.y - previous.y) <= Math.max(15 / view.scale, spacing * .68)) return;
+  exitRequired = false;
  }
- if(lit.has(nearest.index)||nearest.d>radius){clearCandidate();return;}
- const t=clock();
- if(candidate!==nearest.index){candidate=nearest.index;dwellStart=t;return;}
- // Intentional proximity for >= 130ms: not an accidental frame of jitter.
- if(t-dwellStart>=130&&t-ignitionTime>=470)lightOne(nearest.index,nearest);
+ if (lit.has(nearest.index) || nearest.distance > radius) { clearCandidate(); return; }
+ const time = clock();
+ if (candidate !== nearest.index) { candidate = nearest.index; dwellStart = time; return; }
+ // A stationary contact for 130 ms filters out camera jitter.
+ if (time - dwellStart >= 130 && time - ignitionTime >= 470) lightOne(nearest, view);
 }
 document.addEventListener('winter:hand-frame',event=>{
  if(!canIgnite()||finished)return;
@@ -181,18 +180,17 @@ document.addEventListener('winter:hand-frame',event=>{
  if(hand.pinching){
   releaseFrames=0;
   if(!held)pickUp(hand);
-  else positionLighter({x:hand.x*innerWidth,y:hand.y*innerHeight});
+  else positionLighter(hand);
  }else if(held){
   if(++releaseFrames>=3)release();
  }
- handWasPinching=hand.pinching;
 });
 document.addEventListener('winter:camera-stopped',()=>{if(held)release()});
 document.addEventListener('winter:celebration-route',()=>reset());
 document.addEventListener('visibilitychange',()=>{if(document.hidden)release()});
 window.addEventListener('resize',()=>{if(held)release()},{passive:true});
 new MutationObserver(()=>{if(page.dataset.cakeState==='unlit'&&lit.size===5)reset();else updateProgress();})
- .observe(page,{attributes:true,attributeFilter:['data-cake-state','hidden']});
+ .observe(page,{attributes:true,attributeFilter:['data-cake-state','data-scene-ready','hidden']});
 window.addEventListener('resize',placeHint,{passive:true});
 window.addEventListener('orientationchange',placeHint,{passive:true});
 updateProgress();

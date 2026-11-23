@@ -27,7 +27,7 @@ After changes, run the relevant validation, push the work, and **merge the PR in
 - `dist/cake-scene.js` — birthday chapter, fireworks, blowing out; intentionally reacts only to `winter:air-five-complete`.
 - `dist/creator-studio.js` — camera connection and creator page; **must never auto-light all candles on a pinch**.
 - `dist/gesture-controls.js` — webcam / MediaPipe hand detector, `winter:hand-frame` events.
-- `dist/cake-cutout.js` — cake on far-right side of long stone slab.
+- `#cake-art-slot` in `dist/index.html` — the slab, cake, wax, wick and lighter share one SVG viewBox. `cake-scene.js` decodes the scene before enabling camera access.
 - `dist/index.html` — actual shipped HTML and JS/CSS asset links.
 
 Required order: enable camera -> detect hand -> pinch to grab lighter -> move flame into each wick -> each candle individually lights and stays lit -> 5/5 -> original blow/firework flow. Before 5/5, touch cannot shortcut ignition. On camera or recognition failure, show retry; do not silently mark candles as lit.

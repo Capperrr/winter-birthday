@@ -17,22 +17,6 @@
 .cake-page[data-cake-state='unlit'] .grand-candle-warmth{
  opacity:0!important;
 }
-/* This is a real AR tool until all five candles are lit: touch does not shortcut it. */
-.cake-page[data-cake-state='unlit'] .grand-lighter{
- pointer-events:none!important;
- touch-action:pan-y;
-}
-.cake-page .candle-ignition-target{
- pointer-events:none!important;
- opacity:0!important;
-}
-.cake-page[data-lighter='dragging'] .grand-lighter{
- transition:none!important;
- will-change:translate;
-}
-.cake-page[data-lighter='dragging'] .lighter-own-flame{
- opacity:1!important;
-}
 .winter-candle-progress{
  position:absolute;
  z-index:12;

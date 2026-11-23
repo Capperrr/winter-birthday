@@ -97,35 +97,8 @@
 .app-shell[data-film-ready="unlock"] .unlock-page { background: transparent; }
 .app-shell[data-film-ready="unlock"] .unlock-nature { opacity: 0; }
 
-.app-shell[data-film-ready="cake"] .cake-backdrop { opacity: 0; }
-.app-shell[data-film-scene="cake"] { --film-shade: linear-gradient(90deg,#061724a0,transparent 46%),linear-gradient(0deg,#06131c77,transparent 65%); }
-.film-cake-assembly {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-}
-.film-cake-assembly[data-exposure="in"] { opacity: 1; }
-.film-cake-assembly .film-texture { position:absolute;inset:0;object-fit:fill; }
-.film-cake-assembly .film-stone { z-index: 0; }
-.film-cake-assembly .film-pastry { z-index: 2; }
-.film-cake-assembly::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: radial-gradient(ellipse 11% 2.7% at 49.8% var(--slab-contact,83.6%),#07111bc1,#111b2761 55%,transparent 95%);
-}
-.film-cake-assembly[data-aspect="portrait"] { --slab-contact: 87.9%; }
-.app-shell[data-film-ready="cake"]:not([data-cake-camera="on"]) #cake-art-slot:has(.film-cake-assembly[data-exposure="in"]) .grand-cake-photograph { opacity: 0; }
-.app-shell[data-cake-camera="on"] .film-cake-assembly { opacity: 0; }
-#cake-art-slot > .grand-candles-overlay { z-index: 3; }
-.app-shell[data-film-scene="cake"] .cake-night-light {
-  background: radial-gradient(ellipse 54% 44% at 62% 43%,#78a3c235,#82a5ca15 41%,transparent 67%);
-}
+.app-shell[data-film-scene="cake"] .film-ground { visibility:hidden; }
 .app-shell[data-film-scene="cake"] .grand-cake-intro { text-shadow: 0 2px 31px #040f19; }
-.film-shot[data-shot="cake"] [data-role="atmosphere"] { opacity: .31; mask-image: linear-gradient(#000 0%,#000 29%,transparent 67%); }
 
 .app-shell[data-film-scene="letter"] .letter-lake figcaption::before {
   content: "";

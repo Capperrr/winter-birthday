@@ -75,30 +75,13 @@
   75% { transform: translate3d(0,calc(var(--drift-rise) * .27),0); }
 }
 
-/* Night light behind the cake. An independent flame envelope only follows a lit wick. */
-.cake-night-light {
-  position: absolute;
-  z-index: 2;
-  inset: 9% 3% 24%;
-  pointer-events: none;
-  background: radial-gradient(ellipse 56% 55% at 61% 44%,#6c9fc858,#5f91bd27 34%,transparent 68%);
-  opacity: .34;
-}
-.app-shell[data-entrance="cake"] .cake-page[data-cake-state="unlit"] .grand-cake-tableau { animation: night-exposure 1.46s var(--entrance-ease) both; }
+/* The chapter entrance and the flames belong to the scene and the candle state. */
+.app-shell[data-entrance="cake"] .cake-page[data-cake-state="unlit"] .grand-scene-plane { animation: night-exposure 1.46s var(--entrance-ease) both; }
 .app-shell[data-entrance="cake"] .grand-cake-intro { animation: print-from-baseline .85s .35s var(--entrance-ease) both; }
 @keyframes night-exposure {
   0% { opacity: .18; }
   55% { opacity: .75; }
   100% { opacity: 1; }
-}
-.app-shell[data-destination="cake"][data-ambient]:not([data-ambient="off"]):not([data-cake-camera="on"]) .cake-night-light {
-  animation: blue-night 32s -8s ease-in-out infinite;
-}
-.app-shell[data-cake-camera="on"] .cake-night-light { visibility: hidden; }
-@keyframes blue-night {
-  0%,100% { opacity: .21; transform: translate3d(4%,1%,0); }
-  46% { opacity: .88; transform: translate3d(-4%,-3%,0); }
-  72% { opacity: .65; transform: translate3d(-2%,0,0); }
 }
 .grand-candle-flame.flame-0 { --ember-cycle: 2.4s; --ember-phase: -.7s; }
 .grand-candle-flame.flame-1 { --ember-cycle: 3.2s; --ember-phase: -2.1s; }
@@ -139,11 +122,11 @@
   72% { opacity: .53; transform: translate3d(-3%,2%,0); }
 }
 
-.app-shell[data-ambient="paused"] :is(.home-sky-light,.home-sunset,.living-star,.winter-about-card-image,.cake-night-light,.letter-paper-light),
+.app-shell[data-ambient="paused"] :is(.home-sky-light,.home-sunset,.living-star,.winter-about-card-image,.letter-paper-light),
 #winter-cosmos-dialog[data-ambient="paused"] .photo-memory-frame,
 [data-ambient="paused"] .winter-about-entry::before { animation-play-state: paused !important; }
 [data-ambient="limited"] .living-star:nth-child(even) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  .app-shell[data-entrance] :is(.winter-about-card-image,.winter-about-context,.journey-heading h2,.journey-photographs,.grand-cake-tableau,.grand-cake-intro,.afterword-heading,.afterword-line,.gwen-afterword-ink,.letter-page-header h2,.letter-lake),
+  .app-shell[data-entrance] :is(.winter-about-card-image,.winter-about-context,.journey-heading h2,.journey-photographs,.grand-scene-plane,.grand-cake-intro,.afterword-heading,.afterword-line,.gwen-afterword-ink,.letter-page-header h2,.letter-lake),
   #winter-cosmos-dialog[data-entrance] #cosmos-gallery .photo-memory { animation: none !important; }
 }

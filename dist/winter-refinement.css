@@ -1,22 +1,22 @@
 /* WINTER design refinement: real scenery, restrained serif typography and gentle interaction. */
-/* Camera foreground: native-resolution cake, Blender slate and silver lighter. */
-.winter-cake-live{position:absolute;inset:0;z-index:0;overflow:hidden;background:#091820;opacity:0;transition:opacity 850ms ease;pointer-events:none}
-.winter-cake-live video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:brightness(.89) saturate(.96)}
-.winter-cake-live::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#071c2c66,transparent 28%,transparent 65%,#071b2c66)}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .winter-cake-live{opacity:1}
-.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-cutout='ready'] :is(.cake-backdrop,.grand-cake-photograph){opacity:0}
-.grand-cake-cutout{position:absolute;inset:0;z-index:2;width:100%;height:100%;display:block;opacity:0;transition:opacity 850ms ease;pointer-events:none}
-.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-cutout='ready'] .grand-cake-cutout{opacity:1}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay{z-index:3}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .candles-wide{transform:translateX(22%)}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .candles-tall{transform:translateX(21%)}
-.grand-cake-photograph{transition:opacity 850ms ease}
-.grand-candles-overlay{transition:transform 850ms ease}
-.cake-page .grand-cake-tableau{z-index:1}.cake-page .cake-thanks{z-index:4}
-.cake-page[data-cake-state='unlit'] .grand-lighter{opacity:0;pointer-events:none;touch-action:pan-y;transition:opacity 400ms ease}
-.app-shell[data-cake-camera='on'] .cake-page[data-cake-state='unlit'] .grand-lighter{opacity:1;z-index:6;cursor:default}
-.app-shell[data-destination='cake'] .candle-ignition-target{pointer-events:none;opacity:0}
-.app-shell[data-destination='cake'] .lighter-instructions{display:none}
+/* The optional live preview has its own fixed footprint above the gesture controls. */
+.winter-cake-live {
+ position:absolute;
+ z-index:5;
+ left:var(--gallery-edge,4%);
+ bottom:calc(clamp(35px,7.8%,92px) + 46px);
+ width:clamp(98px,13vw,175px);
+ aspect-ratio:4 / 3;
+ overflow:hidden;
+ border:3px solid #e9e3d6;
+ border-radius:2px;
+ background:#091820;
+ box-shadow:0 12px 28px #060a0d6b;
+ opacity:0;
+ pointer-events:none;
+}
+.winter-cake-live video { display:block; width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+.cake-page[data-cake-state='unlit'] .winter-cake-live[data-visible='true'] { opacity:1; }
 .winter-cake-camera-enable{position:absolute;z-index:8;top:clamp(104px,12%,132px);right:clamp(15px,4vw,52px);max-width:245px;min-height:44px;padding:10px 16px;border:1px solid #faf5e8a0;border-radius:28px;background:#112536b8;color:#f4eee5;font:400 11px/1.6 var(--cn-serif);letter-spacing:.2px;backdrop-filter:blur(10px);cursor:pointer}
 .winter-cake-camera-enable:active{scale:.98}.winter-cake-camera-enable span{margin-left:8px}
 .app-shell[data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable,
@@ -112,6 +112,7 @@
 .gesture-panel .gesture-instructions,.gesture-panel .gesture-privacy{display:none!important}
 .gesture-panel{padding:12px!important;max-width:min(275px,calc(100vw - 24px))!important}
 .gesture-panel .gesture-mode-row{margin:9px 0 4px}
+.gesture-dock[data-cake-locked='true'] #winter-gesture-video { display:none; }
 .gesture-dock[data-cake-locked='true'] #winter-touch-mode{opacity:.35;pointer-events:none}
 .gesture-panel-head{letter-spacing:.06em}
 #main[data-destination='cake'] .winter-gesture-status{font-size:10px}

@@ -5,13 +5,15 @@ if(!dock)return;
 const $=id=>document.getElementById(id);
 const panel=$('winter-gesture-panel'),toggle=$('winter-gesture-toggle');
 const touchButton=$('winter-touch-mode'),airButton=$('winter-air-mode');
-const cameraTools=$('winter-gesture-camera-tools'),video=$('winter-gesture-video');
+const cameraTools=$('winter-gesture-camera-tools'),gestureVideo=$('winter-gesture-video');
+const cakeVideo=$('winter-cake-video');
 const startButton=$('winter-gesture-start'),stopButton=$('winter-gesture-stop');
 const status=$('winter-gesture-status'),instructions=$('winter-gesture-instructions');
 const cursor=$('winter-gesture-cursor');
 const cosmos=$('winter-cosmos-dialog'),phone=$('winter-phone-dialog'),finale=$('birthday-finale');
 const lightbox=$('cosmos-photo-lightbox'),photo=$('cosmos-lightbox-photo');
 const portrait=$('portrait-lightbox');
+let video=gestureVideo;
 let mode='touch',stream=null,detector=null,frame=0,loaded=null,lastVideoTime=-1,lastDetect=0;
 let pinchWas=false,stablePose='',poseFrames=0,poseFired=false,lastAction=0,lastSwipe=0,swipeStart=null;
 let galleryIndex=0,zoom=1,pinchBase=null,gestureBusy=false,cameraRequest=0;
@@ -47,7 +49,7 @@ function selectMode(next){
  cameraTools.hidden=next!=='camera';
  instructions.textContent='';
  if(next==='touch'){
-  // Keep the live camera as the background after candle ignition.
+  // Keep the optional preview until the candles are blown out.
   if(shell?.dataset.destination==='cake' && shell.dataset.cakeTouchUnlocked==='true' && stream){if(frame){cancelAnimationFrame(frame);frame=0;}cursor.hidden=true;}
   else stopCamera();
  }
@@ -87,13 +89,24 @@ function stopCamera(message){
 }
 async function startCamera(){
  if(gestureBusy||mode!=='camera')return;
+ const cake = shell?.dataset.destination === 'cake';
+ if (cake && $('cake-page').dataset.sceneReady !== 'true') {
+  tell('请等蛋糕场景载入完成，再开启摄像头。');
+  return;
+ }
  const request=++cameraRequest;
  gestureBusy=true;startButton.disabled=true;
  tell('正在请求摄像头权限…');
  try{
   if(!window.isSecureContext || !navigator.mediaDevices?.getUserMedia)throw new Error('请在 HTTPS 页面及受支持的浏览器中开启摄像头');
   const feed=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480},frameRate:{ideal:20,max:30}},audio:false});
-  if(request!==cameraRequest||mode!=='camera'){feed.getTracks().forEach(t=>t.stop());return}
+  if (request !== cameraRequest || mode !== 'camera' || (cake && shell.dataset.destination !== 'cake')) {
+   feed.getTracks().forEach(track => track.stop());
+   return;
+  }
+  // The cake video stays rendered even when its preview is concealed.
+  // WebKit can hold playback indefinitely inside a closed gesture panel.
+  video = cake ? cakeVideo : gestureVideo;
   stream=feed;video.srcObject=stream;await video.play();
   if(request!==cameraRequest)return;
   if(shell?.dataset.destination==='cake')shell.dataset.cakeHandReady='false';

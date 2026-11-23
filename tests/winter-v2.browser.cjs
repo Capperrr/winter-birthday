@@ -25,8 +25,8 @@ fs.mkdirSync(out,{recursive:true});
  p.on('response',r=>{if(r.status()>=400&&r.url().startsWith(base)){assetErrors.push(r.url());console.log('HTTP',r.status(),r.url());}});
  let shots = 0;
  async function shot(key,extra='') {
-  const projection=['unlock','cake','universe'].includes(key);
-  await p.locator('#main[data-film-ready="'+key+'"][data-film-mode="'+(projection?'projection':'plaster')+'"]').waitFor({state:'attached'});
+  const projection=['unlock','universe'].includes(key);
+  await p.locator('#main[data-film-ready="'+key+'"][data-film-mode="'+(projection||key==='cake'?'projection':'plaster')+'"]').waitFor({state:'attached'});
   if (projection) {
     const frame=p.locator('.film-shot[data-shot="'+key+'"][data-exposure="in"]');
     await frame.waitFor({state:'attached'});
@@ -106,8 +106,13 @@ fs.mkdirSync(out,{recursive:true});
  console.log('ENVELOPE stable centre',JSON.stringify(envelope));
  await go('cake');await shot('cake');
  assert.equal(await p.locator('.grand-candle-flame.candle-is-lit').count(),0);
- assert.equal(await p.locator('.film-cake-assembly[data-exposure="in"] img').count(),2);
- assert.equal(await p.locator('.grand-cake-photograph').evaluate(el=>getComputedStyle(el).opacity),'0');
+ await p.locator('#cake-page[data-scene-ready="true"]').waitFor();
+ assert.equal(await p.locator('#cake-art-slot > image[href]').count(),2);
+ assert.equal(await p.locator('.film-shot[data-shot="cake"]').count(),0);
+ const visibleWicks = await p.locator('#cake-art-slot .grand-candle-wick').evaluateAll(
+   wicks => wicks.filter(wick => wick.getBoundingClientRect().height > 0).length
+ );
+ assert.equal(visibleWicks, 5);
  await go('letter');await shot('letter');await tap('#country-china');await tap('#memory-china');
  assert.match(await p.locator('#china-note-counter').textContent(),/2 \/ 3/);
  await tap('#open-journey');await shot('journey');

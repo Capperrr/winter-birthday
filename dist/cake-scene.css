@@ -5,19 +5,20 @@
 .app-shell[data-destination='cake'] .destination-panel { position:static; display:block; animation:none; }
 .app-shell[data-destination='cake'] .brand { color:#d3dbe0; }
 .app-shell[data-destination='cake'] .motion-toggle { border-color:#c6d5df29; background:#1025354d; color:#d3dbe0; }
-.cake-backdrop img { object-position:50% 14%; }
-.cake-backdrop::after { background:linear-gradient(#0313231f,transparent 28%,#0312210d); }
-.app-shell[data-scene-fit='contain'] .cake-backdrop img { object-fit:contain; object-position:50% 0; }
 .cake-page { position:absolute; z-index:1; inset:0; isolation:isolate; width:100%; height:100%; overflow:hidden; color:#e8e6d9; }
-.cake-page::before, .cake-page::after { content:''; position:absolute; z-index:1; pointer-events:none; opacity:0; }
-.cake-page::before { inset:0 0 54%; background:url('assets/living-clouds.webp') center 34% / 90% auto no-repeat; mix-blend-mode:screen; }
-.cake-page::after { inset:43% 14% 27%; background:linear-gradient(110deg,transparent 30%,#96b3c631 49%,transparent 72%); mix-blend-mode:screen; }
-.grand-cake-tableau { position:absolute; inset:0; z-index:0; transition:opacity 1000ms ease; }
-.grand-scene-plane { position:absolute; left:0; top:0; width:100%; height:100%; }
-.grand-cake-photograph, .grand-candles-overlay { position:absolute; inset:0; display:block; width:100%; height:100%; }
-.grand-cake-photograph img { display:block; width:100%; height:100%; }
-.grand-candles-overlay { pointer-events:none; }
-.candles-tall { display:none; }
+.grand-cake-tableau { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.cake-page:not([data-scene-ready='true']) .grand-cake-tableau { visibility:hidden; }
+.cake-setting { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:54% 54%; }
+.grand-cake-tableau::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,#061724a0,transparent 46%),linear-gradient(0deg,#06131c77,transparent 65%);
+}
+.grand-scene-plane { position:absolute; z-index:2; overflow:visible; transition:opacity 1000ms ease; }
+.grand-scene-plane[data-aspect='wide'] .candles-tall,
+.grand-scene-plane[data-aspect='portrait'] .candles-wide { display:none; }
 .grand-cake-intro { position:absolute; z-index:3; top:31%; left:6.5%; width:24%; max-width:430px; text-align:left; pointer-events:none; transition:opacity 650ms ease,translate 650ms ease; }
 .grand-cake-intro > p { margin:0 0 19px; color:#b9c6d0; font-size:7px; font-weight:400; letter-spacing:2.7px; line-height:1.8; }
 .grand-cake-intro h2 { margin:0; color:#f0e9d9; font:400 clamp(34px,3.35vw,65px)/1.08 var(--serif); letter-spacing:-.7px; }
@@ -28,23 +29,12 @@
 .flame-1 { animation-delay:-510ms !important; }.flame-2 { animation-delay:-1190ms !important; }.flame-3 { animation-delay:-270ms !important; }.flame-4 { animation-delay:-1580ms !important; }
 .grand-candle-warmth { transition:opacity 1200ms ease; }
 .cake-page:is([data-cake-state='lighting'],[data-cake-state='lit'],[data-cake-state='waiting']) .grand-candle-warmth { opacity:.58; }
-.grand-lighter { position:absolute; z-index:4; left:70%; top:82%; display:block; width:clamp(78px,6.2vw,108px); height:auto; aspect-ratio:1065/1477; padding:0; border:0; border-radius:8px; background:transparent; color:#d9e0e0; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:grab; translate:calc(-50% + var(--lighter-dx,0px)) calc(-100% + var(--lighter-dy,0px)); rotate:-4deg; transition:rotate 220ms ease; }
-.lighter-art { display:block; width:100%; height:100%; overflow:visible; }
-.lighter-own-flame { opacity:0; transform-box:view-box; transform-origin:681px 424px; transition:opacity 150ms ease; }
+.lighter-own-flame { opacity:0; transform-box:view-box; transition:opacity 150ms ease; }
 .lighter-contact { transition:opacity 180ms ease; }
-.cake-page[data-lighter='held'] .grand-lighter, .cake-page[data-lighter='dragging'] .grand-lighter { cursor:grabbing; rotate:-4deg; }
-.cake-page:is([data-lighter='held'],[data-lighter='dragging'],[data-cake-state='lighting']) .lighter-own-flame { opacity:1; }
-.cake-page:is([data-lighter='held'],[data-lighter='dragging']) .lighter-contact { opacity:0; }
-.cake-page[data-lighter='returning'] .grand-lighter { transition:translate 340ms cubic-bezier(.22,.72,.22,1); }
-.app-shell[data-motion='on'] .cake-page:is([data-lighter='held'],[data-lighter='dragging']) .lighter-own-flame { animation:lighter-flutter 1600ms ease-in-out infinite; }
-.candle-ignition-target { position:absolute; z-index:4; padding:0; border:1px dashed transparent; border-radius:50%; color:#ddcfaa; background:transparent; opacity:0; pointer-events:none; }
-.cake-page:is([data-lighter='held'],[data-lighter='dragging']) .candle-ignition-target { opacity:.55; border-color:#e7d9ba65; pointer-events:auto; }
-.cake-page[data-near-candles='true'] .candle-ignition-target { opacity:.85; border-color:#f1d9a8a6; }
-.candle-ignition-target:focus-visible { opacity:1; outline:1px solid #ead2a8; outline-offset:4px; }
-.lighter-instructions { position:absolute; z-index:3; left:66%; top:85.5%; width:25%; margin:0; color:#e3e3d8; text-align:left; font-size:clamp(9px,.8vw,12px); letter-spacing:.8px; line-height:1.7; transition:opacity 350ms ease; }
-.lighter-instructions > small { display:block; margin-top:5px; color:#afbfc7; font-size:8px; letter-spacing:.4px; }
-.cake-page:is([data-cake-state='lighting'],[data-cake-state='lit'],[data-cake-state='waiting']) .lighter-instructions { opacity:0; pointer-events:none; }
-.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) :is(.grand-cake-tableau,.grand-cake-intro,.lighter-instructions) { opacity:0; pointer-events:none; }
+.cake-page:is([data-lighter='dragging'],[data-cake-state='lighting']) .lighter-own-flame { opacity:1; }
+.cake-page[data-lighter='dragging'] .lighter-contact { opacity:0; }
+.app-shell[data-motion='on'] .cake-page[data-lighter='dragging'] .lighter-own-flame { animation:lighter-flutter 1600ms ease-in-out infinite; }
+.cake-page:is([data-cake-state='thanks'],[data-cake-state='fireworks'],[data-cake-state='finished']) :is(.grand-scene-plane,.grand-cake-intro) { opacity:0; }
 .cake-page[data-cake-state='thanks'] .grand-candle-smoke { animation:grand-candle-smoke 1200ms ease-out backwards; }
 .cake-thanks { position:absolute; z-index:4; inset:8% 0 4%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:25px; padding:50px 35px 65px; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 700ms ease,visibility 700ms; }
 .cake-thanks-overline { margin:0; color:#b4c4ce; font-size:7px; letter-spacing:3px; }
@@ -64,10 +54,8 @@
 .grand-blow-dialog button { min-height:44px; margin-top:25px; padding:11px 25px; border:1px solid #6e8581; border-radius:26px; color:#f1eddf; background:#637e78; font-size:12px; letter-spacing:1px; }
 .grand-blow-dialog button:hover { background:#526e68; }
 .cake-page[data-reduced='true']:is([data-cake-state='fireworks'],[data-cake-state='finished']) .cake-thanks { opacity:1; visibility:visible; }
-.app-shell[data-motion-paused='true'] :is(.grand-candle-flame,.lighter-own-flame), .app-shell[data-motion-paused='true'] .cake-page::before, .app-shell[data-motion-paused='true'] .cake-page::after { animation-play-state:paused !important; }
+.app-shell[data-motion-paused='true'] :is(.grand-candle-flame,.lighter-own-flame) { animation-play-state:paused !important; }
 .app-shell[data-motion='off'] :is(.grand-candle-flame,.lighter-own-flame) { animation:none !important; }
-@keyframes night-cloud-drift { from { translate:-11px 0; } to { translate:13px 3px; } }
-@keyframes lake-light-breathe { 0%,100% { opacity:.025; } 50% { opacity:.07; } }
 @keyframes grand-flame-sway { 0%,100% { transform:rotate(-2deg) scale(.98,1); } 50% { transform:rotate(2.5deg) scale(1.03,.97); } }
 @keyframes lighter-flutter { 0%,100% { scale:.98 1; } 50% { scale:1.025 .96; } }
 @keyframes grand-candle-smoke { 0% { opacity:.35; translate:0 0; } 100% { opacity:0; translate:4px -16px; } }
@@ -76,23 +64,18 @@
 @media (max-width:760px), (max-aspect-ratio:4/5) {
   .app-shell[data-destination='cake'] { min-height:650px; }
   .app-shell[data-destination='cake'] .site-header { row-gap:13px; padding-block:17px 12px; }
-  .cake-backdrop img { object-position:50% 50%; }
-  .candles-wide { display:none; }.candles-tall { display:block; }
   .grand-cake-intro { top:21.5%; left:5%; width:90%; max-width:none; text-align:center; }
   .grand-cake-intro > p { margin-bottom:10px; font-size:6px; letter-spacing:2.2px; }
   .grand-cake-intro h2 { font-size:clamp(28px,8.2vw,38px); letter-spacing:-.35px; }
-  .grand-lighter { width:76px; }
-  .lighter-instructions { top:auto; bottom:3.2%; left:5%; width:90%; text-align:center; font-size:10px; letter-spacing:.4px; }
-  .lighter-instructions > small { margin-top:3px; font-size:7px; }
   .cake-thanks { inset:12% 0 5%; gap:19px; padding:50px 24px 60px; }
   .cake-thanks-overline { font-size:6px; letter-spacing:1.6px; text-align:center; }
   .cake-thanks-lines p { font-size:clamp(22px,5.7vw,28px); margin-bottom:16px; line-height:1.35; }
   .cake-continue { bottom:6%; gap:16px; font-size:9px; padding-inline:17px; }
   .grand-blow-dialog { padding:26px 25px; }.grand-blow-dialog h2 { font-size:19px; }
 }
-@media (max-width:350px) { .grand-lighter { width:66px; }.grand-cake-intro h2 { font-size:28px; } }
-@media (max-height:650px) and (min-width:761px) { .grand-cake-intro { top:32%; }.grand-cake-intro h2 { font-size:38px; }.grand-lighter { width:74px; }.lighter-instructions { top:86%; font-size:9px; }.cake-thanks-lines p { font-size:25px; margin-bottom:11px; }.cake-thanks { gap:16px; padding-bottom:45px; } }
-@media (prefers-reduced-motion:reduce) { .cake-page *, .cake-page::before, .cake-page::after { animation:none !important; transition:none !important; } }
+@media (max-width:350px) { .grand-cake-intro h2 { font-size:28px; } }
+@media (max-height:650px) and (min-width:761px) { .grand-cake-intro { top:32%; }.grand-cake-intro h2 { font-size:38px; }.cake-thanks-lines p { font-size:25px; margin-bottom:11px; }.cake-thanks { gap:16px; padding-bottom:45px; } }
+@media (prefers-reduced-motion:reduce) { .cake-page * { animation:none !important; transition:none !important; } }
 
 /* Parallel, balanced twenty / fifth typography */
 .grand-cake-intro h2{display:flex;flex-direction:column;align-items:flex-start;gap:0;line-height:.91!important;letter-spacing:-.8px}
