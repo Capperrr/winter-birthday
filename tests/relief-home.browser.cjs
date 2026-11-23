@@ -340,6 +340,28 @@ async function fallback(browser, flag, expected) {
     assert.equal(await page.locator('.relief-fallback-status').isVisible(),flag!=='save'&&flag!=='photo');
     await page.locator('.relief-next').click();
     await page.waitForFunction(()=>document.getElementById('panel-home').scrollTop>40);
+    if(flag==='context'){
+      const home=page.locator('#panel-home');
+      const gallery=page.locator('.relief-window');
+      const pose=async delta=>{
+        await home.evaluate(async (el,offset)=>{
+          el.scrollTo({top:el.scrollTop+el.querySelector('#relief-landscapes').getBoundingClientRect().top+offset,
+            behavior:'instant'});
+          await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        },delta);
+        return gallery.evaluate(el=>({width:el.getBoundingClientRect().width,
+          travel:parseFloat(getComputedStyle(el).getPropertyValue('--landscape-travel'))||0}));
+      };
+      const approaching=await pose(-300);
+      const centered=await pose(0);
+      assert.ok(centered.travel-approaching.travel>29,'The photographic window has its own scroll position without WebGL');
+      assert.ok(centered.width-approaching.width>4,'A flat plaster wall still allows a small photo depth change');
+      await page.emulateMedia({reducedMotion:'reduce'});
+      await page.waitForFunction(()=>!document.querySelector('#relief-rail').style.getPropertyValue('--landscape-travel'));
+      const quiet=await pose(-300);
+      assert.equal(quiet.travel,0,'Reduced motion keeps the window in its natural flow');
+      assert.equal(quiet.width,(await pose(0)).width);
+    }
     if(flag==='photo'){
       const bay=page.locator('[data-photo="bay"]');
       assert.equal(await bay.isDisabled(),true);
@@ -359,6 +381,7 @@ async function fallback(browser, flag, expected) {
     if(wpe){
       await run(browser,'ipad-landscape',{width:1376,height:1032},true);
       await run(browser,'ipad-portrait',{width:1032,height:1376},true);
+      await fallback(browser,'context',/无法创建 WebGL 2 context/);
     }else{
       await run(browser,'desktop',{width:1280,height:900},false);
       await run(browser,'touch-scroll',{width:1080,height:810},true);

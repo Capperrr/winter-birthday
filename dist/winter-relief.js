@@ -1,4 +1,4 @@
-import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-tide';
+import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow';
 
 (() => {
   'use strict';
@@ -28,7 +28,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-tide
   const fallbackStatus=document.createElement('p');
   fallbackStatus.className='relief-fallback-status';
   fallbackStatus.setAttribute('role','status');
-  fallbackStatus.textContent='3D 浮雕暂时无法启动。已显示静态页面，运行详情见 ?debug=relief。';
+  fallbackStatus.textContent='3D 浮雕暂时无法启动，现使用静态墙面。运行详情见 ?debug=relief。';
   fallbackStatus.hidden=true;
   scroller.append(fallbackStatus);
   const diagnostic=debug?document.createElement('pre'):null;
@@ -115,6 +115,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-tide
     if(!failure)Object.assign(resources,{webgl:'未启动',device:'—',model:'未请求',textures:'未建立'});
     setStatus('still',why);
     if(wasLive&&active)scroller.scrollTop=previousProgress*scrollRange();
+    if(active)scroll();
   }
   function fail(message){
     failure=message;
@@ -147,6 +148,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-tide
     if(event?.type==='scroll'&&next!==goal)lastInput=seconds;
     goal=next;
     if(wall&&rail.dataset.sculpture==='live')updateChapters(goal);
+    else if(!wallStudy)exhibits.projectFlow(scroller.clientHeight);
     if(!wall)diagnose();
     wake();
   }

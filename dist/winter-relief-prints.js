@@ -4,9 +4,12 @@ const smooth = (from, to, value) => {
   return t * t * (3 - 2 * t);
 };
 const slop = 8;
+const scrollProperties = ['landscape-travel','landscape-depth','moment-travel','couple-depth','sand-travel','sand-depth'];
 
 export function setupReliefPrints(rail, {reducedMotion, onInput}) {
   const gallery = rail.querySelector('.relief-window');
+  const landscapePanel = gallery.closest('.relief-panel');
+  const momentPanel = rail.querySelector('.relief-moment');
   const landscape = [...gallery.querySelectorAll('.relief-print')];
   const controls = [...rail.querySelectorAll('[data-print-step]')];
   const surfaces = new Map([...rail.querySelectorAll('[data-print-surface]')]
@@ -178,6 +181,15 @@ export function setupReliefPrints(rail, {reducedMotion, onInput}) {
     selectPrint(active + (event.key === 'ArrowLeft' ? -1 : 1));
   });
 
+  function clearScrollPose() {
+    for (const name of scrollProperties) rail.style.removeProperty(`--${name}`);
+  }
+
+  function panelOffset(panel, height) {
+    const rect = panel.getBoundingClientRect();
+    return clamp((height - rect.top) / (height + rect.height)) - .5;
+  }
+
   setMix(0);
   return {
     permitsClick(event, print) {
@@ -195,9 +207,19 @@ export function setupReliefPrints(rail, {reducedMotion, onInput}) {
       selected = null;
       chapter = -1;
       setMix(0);
-      for (const key of ['landscape-travel','landscape-depth','moment-travel','couple-depth','sand-travel','sand-depth']) {
-        rail.style.removeProperty(`--${key}`);
-      }
+      clearScrollPose();
+    },
+    projectFlow(height) {
+      if (!height || reducedMotion()) { clearScrollPose(); return; }
+      const landscape = panelOffset(landscapePanel, height);
+      const moment = panelOffset(momentPanel, height);
+      // The panels already move with the document. Offset part of that travel on the prints.
+      rail.style.setProperty('--landscape-travel', `${(.28 * landscape * height).toFixed(2)}px`);
+      rail.style.setProperty('--landscape-depth', (1.012 - .093 * Math.abs(landscape)).toFixed(4));
+      rail.style.setProperty('--moment-travel', `${(.22 * moment * height).toFixed(2)}px`);
+      rail.style.setProperty('--couple-depth', (1.004 - .062 * Math.abs(moment)).toFixed(4));
+      rail.style.setProperty('--sand-travel', `${(.07 * moment * height).toFixed(2)}px`);
+      rail.style.setProperty('--sand-depth', (1 - .08 * Math.abs(moment)).toFixed(4));
     },
     project(p, nextChapter, height) {
       if (chapter === 1 && nextChapter !== 1) {
