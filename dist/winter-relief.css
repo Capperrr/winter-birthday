@@ -44,8 +44,9 @@
   height: 100%;
 }
 .relief-stage img { object-fit: cover; object-position: 50% 49%; }
-.relief-stage canvas { opacity: 0; transition: opacity .52s ease; }
-.relief-rail[data-sculpture="live"] canvas { opacity: 1; }
+.relief-stage canvas { visibility: hidden; }
+.relief-rail[data-sculpture="live"] .relief-stage canvas { visibility: visible; }
+.relief-rail[data-sculpture="live"] .relief-stage picture { visibility: hidden; }
 .relief-panel {
   min-height: var(--relief-height);
   display: grid;
@@ -69,7 +70,6 @@
   text-align: center;
   position: relative;
   color: var(--relief-ink);
-  transform: translateY(calc(var(--relief-cover-offset,0) * 1px));
 }
 .relief-masthead {
   margin: 0 0 clamp(15px,3.6vh,37px);
@@ -116,6 +116,7 @@
   filter: drop-shadow(-1px 1px 0 #e8e1d0) drop-shadow(3px 9px 6px #61574855);
 }
 .relief-title[data-raised="true"] .relief-lettering { opacity: 1; }
+.relief-rail[data-sculpture="live"] .relief-title > :is(span,img) { opacity: 0; }
 .relief-subtitle {
   margin: clamp(4px,1vh,16px) 0 0;
   color: #514b40;
@@ -166,7 +167,6 @@
   border: 1px solid #cbc6b9;
   background: #e7e2d5;
   box-shadow: 0 2px 0 #faf8f0,0 -1px 0 #989182,3px 14px 30px #463b2a36;
-  transform: translateY(calc(var(--print-offset,0) * 1px));
 }
 .relief-print img {
   display: block;
@@ -187,16 +187,48 @@
   color: #3c3930;
   text-align: center;
 }
-.relief-print-sea { grid-area: sea; --print-offset: var(--relief-sea-offset,0); }
-.relief-print-sunset { grid-area: sunset; align-self: end; margin-bottom: -34px; --print-offset: var(--relief-sunset-offset,0); }
+.relief-print-sea { grid-area: sea; }
+.relief-print-sunset { grid-area: sunset; align-self: end; margin-bottom: -34px; }
 .relief-print-sunset img { max-height: min(48svh,470px); }
 .relief-to-dedication { grid-area: next; align-self: start; }
+
+/* Accessible links follow the projected photographs in the live wall. */
+.relief-rail[data-sculpture="live"] .relief-prints { overflow: clip; }
+.relief-rail[data-sculpture="live"] .relief-exhibition {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(20px,4vh,44px);
+}
+.relief-rail[data-sculpture="live"] .relief-exhibition h2 { align-self: flex-start; }
+.relief-rail[data-sculpture="live"] .relief-print {
+  position: absolute;
+  grid-area: auto;
+  left: var(--print-left);
+  top: var(--print-top);
+  width: var(--print-width);
+  height: var(--print-height);
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.relief-rail[data-sculpture="live"] .relief-print:not([data-projected="true"]) { visibility: hidden; }
+.relief-rail[data-sculpture="live"] .relief-print img { opacity: 0; }
+.relief-rail[data-sculpture="live"] .relief-print > span {
+  inset: auto 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+}
 .relief-dedication-content {
   width: min(710px,100%);
   margin: auto;
   padding: 16px 0;
   text-align: center;
-  transform: translateY(calc(var(--relief-poem-offset,0) * 1px));
 }
 .relief-dedication h2 {
   margin: 0;
@@ -278,6 +310,37 @@
 .app-shell[data-view="scenery"] .relief-panel .scene-copy { opacity: 0; }
 .app-shell[data-view="scenery"] .relief-print { pointer-events: none; }
 
+.relief-diagnostics {
+  position: fixed;
+  z-index: 12;
+  top: calc(var(--gallery-header) + 10px);
+  right: max(10px,env(safe-area-inset-right));
+  width: min(380px,calc(100vw - 20px));
+  max-height: 41svh;
+  overflow: auto;
+  margin: 0;
+  padding: 10px 12px;
+  background: #242320f2;
+  color: #f5f2eb;
+  border: 1px solid #f5efe84d;
+  pointer-events: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 12px/1.5 ui-monospace, monospace;
+}
+.relief-fallback-status {
+  position: fixed;
+  z-index: 5;
+  right: var(--gallery-edge);
+  bottom: calc(max(9px,env(safe-area-inset-bottom)) + 52px);
+  max-width: min(340px,calc(100vw - 32px));
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--relief-rule);
+  background: #f5f2e9;
+  color: var(--relief-ink);
+  font: .78rem/1.5 var(--sans);
+}
 @media (max-width: 700px), (orientation: portrait) {
   .relief-cover-content { width: min(790px,100%); }
   .relief-exhibition {
@@ -292,6 +355,17 @@
   .relief-print-sunset { margin-bottom: -21px; }
   .relief-print-sunset img { max-height: 35svh; }
   .relief-to-dedication { justify-self: center; margin-top: 19px; }
+  .relief-rail[data-sculpture="live"] .relief-prints { align-items: start; }
+  .relief-rail[data-sculpture="live"] .relief-exhibition { padding-top: calc(var(--relief-height) * .085); }
+  .relief-rail[data-sculpture="live"] .relief-exhibition h2 { align-self: center; }
+  .relief-rail[data-sculpture="live"] .relief-to-dedication {
+    position: absolute;
+    grid-area: auto;
+    bottom: 11%;
+    left: 50%;
+    translate: -50% 0;
+    margin: 0;
+  }
 }
 @media (max-width: 520px) {
   .relief-title > span { font-size: clamp(3.8rem,15.4vw,5.8rem); letter-spacing: .035em; }
@@ -303,8 +377,7 @@
   .relief-panel { min-height: max(390px,var(--relief-height)); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .relief-stage canvas, .relief-panel * { transition: none; }
-  :is(.relief-cover-content,.relief-print,.relief-dedication-content) { transform: none; }
+  .relief-panel * { transition: none; }
 }
 
 /* The birthday story hangs from the same plaster wall. */

@@ -3,7 +3,7 @@
 python tools/winter-v2/letter-solid.py cormorant-static.ttf letters.json
 blender -b -t 6 -P tools/winter-v2/render-plaster.py -- letters.json output-directory
 Produces lit plaster plus registered height passes for the browser, and
-transparent raised typography. No reference video frames are used as textures.
+transparent raised typography. Add the wall argument to export the connected glTF relief.
 """
 import json
 import math
@@ -16,6 +16,7 @@ from mathutils import Vector
 arguments = sys.argv[sys.argv.index("--") + 1:]
 LETTERS, OUT = [Path(arg) for arg in arguments[:2]]
 chosen = set(arguments[2:] or ("cover","prints","dedication","winter-lettering"))
+export_wall = "wall" in chosen
 OUT.mkdir(parents=True, exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
@@ -88,8 +89,8 @@ def trace(name, points, width, taper=0.87):
     data = bpy.data.curves.new(name,"CURVE")
     data.dimensions = "3D"
     data.bevel_depth = width
-    data.bevel_resolution = 3
-    data.resolution_u = 12
+    data.bevel_resolution = 1 if export_wall else 3
+    data.resolution_u = 5 if export_wall else 12
     spline = data.splines.new("BEZIER")
     spline.bezier_points.add(len(points)-1)
     for i, (p, co) in enumerate(zip(spline.bezier_points,points)):
@@ -113,7 +114,7 @@ def blade(root, angle, length, width, bend=.26, petal=False, skew=0, veins=False
         folds = math.cos(u*(9 if petal else 5)+t*2.1)*.073*bend*taper
         z = swell+(rim if petal else -rim)+folds+t*.12*bend
         return base+forward*(length*t)+across*(offset+skew*t*t)+Vector((0,0,z))
-    rows,cols = 22,12
+    rows,cols = (13,7) if export_wall else (22,12)
     vertices = [surface(i/rows,(j/cols)*2-1) for i in range(rows+1) for j in range(cols+1)]
     faces = [(i*(cols+1)+j,(i+1)*(cols+1)+j,(i+1)*(cols+1)+j+1,i*(cols+1)+j+1)
              for i in range(rows) for j in range(cols)]
@@ -126,9 +127,9 @@ def blade(root, angle, length, width, bend=.26, petal=False, skew=0, veins=False
     for polygon in mesh.polygons:
         polygon.use_smooth = True
     shell = obj.modifiers.new("Rounded stone edge","SOLIDIFY")
-    shell.thickness = .023 if petal else .018
+    shell.thickness = .029 if export_wall and petal else .023 if petal else .018
     if veins:
-        for direction in (-1,1):
+        for direction in (() if export_wall else (-1,1)):
             for t in (.23,.41,.57):
                 points = [surface(t,0),surface(t+.11,direction*.42),surface(t+.19,direction*.83)]
                 trace("Leaf vein",[p+Vector((0,0,.006)) for p in points],width*.037)
@@ -230,6 +231,138 @@ def shot(name,width,height):
     scene.render.filepath=str(OUT/(name+".png"))
     bpy.ops.render.render(write_still=True)
 
+def letter_model():
+    solid = json.loads(LETTERS.read_text())
+    mesh = bpy.data.meshes.new("Cormorant contours")
+    mesh.from_pydata(solid["vertices"], [], solid["faces"])
+    mesh.update()
+    obj = bpy.data.objects.new("Raised WINTER", mesh)
+    scene.collection.objects.link(obj)
+    keep(obj, typeface)
+    bevel = obj.modifiers.new("Rounded plaster edge", "BEVEL")
+    bevel.width = .018
+    bevel.segments = 2 if export_wall else 4
+    bevel.limit_method = "ANGLE"
+    bevel.harden_normals = True
+    return obj
+
+
+def wall_export():
+    """Export the herbarium as beveled surfaces in one wall coordinate system."""
+    panels = []
+
+    def place(name, center, depth, budget, draw):
+        models.clear()
+        draw()
+        bpy.ops.object.select_all(action="DESELECT")
+        for item in models:
+            item.select_set(True)
+        bpy.context.view_layer.objects.active = models[0]
+        bpy.ops.object.convert(target="MESH")
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+        bpy.ops.object.join()
+        item = bpy.context.object
+        item.name = name
+        item.location.x, item.location.y = center
+        item.scale.z = depth
+        # The stems start inside the stone surface so their edges cast contact shadows.
+        item.location.z = -.051 * depth
+        item.data.materials.clear()
+        item.data.calc_loop_triangles()
+        count = len(item.data.loop_triangles)
+        if count > budget:
+            modifier = item.modifiers.new("Realtime tessellation", "DECIMATE")
+            modifier.ratio = budget / count
+            bpy.ops.object.modifier_apply(modifier=modifier.name)
+        panels.append(item)
+        print(name, len(item.data.vertices), flush=True)
+
+    def upper_bough():
+        tip = cluster((-3.25, .95), -.04, 4.55, -.70, 6)
+        cluster((-2.23, 1.02), -.72, 3.8, -.46, 8, True)
+        flower(-.4, .05, 1.16, .21)
+        bud(tip.x, tip.y, .54, -.30)
+        crystal(1.95, -.6, .43, .22)
+
+    def lower_bough():
+        cluster((3.0, -.8), 2.75, 5.75, -.75, 7)
+        cluster((2.03, -.7), 2.25, 4.85, .64, 8, True)
+        flower(.32, .02, 1.13, .42)
+        flower(1.74, -.66, .73, -.48)
+        crystal(-1.5, -1.05, .46, .20)
+
+    def hellebore():
+        cluster((2.45, 1.55), 3.98, 4.85, -.57, 6)
+        cluster((2.12, 1.08), 3.05, 3.40, .52, 8, True)
+        flower(.04, -.10, 1.63, .19)
+        flower(1.49, .73, .79, .51)
+        bud(-1.32, -.38, .53, 3.14)
+        crystal(-2.15, -1.22, .55, .06)
+
+    def portfolio_left():
+        tip = cluster((-2.96, -1.48), .86, 5.84, .50, 7)
+        cluster((-2.28, -1.36), .24, 4.37, -.67, 8, True)
+        flower(-.17, .40, 1.13, .35)
+        bud(tip.x, tip.y, .70, .19)
+        crystal(1.36, 1.11, .32, .24)
+
+    def portfolio_right():
+        cluster((2.45, 1.56), -2.05, 4.67, -.24, 8, True)
+        cluster((2.18, 1.36), -2.60, 4.13, .60, 7)
+        flower(.46, .36, 1.10, .79)
+        crystal(-1.55, -1.23, .72, .05)
+
+    def crossing():
+        tip = cluster((-3.15, -1.55), .43, 7.30, 1.12, 8)
+        cluster((-2.22, -.93), .95, 4.66, 1.03, 9, True)
+        flower(-.24, .24, 1.37, -.30)
+        bud(tip.x, tip.y, .59, .36)
+        crystal(1.36, -.82, .58, .17)
+
+    def lower_garland():
+        cluster((-3.0, -1.03), .48, 6.1, -.99, 8)
+        cluster((-2.30, -.62), .94, 5.0, .66, 8, True)
+        flower(-.51, -.31, 1.30, -.19)
+        flower(1.54, -.83, .7, .54)
+        crystal(3.27, .56, .78, .38)
+
+    def upper_garland():
+        cluster((2.77, 1.1), 3.45, 5.48, 1.29, 7)
+        cluster((2.58, 1.72), 3.65, 3.85, .63, 8, True)
+        flower(.96, .11, .98, .29)
+        crystal(-1.96, -.70, .46, -.22)
+
+    place("Upper bough", (-4.78, 2.68), 1.68, 2300, upper_bough)
+    place("Lower bough", (4.63, -2.51), 2.20, 3050, lower_bough)
+    place("Hellebore", (2.84, -6.66), 2.86, 4100, hellebore)
+    place("Photographic bay left", (-4.69, -10.87), 2.15, 3300, portfolio_left)
+    place("Photographic bay right", (4.98, -14.03), 1.76, 2600, portfolio_right)
+    place("Crossing bough", (-2.68, -18.58), 2.95, 3900, crossing)
+    place("Lower garland", (-3.69, -27.03), 1.99, 3050, lower_garland)
+    place("Upper garland", (4.87, -22.23), 1.76, 2700, upper_garland)
+    models.clear()
+    letters = letter_model()
+    bpy.context.view_layer.objects.active = letters
+    letters.select_set(True)
+    bpy.ops.object.modifier_apply(modifier=letters.modifiers[0].name)
+    letters.data.calc_loop_triangles()
+    reduced = letters.modifiers.new("Realtime lettering", "DECIMATE")
+    reduced.ratio = min(1.0, 4500 / len(letters.data.loop_triangles))
+    bpy.ops.object.modifier_apply(modifier=reduced.name)
+    panels.append(letters)
+    bpy.ops.object.select_all(action="DESELECT")
+    for item in panels:
+        item.select_set(True)
+    bpy.ops.export_scene.gltf(filepath=str(OUT / "winter-herbarium.glb"), export_format="GLB",
+                             use_selection=True, export_yup=False, export_texcoords=False,
+                             export_lights=False, export_cameras=False, export_materials="NONE")
+
+
+if export_wall:
+    wall_export()
+    sys.exit(0)
+
+
 height_mat=bpy.data.materials.new("Height in scene units")
 height_mat.use_nodes=True
 nodes=height_mat.node_tree.nodes
@@ -271,18 +404,7 @@ if "winter-lettering" in chosen:
     scene.render.film_transparent=True
     scene.render.image_settings.color_mode="RGBA"
     scene.cycles.samples=56
-    solid=json.loads(LETTERS.read_text())
-    mesh=bpy.data.meshes.new("Cormorant contours")
-    mesh.from_pydata(solid["vertices"],[],solid["faces"])
-    mesh.update()
-    obj=bpy.data.objects.new("Raised WINTER",mesh)
-    scene.collection.objects.link(obj)
-    keep(obj,typeface)
-    bevel=obj.modifiers.new("Rounded plaster edge","BEVEL")
-    bevel.width=.019
-    bevel.segments=4
-    bevel.limit_method="ANGLE"
-    bevel.harden_normals=True
+    letter_model()
     key.location=(-5.7,4.2,3.18)
     aim(key,(0,0,0))
     key.data.energy=1030
