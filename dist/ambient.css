@@ -1,49 +1,10 @@
 /* Each chapter has a first entrance. Only independent light and print surfaces idle. */
 :root { --entrance-ease: cubic-bezier(.22,.74,.24,1); }
 
-/* Home never animates the poster transform. */
-.app-shell[data-page="home"] .cover-title :is(.intro,.name),
-.app-shell[data-page="home"] .gift-dedication { animation: none; }
-.app-shell[data-entrance="home"] .cover-title .intro { animation: ink-across 1s .12s var(--entrance-ease) both; }
-.app-shell[data-entrance="home"] .living-letter {
-  animation: title-from-baseline .95s calc(.42s + var(--letter-i,0) * .083s) var(--entrance-ease) both;
-}
-.app-shell[data-entrance="home"] .living-poem span { animation: print-from-baseline .76s 1.12s var(--entrance-ease) both; }
-.app-shell[data-entrance="home"] .living-poem span + span { animation-delay: 1.29s; }
-.app-shell[data-entrance="home"] .gift-dedication { animation: print-from-baseline .7s 1.51s var(--entrance-ease) both; }
-@keyframes ink-across {
-  from { clip-path: inset(-34% 102% -45% -12%); opacity: .6; }
-  to { clip-path: inset(-34% -12% -45% -12%); opacity: 1; }
-}
-@keyframes title-from-baseline {
-  from { clip-path: inset(95% -15% -27% -15%); translate: 0 .12em; opacity: .28; }
-  to { clip-path: inset(-31% -15% -27% -15%); translate: 0; opacity: 1; }
-}
 @keyframes print-from-baseline {
   from { translate: 0 6px; clip-path: inset(54% -5% -8%); opacity: .3; }
   to { translate: 0; clip-path: inset(-8% -5% -8%); opacity: 1; }
 }
-[data-page="home"][data-ambient]:not([data-ambient="off"]) .home-sky-light { animation: sky-current 39s -7s ease-in-out infinite; }
-[data-page="home"][data-living-time="morning"][data-ambient]:not([data-ambient="off"]) .home-sunset { animation: sunset-exposure 29s -14s ease-in-out infinite; }
-[data-page="home"][data-living-time="night"][data-ambient]:not([data-ambient="off"]) .living-star {
-  animation: steady-star var(--cycle) var(--phase) ease-in-out infinite;
-}
-@keyframes sky-current {
-  0%,100% { transform: translate3d(-9%,2%,0); opacity: .26; }
-  28% { transform: translate3d(0,-3%,0); opacity: .54; }
-  67% { transform: translate3d(13%,1%,0); opacity: .37; }
-}
-@keyframes sunset-exposure {
-  0%,100% { opacity: .16; transform: scale(.98); }
-  45% { opacity: .56; transform: scale(1.09); }
-  72% { opacity: .32; transform: scale(1.02); }
-}
-@keyframes steady-star {
-  0%,100% { opacity: .38; }
-  38% { opacity: .76; }
-  65% { opacity: .51; }
-}
-
 /* About's camera is the coverflow. The room light and its two neighbouring prints drift separately. */
 .app-shell[data-entrance="about"] .winter-about-context { animation: exhibit-label .87s .23s var(--entrance-ease) both; }
 .app-shell[data-entrance="about"] .winter-about-card-image {
@@ -183,6 +144,6 @@
 [data-ambient="paused"] .winter-about-entry::before { animation-play-state: paused !important; }
 [data-ambient="limited"] .living-star:nth-child(even) { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {
-  .app-shell[data-entrance] :is(.living-letter,.intro,.living-poem span,.gift-dedication,.winter-about-card-image,.winter-about-context,.journey-heading h2,.journey-photographs,.grand-cake-tableau,.grand-cake-intro,.afterword-heading,.afterword-line,.gwen-afterword-ink,.letter-page-header h2,.letter-lake),
+  .app-shell[data-entrance] :is(.winter-about-card-image,.winter-about-context,.journey-heading h2,.journey-photographs,.grand-cake-tableau,.grand-cake-intro,.afterword-heading,.afterword-line,.gwen-afterword-ink,.letter-page-header h2,.letter-lake),
   #winter-cosmos-dialog[data-entrance] #cosmos-gallery .photo-memory { animation: none !important; }
 }

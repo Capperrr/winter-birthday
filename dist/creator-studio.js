@@ -11,7 +11,7 @@
  const eraseButton=$('winter-creator-erase'),clearButton=$('winter-creator-clear');
  const saveButton=$('winter-creator-save'),hello=$('creator-hello');
  const cakeVideo=$('winter-cake-video'),creatorVideo=$('winter-creator-video');
- let color='#ffffff',size=8,eraser=false,drawing=false,last=null,firstDraw=0,helloTimer=0;
+ let color='#232323',size=8,eraser=false,drawing=false,last=null,firstDraw=0,helloTimer=0;
  let fingerPos={Right:null,Left:null},leftPalmStart=0,leftPalmDone=false,handDrawLast=0;
  const colors=[...controls.querySelectorAll('[data-colour]')];
  const toolsToggle=$('creator-tools-toggle'),toolsPanel=$('creator-tools-panel');

@@ -1,8 +1,7 @@
 const {chromium,webkit,devices}=require('playwright');
 const assert=require('node:assert/strict');
-const {createHash}=require('node:crypto');
 const fs=require('node:fs');
-const base=process.env.WINTER_V2_URL||'http://127.0.0.1:4230/';
+const base=process.env.WINTER_V2_URL||'http://127.0.0.1:4261/';
 const out=process.env.WINTER_V2_REVIEW_DIR||'/tmp/winter-v2-review';
 const wpe=process.env.WINTER_ENGINE==='webkit';
 const run=process.env.WINTER_V2_RUN||'wide';
@@ -26,54 +25,59 @@ fs.mkdirSync(out,{recursive:true});
  p.on('response',r=>{if(r.status()>=400&&r.url().startsWith(base)){assetErrors.push(r.url());console.log('HTTP',r.status(),r.url());}});
  let shots = 0;
  async function shot(key,extra='') {
-  const active=p.locator('.film-shot[data-shot="'+key+'"][data-exposure="in"]');
-  await active.waitFor({state:'attached'});
-  await p.waitForFunction(name=>!!document.querySelector('.film-shot[data-exposure="in"][data-shot="'+name+'"] img') &&
-   [...document.querySelectorAll('.film-shot[data-exposure="in"][data-shot="'+name+'"] .film-texture')].every(x=>x.naturalWidth>0),key);
-  const roles=await active.locator('.film-plane').evaluateAll(els=>els.map(x=>x.dataset.role));
-  const fits=await active.evaluate(e=>[...e.querySelectorAll('.film-plane')].every(layer=>
-    layer.getBoundingClientRect().width+1>=e.getBoundingClientRect().width));
-  assert.ok(fits,key+' perspective covers the viewport');
-  for(const role of ['background','midground','foreground','atmosphere'])assert.ok(roles.includes(role),key+': '+role);
+  const projection=['unlock','cake','universe'].includes(key);
+  await p.locator('#main[data-film-ready="'+key+'"][data-film-mode="'+(projection?'projection':'plaster')+'"]').waitFor({state:'attached'});
+  if (projection) {
+    const frame=p.locator('.film-shot[data-shot="'+key+'"][data-exposure="in"]');
+    await frame.waitFor({state:'attached'});
+    const layers=await frame.locator('.film-plane').evaluateAll(elements=>elements.map(el=>[
+      el.dataset.role,el.querySelector('img').naturalWidth
+    ]));
+    for(const role of ['background','midground','foreground','atmosphere']) {
+      assert.ok(layers.some(([layer,width])=>layer===role&&width>0),key+': '+role);
+    }
+  }
   assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),key+' no horizontal overflow');
   await p.waitForTimeout(1050);
   await p.screenshot({path:out+'/'+key+extra+'-'+run+(wpe?'-webkit':'')+'.jpg',quality:89});
-  console.log('SCENE',key,roles.join(' '));shots++;
+  console.log('SCENE',key,projection?'projection':'plaster');shots++;
  }
  async function go(route) {
   await p.goto(base+'#'+route,{waitUntil:'domcontentloaded'});
  }
  const tap=sel=>p.locator(sel).tap();
  await go('home');
+ await p.locator('#relief-title[data-raised="true"]').waitFor();
+ await p.locator('#relief-rail:is([data-sculpture="live"],[data-sculpture="still"])').waitFor({timeout:35000});
+ if(!wpe)assert.equal(await p.locator('#relief-stage canvas').count(),1);
+ console.log('HOME',await p.locator('#relief-rail').getAttribute('data-sculpture'));
  await shot('home');
  await tap('#living-night');
  assert.equal(await p.locator('#main').getAttribute('data-living-time'),'night');
  if(run==='wide')await shot('home','-night');
  await tap('#living-morning');
- const worldState=await p.locator('.home-art').getAttribute('data-film-world');
- console.log('HOME',worldState);
- if (!wpe&&run==='wide'){
-   await p.locator('.home-art[data-film-world="live"] .arch-camera').waitFor({timeout:45000});
-   const cdp=await c.newCDPSession(p);
-   const box=await p.locator('.home-art').boundingBox();
-   const x = Math.floor(box.width*.42), y = Math.floor(box.y+box.height*.35);
-   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y,id:1}]});
-   for (let dx=15;dx<=105;dx+=15)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+dx,y,id:1}]});
-   await p.waitForFunction(()=>parseFloat(document.querySelector('.film-shot[data-shot="home"]').style.getPropertyValue('--camera-x'))>8);
-   await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-   await tap('#film-cross-arch');
-   const phases=[];
-   for (const phase of ['approach','threshold','beyond']){
-     await p.locator('.home-art[data-film-crossing="'+phase+'"] .arch-camera').waitFor({timeout:14000});
-     const frame=await p.screenshot({path:out+'/arch-'+phase+'.jpg',quality:90});
-     phases.push(createHash('sha256').update(frame).digest('hex'));
-   }
-   assert.equal(new Set(phases).size,3,'The visible framebuffer changes while moving through the stone');
-   await p.waitForURL('**/#about');
-   await p.locator('.arch-camera').waitFor({state:'detached',timeout:8000});
-   console.log('ARCH touch input, three visible passage stages, arrival in About, and WebGL release');
- }
- await tap('#tab-about');await shot('about');
+ const aligned=async key=>{
+   await p.waitForFunction(id=>Math.abs(document.getElementById('panel-home').scrollTop-
+     document.getElementById(id).offsetTop)<4,key);
+ };
+ await tap('#relief-enter');
+ await aligned('relief-prints');
+ assert.equal(await p.locator('.relief-print img').count(),2);
+ await tap('.relief-print-sea');
+ await p.locator('#relief-viewer[open]').waitFor();
+ await p.waitForFunction(()=>document.querySelector('#relief-viewer img').naturalWidth===624);
+ await tap('.relief-viewer-close');
+ await p.screenshot({path:out+'/relief-prints-'+run+(wpe?'-webkit':'')+'.jpg',quality:91});
+ await tap('.relief-to-dedication');
+ await aligned('relief-dedication');
+ await p.screenshot({path:out+'/relief-dedication-'+run+(wpe?'-webkit':'')+'.jpg',quality:91});
+ await tap('#view-toggle');
+ assert.equal(await p.locator('#main').getAttribute('data-view'),'scenery');
+ await tap('#view-toggle');
+ await tap('[data-relief-route="about"]');
+ await p.waitForURL('**/#about');
+ await p.locator('#relief-stage canvas').waitFor({state:'detached'});
+ await shot('about');
  assert.equal(await p.locator('.winter-about-card').count(),7);
  await tap('.winter-about-next');await p.waitForFunction(()=>document.querySelector('.winter-about-stage-status').textContent.includes('05 / 07'));
  await tap('.winter-about-to-notes');assert.equal(await p.locator('[data-note-id]').count(),22);
@@ -147,8 +151,10 @@ fs.mkdirSync(out,{recursive:true});
  await tap('#cosmos-to-closing');await shot('closing');
  await tap('#cosmos-closing-home');assert.equal(await p.locator('#main').getAttribute('data-page'),'home');
  await p.emulateMedia({reducedMotion:'reduce'});
- await p.locator('.film-shot[data-shot="home"][data-quality="still"][data-exposure="in"]').waitFor({state:'attached'});
- assert.equal(await p.locator('.film-shot[data-shot="home"][data-quality="still"] .film-plane').count(),1);
+ await p.locator('#relief-rail[data-sculpture="still"]').waitFor();
+ assert.equal(await p.locator('#relief-stage canvas').count(),0);
+ await tap('#relief-enter');
+ await aligned('relief-prints');
  assert.deepEqual(errors,[]);
  assert.deepEqual(assetErrors,[]);
  console.log('PASS',run,wpe?'WebKit':'Chromium',shots,'visual scenes with verified source assets');

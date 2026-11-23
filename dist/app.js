@@ -50,14 +50,14 @@
     scenery = active && shell.dataset.page === 'home';
     shell.dataset.view = scenery ? 'scenery' : 'cover';
     sceneryButton.setAttribute('aria-pressed', String(scenery));
-    sceneryButton.setAttribute('aria-label', scenery ? '返回封面，显示文字' : '隐藏文字，只看风景');
-    sceneryLabel.textContent = scenery ? '返回封面' : '只看风景';
+    sceneryButton.setAttribute('aria-label', scenery ? '返回封面，显示文字' : '隐藏文字，只看浮雕');
+    sceneryLabel.textContent = scenery ? '返回封面' : '只看浮雕';
     sceneCopy.forEach(element => {
       element.inert = scenery;
       if (scenery) element.setAttribute('aria-hidden', 'true');
       else element.removeAttribute('aria-hidden');
     });
-    if (announce) sceneryStatus.textContent = scenery ? '正在欣赏风景。按 Escape 键或点击返回封面，可重新显示文字。' : '已返回 WINTER 封面。';
+    if (announce) sceneryStatus.textContent = scenery ? '正在欣赏浮雕。按 Escape 键或点击返回封面，可重新显示文字。' : '已返回 WINTER 封面。';
   }
 
   function clearOpening() {

@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="winter-build" content="winter-birthday-world">
+  <meta name="winter-build" content="winter-birthday-alabaster">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#193b31">
   <meta name="description" content="For you, WINTER. 把你喜欢的山野，和想对你说的话，做成一份25岁的生日礼物。">
   <title>For WINTER — 生日快乐</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/winter-v2/home/still.webp" as="image">
+  <link rel="preload" href="assets/winter-v2/plaster/cover.webp" as="image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&amp;family=Cormorant+Garamond:wght@400;500&amp;family=DM+Sans:wght@400;500;600&amp;family=Caveat:wght@400&amp;family=Noto+Serif+SC:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -28,7 +28,6 @@
   <link rel="stylesheet" href="cosmos-chapter.css?v=art-touch-20261116">
   <link rel="stylesheet" href="gesture-controls.css?v=gesture-01">
   <link rel="stylesheet" href="winter-refinement.css?v=depth-20261122">
-  <link rel="stylesheet" href="living-home.css?v=living-gallery-20261122">
   <link rel="stylesheet" href="living-water.css?v=depth-20261122">
   <link rel="stylesheet" href="cake-five-candles.css?v=pinch-hint-20261117">
   <link rel="stylesheet" href="journey-coverflow.css?v=winter-world-2">
@@ -37,14 +36,13 @@
   <link rel="stylesheet" href="cosmos-glass-album.css?v=depth-20261122">
   <link rel="stylesheet" href="gallery.css?v=living-gallery-20261122">
   <link rel="stylesheet" href="ambient.css?v=winter-world-1">
-  <script src="app.js?v=winter-world-journey-title-20261119" defer></script>
+  <script src="app.js?v=alabaster-1" defer></script>
   <script src="cake-scene.js?v=depth-20261122" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
   <script src="journey.js?v=winter-world-1" defer></script>
   <script src="journey-coverflow.js?v=winter-world-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
-  <script src="living-home.js?v=living-gallery-20261122" defer></script>
-  <script src="living-interactions.js?v=home-touch-type-1" defer></script>
+  <script src="living-home.js?v=alabaster-1" defer></script>
   <script src="living-water.js?v=depth-20261122" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=coverflow-integration-20261118" defer></script>
@@ -55,13 +53,15 @@
   <script src="cosmos-glass-album.js?v=living-gallery-20261122-2" defer></script>
   <script src="gesture-controls.js?v=depth-20261122" defer></script>
   <script src="cake-cutout.js?v=art-touch-20261116" defer></script>
-  <script src="creator-studio.js?v=art-touch-20261116" defer></script>
+  <script src="creator-studio.js?v=alabaster-1" defer></script>
   <script src="cake-five-candles.js?v=pinch-hint-20261117" defer></script>
   <script src="ambient.js?v=living-gallery-20261122" defer></script>
   <link rel="stylesheet" href="cinematic-scenes.css?v=winter-world-1">
   <script src="cinematic-scenes.js?v=winter-world-1" defer></script>
-  <link rel="stylesheet" href="winter-film.css?v=winter-world-2">
-  <script src="winter-film.js?v=winter-world-2" defer></script>
+  <link rel="stylesheet" href="winter-film.css?v=alabaster-1">
+  <link rel="stylesheet" href="winter-relief.css?v=alabaster-1">
+  <script src="winter-film.js?v=alabaster-1" defer></script>
+  <script src="winter-relief.js?v=alabaster-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -133,47 +133,65 @@
 
     <div class="page-content" id="page-content" tabindex="-1">
       <section class="page-panel home-panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
-        <div class="home-composition">
-          <figure class="home-art">
-            <picture class="landscape" id="scene-photo">
-              <img src="assets/winter-v2/home/still.webp" alt="巨大的岩石拱门悬在云谷之上，瀑布从远处的山崖流下。" width="1672" height="941" decoding="async" fetchpriority="high">
-            </picture>
-            <div class="living-stage" aria-hidden="true">
-              <div class="home-sky-light"></div>
-              <div class="home-sunset"></div>
-              <div class="living-stars"></div>
-            </div>
-          </figure>
-          <div class="cover-copy scene-copy">
-            <div class="portal-heading">
-              <p class="portal-overline">The World of Winter</p>
-              <h1 class="cover-title">
-                <span class="name">WINTER</span>
-                <img class="portal-relief" src="assets/winter-v2/home/winter-relief.webp" width="1920" height="550" alt="" decoding="async">
-                <span class="intro">For you</span>
-              </h1>
-              <p class="living-poem"><span>像阵风掠过就无踪影</span><span>像束光温暖的照耀你</span></p>
-              <p class="gift-dedication"><span>MADE FOR WINTER, WITH LOVE — GWEN</span></p>
-            </div>
-            <button class="film-arch-button" type="button" id="film-cross-arch" aria-pressed="false"><span>进入 Winter 世界</span><b aria-hidden="true">↗</b></button>
-            <p id="film-entry-status" class="sr-only" role="status"></p>
+        <div class="relief-rail" id="relief-rail">
+          <div class="relief-stage" id="relief-stage" aria-hidden="true">
+            <picture id="scene-photo"><img src="assets/winter-v2/plaster/cover.webp" width="1680" height="1120" alt="" fetchpriority="high" decoding="async"></picture>
           </div>
-          <footer class="home-catalog" id="scene-footer">
-            <div class="home-catalog-copy scene-copy"><p>A Personal Exhibition</p><em>A little universe made for you.</em></div>
-            <div class="home-controls">
-      <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false" aria-label="隐藏文字，只看风景">
-        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg>
-        <span id="view-label">只看风景</span>
-      </button>
-              <div class="living-ui scene-copy" role="group" aria-label="Morning / Night 昼夜切换">
-                <div class="living-segment">
-                  <button type="button" id="living-morning" aria-pressed="true">Morning</button>
-                  <button type="button" id="living-night" aria-pressed="false">Night</button>
-                </div>
+
+          <section class="relief-panel relief-cover" aria-labelledby="relief-title">
+            <div class="relief-cover-content scene-copy">
+              <p class="relief-masthead">A Personal Exhibition</p>
+              <p class="relief-for-you">For you</p>
+              <h1 class="relief-title" id="relief-title">
+                <span>WINTER</span>
+                <img class="relief-lettering" src="assets/winter-v2/plaster/winter-lettering.webp" width="1680" height="430" alt="" decoding="async">
+              </h1>
+              <p class="relief-subtitle">A little universe made for you.</p>
+              <button class="relief-link relief-enter" type="button" id="relief-enter" data-relief-target="relief-prints">进入 Winter 世界 <span aria-hidden="true">↓</span></button>
+            </div>
+          </section>
+
+          <section class="relief-panel relief-prints" id="relief-prints" aria-labelledby="relief-prints-title">
+            <div class="relief-exhibition scene-copy">
+              <h2 id="relief-prints-title">一些闪闪发光的<br>普通日子</h2>
+              <a class="relief-print relief-print-sea" href="assets/memory-wall/memory-17.webp" aria-label="放大海边的照片">
+                <img src="assets/memory-wall/memory-17.webp" width="624" height="1100" alt="海浪边的 Winter" loading="lazy" decoding="async">
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a class="relief-print relief-print-sunset" href="assets/memory-wall/memory-02.webp" aria-label="放大夕阳下的照片">
+                <img src="assets/memory-wall/memory-02.webp" width="618" height="1100" alt="夕阳下的 Winter" loading="lazy" decoding="async">
+                <span aria-hidden="true">↗</span>
+              </a>
+              <button class="relief-link relief-to-dedication" type="button" data-relief-target="relief-dedication">继续 <span aria-hidden="true">↓</span></button>
+            </div>
+          </section>
+
+          <section class="relief-panel relief-dedication" id="relief-dedication" aria-labelledby="relief-dedication-title">
+            <div class="relief-dedication-content scene-copy">
+              <h2 id="relief-dedication-title"><span>像阵风掠过就无踪影</span><span>像束光温暖的照耀你</span></h2>
+              <p class="relief-signature">MADE FOR WINTER, WITH LOVE — GWEN</p>
+              <div class="relief-chapter-links">
+                <button type="button" class="relief-link" data-relief-route="about">About Me <span aria-hidden="true">↗</span></button>
+                <button type="button" class="relief-link" data-relief-route="destination">Destination <span aria-hidden="true">↗</span></button>
               </div>
+            </div>
+          </section>
+
+          <footer class="relief-tools" id="scene-footer">
+            <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false" aria-label="隐藏文字，只看浮雕">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7 3H3v4m10-4h4v4M3 13v4h4m10-4v4h-4"/></svg>
+              <span id="view-label">只看浮雕</span>
+            </button>
+            <div class="relief-light-switch scene-copy" role="group" aria-label="Morning / Night 昼夜切换">
+              <button type="button" id="living-morning" aria-pressed="true">Morning</button>
+              <button type="button" id="living-night" aria-pressed="false">Night</button>
             </div>
           </footer>
         </div>
+        <dialog class="relief-viewer" id="relief-viewer" aria-label="摄影展品">
+          <button class="relief-viewer-close" type="button" aria-label="关闭照片">×</button>
+          <img alt="">
+        </dialog>
       </section>
 
       <section class="page-panel about-panel" id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" hidden>
@@ -495,8 +513,8 @@
         <div id="creator-tools-panel" class="creator-tools-panel">
         <p class="creator-toolbar-title">YOUR LITTLE CANVAS <span aria-hidden="true">·</span> 自由创作</p>
         <div class="creator-colours" id="winter-creator-colours" role="group" aria-label="画笔颜色">
-          <button type="button" data-colour="#ffffff" aria-pressed="true" aria-label="白色" style="--swatch:#ffffff"></button>
-          <button type="button" data-colour="#232323" aria-pressed="false" aria-label="黑色" style="--swatch:#232323"></button>
+          <button type="button" data-colour="#ffffff" aria-pressed="false" aria-label="白色" style="--swatch:#ffffff"></button>
+          <button type="button" data-colour="#232323" aria-pressed="true" aria-label="黑色" style="--swatch:#232323"></button>
           <button type="button" data-colour="#e98a73" aria-pressed="false" aria-label="珊瑚红" style="--swatch:#e98a73"></button>
           <button type="button" data-colour="#ec8ba8" aria-pressed="false" aria-label="粉色" style="--swatch:#ec8ba8"></button>
           <button type="button" data-colour="#83b9df" aria-pressed="false" aria-label="蓝色" style="--swatch:#83b9df"></button>
