@@ -3,8 +3,8 @@
 python tools/winter-v2/letter-solid.py cormorant-static.ttf letters.json
 blender -b -t 6 -P tools/winter-v2/render-plaster.py -- letters.json output-directory
 Produces lit plaster plus registered height passes for the browser, and
-transparent raised typography. Use `wall` to export the connected glTF relief or
-`wall wall-still` to also render the wide and portrait Home fallback plates.
+transparent raised typography. Use `wall` to export the connected glTF relief.
+Home fallback plates are rendered by render-wall-posters.py.
 """
 import json
 import math
@@ -368,26 +368,6 @@ def wall_export():
     bpy.ops.export_scene.gltf(filepath=str(OUT / "winter-herbarium.glb"), export_format="GLB",
                              use_selection=True, export_yup=False, export_texcoords=False,
                              export_lights=False, export_cameras=False, export_materials="NONE")
-
-    if "wall-still" in chosen:
-        letters.hide_render = True
-        centers = [panel.location.x for panel in panels[:-1]]
-        for panel in panels[:-1]:
-            panel.data.materials.append(frost)
-            panel.scale.z *= .79 * .34
-            panel.location.z *= .79 * .34
-        camera.type = "PERSP"
-        camera.sensor_fit = "VERTICAL"
-        camera.angle_y = math.radians(38)
-        view.location = (0,0,13.7)
-        aim(view,(0,0,0))
-        scene.view_settings.view_transform = "AgX"
-        scene.cycles.samples = 24
-        for name, width, height in (("wall-still-wide",1680,1120),("wall-still-portrait",1050,1400)):
-            spread = max(.46,min(1.64,width/height/1.38))
-            for panel, center in zip(panels, centers):
-                panel.location.x = center * spread
-            shot(name,width,height)
 
 if export_wall:
     wall_export()

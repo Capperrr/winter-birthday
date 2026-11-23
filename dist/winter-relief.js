@@ -37,7 +37,8 @@
     scroller.append(diagnostic);
   }
   const resources={webgl:'未启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''};
-  let active=false,failure='',reason='',controller=null,wall=null,frame=null,input=null,pendingContact=null;
+  const pendingContacts=[];
+  let active=false,failure='',reason='',controller=null,wall=null,frame=null,input=null;
   let progress=0,goal=0,lastInput=-Infinity,seconds=0,night=0,previousTime=0,raf=0;
   let fps=0,startSample=0,samples=0,slow=0,fast=0,lastReport=0;
   let chapter=-1;
@@ -98,7 +99,8 @@
     const previousProgress=goal;
     controller?.abort();
     controller=null;
-    wall=frame=input=pendingContact=null;
+    wall=frame=input=null;
+    pendingContacts.length=0;
     resetFrameStats();
     chapter=-1;
     panels.forEach(panel=>{panel.inert=wallStudy;panel.removeAttribute('data-current');});
@@ -137,9 +139,11 @@
     enter.inert=finalLink<.25;
   }
 
-  function scroll(){
+  function scroll(event){
     if(!active)return;
-    goal=clamp(scroller.scrollTop/scrollRange());
+    const next=clamp(scroller.scrollTop/scrollRange());
+    if(event?.type==='scroll'&&next!==goal)lastInput=seconds;
+    goal=next;
     if(wall&&rail.dataset.sculpture==='live')updateChapters(goal);
     if(!wall)diagnose();
     wake();
@@ -153,9 +157,10 @@
     seconds+=elapsed*.001;
     progress=Math.abs(goal-progress)<.00025?goal:progress+(goal-progress)*(1-Math.exp(-elapsed/76));
     night+=((shell.dataset.livingTime==='night'?1:0)-night)*(1-Math.exp(-elapsed/380));
-    frame=wall.draw({progress,seconds,night,input:input||pendingContact,lastInput,
+    const held=input&&(input.touch||seconds-lastInput<.4)?input:null;
+    frame=wall.draw({progress,seconds,night,input:held,contacts:pendingContacts,lastInput,
       view:wallStudy?'scenery':shell.dataset.view});
-    if(frame)pendingContact=null;
+    if(frame)pendingContacts.length=0;
     if(resources.shaderError){fail('Shader 编译失败');return;}
     if(frame&&rail.dataset.sculpture==='loading'){
       const previousProgress=goal;
@@ -186,9 +191,11 @@
     if(controller||failure)return;
     const run=new AbortController();
     controller=run;
+    seconds=0;
+    lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=full-plaster-wall').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=quiet-plaster').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail
@@ -216,17 +223,22 @@
     if(!active||!canPlay()){
       cancelAnimationFrame(raf);raf=0;
       resetFrameStats();
-      input=pendingContact=null;
+      input=null;
+      pendingContacts.length=0;
     }
     diagnose();
     wake();
   }
 
-  function contact(x,y,touch){
-    if(!wall||!active||!canPlay())return;
+  function contact(x,y,touch,begin=false){
+    if(!active||!canPlay()||(!wall&&rail.dataset.sculpture!=='loading'))return;
     const box=stage.getBoundingClientRect();
     if(!box.width||!box.height||x<box.left||x>box.right||y<box.top||y>box.bottom)return;
-    input=pendingContact={x:(x-box.left)/box.width,y:(y-box.top)/box.height,touch};
+    const nx=(x-box.left)/box.width,ny=(y-box.top)/box.height;
+    const join=!begin&&input?.touch===touch&&(touch||seconds-lastInput<.4);
+    input={x:nx,y:ny,touch,join,point:frame?wall.contactAt(nx,ny):null};
+    pendingContacts.push(input);
+    if(pendingContacts.length>32)pendingContacts.shift();
     lastInput=seconds;
     wake();
   }
@@ -276,14 +288,19 @@
   viewer.addEventListener('close',sync);
   scroller.addEventListener('scroll',scroll,{passive:true});
   scroller.addEventListener('pointermove',event=>{
-    if(event.pointerType==='mouse')contact(event.clientX,event.clientY,false);
+    if(event.pointerType==='mouse'&&!input?.touch)contact(event.clientX,event.clientY,false);
   },{passive:true});
+  scroller.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse'&&!input?.touch)release();},
+    {passive:true});
   for(const name of ['touchstart','touchmove'])scroller.addEventListener(name,event=>{
     const point=event.touches[0];
-    if(point&&event.touches.length===1)contact(point.clientX,point.clientY,true);
+    if(point&&event.touches.length===1){
+      if(event.target.closest?.('button,a,dialog'))return;
+      contact(point.clientX,point.clientY,true,event.type==='touchstart');
+    }
     else release();
   },{passive:true});
-  for(const name of ['pointerleave','touchend','touchcancel'])scroller.addEventListener(name,release,{passive:true});
+  for(const name of ['touchend','touchcancel'])scroller.addEventListener(name,release,{passive:true});
   document.getElementById('tab-home').addEventListener('click',()=>scroller.scrollTo({top:0,behavior:'instant'}));
   new ResizeObserver(()=>{wall?.resize();scroll();}).observe(scroller);
   new MutationObserver(sync).observe(shell,{attributes:true,

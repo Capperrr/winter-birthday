@@ -11,7 +11,7 @@
   --relief-nav-height: calc(var(--gallery-header) + env(safe-area-inset-top,0px));
   height: var(--relief-height);
   grid-template-rows: minmax(0,1fr);
-  background: #eae8e2;
+  background: #eeebe6;
   color: var(--relief-ink);
 }
 .app-shell[data-page="home"] > header.site-header {
@@ -45,7 +45,7 @@
   height: var(--relief-height);
   margin-bottom: calc(var(--relief-height) * -1);
   overflow: hidden;
-  background: #eae8e2;
+  background: #eeebe6;
   pointer-events: none;
 }
 .relief-stage :is(picture,img,canvas) {
@@ -56,7 +56,7 @@
   height: 100%;
 }
 .relief-stage img { object-fit: cover; object-position: 50% 49%; }
-.relief-stage canvas { opacity: 0; transition: opacity 280ms ease-out; }
+.relief-stage canvas { opacity: 0; transition: opacity 280ms ease-out; transform: translateZ(0); }
 .relief-rail[data-sculpture="live"] .relief-stage canvas { opacity: 1; }
 .app-shell[data-living-time="night"] .relief-rail:not([data-sculpture="live"]) .relief-stage img {
   filter: brightness(.92) saturate(.5);

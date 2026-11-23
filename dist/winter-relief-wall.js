@@ -1,6 +1,6 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
-import { createReliefField, plasterLight, sampledHeight } from './winter-relief-field.js?v=full-plaster-wall';
+import { createReliefField, maxBrushSegments, plasterLight, sampledHeight } from './winter-relief-field.js?v=quiet-plaster';
 
 const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=full-plaster-wall', import.meta.url);
 const coverDistance = 13.7;
@@ -13,46 +13,53 @@ const rail = new THREE.CatmullRomCurve3(positions.map(point=>new THREE.Vector3(.
 const day = new THREE.Color(0xeeebe6);
 const evening = new THREE.Color(0xd1d5dc);
 const finalWarmth = new THREE.Color(0xece6dd);
+const firstBrushDelay = 5;
+const idleBrushDelay = 8;
 
 function reliefMaterial(field, direction, text) {
   return new THREE.ShaderMaterial({
     uniforms:{...field.room,liftMap:field.map,plaster:{value:field.backdrop},direction,
       fixedDepth:{value:text ? .74 : 0},ink:{value:text ? .29 : 0}},
-    vertexShader:sampledHeight + plasterLight + `
+    vertexShader:sampledHeight + `
       uniform vec3 direction;
       varying float illumination;
-      varying float exposure;
+      varying float raised;
       varying float occlusion;
-      varying float wash;
+      varying vec2 wallPoint;
       void main() {
         vec4 stone = modelMatrix * vec4(position,1.);
-        float lift = reliefAt(stone.xy);
+        wallPoint = stone.xy;
+        raised = reliefAmount(wallPoint);
+        float lift = reliefScale(raised);
         float scaleX = length(modelMatrix[0].xyz);
         float scaleY = length(modelMatrix[1].xyz);
-        vec2 gradient = vec2(reliefAt(stone.xy+vec2(.12,0.))-lift, reliefAt(stone.xy+vec2(0.,.12))-lift) / .12;
+        float scaleZ = length(modelMatrix[2].xyz);
+        vec2 gradient = vec2(
+          reliefScale(reliefAmount(wallPoint+vec2(.12,0.)))-lift,
+          reliefScale(reliefAmount(wallPoint+vec2(0.,.12)))-lift
+        ) / .12;
         vec3 bent = vec3(normal.xy,normal.z/lift);
-        bent.xy -= bent.z * max(0.,position.z) * gradient * vec2(scaleX,scaleY);
+        bent.xy -= bent.z * (max(0.,stone.z)/scaleZ) * gradient * vec2(scaleX,scaleY);
         vec3 normalInView = normalize(normalMatrix * bent);
         illumination = clamp(dot(normalInView,direction)*.57 + .43,0.,1.);
-        exposure = smoothstep(.32,.91,lift);
-        wash = plasterWash(stone.xy);
-        stone.z = stone.z > 0. ? stone.z * lift : stone.z;
-        occlusion = (1.-smoothstep(.02,.31,stone.z)) * .075;
+        stone.z = displacedDepth(stone.z,lift);
+        occlusion = (1.-smoothstep(.02,.31,stone.z)) * .075 * raised;
         gl_Position = projectionMatrix * viewMatrix * stone;
         // Keep the raised inscription legible where fronds cross it in portrait.
         gl_Position.z -= fixedDepth * .012 * gl_Position.w;
       }
     `,
-    fragmentShader:`
+    fragmentShader:plasterLight + `
       uniform vec3 plaster;
       uniform float ink;
       varying float illumination;
-      varying float exposure;
+      varying float raised;
       varying float occlusion;
-      varying float wash;
+      varying vec2 wallPoint;
       void main() {
         float shaped = .62 + .49 * illumination - occlusion;
-        float value = mix(1., shaped, .83 + exposure * .17) * wash - ink;
+        float detail = mix(.012, 1., smoothstep(.025,.77,raised));
+        float value = mix(1.,shaped,detail) * plasterWash(wallPoint) - ink;
         gl_FragColor = vec4(plaster * value,1.);
         #include <colorspace_fragment>
       }
@@ -63,14 +70,14 @@ function reliefMaterial(field, direction, text) {
 export async function mountReliefWall(host, {signal,report,onContextLost,title}) {
   if (signal.aborted) return null;
   const canvas = document.createElement('canvas');
-  const gl = canvas.getContext('webgl2', {alpha:false,antialias:false,powerPreference:'high-performance'});
+  const gl = canvas.getContext('webgl2', {alpha:true,antialias:false,powerPreference:'high-performance'});
   if (!gl) throw new Error('无法创建 WebGL 2 context');
   const gpu = gl.getExtension('WEBGL_debug_renderer_info');
   const device = gpu ? gl.getParameter(gpu.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
   const software = /llvmpipe|softpipe|swiftshader|software/i.test(device);
   const lean = software || (navigator.hardwareConcurrency ?? 8) <= 4 || (navigator.deviceMemory ?? 8) <= 2;
   report({webgl:'WebGL 2', device});
-  const renderer = new THREE.WebGLRenderer({canvas,context:gl,alpha:false,antialias:false});
+  const renderer = new THREE.WebGLRenderer({canvas,context:gl,alpha:true,antialias:false});
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.debug.onShaderError = (context, program, vertex, fragment) => {
     const error = [context.getProgramInfoLog(program),context.getShaderInfoLog(vertex),context.getShaderInfoLog(fragment)]
@@ -100,8 +107,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
   let inscription, cancelled=false, resizePending=true, observer;
   let width=0,height=0,spread=1;
   let density = lean ? .69 : Math.min(1.7,devicePixelRatio||1);
-  let humanPoint = null, nextGhost = 1.3, ghost = null, previousGhost = null, ghostIndex = 0;
-  let firstBrushTime = 0;
+  let lastContact = null, nextGhost = firstBrushDelay, ghost = null, previousGhost = null, ghostIndex = 0;
   let previousDraw = 0;
 
   function dispose() {
@@ -160,8 +166,8 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     });
   }
 
-  function ambientTrail(seconds,lastInput) {
-    if(seconds-lastInput<2.8) {ghost=null;previousGhost=null;return null;}
+  function ambientTrail(seconds,lastInput,hasContact) {
+    if(hasContact||seconds-lastInput<idleBrushDelay) {ghost=null;previousGhost=null;return null;}
     if(!ghost && seconds>=nextGhost){
       const options=motifPoints();
       if(!options.length){nextGhost=seconds+.63;return null;}
@@ -170,18 +176,34 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
       previousGhost=null;
     }
     if(!ghost)return null;
-    const along=(seconds-ghost.started)/1.20;
+    const along=(seconds-ghost.started)/1.55;
     if(along>=1){
       ghost=null;
-      nextGhost=seconds+2.7+Math.sin(ghostIndex*1.37)*.52;
+      nextGhost=seconds+9+Math.sin(ghostIndex*1.37)*.95;
       return null;
     }
     const eased=along*along*(3-2*along);
-    const point={x:ghost.x+(eased-.5)*1.78*ghost.flip,
-      y:ghost.y + Math.sin(eased*Math.PI*1.18)*.33 + .11*Math.sin(eased*9)};
+    const point={x:ghost.x+(eased-.5)*.78*ghost.flip,
+      y:ghost.y + Math.sin(eased*Math.PI*1.18)*.15 + .06*Math.sin(eased*9)};
     const from=previousGhost || point;
     previousGhost=point;
-    return {from,to:point,radius:1.19,strength:.76*Math.sin(Math.PI*.2+along*Math.PI*.65)};
+    return {from,to:point,radius:.72,strength:.67*Math.sin(Math.PI*.13+along*Math.PI*.73)};
+  }
+
+  function contactTrail(contacts,input) {
+    const segments=[];
+    const samples=contacts.length?contacts:input?[{...input,point:null,join:true}]:[];
+    for(const sample of samples){
+      const point=sample.point||worldAt(sample.x,sample.y);
+      if(!point)continue;
+      const previous=sample.join&&lastContact?.touch===sample.touch?lastContact.point:point;
+      segments.push({from:previous,to:point});
+      lastContact={point,touch:sample.touch};
+    }
+    const touch=Boolean(lastContact?.touch);
+    if(!input)lastContact=null;
+    if(!segments.length)return null;
+    return {segments:segments.slice(-maxBrushSegments),touch,radius:touch?1.12:1.07,strength:.96};
   }
 
   try {
@@ -222,7 +244,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
 
     return {
       resize(){resizePending=true;},
-      draw({progress,seconds,night,input,lastInput,view}) {
+      draw({progress,seconds,night,input,contacts,lastInput,view}) {
         if(cancelled)return null;
         if(resizePending&&!fit())return null;
         rail.getPoint(progress,cameraPoint);
@@ -237,14 +259,8 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
           meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld).expandByScalar(.7);
           mesh.visible=viewBounds.intersectsBox(meshBounds);
         }
-        const ambient=ambientTrail(seconds,lastInput);
-        const point=input ? worldAt(input.x,input.y) : null;
-        if(point&&!humanPoint)firstBrushTime=seconds;
-        const speed=point&&humanPoint ? Math.hypot(point.x-humanPoint.x,point.y-humanPoint.y) : 0;
-        const from=speed<4.5 ? humanPoint||point : point;
-        const brush=point?{from,to:point,radius:input.touch?1.49:1.25,
-          strength:Math.min(1.,.94+speed*.22+(seconds-firstBrushTime)*.08)}:null;
-        humanPoint=point;
+        const brush=contactTrail(contacts,input);
+        const ambient=ambientTrail(seconds,lastInput,Boolean(brush));
         const dt=Math.min(.35,Math.max(.013,seconds-previousDraw));
         previousDraw=seconds;
         field.step(dt,brush,ambient);
@@ -256,9 +272,10 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         field.lightVector.value.set(lightX/.88,lightY/.88);
         direction.value.set(lightX,lightY,.88).transformDirection(camera.matrixWorldInverse);
         field.shadows();
+        renderer.setClearAlpha(0);
         renderer.render(scene,camera);
         return {camera:[camera.position.x,camera.position.y,camera.position.z],resolution:[canvas.width,canvas.height],
-          triangles:renderer.info.render.triangles,trace:brush ? (input.touch?'touch':'mouse') : ambient ? 'auto' : 'decay'};
+          triangles:renderer.info.render.triangles,trace:brush ? (brush.touch?'touch':'mouse') : ambient ? 'auto' : 'decay'};
       },
       scaleResolution(factor){
         const next=THREE.MathUtils.clamp(density*factor,lean?.51:.65,lean?.96:Math.min(1.7,devicePixelRatio||1));
@@ -271,7 +288,8 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         const point=worldAt(x,y);
         return point ? {...field.probe(point),point} : null;
       },
-      visibleMotifs:motifPoints
+      visibleMotifs:motifPoints,
+      contactAt:worldAt
     };
   } catch(error){
     dispose();

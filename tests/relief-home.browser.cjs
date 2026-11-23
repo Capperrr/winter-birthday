@@ -14,15 +14,16 @@ const wpe=engine==='webkit';
 const originals={bay:[1525,1016],road:[2048,1152],couple:[1920,1080],sand:[2048,1152]};
 fs.mkdirSync(out,{recursive:true});
 
-async function swipe(client, start, end, id) {
-  const send=(type,touchPoints)=>client.send('Input.dispatchTouchEvent',{type,touchPoints});
-  await send('touchStart',[{x:start.x,y:start.y,id}]);
+async function swipe(send, start, end, id) {
+  const point=(x,y)=>({x:Math.round(x),y:Math.round(y),id});
+  await send('touchStart',[point(start.x,start.y)]);
   for(let i=1;i<=10;i++){
     await new Promise(resolve=>setTimeout(resolve,48));
-    await send('touchMove',[{x:start.x+(end.x-start.x)*i/10,y:start.y+(end.y-start.y)*i/10,id}]);
+    await send('touchMove',[point(start.x+(end.x-start.x)*i/10,start.y+(end.y-start.y)*i/10)]);
   }
   await new Promise(resolve=>setTimeout(resolve,140));
-  await send('touchEnd',[]);
+  // WebKit releases contacts by identifier. Chromium releases its current contacts with an empty list.
+  await send('touchEnd',wpe?[point(end.x,end.y)]:[]);
 }
 
 async function run(browser, name, viewport, touch) {
@@ -32,10 +33,11 @@ async function run(browser, name, viewport, touch) {
   });
   try {
     await context.addInitScript(()=>{
-      window.testTouch={starts:0,moves:0,ends:0};
+      window.testTouch={starts:0,moves:0,ends:0,prevented:0};
       for(const [event,count] of [['touchstart','starts'],['touchmove','moves'],['touchend','ends']]){
-        document.addEventListener(event,()=>window.testTouch[count]++,{passive:true,capture:true});
+        document.addEventListener(event,e=>{if(e.isTrusted)window.testTouch[count]++;},{passive:true,capture:true});
       }
+      document.addEventListener('touchmove',e=>{if(e.defaultPrevented)window.testTouch.prevented++;},{passive:true});
     });
     const page=await context.newPage();
     page.setDefaultTimeout(33000);
@@ -71,31 +73,35 @@ async function run(browser, name, viewport, touch) {
       width:viewport.width,height:viewport.height,header:'rgba(0, 0, 0, 0)'});
     await page.evaluate(()=>document.getElementById('relief-debug').style.visibility='hidden');
     const rest=await shot('study-rest');
+    const motifs=await getMotifs();
+    const quiet=await page.evaluate(motifs=>motifs.map(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen)),motifs);
+    assert.ok(quiet.every(({height,shadow})=>height===0&&shadow===0),'The initial wall has no raised motifs or cast shadows');
     await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().trace==='auto');
+    const firstAuto=await read();
+    assert.ok(firstAuto.seconds>=5,'The first automatic stroke follows five quiet seconds');
+    await page.waitForFunction(motifs=>motifs.some(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen).height>.10),motifs);
+    const animated=await page.evaluate(motifs=>motifs.filter(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen).height>.10).length,motifs);
+    assert.ok(animated>0&&animated<=2,'The automatic stroke stays local');
     const ambient=await shot('study-auto');
     assert.notDeepEqual(rest,ambient);
     const idle=await read();
-    const motifs=await getMotifs();
     assert.ok(motifs.length>=9,'Original sculptures fill the first viewport');
     assert.ok(motifs.some(({screen:[x]})=>x<.24)&&motifs.some(({screen:[x]})=>x>.77));
     assert.ok(motifs.some(({screen:[,y]})=>y<.24)&&motifs.some(({screen:[,y]})=>y>.74));
     const center=motifs.find(motif=>motif.name.startsWith('Three_branches'));
     assert.ok(center && center.screen[0]>.35 && center.screen[0]<.65);
-    const point=center.screen;
-    const control=motifs.find(motif=>motif.name.startsWith('Frosted_bracken')).screen;
+    const point=motifs.find(motif=>motif.name.startsWith('Winter_hellebore')).screen;
+    const control=motifs.find(motif=>motif.name.startsWith('Christmas_rose')).screen;
     const before=await sample(point);
     const otherBefore=await sample(control);
     const position=await canvas.boundingBox();
     const end={x:position.x+position.width*point[0],y:position.y+position.height*point[1]};
     const offset=position.width*.055;
-    let client;
-    if(touch && !wpe){
-      client=await context.newCDPSession(page);
-      await swipe(client,{x:end.x-offset,y:end.y},end,1);
-    }else if(touch){
-      await page.touchscreen.tap(end.x,end.y);
-      await page.waitForFunction(({point,height})=>window.WINTER_RELIEF_PROBE.sample(...point).height>height+.14,
-        {point,height:before.height},{polling:100});
+    let send;
+    if(touch){
+      const client=wpe?page._connection.toImpl(page).delegate._pageProxySession:await context.newCDPSession(page);
+      send=(type,touchPoints)=>client.send('Input.dispatchTouchEvent',{type,touchPoints,modifiers:0});
+      await swipe(send,{x:end.x-offset,y:end.y},end,1);
     }else{
       await page.mouse.move(end.x-offset,end.y);
       await page.mouse.move(end.x,end.y,{steps:8});
@@ -103,24 +109,29 @@ async function run(browser, name, viewport, touch) {
     }
     const lifted=await sample(point);
     const otherAfter=await sample(control);
-    assert.ok(before.shadow>.005,name+' Shadows in resting state: '+JSON.stringify(before));
-    assert.ok(lifted.height>before.height+.14,name+' GPU height: '+JSON.stringify({before,lifted}));
-    assert.ok(lifted.shadow>before.shadow+.018,name+' projected shadow: '+JSON.stringify({before,lifted}));
-    assert.ok(Math.abs(otherAfter.height-otherBefore.height)<lifted.height*.76,'Lift stays local to the stroke');
+    assert.equal(before.shadow,0);
+    assert.ok(lifted.height>before.height+.38,name+' GPU height: '+JSON.stringify({before,lifted}));
+    assert.ok(lifted.shadow>before.shadow+.08,name+' projected shadow: '+JSON.stringify({before,lifted}));
+    assert.equal(otherAfter.height,otherBefore.height,'The untouched right flower stays flat');
+    assert.equal(otherAfter.shadow,otherBefore.shadow,'The untouched right flower casts no new shadow');
     await shot('study-lift');
     if(!touch)await page.mouse.move(end.x,4);
-    await page.waitForTimeout(1800);
+    await page.waitForTimeout(2350);
     const released=await sample(point);
-    assert.ok(released.height<lifted.height*.84,JSON.stringify({lifted,released}));
-    assert.ok(released.shadow<lifted.shadow,JSON.stringify({lifted,released}));
+    assert.ok(released.height<lifted.height*.28,JSON.stringify({lifted,released}));
+    assert.ok(released.shadow<.035,JSON.stringify({lifted,released}));
     await shot('study-release');
-    if(client){
-      await swipe(client,{x:position.x+position.width*.66,y:position.y+position.height*.80},
+    if(send){
+      await page.touchscreen.tap(position.width*control[0],position.height*control[1]);
+      await page.waitForFunction(p=>window.WINTER_RELIEF_PROBE.sample(...p).height>.18,control,{polling:100});
+      assert.ok((await sample(point)).height<=released.height,'A tap on the right leaves the left flower at rest');
+      await swipe(send,{x:position.x+position.width*.66,y:position.y+position.height*.80},
         {x:position.x+position.width*.66,y:position.y+position.height*.24},2);
-      await page.waitForFunction(()=>document.getElementById('panel-home').scrollTop>40);
+      if(!wpe)await page.waitForFunction(()=>document.getElementById('panel-home').scrollTop>40);
     }
     const native=await page.evaluate(()=>({...window.testTouch,top:document.getElementById('panel-home').scrollTop}));
-    if(client)assert.ok(native.moves>=5&&native.top>40);
+    if(send)assert.ok(native.moves>=5&&native.prevented===0);
+    if(send&&!wpe)assert.ok(native.top>40);
     if(touch)assert.ok(native.starts>=1&&native.ends>=1);
     console.log(name,'GPU brush',JSON.stringify({idle:idle.fps,before,lifted,released,native}));
 
@@ -206,7 +217,7 @@ async function run(browser, name, viewport, touch) {
     assert.equal(await debug.count(),0);
     assert.deepEqual(errors,[]);
     fs.writeFileSync(out+'/'+name+'.json',JSON.stringify({engine,viewport,info,wall,captions,responses,poses,idle,
-      brush:{before,lifted,released},native,errors},null,2));
+      quiet,firstAuto,animated,brush:{before,lifted,released,otherBefore,otherAfter},native,errors},null,2));
     console.log(name,'PASS');
   } finally{await context.close();}
 }
