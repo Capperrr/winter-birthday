@@ -91,6 +91,7 @@
     artworkLoad = { aspect, controller };
     loadedAspect = '';
     setSceneReady(false);
+    scenePlane.dataset.artwork = 'loading';
     status.textContent = '正在载入蛋糕场景…';
     if (!setting.getAttribute('src')) setting.src = 'assets/winter-v2/cake/still.webp';
     try {
@@ -100,6 +101,10 @@
         loadSvgImage(pastry, 'assets/birthday-render/cake-' + aspect + '.webp', signal),
         loadSvgImage(lighterImage, 'assets/birthday-render/lighter.webp', signal)
       ]);
+      if (!active || signal.aborted) return;
+      scenePlane.dataset.artwork = 'ready';
+      // Present a complete frame before granting access to the camera control.
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
       if (!active || signal.aborted) return;
       loadedAspect = aspect;
       setSceneReady(true);
