@@ -171,11 +171,19 @@ async function exercise(browser, [name, width, height]) {
         const progress = document.querySelector('.winter-candle-count');
         const pause = () => new Promise(resolve => setTimeout(resolve, 25));
         const target = {x: wick.x + wick.width / 2, y: wick.y};
-        for (let frame = 0; frame < 38; frame++) {
+        function move(y) {
           document.dispatchEvent(new CustomEvent('winter:hand-frame', {detail: {hands: [{
             hand: 'Right', visible: true, pinching: true,
-            x: target.x / innerWidth, y: target.y / innerHeight
+            x: target.x / innerWidth, y: y / innerHeight
           }]}}));
+        }
+        // Approach from below and settle the filtered position before timing the dwell.
+        // That keeps the contact measurement independent of slow test-browser frames.
+        for (let frame = 0; frame < 12; frame++) move(target.y + 52);
+        if (progress.textContent.trim() !== index + ' / 5') throw new Error('A wick lit before contact');
+        for (let frame = 0; frame < 12; frame++) move(target.y);
+        for (let frame = 0; frame < 38; frame++) {
+          move(target.y);
           if (progress.textContent.trim() === (index + 1) + ' / 5') {
             const rect = document.getElementById('lighter-flame-anchor').getBoundingClientRect();
             const tip = {x: rect.x + rect.width / 2, y: rect.y + rect.height / 2};
