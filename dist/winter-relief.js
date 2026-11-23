@@ -1,3 +1,5 @@
+import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-tide';
+
 (() => {
   'use strict';
   const shell=document.getElementById('main');
@@ -42,6 +44,10 @@
   let progress=0,goal=0,lastInput=-Infinity,seconds=0,night=0,previousTime=0,raf=0;
   let fps=0,startSample=0,samples=0,slow=0,fast=0,lastReport=0;
   let chapter=-1;
+  const exhibits=setupReliefPrints(rail,{
+    reducedMotion:()=>Boolean(blocked()),
+    onInput(){ input=null; pendingContacts.length=0; lastInput=seconds; }
+  });
 
   function blocked(){
     if(reduce.matches)return 'prefers-reduced-motion';
@@ -104,7 +110,7 @@
     resetFrameStats();
     chapter=-1;
     panels.forEach(panel=>{panel.inert=wallStudy;panel.removeAttribute('data-current');});
-    prints.forEach(print=>{print.inert=false;});
+    if(wasLive||!active)exhibits.reset();
     enter.inert=postscript.inert=false;
     if(!failure)Object.assign(resources,{webgl:'未启动',device:'—',model:'未请求',textures:'未建立'});
     setStatus('still',why);
@@ -126,11 +132,7 @@
     const actOpacity=index===0 ? 1-fade(p,.241,.30) :
       index===1 ? fade(p,.30,.345)*(1-fade(p,.611,.65)) : fade(p,.65,.705);
     rail.style.setProperty('--act-opacity',actOpacity.toFixed(3));
-    const road=fade(p,.438,.532);
-    rail.style.setProperty('--road',road.toFixed(3));
-    prints[0].inert=road>.5;
-    prints[1].inert=road<=.5;
-    rail.style.setProperty('--moment',fade(p,.66,.80).toFixed(3));
+    exhibits.project(p,index,scroller.clientHeight);
     const details=fade(p,.783,.887);
     rail.style.setProperty('--postscript',details.toFixed(3));
     postscript.inert=details<.23;
@@ -277,7 +279,7 @@
     const route=event.target.closest('[data-relief-route]');
     if(route)document.getElementById('tab-'+route.dataset.reliefRoute)?.click();
     const print=event.target.closest('.relief-print');
-    if(!print||print.disabled||typeof viewer.showModal!=='function')return;
+    if(!print||print.disabled||print.inert||!exhibits.permitsClick(event,print)||typeof viewer.showModal!=='function')return;
     const painted=print.querySelector('img');
     const full=viewer.querySelector('img');
     full.src=painted.currentSrc||painted.src;
@@ -288,6 +290,7 @@
   viewer.addEventListener('close',sync);
   scroller.addEventListener('scroll',scroll,{passive:true});
   scroller.addEventListener('pointermove',event=>{
+    if(event.target.closest?.('[data-print-surface]'))return;
     if(event.pointerType==='mouse'&&!input?.touch)contact(event.clientX,event.clientY,false);
   },{passive:true});
   scroller.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse'&&!input?.touch)release();},

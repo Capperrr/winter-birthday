@@ -58,9 +58,9 @@
   <link rel="stylesheet" href="cinematic-scenes.css?v=winter-world-1">
   <script src="cinematic-scenes.js?v=winter-world-1" defer></script>
   <link rel="stylesheet" href="winter-film.css?v=cake-scene-stable">
-  <link rel="stylesheet" href="winter-relief.css?v=quiet-plaster">
+  <link rel="stylesheet" href="winter-relief.css?v=photographic-tide">
   <script src="winter-film.js?v=cake-scene-stable" defer></script>
-  <script src="winter-relief.js?v=quiet-plaster" defer></script>
+  <script type="module" src="winter-relief.js?v=photographic-tide"></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -148,39 +148,48 @@
                   <img class="relief-lettering" src="assets/winter-v2/plaster/winter-lettering.webp" width="1680" height="430" alt="" decoding="async">
                 </h1>
                 <p class="relief-poem"><span>像阵风掠过就无踪影</span><span>像束光温暖地照耀你</span></p>
-                <button class="relief-link relief-next" type="button" data-relief-progress=".315" aria-controls="relief-landscapes">向下滑动 <span aria-hidden="true">↓</span></button>
+                <button class="relief-link relief-next" type="button" data-relief-progress=".38" aria-controls="relief-landscapes">向下滑动 <span aria-hidden="true">↓</span></button>
               </div>
             </section>
 
             <section class="relief-panel relief-landscapes" id="relief-landscapes" aria-labelledby="relief-landscapes-title">
               <div class="relief-landscape-content scene-copy">
                 <h2 id="relief-landscapes-title">一起走过的风景</h2>
-                <div class="relief-window">
+                <div class="relief-window" id="relief-landscape-prints" data-print-surface>
                   <button class="relief-print relief-bay" type="button" data-photo="bay" aria-label="查看东澳岛海湾原图" disabled>
-                    <img src="assets/home/bay-original.jpeg" alt="东澳岛的海湾、远山与灰蓝色的天空" width="1525" height="1016" fetchpriority="low" decoding="async">
+                    <img src="assets/home/bay-original.jpeg" alt="东澳岛的海湾、远山与灰蓝色的天空" width="1525" height="1016" fetchpriority="low" decoding="async" draggable="false">
                     <span class="relief-photo-error" role="status" hidden>海湾照片加载失败，请刷新后重试。</span>
                   </button>
-                  <button class="relief-print relief-road" type="button" data-photo="road" aria-label="查看海边路上的回头照原图" disabled>
-                    <img src="assets/home/road-original.jpeg" alt="走在海边路上的 Winter 回过头，身后是树林与天空" width="2048" height="1152" fetchpriority="low" decoding="async">
+                  <button class="relief-print relief-road" type="button" data-photo="road" aria-label="查看海边路上的回头照原图" disabled inert>
+                    <img src="assets/home/road-original.jpeg" alt="走在海边路上的 Winter 回过头，身后是树林与天空" width="2048" height="1152" fetchpriority="low" decoding="async" draggable="false">
                     <span class="relief-photo-error" role="status" hidden>回头照加载失败，请刷新后重试。</span>
                   </button>
                 </div>
                 <p class="relief-bay-caption" lang="en">The wind on Dong’ao Island was so strong, I found myself leaning right into your arms.</p>
+                <div class="relief-print-controls" role="group" aria-label="风景照片切换">
+                  <button type="button" data-print-step="-1" aria-controls="relief-landscape-prints" aria-label="上一张照片" disabled><span aria-hidden="true">←</span></button>
+                  <span>左右滑动切换</span>
+                  <button type="button" data-print-step="1" aria-controls="relief-landscape-prints" aria-label="下一张照片"><span aria-hidden="true">→</span></button>
+                </div>
               </div>
             </section>
 
             <section class="relief-panel relief-moment" id="relief-moment" aria-labelledby="relief-moment-title">
               <div class="relief-moment-content scene-copy">
                 <h2 id="relief-moment-title" lang="en">Our moment</h2>
-                <button class="relief-print relief-couple" type="button" data-photo="couple" aria-label="查看我们的夜景合照原图" disabled>
-                  <img src="assets/home/couple-original.jpeg" alt="夜色里，Winter 与 Gwen 的双人合照" width="1920" height="1080" fetchpriority="low" decoding="async">
-                  <span class="relief-photo-error" role="status" hidden>夜景合照加载失败，请刷新后重试。</span>
-                </button>
-                <div class="relief-postscript">
-                  <button class="relief-print relief-sand" type="button" data-photo="sand" aria-label="查看沙滩上的手写字迹原图" disabled>
-                    <img src="assets/home/sand-original.jpeg" alt="沙滩上的真实手写字迹" width="2048" height="1152" fetchpriority="low" decoding="async">
-                    <span class="relief-photo-error" role="status" hidden>沙滩照片加载失败，请刷新后重试。</span>
+                <div class="relief-couple-frame" data-print-surface>
+                  <button class="relief-print relief-couple" type="button" data-photo="couple" aria-label="查看我们的夜景合照原图" disabled>
+                    <img src="assets/home/couple-original.jpeg" alt="夜色里，Winter 与 Gwen 的双人合照" width="1920" height="1080" fetchpriority="low" decoding="async" draggable="false">
+                    <span class="relief-photo-error" role="status" hidden>夜景合照加载失败，请刷新后重试。</span>
                   </button>
+                </div>
+                <div class="relief-postscript">
+                  <div class="relief-sand-frame" data-print-surface>
+                    <button class="relief-print relief-sand" type="button" data-photo="sand" aria-label="查看沙滩上的手写字迹原图" disabled>
+                      <img src="assets/home/sand-original.jpeg" alt="沙滩上的真实手写字迹" width="2048" height="1152" fetchpriority="low" decoding="async" draggable="false">
+                      <span class="relief-photo-error" role="status" hidden>沙滩照片加载失败，请刷新后重试。</span>
+                    </button>
+                  </div>
                   <div class="relief-goodbye" lang="en">
                     <p class="relief-letter">I wish we had more photos of us already, and I know we’ll take many more in the years to come.</p>
                     <p class="relief-subtitle">A little universe made for you.</p>

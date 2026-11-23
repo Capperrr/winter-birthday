@@ -29,7 +29,7 @@
 .app-shell[data-page="home"] .glass-nav button:not([aria-selected="true"]) { color: var(--relief-muted); }
 .app-shell[data-page="home"] .home-panel {
   display: block;
-  overflow: auto;
+  overflow: hidden auto;
   scrollbar-width: none;
   overscroll-behavior: contain;
   overflow-anchor: none;
@@ -168,7 +168,16 @@
   letter-spacing:.04em;
 }
 .relief-moment-content h2 { font: italic 500 clamp(1.8rem,4vw,3.6rem)/.98 var(--serif); }
-.relief-window { margin:auto; width:min(100%,765px,94svh); display:grid; gap:14px; }
+/* Scroll moves the composition. The print's own transform handles the gesture. */
+.relief-landscape-content { transform:translate3d(0,var(--landscape-travel,0px),0); }
+.relief-moment-content { transform:translate3d(0,var(--moment-travel,0px),0); }
+.relief-window {
+  width:min(100%,765px,94svh);
+  margin:auto;
+  display:grid;
+  grid-template-areas:"print";
+  transform:scale(var(--landscape-depth,1));
+}
 .relief-print {
   display:block;
   position:relative;
@@ -181,14 +190,23 @@
   background:#f4f2ed;
   color:#635f55;
   overflow:hidden;
+  touch-action:pan-y pinch-zoom;
+  user-select:none;
+  -webkit-user-select:none;
+  transform:translate3d(calc(var(--print-x,0px) + var(--slide-x,0px)),var(--print-y,0px),0)
+    scale(var(--print-scale,1));
 }
 .relief-print img {
   width:100%;
   height:100%;
   display:block;
   object-fit:contain;
+  pointer-events:none;
 }
 .relief-print:enabled { cursor: zoom-in; }
+#panel-home .relief-print:active { scale:1; }
+#panel-home .relief-print.is-interacting:not(:disabled) { filter:none; }
+[data-print-surface][data-dragging] .relief-print { cursor:grabbing; }
 .relief-print[data-photo-state="error"] img { visibility: hidden; }
 .relief-photo-error {
   position:absolute;
@@ -199,26 +217,47 @@
   padding:14px;
   font:500 .8rem/1.35 var(--cn-serif);
 }
-.relief-rail[data-sculpture="live"] .relief-window {
-  display:grid;
-  grid-template-areas:"print";
-  gap:0;
+.relief-window > .relief-print { grid-area:print; }
+.relief-bay {
+  --slide-x:calc(-1 * var(--slide-distance,min(7vw,72px)) * var(--road,0));
+  opacity:calc(1 - var(--road,0));
 }
-.relief-rail[data-sculpture="live"] .relief-window > .relief-print { grid-area:print; }
-.relief-rail[data-sculpture="live"] .relief-bay { opacity:calc(1 - var(--road,0)); }
-.relief-rail[data-sculpture="live"] .relief-road { opacity:var(--road,0); }
-.relief-rail[data-sculpture="live"] .relief-window > .relief-print[inert] { pointer-events:none; }
+.relief-road {
+  --slide-x:calc(var(--slide-distance,min(7vw,72px)) * (1 - var(--road,0)));
+  opacity:var(--road,0);
+}
+.relief-window > .relief-print[inert] { pointer-events:none; }
+.relief-window[data-active-photo="bay"] .relief-bay,
+.relief-window[data-active-photo="road"] .relief-road { z-index:1; }
 .relief-bay-caption {
   min-height:2.7em;
   max-width:min(650px,96%);
   margin:clamp(9px,1.8svh,21px) auto 0;
   font:italic 500 clamp(1.05rem,2.14vw,1.62rem)/1.22 var(--serif);
 }
-.relief-rail[data-sculpture="live"] .relief-bay-caption { opacity:calc(1 - var(--road,0)); }
-.relief-couple {
+.relief-bay-caption { opacity:calc(1 - var(--road,0)); }
+.relief-print-controls {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:var(--relief-muted);
+  font:.8rem/1.4 var(--cn-serif);
+}
+.relief-print-controls button {
+  width:44px;
+  height:44px;
+  padding:0;
+  border:0;
+  background:none;
+  color:var(--relief-ink);
+  font:1.18rem/1 var(--sans);
+}
+.relief-print-controls button:disabled { opacity:.28; }
+.relief-couple-frame {
   width:min(100%,865px,101svh);
-  aspect-ratio:16/9;
   margin-inline:auto;
+  transform:scale(var(--couple-depth,1));
 }
 .relief-postscript {
   width:min(100%,720px);
@@ -229,7 +268,8 @@
   gap:clamp(14px,3vw,39px);
   text-align:left;
 }
-.relief-sand { aspect-ratio:16/9; }
+.relief-couple, .relief-sand { aspect-ratio:16/9; }
+.relief-sand-frame { transform:translate3d(0,var(--sand-travel,0px),0) scale(var(--sand-depth,1)); }
 .relief-letter {
   margin:0 0 5px;
   color:#555146;
@@ -242,9 +282,6 @@
 .relief-enter { font:500 .95rem/1.25 var(--serif); }
 .relief-rail[data-sculpture="live"] .relief-postscript { opacity:var(--postscript,0); }
 .relief-rail[data-sculpture="live"] .relief-enter { opacity:var(--final-link,0); }
-.relief-rail[data-sculpture="live"] .relief-couple {
-  transform: scale(calc(.98 + var(--moment,0) * .02));
-}
 .relief-tools {
   position:fixed;
   inset:auto var(--gallery-edge) max(9px,env(safe-area-inset-bottom));
@@ -352,10 +389,10 @@
   .relief-title { width:min(530px,55vw); }
   .relief-for-you { font-size:2.3rem; }
   .relief-next { margin-top:7px; }
-  .relief-couple { width:min(100%,65svh); }
+  .relief-couple-frame { width:min(100%,65svh); }
   .relief-window { width:min(100%,84svh); }
   .relief-postscript { width:min(100%,660px); margin-top:6px; }
-  .relief-postscript .relief-sand { width:min(100%,21svh); justify-self:end; }
+  .relief-sand-frame { width:min(100%,21svh); justify-self:end; }
   .relief-rail:not([data-sculpture="live"]) .relief-panel { min-height:max(370px,var(--relief-height)); }
 }
 /* The birthday story hangs from the same plaster wall. */

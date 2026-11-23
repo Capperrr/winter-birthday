@@ -26,6 +26,93 @@ async function swipe(send, start, end, id) {
   await send('touchEnd',wpe?[point(end.x,end.y)]:[]);
 }
 
+async function checkPrintMotion(page, send, viewport) {
+  const home=page.locator('#panel-home');
+  const gallery=home.locator('.relief-window');
+  const viewer=home.locator('#relief-viewer');
+  const photo=key=>home.locator(`[data-photo="${key}"]`);
+  const go=async p=>{
+    await home.evaluate((node,progress)=>node.scrollTop=(node.scrollHeight-node.clientHeight)*progress,p);
+    await page.waitForFunction(p=>Math.abs(window.WINTER_RELIEF_PROBE.frame().progress-p)<.005,p);
+  };
+  const center=async key=>{
+    const {x,y,width,height}=await photo(key).boundingBox();
+    return {x:Math.round(x+width/2),y:Math.round(y+height/2),id:1};
+  };
+  const select=key=>page.waitForFunction(key=>document.querySelector('.relief-window').dataset.activePhoto===key,key);
+  const position=surface=>surface.evaluate(el=>parseFloat(el.style.getPropertyValue('--print-x'))||0);
+  const released=surface=>surface.evaluate(el=>new Promise(resolve=>{
+    function check(){
+      if(parseFloat(el.style.getPropertyValue('--print-x'))) requestAnimationFrame(check);
+      else resolve();
+    }
+    check();
+  }));
+  const hold=async (key, dx)=>{
+    const start=await center(key);
+    const end={...start,x:start.x+dx};
+    if(send){
+      await send('touchStart',[start]);
+      for(let step=1;step<=8;step++){
+        await send('touchMove',[{...start,x:start.x+Math.round(dx*step/8)}]);
+        await page.waitForTimeout(18);
+      }
+      return ()=>send('touchEnd',wpe?[end]:[]);
+    }
+    await page.mouse.move(start.x,start.y);
+    await page.mouse.down();
+    await page.mouse.move(end.x,end.y,{steps:8});
+    return ()=>page.mouse.up();
+  };
+
+  await go(.36);
+  const arrival=await photo('bay').boundingBox();
+  await go(.45);
+  const nearer=await photo('bay').boundingBox();
+  assert.ok(arrival.y-nearer.y>viewport.height*.12,'The arriving photograph takes its own scroll path');
+  assert.ok(nearer.width>arrival.width*1.035,'The print has a small scroll-driven depth change');
+  await go(.39);
+  const base=await photo('bay').boundingBox();
+  const letGo=await hold('bay',53);
+  const dragged=await photo('bay').boundingBox();
+  assert.ok(await position(gallery)>28 && dragged.x>base.x+28,'A short drag moves the print while held');
+  await letGo();
+  await released(gallery);
+  const restored=await photo('bay').boundingBox();
+  assert.ok(Math.abs(restored.x-base.x)<1,'The short drag springs back to its starting point');
+  assert.equal(await gallery.getAttribute('data-active-photo'),'bay');
+  assert.equal(await viewer.getAttribute('open'),null,'Releasing a drag cannot open the original');
+
+  await (await hold('bay',-148))();
+  await select('road');
+  await released(gallery);
+  await (await hold('road',148))();
+  await select('bay');
+  await released(gallery);
+  assert.equal(await viewer.getAttribute('open'),null);
+  if(send&&!wpe){
+    const start=await center('bay');
+    const top=await home.evaluate(el=>el.scrollTop);
+    await swipe(send,start,{x:start.x+9,y:start.y-216},1);
+    await page.waitForFunction(top=>document.getElementById('panel-home').scrollTop>top+65,top);
+    assert.equal(await viewer.getAttribute('open'),null,'A vertical swipe scrolls the Home panel');
+  }
+
+  await go(.94);
+  for(const key of ['couple','sand']){
+    const surface=home.locator('.relief-'+key+'-frame');
+    const original=await photo(key).boundingBox();
+    const release=await hold(key,key==='couple'?-61:53);
+    const moved=await photo(key).boundingBox();
+    assert.ok(Math.abs(await position(surface))>20,`${key} follows the pointer`);
+    assert.ok(Math.abs(moved.width/moved.height-original.width/original.height)<.004,`${key} keeps its aspect ratio`);
+    assert.ok(moved.x>=0&&moved.x+moved.width<=viewport.width+1,`${key} stays fully in the viewport`);
+    await release();
+    await released(surface);
+    assert.equal(await viewer.getAttribute('open'),null);
+  }
+}
+
 async function run(browser, name, viewport, touch) {
   const context=await browser.newContext({
     ...(touch?devices['iPad (gen 7)']:{}),viewport,hasTouch:touch,
@@ -151,6 +238,7 @@ async function run(browser, name, viewport, touch) {
     const navigate=locator=>touch?locator.tap():locator.click();
     await navigate(page.locator('.relief-next'));
     await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().goal>.30);
+    await checkPrintMotion(page,send,viewport);
     for(const [at,key,act] of [[.38,'bay',1],[.57,'road',1],[.74,'couple',2],[.97,'sand',2]]){
       await home.evaluate((node,p)=>node.scrollTop=(node.scrollHeight-node.clientHeight)*p,at);
       await page.waitForFunction(p=>Math.abs(window.WINTER_RELIEF_PROBE.frame().progress-p)<.012,at);
