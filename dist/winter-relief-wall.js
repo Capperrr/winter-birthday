@@ -1,26 +1,28 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
-import { createReliefField, maxBrushSegments, plasterLight, sampledHeight } from './winter-relief-field.js?v=quiet-plaster';
-import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=secret-winter-garden';
+import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=moonlit-mural';
+import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=moonlit-mural';
 
 const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=photographic-acts', import.meta.url);
-const coverDistance = 13.7;
+const coverDistance = 8.9;
+const coverX = .14;
+const coverY = .46;
 const positions = [
-  [0, 0, coverDistance], [.38,-3.4,12.4], [.59,-7.4,11.8],
+  [coverX, coverY, coverDistance], [.38,-3.4,12.4], [.59,-7.4,11.8],
   [.15,-11.1,11.45], [-.37,-14.2,11.4], [-.61,-17.0,11.75],
   [-.34,-20.75,12.05], [.27,-22.75,12.42], [.1,-25.01,13.15]
 ];
 const rail = new THREE.CatmullRomCurve3(positions.map(point=>new THREE.Vector3(...point)));
-const day = new THREE.Color(0xeeebe6);
-const evening = new THREE.Color(0xd1d5dc);
+const day = new THREE.Color(0xf0ebe3);
+const evening = new THREE.Color(0x202b3a);
 const finalWarmth = new THREE.Color(0xece6dd);
 const firstBrushDelay = 5;
 const idleBrushDelay = 8;
 
 function reliefMaterial(field, direction, text) {
   return new THREE.ShaderMaterial({
-    uniforms:{...field.room,liftMap:field.map,plaster:{value:field.backdrop},direction,
-      fixedDepth:{value:text ? .74 : 0},ink:{value:text ? .29 : 0}},
+    uniforms:{...field.room,...field.light,liftMap:field.map,direction,
+      fixedDepth:{value:text ? .74 : 0},inscription:{value:text}},
     vertexShader:sampledHeight + `
       uniform vec3 direction;
       varying float illumination;
@@ -50,9 +52,8 @@ function reliefMaterial(field, direction, text) {
         gl_Position.z -= fixedDepth * .012 * gl_Position.w;
       }
     `,
-    fragmentShader:plasterLight + `
-      uniform vec3 plaster;
-      uniform float ink;
+    fragmentShader:galleryLight + `
+      uniform bool inscription;
       varying float illumination;
       varying float raised;
       varying float occlusion;
@@ -60,8 +61,13 @@ function reliefMaterial(field, direction, text) {
       void main() {
         float shaped = .62 + .49 * illumination - occlusion;
         float detail = mix(.012, 1., smoothstep(.025,.77,raised));
-        float value = mix(1.,shaped,detail) * plasterWash(wallPoint) - ink;
-        gl_FragColor = vec4(plaster * value,1.);
+        vec3 color = roomPlaster(wallPoint) * mix(1.,shaped,detail);
+        if (inscription) {
+          vec3 etched = color * vec3(.95,.89,.80) * (.122+.108*illumination);
+          vec3 silver = mix(moonColor, vec3(.79,.86,.95),.49) * (.70+.30*illumination);
+          color = mix(etched, silver, nightAmount);
+        }
+        gl_FragColor = vec4(color,1.);
         #include <colorspace_fragment>
       }
     `
@@ -145,10 +151,11 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     garden.mesh.scale.setScalar(compositionScale);
     garden.mesh.position.y=.94*(1-compositionScale);
     const box=title.getBoundingClientRect();
-    const stageTop=host.getBoundingClientRect().top;
+    const stageBox=host.getBoundingClientRect();
     const distance=2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*coverDistance/height;
     inscription.scale.setScalar(box.width*.975*distance/9.5);
-    inscription.position.set(0,(height/2 - (box.top-stageTop+box.height/2))*distance,.02);
+    inscription.position.set(coverX + (box.left-stageBox.left+box.width/2-width/2)*distance,
+      coverY+(height/2-(box.top-stageBox.top+box.height/2))*distance,.02);
     return true;
   }
 
@@ -263,8 +270,9 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         if(cancelled)return null;
         if(resizePending&&!fit())return null;
         rail.getPoint(progress,cameraPoint);
-        camera.position.set(cameraPoint.x*spread,cameraPoint.y,cameraPoint.z);
-        camera.lookAt(cameraPoint.x*spread*.91,cameraPoint.y,0);
+        const horizontalScale=THREE.MathUtils.lerp(1,spread,THREE.MathUtils.smoothstep(progress,0,.15));
+        camera.position.set(cameraPoint.x*horizontalScale,cameraPoint.y,cameraPoint.z);
+        camera.lookAt(cameraPoint.x*horizontalScale,cameraPoint.y,0);
         camera.updateMatrixWorld();
         inscription.visible=view!=='scenery'&&progress<.21;
         scene.updateMatrixWorld();
@@ -281,14 +289,17 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         const warmth=THREE.MathUtils.smoothstep(progress,.65,.84);
         field.backdrop.copy(day).lerp(finalWarmth,warmth*.64).lerp(evening,night);
         const drift=Math.sin(seconds*.43);
-        const lightX=-.79+.105*drift+.38*night;
-        const lightY=.61+.072*Math.sin(seconds*.39);
-        field.lightVector.value.set(lightX/.88,lightY/.88);
-        direction.value.set(lightX,lightY,.88).transformDirection(camera.matrixWorldInverse);
+        const lightX=THREE.MathUtils.lerp(-.79+.085*drift,.91+.025*drift,night);
+        const lightY=THREE.MathUtils.lerp(.61+.058*Math.sin(seconds*.39),.81,night);
+        const lightZ=THREE.MathUtils.lerp(.88,.60,night);
+        field.light.nightAmount.value=night;
+        field.lightVector.value.set(lightX/lightZ,lightY/lightZ);
+        direction.value.set(lightX,lightY,lightZ).transformDirection(camera.matrixWorldInverse);
         field.shadows();
         renderer.setClearAlpha(0);
         renderer.render(scene,camera);
         return {camera:[camera.position.x,camera.position.y,camera.position.z],resolution:[canvas.width,canvas.height],
+          night,light:[lightX,lightY,lightZ],
           triangles:renderer.info.render.triangles,trace:brush ? (brush.touch?'touch':'mouse') : ambient ? 'auto' : 'decay'};
       },
       scaleResolution(factor){

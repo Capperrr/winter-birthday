@@ -176,7 +176,7 @@ async function run(browser, name, viewport, touch) {
     const point=motifs.find(motif=>motif.name==='Bird_on_the_branch').screen;
     const control=motifs.find(motif=>motif.name==='The_arriving_bird').screen;
     const feathers=motifs.find(motif=>motif.name==='Primary_flight_feathers').screen;
-    assert.ok(point[0]>.2&&point[0]<.49&&control[0]>.51&&control[0]<.8,'Both birds stay in the frame');
+    assert.ok(point[0]>.13&&point[0]<.49&&control[0]>.51&&control[0]<.87,'Both birds stay in the frame');
     assert.ok(feathers[1]<control[1]-.10,'The high wing is in frame above the arriving bird');
     const before=await sample(point);
     const otherBefore=await sample(control);
@@ -279,7 +279,13 @@ async function run(browser, name, viewport, touch) {
     assert.ok(Math.abs(poses[3][1]-poses[0][1])>12,'Camera travels along the continuous wall');
     await navigate(page.locator('#living-night'));
     assert.equal(await page.locator('#main').getAttribute('data-living-time'),'night');
+    await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().night===1);
+    assert.ok((await read()).light[0]>.8,'Moonlight reverses the direction of the key light');
+    assert.deepEqual(await home.locator('.relief-print img').evaluateAll(images=>images.map(image=>getComputedStyle(image).filter)),
+      ['none','none','none','none'],'Night lighting never tints the original photographs');
     await navigate(page.locator('#living-morning'));
+    await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().night===0);
+    assert.ok((await read()).light[0]<-.65);
     await navigate(page.locator('#view-toggle'));
     assert.equal(await page.locator('#main').getAttribute('data-view'),'scenery');
     await navigate(page.locator('#view-toggle'));

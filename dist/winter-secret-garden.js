@@ -1,5 +1,5 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
-import {plasterLight, sampledHeight} from './winter-relief-field.js?v=quiet-plaster';
+import {galleryLight, sampledHeight} from './winter-relief-field.js?v=moonlit-mural';
 
 const depthURL = new URL('./assets/home/secret-garden-depth.bin', import.meta.url);
 const lightingURL = new URL('./assets/home/secret-garden-light.png', import.meta.url);
@@ -13,7 +13,7 @@ export const gardenLandmarks = [
   ['Open_hellebore', -3.65, -.75],
   ['Bird_on_the_branch', -1.75, .63],
   ['The_arriving_bird', 1.39, 1.32],
-  ['Primary_flight_feathers', 3.19, 3.37],
+  ['Primary_flight_feathers', 3.06, 2.94],
   ['Camellia_crown', 2.96, -.48],
   ['Bough_and_leaf_veins', -4.29, -1.73]
 ].map(([name,x,y])=>({name, point:new THREE.Vector3(x,y,0)}));
@@ -83,8 +83,7 @@ export function sculptGarden({depth,image}, field) {
         gl_Position = projectionMatrix * viewMatrix * stone;
       }
     `,
-    fragmentShader:plasterLight + `
-      uniform vec3 plaster;
+    fragmentShader:galleryLight + `
       uniform vec2 lightVector;
       uniform vec2 wallOrigin;
       uniform vec2 wallExtent;
@@ -102,17 +101,21 @@ export function sculptGarden({depth,image}, field) {
         float nz = sqrt(max(.014,1.-dot(vane,vane)));
         vec3 normal = normalize(vec3(vane*scale - liftSlope*nz,nz));
         vec3 light = normalize(vec3(lightVector,1.));
-        float rakingLight = (max(0.,dot(light,normal))-light.z)*.47;
-        float engraving = dot(vane,vec2(-.57,.48))*.018*(1.-awake);
-        float contact = (1.-bake.b)*(.035+.25*smoothstep(.04,.85,awake));
+        float facing = max(0.,dot(light,normal));
+        float footprint = moonFootprint(wallPoint);
+        float rakingLight = (facing-light.z)*mix(.47,.70 + .25*footprint,nightAmount);
+        float engraving = dot(vane,light.xy)*mix(.059,.088,nightAmount)*(1.-awake);
+        float contact = (1.-bake.b)*(.047+.25*smoothstep(.04,.85,awake));
         vec2 p = (wallPoint-wallOrigin)/wallExtent;
         float projectedShade = texture2D(shadowAtlas,p).r*.32;
         projectedShade += (texture2D(shadowAtlas,p+vec2(1.45,0.)*texel).r +
                  texture2D(shadowAtlas,p-vec2(1.45,0.)*texel).r +
                  texture2D(shadowAtlas,p+vec2(0.,1.2)*texel).r +
                  texture2D(shadowAtlas,p-vec2(0.,1.2)*texel).r)*.17;
-        float value = plasterWash(wallPoint) + rakingLight + engraving - contact - projectedShade*.27;
-        gl_FragColor = vec4(plaster*value,1.);
+        float value = max(.22,1. + rakingLight + engraving - contact);
+        float rim = (1. - normal.z) * (1. - normal.z) * facing;
+        vec3 silver = moonColor * (nightAmount * awake * rim * (.08 + .22*footprint));
+        gl_FragColor = vec4(sculptedShadow(roomPlaster(wallPoint)*value + silver,projectedShade),1.);
         #include <colorspace_fragment>
       }
     `

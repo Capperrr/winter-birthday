@@ -41,7 +41,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
   const resources={webgl:'未启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''};
   const pendingContacts=[];
   let active=false,failure='',reason='',controller=null,wall=null,frame=null,input=null;
-  let progress=0,goal=0,lastInput=-Infinity,seconds=0,night=0,previousTime=0,raf=0;
+  let progress=0,goal=0,lastInput=-Infinity,seconds=0,previousTime=0,raf=0;
   let fps=0,startSample=0,samples=0,slow=0,fast=0,lastReport=0;
   let chapter=-1;
   const exhibits=setupReliefPrints(rail,{
@@ -164,7 +164,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     previousTime=now;
     seconds+=elapsed*.001;
     progress=Math.abs(goal-progress)<.00025?goal:progress+(goal-progress)*(1-Math.exp(-elapsed/76));
-    night+=((shell.dataset.livingTime==='night'?1:0)-night)*(1-Math.exp(-elapsed/380));
+    const night=Number(shell.style.getPropertyValue('--home-night'))||0;
     const held=input&&(input.touch||seconds-lastInput<.4)?input:null;
     frame=wall.draw({progress,seconds,night,input:held,contacts:pendingContacts,lastInput,
       view:wallStudy?'scenery':shell.dataset.view});
@@ -203,7 +203,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=secret-winter-garden').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=moonlit-mural').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail

@@ -42,7 +42,7 @@
   <script src="journey.js?v=winter-world-1" defer></script>
   <script src="journey-coverflow.js?v=winter-world-1" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
-  <script src="living-home.js?v=alabaster-1" defer></script>
+  <script src="living-home.js?v=moonlit-mural" defer></script>
   <script src="living-water.js?v=depth-20261122" defer></script>
   <script src="music.js?v=gentle-eight-1" defer></script>
   <script src="interactive-finale.js?v=coverflow-integration-20261118" defer></script>
@@ -58,9 +58,9 @@
   <link rel="stylesheet" href="cinematic-scenes.css?v=winter-world-1">
   <script src="cinematic-scenes.js?v=winter-world-1" defer></script>
   <link rel="stylesheet" href="winter-film.css?v=cake-scene-stable">
-  <link rel="stylesheet" href="winter-relief.css?v=secret-winter-garden">
+  <link rel="stylesheet" href="winter-relief.css?v=moonlit-mural">
   <script src="winter-film.js?v=cake-scene-stable" defer></script>
-  <script type="module" src="winter-relief.js?v=secret-winter-garden"></script>
+  <script type="module" src="winter-relief.js?v=moonlit-mural"></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -133,14 +133,24 @@
       <section class="page-panel home-panel" id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
         <div class="relief-rail" id="relief-rail">
           <div class="relief-stage" id="relief-stage" aria-hidden="true">
-            <picture id="scene-photo">
-              <source media="(orientation: portrait)" srcset="assets/home/wall-portrait.webp?v=quiet-plaster">
-              <img src="assets/home/wall-wide.webp?v=quiet-plaster" width="1680" height="1120" alt="" fetchpriority="high" decoding="async">
-            </picture>
-            <picture class="relief-garden-poster">
-              <source media="(orientation: portrait)" srcset="assets/home/secret-garden-portrait.webp">
-              <img src="assets/home/secret-garden-wide.webp" width="1680" height="1120" alt="" decoding="async">
-            </picture>
+            <div class="relief-fallback">
+              <picture id="scene-photo">
+                <source media="(orientation: portrait)" srcset="assets/home/wall-portrait.webp?v=quiet-plaster">
+                <img src="assets/home/wall-wide.webp?v=quiet-plaster" width="1680" height="1120" alt="" decoding="async">
+              </picture>
+              <picture class="relief-garden-poster">
+                <source media="(max-aspect-ratio: 11/20)" srcset="assets/home/secret-garden-phone.webp?v=mural">
+                <source media="(orientation: portrait)" srcset="assets/home/secret-garden-portrait.webp?v=mural">
+                <img src="assets/home/secret-garden-wide.webp?v=mural" width="1800" height="900" alt="" fetchpriority="high" decoding="async">
+              </picture>
+            </div>
+            <div class="relief-fallback relief-fallback-night">
+              <picture class="relief-garden-poster">
+                <source media="(max-aspect-ratio: 11/20)" srcset="assets/home/secret-garden-night-phone.webp">
+                <source media="(orientation: portrait)" srcset="assets/home/secret-garden-night-portrait.webp">
+                <img src="assets/home/secret-garden-night-wide.webp" width="1800" height="900" alt="" decoding="async">
+              </picture>
+            </div>
           </div>
 
           <div class="relief-chapters">

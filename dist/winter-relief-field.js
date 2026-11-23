@@ -41,6 +41,28 @@ export const plasterLight = `
   }
 `;
 
+export const galleryLight = plasterLight + `
+  uniform vec3 plaster;
+  uniform vec3 moonColor;
+  uniform float nightAmount;
+  float moonFootprint(vec2 p) {
+    vec2 offset = p - vec2(.72,.68);
+    float across = dot(offset,vec2(-.64,.77));
+    float along = dot(offset,vec2(-.77,-.64));
+    float aperture = 1.45 + clamp(along + 3.6, 0., 8.) * .112;
+    float beam = (1. - smoothstep(aperture * .62, aperture, abs(across + .14)));
+    return beam * (.74 + .26 * (1. - smoothstep(-5.,4.,along))) * smoothstep(-12.,-3.4,p.y);
+  }
+  vec3 roomPlaster(vec2 p) {
+    vec3 bounce = moonColor * nightAmount * (.045 + .54 * moonFootprint(p));
+    return plaster * plasterWash(p) + bounce;
+  }
+  vec3 sculptedShadow(vec3 color, float strength) {
+    vec3 hue = mix(vec3(.70,.83,1.),vec3(1.04,1.01,.88),nightAmount);
+    return color * (1. - hue * strength * mix(.34,.53,nightAmount));
+  }
+`;
+
 export function createReliefField(renderer) {
   let read = textureTarget(fieldSize, fieldSize);
   let write = textureTarget(fieldSize, fieldSize);
@@ -49,6 +71,7 @@ export function createReliefField(renderer) {
   const room = {wallOrigin:{value:origin},wallExtent:{value:extent}};
   const lightVector = {value:new THREE.Vector2(-.48, .60)};
   const backdrop = new THREE.Color(0xe9e9e6);
+  const light = {plaster:{value:backdrop}, moonColor:{value:new THREE.Color(0xaec4e1)}, nightAmount:{value:0}};
   const buffers = new Map();
   const projectedShadows = new THREE.Scene();
   const flatCamera = new THREE.Camera();
@@ -109,8 +132,8 @@ export function createReliefField(renderer) {
   paint.add(pass);
   const wall = new THREE.ShaderMaterial({
     depthWrite:true,
-    uniforms:{...room,shadowAtlas:{value:shade.texture},
-      texel:{value:new THREE.Vector2(1/shadowSize[0],1/shadowSize[1])},plaster:{value:backdrop}},
+    uniforms:{...room,...light,shadowAtlas:{value:shade.texture},
+      texel:{value:new THREE.Vector2(1/shadowSize[0],1/shadowSize[1])}},
     vertexShader:`
       varying vec2 wallPoint;
       void main() {
@@ -118,9 +141,8 @@ export function createReliefField(renderer) {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
       }
     `,
-    fragmentShader:plasterLight + `
+    fragmentShader:galleryLight + `
       uniform sampler2D shadowAtlas;
-      uniform vec3 plaster;
       uniform vec2 wallOrigin;
       uniform vec2 wallExtent;
       uniform vec2 texel;
@@ -132,7 +154,7 @@ export function createReliefField(renderer) {
                   texture2D(shadowAtlas,p-vec2(1.45,0.)*texel).r +
                   texture2D(shadowAtlas,p+vec2(0.,1.2)*texel).r +
                   texture2D(shadowAtlas,p-vec2(0.,1.2)*texel).r) * .17;
-        gl_FragColor = vec4(plaster * (plasterWash(wallPoint) - shade * .34),1.);
+        gl_FragColor = vec4(sculptedShadow(roomPlaster(wallPoint),shade),1.);
         #include <colorspace_fragment>
       }
     `
@@ -226,7 +248,7 @@ export function createReliefField(renderer) {
   }
 
   return {
-    room,map,wall,backdrop,lightVector,add,step,shadows,
+    room,map,wall,backdrop,light,lightVector,add,step,shadows,
     probe(point) {
       return {height:sample(read,point,1),shadow:sample(shade,point,0,9)};
     },
