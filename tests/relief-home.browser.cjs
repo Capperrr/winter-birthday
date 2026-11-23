@@ -178,6 +178,13 @@ async function run(browser, name, viewport, touch) {
     const feathers=motifs.find(motif=>motif.name==='Primary_flight_feathers').screen;
     assert.ok(point[0]>.13&&point[0]<.49&&control[0]>.51&&control[0]<.87,'Both birds stay in the frame');
     assert.ok(feathers[1]<control[1]-.10,'The high wing is in frame above the arriving bird');
+    await page.waitForFunction(points=>{
+      const probe=window.WINTER_RELIEF_PROBE;
+      return probe.frame().trace==='decay'&&points.every(point=>{
+        const {height,shadow}=probe.sample(...point);
+        return height===0&&shadow===0;
+      });
+    },[point,control],{polling:130});
     const before=await sample(point);
     const otherBefore=await sample(control);
     const position=await canvas.boundingBox();
