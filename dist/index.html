@@ -58,9 +58,9 @@
   <link rel="stylesheet" href="cinematic-scenes.css?v=winter-world-1">
   <script src="cinematic-scenes.js?v=winter-world-1" defer></script>
   <link rel="stylesheet" href="winter-film.css?v=cake-scene-stable">
-  <link rel="stylesheet" href="winter-relief.css?v=herbarium-3d">
+  <link rel="stylesheet" href="winter-relief.css?v=wall-traces">
   <script src="winter-film.js?v=cake-scene-stable" defer></script>
-  <script src="winter-relief.js?v=herbarium-3d" defer></script>
+  <script src="winter-relief.js?v=wall-traces" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -136,44 +136,58 @@
             <picture id="scene-photo"><img src="assets/winter-v2/plaster/cover.webp" width="1680" height="1120" alt="" fetchpriority="high" decoding="async"></picture>
           </div>
 
-          <section class="relief-panel relief-cover" aria-labelledby="relief-title">
-            <div class="relief-cover-content scene-copy">
-              <p class="relief-masthead">A Personal Exhibition</p>
-              <p class="relief-for-you">For you</p>
-              <h1 class="relief-title" id="relief-title">
-                <span>WINTER</span>
-                <img class="relief-lettering" src="assets/winter-v2/plaster/winter-lettering.webp" width="1680" height="430" alt="" decoding="async">
-              </h1>
-              <p class="relief-subtitle">A little universe made for you.</p>
-              <button class="relief-link relief-enter" type="button" id="relief-enter" data-relief-target="relief-prints">进入 Winter 世界 <span aria-hidden="true">↓</span></button>
-            </div>
-          </section>
-
-          <section class="relief-panel relief-prints" id="relief-prints" aria-labelledby="relief-prints-title">
-            <div class="relief-exhibition scene-copy">
-              <h2 id="relief-prints-title">一些闪闪发光的<br>普通日子</h2>
-              <a class="relief-print relief-print-sea" href="assets/memory-wall/memory-17.webp" aria-label="放大海边的照片">
-                <img src="assets/memory-wall/memory-17.webp" width="624" height="1100" alt="海浪边的 Winter" loading="lazy" decoding="async">
-                <span aria-hidden="true">↗</span>
-              </a>
-              <a class="relief-print relief-print-sunset" href="assets/memory-wall/memory-02.webp" aria-label="放大夕阳下的照片">
-                <img src="assets/memory-wall/memory-02.webp" width="618" height="1100" alt="夕阳下的 Winter" loading="lazy" decoding="async">
-                <span aria-hidden="true">↗</span>
-              </a>
-              <button class="relief-link relief-to-dedication" type="button" data-relief-target="relief-dedication">继续 <span aria-hidden="true">↓</span></button>
-            </div>
-          </section>
-
-          <section class="relief-panel relief-dedication" id="relief-dedication" aria-labelledby="relief-dedication-title">
-            <div class="relief-dedication-content scene-copy">
-              <h2 id="relief-dedication-title"><span>像阵风掠过就无踪影</span><span>像束光温暖的照耀你</span></h2>
-              <p class="relief-signature">MADE FOR WINTER, WITH LOVE — GWEN</p>
-              <div class="relief-chapter-links">
-                <button type="button" class="relief-link" data-relief-route="about">About Me <span aria-hidden="true">↗</span></button>
-                <button type="button" class="relief-link" data-relief-route="destination">Destination <span aria-hidden="true">↗</span></button>
+          <div class="relief-chapters">
+            <section class="relief-panel relief-cover" aria-labelledby="relief-title">
+              <div class="relief-cover-content scene-copy">
+                <p class="relief-for-you" lang="en">For you,</p>
+                <h1 class="relief-title" id="relief-title">
+                  <span>WINTER</span>
+                  <img class="relief-lettering" src="assets/winter-v2/plaster/winter-lettering.webp" width="1680" height="430" alt="" decoding="async">
+                </h1>
+                <p class="relief-poem"><span>像阵风掠过就无踪影</span><span>像束光温暖地照耀你</span></p>
+                <button class="relief-link relief-next" type="button" data-relief-progress=".315" aria-controls="relief-landscapes">向下滑动 <span aria-hidden="true">↓</span></button>
               </div>
-            </div>
-          </section>
+            </section>
+
+            <section class="relief-panel relief-landscapes" id="relief-landscapes" aria-labelledby="relief-landscapes-title">
+              <div class="relief-landscape-content scene-copy">
+                <h2 id="relief-landscapes-title">一起走过的风景</h2>
+                <div class="relief-window">
+                  <button class="relief-print relief-bay" type="button" data-photo="bay" aria-label="查看东澳岛海湾原图" disabled>
+                    <img alt="东澳岛的海湾、远山与灰蓝色的天空" width="1525" height="1016" decoding="async">
+                    <span class="relief-photo-empty">东澳岛海湾 · 原图待接入</span>
+                  </button>
+                  <button class="relief-print relief-road" type="button" data-photo="road" aria-label="查看海边路上的回头照原图" disabled>
+                    <img alt="走在海边路上的 Winter 回过头，身后是树林与天空" width="2048" height="1152" decoding="async">
+                    <span class="relief-photo-empty">海边路上的回头照 · 原图待接入</span>
+                  </button>
+                </div>
+                <p class="relief-bay-caption" lang="en">The wind on Dong’ao Island was so strong, I found myself leaning right into your arms.</p>
+              </div>
+            </section>
+
+            <section class="relief-panel relief-moment" id="relief-moment" aria-labelledby="relief-moment-title">
+              <div class="relief-moment-content scene-copy">
+                <h2 id="relief-moment-title" lang="en">Our moment</h2>
+                <button class="relief-print relief-couple" type="button" data-photo="couple" aria-label="查看我们的夜景合照原图" disabled>
+                  <img alt="夜色里，Winter 与 Gwen 的双人合照" width="1920" height="1080" decoding="async">
+                  <span class="relief-photo-empty">我们的夜景合照 · 原图待接入</span>
+                </button>
+                <div class="relief-postscript">
+                  <button class="relief-print relief-sand" type="button" data-photo="sand" aria-label="查看沙滩上的手写字迹原图" disabled>
+                    <img alt="沙滩上的真实手写字迹" width="2048" height="1152" decoding="async">
+                    <span class="relief-photo-empty">沙滩写字 · 原图待接入</span>
+                  </button>
+                  <div class="relief-goodbye" lang="en">
+                    <p class="relief-letter">I wish we had more photos of us already, and I know we’ll take many more in the years to come.</p>
+                    <p class="relief-subtitle">A little universe made for you.</p>
+                    <button class="relief-link relief-enter" id="relief-enter" type="button" data-relief-route="destination">Enter Winter’s World <span aria-hidden="true">↗</span></button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="relief-scroll-track" aria-hidden="true"></div>
 
           <footer class="relief-tools" id="scene-footer">
             <button class="view-toggle" id="view-toggle" type="button" aria-pressed="false" aria-label="隐藏文字，只看浮雕">
