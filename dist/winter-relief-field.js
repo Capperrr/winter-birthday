@@ -4,6 +4,7 @@ const origin = new THREE.Vector2(-13.5, -34);
 const extent = new THREE.Vector2(27, 45);
 const fieldSize = 256;
 const shadowSize = [384, 512];
+const restingDepth = .34;
 
 function textureTarget(width, height) {
   return new THREE.WebGLRenderTarget(width, height, {
@@ -20,8 +21,14 @@ export const sampledHeight = `
   float reliefAt(vec2 p) {
     vec2 uv = (p - wallOrigin) / wallExtent;
     float traced = texture2D(liftMap, uv).g;
-    float height = smoothstep(.025, .90, traced);
-    return mix(.075, 1., mix(height, 1., fixedDepth));
+    float height = smoothstep(.018, .90, traced);
+    return mix(${restingDepth}, 1., mix(height, 1., fixedDepth));
+  }
+`;
+
+export const plasterLight = `
+  float plasterWash(vec2 p) {
+    return .978 + sin(p.x * .26 + p.y * .071 + .84) * .038;
   }
 `;
 
@@ -71,9 +78,9 @@ export function createReliefField(renderer) {
       void main() {
         vec2 p = wallOrigin + tracedUV * wallExtent;
         vec2 old = texture2D(previous,tracedUV).rg;
-        float fading = max(0., min(old.r * exp(-dt / .99), old.r - 1./255.));
+        float fading = max(0., min(old.r * exp(-dt / 1.04), old.r - 1./255.));
         float head = max(fading, max(inkAt(p,brush,brushShape),inkAt(p,ghost,ghostShape)));
-        float response = head > old.g ? .16 : .25;
+        float response = head > old.g ? .135 : .26;
         float lifted = mix(old.g,head,1. - exp(-dt / response));
         if (head < old.g) lifted = max(head,min(lifted,old.g-1./255.));
         else lifted = min(head,max(lifted,old.g+1./255.));
@@ -96,7 +103,7 @@ export function createReliefField(renderer) {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
       }
     `,
-    fragmentShader:`
+    fragmentShader:plasterLight + `
       uniform sampler2D shadowAtlas;
       uniform vec3 plaster;
       uniform vec2 wallOrigin;
@@ -113,8 +120,8 @@ export function createReliefField(renderer) {
         vec2 pore = fract(floor(wallPoint * 118.) * vec2(.1031,.11369));
         pore += dot(pore,pore.yx+19.19);
         float grain = fract(pore.x*pore.y) - .5;
-        float wash = .992 + grain * .019;
-        gl_FragColor = vec4(plaster * (wash - shade * .245),1.);
+        float wash = plasterWash(wallPoint) + grain * .018;
+        gl_FragColor = vec4(plaster * (wash - shade * .34),1.);
         #include <colorspace_fragment>
       }
     `
@@ -134,7 +141,7 @@ export function createReliefField(renderer) {
           float lift = reliefAt(stone.xy);
           float z = max(0.,stone.z * lift);
           vec2 projected = stone.xy - z * lightVector;
-          shadeValue = smoothstep(.008,.58,z) * (.08 + .92 * smoothstep(.06,.71,lift));
+          shadeValue = smoothstep(.012,.48,z) * (.46 + .54 * smoothstep(.32,.91,lift));
           gl_Position = vec4((projected - wallOrigin) / wallExtent * 2. - 1., 0.,1.);
         }
       `,
@@ -179,8 +186,7 @@ export function createReliefField(renderer) {
     map.value = read.texture;
   }
 
-  function shadows(scene) {
-    scene.updateMatrixWorld(true);
+  function shadows() {
     for (const [mesh,caster] of buffers) {
       caster.visible = mesh.visible;
       caster.matrix.copy(mesh.matrixWorld);

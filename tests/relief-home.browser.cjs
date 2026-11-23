@@ -11,6 +11,7 @@ entry.hash='home';
 const study=new URL(entry);
 study.searchParams.set('study','relief');
 const wpe=engine==='webkit';
+const originals={bay:[1525,1016],road:[2048,1152],couple:[1920,1080],sand:[2048,1152]};
 fs.mkdirSync(out,{recursive:true});
 
 async function swipe(client, start, end, id) {
@@ -39,7 +40,12 @@ async function run(browser, name, viewport, touch) {
     const page=await context.newPage();
     page.setDefaultTimeout(33000);
     const errors=[];
+    const responses={};
     page.on('pageerror',error=>errors.push(error.message));
+    page.on('response',response=>{
+      const match=new URL(response.url()).pathname.match(/\/assets\/home\/(\w+)-original\.jpeg$/);
+      if(match)responses[match[1]]=response.status();
+    });
     await page.goto(study.href,{waitUntil:'domcontentloaded'});
     const debug=page.locator('#relief-debug');
     const home=page.locator('#panel-home');
@@ -54,6 +60,15 @@ async function run(browser, name, viewport, touch) {
     assert.match(info,/WebGL WebGL 2/);
     assert.match(info,/Shader 无编译错误/);
     assert.match(info,/256 × 256 GPU 双缓冲/);
+    assert.match(info,/33 组原创实体浮雕/);
+    const fullScreen=()=>canvas.evaluate(canvas=>{
+      const {left,top,right,bottom}=canvas.getBoundingClientRect();
+      const style=getComputedStyle(document.querySelector('.site-header'));
+      return {left,top,right,bottom,width:innerWidth,height:innerHeight,header:style.backgroundColor};
+    });
+    const wall=await fullScreen();
+    assert.deepEqual(wall,{left:0,top:0,right:viewport.width,bottom:viewport.height,
+      width:viewport.width,height:viewport.height,header:'rgba(0, 0, 0, 0)'});
     await page.evaluate(()=>document.getElementById('relief-debug').style.visibility='hidden');
     const rest=await shot('study-rest');
     await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().trace==='auto');
@@ -61,9 +76,13 @@ async function run(browser, name, viewport, touch) {
     assert.notDeepEqual(rest,ambient);
     const idle=await read();
     const motifs=await getMotifs();
-    assert.ok(motifs.length>=2);
-    const point=motifs.at(-1).screen;
-    const control=motifs[0].screen;
+    assert.ok(motifs.length>=9,'Original sculptures fill the first viewport');
+    assert.ok(motifs.some(({screen:[x]})=>x<.24)&&motifs.some(({screen:[x]})=>x>.77));
+    assert.ok(motifs.some(({screen:[,y]})=>y<.24)&&motifs.some(({screen:[,y]})=>y>.74));
+    const center=motifs.find(motif=>motif.name.startsWith('Three_branches'));
+    assert.ok(center && center.screen[0]>.35 && center.screen[0]<.65);
+    const point=center.screen;
+    const control=motifs.find(motif=>motif.name.startsWith('Frosted_bracken')).screen;
     const before=await sample(point);
     const otherBefore=await sample(control);
     const position=await canvas.boundingBox();
@@ -75,7 +94,7 @@ async function run(browser, name, viewport, touch) {
       await swipe(client,{x:end.x-offset,y:end.y},end,1);
     }else if(touch){
       await page.touchscreen.tap(end.x,end.y);
-      await page.waitForFunction(({point,height})=>window.WINTER_RELIEF_PROBE.sample(...point).height>height+.046,
+      await page.waitForFunction(({point,height})=>window.WINTER_RELIEF_PROBE.sample(...point).height>height+.14,
         {point,height:before.height},{polling:100});
     }else{
       await page.mouse.move(end.x-offset,end.y);
@@ -84,15 +103,17 @@ async function run(browser, name, viewport, touch) {
     }
     const lifted=await sample(point);
     const otherAfter=await sample(control);
-    assert.ok(lifted.height>before.height+.046,name+' GPU height: '+JSON.stringify({before,lifted}));
-    assert.ok(lifted.shadow>before.shadow+.0009,name+' projected shadow: '+JSON.stringify({before,lifted}));
+    assert.ok(before.shadow>.005,name+' Shadows in resting state: '+JSON.stringify(before));
+    assert.ok(lifted.height>before.height+.14,name+' GPU height: '+JSON.stringify({before,lifted}));
+    assert.ok(lifted.shadow>before.shadow+.018,name+' projected shadow: '+JSON.stringify({before,lifted}));
     assert.ok(Math.abs(otherAfter.height-otherBefore.height)<lifted.height*.76,'Lift stays local to the stroke');
     await shot('study-lift');
     if(!touch)await page.mouse.move(end.x,4);
-    await page.waitForTimeout(1600);
+    await page.waitForTimeout(1800);
     const released=await sample(point);
     assert.ok(released.height<lifted.height*.84,JSON.stringify({lifted,released}));
     assert.ok(released.shadow<lifted.shadow,JSON.stringify({lifted,released}));
+    await shot('study-release');
     if(client){
       await swipe(client,{x:position.x+position.width*.66,y:position.y+position.height*.80},
         {x:position.x+position.width*.66,y:position.y+position.height*.24},2);
@@ -110,6 +131,9 @@ async function run(browser, name, viewport, touch) {
     await shot('diagnostics');
     await page.evaluate(()=>document.getElementById('relief-debug').style.visibility='hidden');
     await page.evaluate(()=>document.fonts.ready);
+    await page.waitForFunction(()=>document.querySelectorAll('.relief-print[data-photo-state="ready"]').length===4);
+    assert.deepEqual(await fullScreen(),wall);
+    assert.doesNotMatch(await home.textContent(),/原图待接入/);
     await shot('cover');
     assert.equal(await page.locator('.relief-panel[data-current="true"] .relief-print').count(),0);
     assert.deepEqual(await page.locator('.relief-poem span').allTextContents(),['像阵风掠过就无踪影','像束光温暖地照耀你']);
@@ -119,6 +143,7 @@ async function run(browser, name, viewport, touch) {
     for(const [at,key,act] of [[.38,'bay',1],[.57,'road',1],[.74,'couple',2],[.97,'sand',2]]){
       await home.evaluate((node,p)=>node.scrollTop=(node.scrollHeight-node.clientHeight)*p,at);
       await page.waitForFunction(p=>Math.abs(window.WINTER_RELIEF_PROBE.frame().progress-p)<.012,at);
+      assert.deepEqual(await fullScreen(),wall);
       assert.equal(await page.locator('#relief-rail').getAttribute('data-relief-chapter'),String(act));
       assert.equal(await page.locator('.relief-panel[data-current="true"]').count(),1);
       const photo=page.locator('[data-photo="'+key+'"]');
@@ -130,16 +155,29 @@ async function run(browser, name, viewport, touch) {
       assert.equal(exhibit.fit,'contain');
       assert.equal(exhibit.hidden,false);
       assert.ok(exhibit.top>=0&&exhibit.bottom<=viewport.height+1,JSON.stringify(exhibit));
-      if(exhibit.source){
-        assert.ok(exhibit.width>0&&exhibit.height>0);
-        await navigate(photo);
-        await page.locator('#relief-viewer[open]').waitFor();
-        await navigate(page.locator('.relief-viewer-close'));
-      }else assert.equal(await photo.isDisabled(),true);
+      const asset='assets/home/'+key+'-original.jpeg';
+      assert.equal(exhibit.source,asset);
+      assert.deepEqual([exhibit.width,exhibit.height],originals[key]);
+      assert.equal(await photo.isEnabled(),true);
+      await shot(key);
+      await navigate(photo);
+      const opened=page.locator('#relief-viewer[open] img');
+      await opened.waitFor();
+      const detail=await opened.evaluate(async image=>{
+        await image.decode();
+        const {width,height}=image.getBoundingClientRect();
+        return {url:image.currentSrc,dimensions:[image.naturalWidth,image.naturalHeight],ratio:width/height};
+      });
+      assert.equal(detail.url,new URL(asset,base).href);
+      assert.deepEqual(detail.dimensions,originals[key]);
+      assert.ok(Math.abs(detail.ratio-exhibit.width/exhibit.height)<.004);
+      if(key==='sand'||key==='couple')await shot(key+'-detail');
+      await navigate(page.locator('.relief-viewer-close'));
+      await page.locator('#relief-viewer[open]').waitFor({state:'hidden'});
       captions.push({key,...exhibit});
       poses.push((await read()).camera);
-      await shot(key);
     }
+    for(const key of Object.keys(originals))assert.ok([200,304].includes(responses[key]),'Photo HTTP response '+key);
     assert.ok(Math.abs(poses[3][1]-poses[0][1])>12,'Camera travels along the continuous wall');
     await navigate(page.locator('#living-night'));
     assert.equal(await page.locator('#main').getAttribute('data-living-time'),'night');
@@ -167,7 +205,7 @@ async function run(browser, name, viewport, touch) {
     assert.equal(await canvas.count(),0);
     assert.equal(await debug.count(),0);
     assert.deepEqual(errors,[]);
-    fs.writeFileSync(out+'/'+name+'.json',JSON.stringify({engine,viewport,info,captions,poses,idle,
+    fs.writeFileSync(out+'/'+name+'.json',JSON.stringify({engine,viewport,info,wall,captions,responses,poses,idle,
       brush:{before,lifted,released},native,errors},null,2));
     console.log(name,'PASS');
   } finally{await context.close();}
@@ -192,13 +230,23 @@ async function fallback(browser, flag, expected) {
       }
     },flag);
     const page=await context.newPage();
-    if(flag==='model')await page.route('**/winter-herbarium.glb',route=>route.fulfill({status:503}));
+    if(flag==='model')await page.route('**/winter-herbarium.glb*',route=>route.fulfill({status:503}));
+    if(flag==='photo'){
+      await page.emulateMedia({reducedMotion:'reduce'});
+      await page.route('**/bay-original.jpeg',route=>route.fulfill({status:503}));
+    }
     await page.goto(entry.href,{waitUntil:'domcontentloaded'});
     await page.locator('#relief-rail[data-sculpture="still"]').waitFor({timeout:35000});
     assert.match(await page.locator('#relief-debug').textContent(),expected);
-    assert.equal(await page.locator('.relief-fallback-status').isVisible(),flag!=='save');
+    assert.equal(await page.locator('.relief-fallback-status').isVisible(),flag!=='save'&&flag!=='photo');
     await page.locator('.relief-next').click();
     await page.waitForFunction(()=>document.getElementById('panel-home').scrollTop>40);
+    if(flag==='photo'){
+      const bay=page.locator('[data-photo="bay"]');
+      assert.equal(await bay.isDisabled(),true);
+      assert.equal(await bay.locator('.relief-photo-error').isVisible(),true);
+      await page.locator('[data-photo="road"][data-photo-state="ready"]').waitFor();
+    }
     console.log('Fallback',flag,'PASS');
   } finally{await context.close();}
 }
@@ -219,6 +267,7 @@ async function fallback(browser, flag, expected) {
       await fallback(browser,'context',/无法创建 WebGL 2 context/);
       await fallback(browser,'model',/浮雕模型 HTTP 503/);
       await fallback(browser,'shader',/Shader 编译失败/);
+      await fallback(browser,'photo',/prefers-reduced-motion/);
     }
   } finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1});

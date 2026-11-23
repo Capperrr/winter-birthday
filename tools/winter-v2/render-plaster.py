@@ -3,7 +3,8 @@
 python tools/winter-v2/letter-solid.py cormorant-static.ttf letters.json
 blender -b -t 6 -P tools/winter-v2/render-plaster.py -- letters.json output-directory
 Produces lit plaster plus registered height passes for the browser, and
-transparent raised typography. Add the wall argument to export the connected glTF relief.
+transparent raised typography. Use `wall` to export the connected glTF relief or
+`wall wall-still` to also render the wide and portrait Home fallback plates.
 """
 import json
 import math
@@ -248,7 +249,7 @@ def letter_model():
 
 
 def wall_export():
-    """Export the herbarium as beveled surfaces in one wall coordinate system."""
+    """Sculpt one continuous panel from the top of Home to the last photograph."""
     panels = []
 
     def place(name, center, depth, budget, draw):
@@ -264,9 +265,8 @@ def wall_export():
         item = bpy.context.object
         item.name = name
         item.location.x, item.location.y = center
-        item.scale.z = depth
-        # The stems start inside the stone surface so their edges cast contact shadows.
         item.location.z = -.051 * depth
+        item.scale.z = depth
         item.data.materials.clear()
         item.data.calc_loop_triangles()
         count = len(item.data.loop_triangles)
@@ -277,69 +277,81 @@ def wall_export():
         panels.append(item)
         print(name, len(item.data.vertices), flush=True)
 
-    def upper_bough():
-        tip = cluster((-3.25, .95), -.04, 4.55, -.70, 6)
-        cluster((-2.23, 1.02), -.72, 3.8, -.46, 8, True)
-        flower(-.4, .05, 1.16, .21)
-        bud(tip.x, tip.y, .54, -.30)
-        crystal(1.95, -.6, .43, .22)
+    def wreath(direction, size, turn):
+        root = (-2.65 * direction, .72)
+        tip = cluster(root, turn, 4.55, -.72 * direction, 6)
+        cluster((-1.82 * direction, .44), turn - .58 * direction, 3.75, .52 * direction, 6, True)
+        flower(0, 0, size, turn + .32)
+        flower(.88 * direction, .6, size * .54, turn - .11)
+        bud(tip.x, tip.y, .45, turn)
 
-    def lower_bough():
-        cluster((3.0, -.8), 2.75, 5.75, -.75, 7)
-        cluster((2.03, -.7), 2.25, 4.85, .64, 8, True)
-        flower(.32, .02, 1.13, .42)
-        flower(1.74, -.66, .73, -.48)
-        crystal(-1.5, -1.05, .46, .20)
+    def frond(angle, length, curl, count):
+        axis = Vector((math.cos(angle), math.sin(angle), 0))
+        side = Vector((-axis.y, axis.x, 0))
 
-    def hellebore():
-        cluster((2.45, 1.55), 3.98, 4.85, -.57, 6)
-        cluster((2.12, 1.08), 3.05, 3.40, .52, 8, True)
-        flower(.04, -.10, 1.63, .19)
-        flower(1.49, .73, .79, .51)
-        bud(-1.32, -.38, .53, 3.14)
-        crystal(-2.15, -1.22, .55, .06)
+        def rachis(t):
+            bow = math.sin(math.pi * t)
+            return axis * ((t - .40) * length) + side * (curl * bow) + Vector((0, 0, .061 + .15 * bow))
 
-    def portfolio_left():
-        tip = cluster((-2.96, -1.48), .86, 5.84, .50, 7)
-        cluster((-2.28, -1.36), .24, 4.37, -.67, 8, True)
-        flower(-.17, .40, 1.13, .35)
-        bud(tip.x, tip.y, .70, .19)
-        crystal(1.36, 1.11, .32, .24)
+        trace("Fern rachis", [rachis(t) for t in (0,.18,.39,.65,.82,1)], .050, .75)
+        for i in range(count):
+            t = .12 + i * .80 / count
+            length_at = (.44 + .91 * math.sin(math.pi * (.21 + t * .76))) * (1 - t * .56)
+            for sign in (-1,1):
+                needle = rachis(t + .012 * sign)
+                heading = angle + sign * (.53 + .60 * (1 - t))
+                blade(needle, heading, length_at, .115 * length_at, .21, skew=.09*sign)
 
-    def portfolio_right():
-        cluster((2.45, 1.56), -2.05, 4.67, -.24, 8, True)
-        cluster((2.18, 1.36), -2.60, 4.13, .60, 7)
-        flower(.46, .36, 1.10, .79)
-        crystal(-1.55, -1.23, .72, .05)
+    def winter_berries(facing):
+        points = [(-1.8*facing,-.48,.062),(-.7*facing,-.16,.113),(.33*facing,.31,.20),(1.32*facing,.64,.13)]
+        trace("Rowan branch", points, .052)
+        for x, y, size in [(-.63,.25,.13),(-.21,.54,.115),(.22,.12,.156),(.59,.40,.174),
+                           (.81,.72,.15),(1.12,.55,.13),(1.35,.85,.11)]:
+            trace("Berry petiole", [(facing*(x-.22),y-.25,.094),(facing*x,y,.17)], .018)
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=10, ring_count=6, radius=size,
+                                                location=(facing*x,y,.138))
+            fruit = keep(bpy.context.object)
+            fruit.scale.z = .84
+            for polygon in fruit.data.polygons:
+                polygon.use_smooth = True
+        blade((-.94*facing,-.14,.12),1.51,1.07,.28,.31,veins=True)
+        blade((.22*facing,.25,.17),-.59,.79,.16,.23,veins=True)
 
-    def crossing():
-        tip = cluster((-3.15, -1.55), .43, 7.30, 1.12, 8)
-        cluster((-2.22, -.93), .95, 4.66, 1.03, 9, True)
-        flower(-.24, .24, 1.37, -.30)
-        bud(tip.x, tip.y, .59, .36)
-        crystal(1.36, -.82, .58, .17)
+    # Each section overlaps the next as the camera follows the wall downwards.
+    place("Ivy at the upper left edge", (-4.75, 3.18), 1.95, 4000, lambda: wreath(1,1.22,-.42))
+    place("Fine branches under the north light", (-1.05, 3.67), 1.42, 2100, lambda: frond(.15,4.32,-.43,9))
+    place("First ice crystal", (2.46, 3.49), 1.76, 1300, lambda: crystal(0,0,.67,.19))
+    place("Christmas rose at the upper right", (4.31, 2.27), 2.20, 4100, lambda: wreath(-1,1.24,3.46))
+    place("Small rowan on the left", (-5.35, .48), 1.77, 2000, lambda: winter_berries(1))
+    place("Flake above the lettering", (.18, 1.96), 1.48, 1100, lambda: crystal(0,0,.55,.08))
+    place("Frosted bracken at the right edge", (5.23, -.34), 1.80, 2200, lambda: frond(2.42,4.68,.54,9))
+    place("Winter hellebore below the left verse", (-3.97, -1.44), 2.34, 4200, lambda: wreath(1,1.32,.26))
+    place("Three branches beneath the verse", (-.57, -2.52), 1.91, 2800, lambda: frond(-.30,4.81,.43,9))
+    place("Porcelain snowflake on the right", (2.91, -1.65), 1.67, 1400, lambda: crystal(0,0,.75,.34))
+    place("Large flower at the lower right", (4.45, -3.53), 2.30, 3900, lambda: wreath(-1,1.19,2.75))
+    place("Small ice lace on the lower seam", (-1.97, -4.52), 1.44, 1100, lambda: crystal(0,0,.54,.51))
+    place("Ferns across the lower left seam", (-4.84, -5.22), 1.77, 2400, lambda: frond(.39,5.62,.64,10))
+    place("Bough before the photographic bay", (2.73, -6.40), 2.06, 3900, lambda: wreath(-1,1.30,3.58))
+    place("Central etched rowan", (-.51, -8.02), 1.66, 2200, lambda: winter_berries(-1))
+    place("Ivy around the east side of the bay", (5.17, -9.16), 2.00, 3700, lambda: wreath(-1,1.19,2.55))
+    place("Rose beside the photographic bay", (-4.83, -10.43), 2.32, 4000, lambda: wreath(1,1.18,.62))
+    place("Flake at the right lip of the bay", (5.32, -12.27), 1.82, 1350, lambda: crystal(0,0,.74,.16))
+    place("Fern across the bottom of the bay", (-.78, -12.36), 1.77, 2500, lambda: frond(-.23,5.46,.63,10))
+    place("West edge of the island road", (-5.47, -14.14), 1.74, 2200, lambda: frond(.79,5.2,-.60,10))
+    place("Hellebore beside the island road", (4.80, -14.82), 2.10, 3800, lambda: wreath(-1,1.23,3.12))
+    place("A single piece of frost lace", (1.27, -16.15), 1.83, 1400, lambda: crystal(0,0,.71,.57))
+    place("Rowan underneath the photograph", (-3.81, -17.55), 1.80, 2150, lambda: winter_berries(1))
+    place("Winter ivy at the transition", (3.37, -18.42), 2.10, 3900, lambda: wreath(-1,1.32,2.81))
+    place("Frosted fern in the final bay", (-3.77, -20.20), 1.97, 2300, lambda: frond(.47,4.75,.54,9))
+    place("Rose on the left of the final photograph", (-5.28, -22.60), 2.26, 3900, lambda: wreath(1,1.33,-.62))
+    place("Winter crystal ahead of the final print", (1.54, -21.25), 1.77, 1250, lambda: crystal(0,0,.65,.02))
+    place("Berries alongside the final print", (5.08, -22.72), 1.91, 2100, lambda: winter_berries(-1))
+    place("Long stem curling inward on the right", (4.67, -25.15), 1.91, 2300, lambda: frond(2.20,5.86,-.66,10))
+    place("Ice crystals on the west edge", (-5.63, -25.91), 1.87, 1300, lambda: crystal(0,0,.69,.28))
+    place("Hellebore at the end of the wall", (-3.40, -27.79), 2.24, 4200, lambda: wreath(1,1.39,.33))
+    place("Leaf lace beneath the inscription", (.42, -29.23), 1.83, 2300, lambda: frond(.03,4.95,.56,9))
+    place("The last snow crystal", (4.18, -28.57), 1.70, 1300, lambda: crystal(0,0,.70,.42))
 
-    def lower_garland():
-        cluster((-3.0, -1.03), .48, 6.1, -.99, 8)
-        cluster((-2.30, -.62), .94, 5.0, .66, 8, True)
-        flower(-.51, -.31, 1.30, -.19)
-        flower(1.54, -.83, .7, .54)
-        crystal(3.27, .56, .78, .38)
-
-    def upper_garland():
-        cluster((2.77, 1.1), 3.45, 5.48, 1.29, 7)
-        cluster((2.58, 1.72), 3.65, 3.85, .63, 8, True)
-        flower(.96, .11, .98, .29)
-        crystal(-1.96, -.70, .46, -.22)
-
-    place("Upper bough", (-4.78, 2.68), 1.68, 2300, upper_bough)
-    place("Lower bough", (4.63, -2.51), 2.20, 3050, lower_bough)
-    place("Hellebore", (2.84, -6.66), 2.86, 4100, hellebore)
-    place("Photographic bay left", (-4.69, -10.87), 2.15, 3300, portfolio_left)
-    place("Photographic bay right", (4.98, -14.03), 1.76, 2600, portfolio_right)
-    place("Crossing bough", (-2.68, -18.58), 2.95, 3900, crossing)
-    place("Lower garland", (-3.69, -27.03), 1.99, 3050, lower_garland)
-    place("Upper garland", (4.87, -22.23), 1.76, 2700, upper_garland)
     models.clear()
     letters = letter_model()
     bpy.context.view_layer.objects.active = letters
@@ -357,6 +369,25 @@ def wall_export():
                              use_selection=True, export_yup=False, export_texcoords=False,
                              export_lights=False, export_cameras=False, export_materials="NONE")
 
+    if "wall-still" in chosen:
+        letters.hide_render = True
+        centers = [panel.location.x for panel in panels[:-1]]
+        for panel in panels[:-1]:
+            panel.data.materials.append(frost)
+            panel.scale.z *= .79 * .34
+            panel.location.z *= .79 * .34
+        camera.type = "PERSP"
+        camera.sensor_fit = "VERTICAL"
+        camera.angle_y = math.radians(38)
+        view.location = (0,0,13.7)
+        aim(view,(0,0,0))
+        scene.view_settings.view_transform = "AgX"
+        scene.cycles.samples = 24
+        for name, width, height in (("wall-still-wide",1680,1120),("wall-still-portrait",1050,1400)):
+            spread = max(.46,min(1.64,width/height/1.38))
+            for panel, center in zip(panels, centers):
+                panel.location.x = center * spread
+            shot(name,width,height)
 
 if export_wall:
     wall_export()

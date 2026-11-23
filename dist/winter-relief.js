@@ -188,7 +188,7 @@
     controller=run;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=wall-traces').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=full-plaster-wall').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail
@@ -238,10 +238,18 @@
 
   for(const print of prints){
     const image=print.querySelector('img');
-    const ready=()=>{print.disabled=!image.naturalWidth;diagnose();};
-    image.addEventListener('load',ready);
-    image.addEventListener('error',ready);
-    if(image.getAttribute('src'))ready();
+    const message=print.querySelector('.relief-photo-error');
+    function showImageState(){
+      const loaded=image.complete&&image.naturalWidth>0;
+      const failed=image.complete&&!loaded;
+      print.disabled=!loaded;
+      print.dataset.photoState=failed?'error':loaded?'ready':'loading';
+      message.hidden=!failed;
+      diagnose();
+    }
+    image.addEventListener('load',showImageState);
+    image.addEventListener('error',showImageState);
+    showImageState();
   }
   title.querySelector('.relief-lettering').decode().then(()=>{
     title.dataset.raised='true';

@@ -1,8 +1,8 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
-import { createReliefField, sampledHeight } from './winter-relief-field.js';
+import { createReliefField, plasterLight, sampledHeight } from './winter-relief-field.js?v=full-plaster-wall';
 
-const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb', import.meta.url);
+const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=full-plaster-wall', import.meta.url);
 const coverDistance = 13.7;
 const positions = [
   [0, 0, coverDistance], [.38,-3.4,12.4], [.59,-7.4,11.8],
@@ -10,19 +10,20 @@ const positions = [
   [-.34,-20.75,12.05], [.27,-22.75,12.42], [.1,-25.01,13.15]
 ];
 const rail = new THREE.CatmullRomCurve3(positions.map(point=>new THREE.Vector3(...point)));
-const day = new THREE.Color(0xeaeae7);
+const day = new THREE.Color(0xeeebe6);
 const evening = new THREE.Color(0xd1d5dc);
 const finalWarmth = new THREE.Color(0xece6dd);
 
 function reliefMaterial(field, direction, text) {
   return new THREE.ShaderMaterial({
     uniforms:{...field.room,liftMap:field.map,plaster:{value:field.backdrop},direction,
-      fixedDepth:{value:text ? .74 : 0},ink:{value:text ? .27 : 0}},
-    vertexShader:sampledHeight + `
+      fixedDepth:{value:text ? .74 : 0},ink:{value:text ? .29 : 0}},
+    vertexShader:sampledHeight + plasterLight + `
       uniform vec3 direction;
       varying float illumination;
       varying float exposure;
       varying float occlusion;
+      varying float wash;
       void main() {
         vec4 stone = modelMatrix * vec4(position,1.);
         float lift = reliefAt(stone.xy);
@@ -32,11 +33,14 @@ function reliefMaterial(field, direction, text) {
         vec3 bent = vec3(normal.xy,normal.z/lift);
         bent.xy -= bent.z * max(0.,position.z) * gradient * vec2(scaleX,scaleY);
         vec3 normalInView = normalize(normalMatrix * bent);
-        illumination = clamp(dot(normalInView,direction)*.5 + .5,0.,1.);
-        exposure = smoothstep(.07,.66,lift);
+        illumination = clamp(dot(normalInView,direction)*.57 + .43,0.,1.);
+        exposure = smoothstep(.32,.91,lift);
+        wash = plasterWash(stone.xy);
         stone.z = stone.z > 0. ? stone.z * lift : stone.z;
-        occlusion = (1.-smoothstep(.016,.32,stone.z)) * .047;
+        occlusion = (1.-smoothstep(.02,.31,stone.z)) * .075;
         gl_Position = projectionMatrix * viewMatrix * stone;
+        // Keep the raised inscription legible where fronds cross it in portrait.
+        gl_Position.z -= fixedDepth * .012 * gl_Position.w;
       }
     `,
     fragmentShader:`
@@ -45,9 +49,10 @@ function reliefMaterial(field, direction, text) {
       varying float illumination;
       varying float exposure;
       varying float occlusion;
+      varying float wash;
       void main() {
-        float shaped = .69 + .41 * illumination - occlusion;
-        float value = mix(.992, shaped, .13 + exposure * .87) - ink;
+        float shaped = .62 + .49 * illumination - occlusion;
+        float value = mix(1., shaped, .83 + exposure * .17) * wash - ink;
         gl_FragColor = vec4(plaster * value,1.);
         #include <colorspace_fragment>
       }
@@ -89,6 +94,9 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
   const rayPosition = new THREE.Vector2();
   const cameraPoint = new THREE.Vector3();
   const projected = new THREE.Vector3();
+  const viewBounds = new THREE.Frustum();
+  const viewProjection = new THREE.Matrix4();
+  const meshBounds = new THREE.Box3();
   let inscription, cancelled=false, resizePending=true, observer;
   let width=0,height=0,spread=1;
   let density = lean ? .69 : Math.min(1.7,devicePixelRatio||1);
@@ -119,7 +127,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     resizePending=false;
     width=host.clientWidth;height=host.clientHeight;
     const aspect=width/height;
-    spread=THREE.MathUtils.clamp(aspect / 1.46, .56, 1.34);
+    spread=THREE.MathUtils.clamp(aspect / 1.38, .46, 1.64);
     camera.aspect=aspect;
     camera.updateProjectionMatrix();
     const ratio=Math.min(density,Math.sqrt((lean?1080000:3300000)/(width*height)));
@@ -148,7 +156,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
       projected.z=0;
       projected.project(camera);
       if(Math.abs(projected.x)>.94||Math.abs(projected.y)>.94)return [];
-      return [{x,y,screen:[(projected.x+1)/2,(1-projected.y)/2]}];
+      return [{name:mesh.name,x,y,screen:[(projected.x+1)/2,(1-projected.y)/2]}];
     });
   }
 
@@ -173,7 +181,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
       y:ghost.y + Math.sin(eased*Math.PI*1.18)*.33 + .11*Math.sin(eased*9)};
     const from=previousGhost || point;
     previousGhost=point;
-    return {from,to:point,radius:1.16,strength:.72*Math.sin(Math.PI*.2+along*Math.PI*.65)};
+    return {from,to:point,radius:1.19,strength:.76*Math.sin(Math.PI*.2+along*Math.PI*.65)};
   }
 
   try {
@@ -197,6 +205,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
       if(isText){inscription=mesh;continue;}
       mesh.scale.z*=.79;
       mesh.position.z*=.79;
+      mesh.geometry.computeBoundingBox();
       const points=mesh.geometry.getAttribute('position');
       let high=0;
       for(let i=1;i<points.count;i++)if(points.getZ(i)>points.getZ(high))high=i;
@@ -204,12 +213,12 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
       motifs.push({mesh,crest,x:mesh.position.x});
     }
     originalMaterials.forEach(material=>material.dispose());
-    if(!inscription || motifs.length!==8)throw new Error('模型未包含完整的浮雕节点');
+    if(!inscription || !motifs.length)throw new Error('模型未包含浮雕和刻字');
     host.append(canvas);
     fit();
     observer=new ResizeObserver(()=>{resizePending=true;});
     observer.observe(host);
-    report({model:'8 组原创实体浮雕及 WINTER 刻字',textures:'256 × 256 GPU 双缓冲场及动态投影已建立'});
+    report({model:`${motifs.length} 组原创实体浮雕及 WINTER 刻字`,textures:'256 × 256 GPU 双缓冲场及动态投影已建立'});
 
     return {
       resize(){resizePending=true;},
@@ -221,15 +230,20 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         camera.lookAt(cameraPoint.x*spread*.91,cameraPoint.y,0);
         camera.updateMatrixWorld();
         inscription.visible=view!=='scenery'&&progress<.21;
-        for(const {mesh} of motifs)mesh.visible=Math.abs(mesh.position.y-cameraPoint.y)<9.1;
         scene.updateMatrixWorld();
+        viewProjection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);
+        viewBounds.setFromProjectionMatrix(viewProjection);
+        for(const {mesh} of motifs){
+          meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld).expandByScalar(.7);
+          mesh.visible=viewBounds.intersectsBox(meshBounds);
+        }
         const ambient=ambientTrail(seconds,lastInput);
         const point=input ? worldAt(input.x,input.y) : null;
         if(point&&!humanPoint)firstBrushTime=seconds;
         const speed=point&&humanPoint ? Math.hypot(point.x-humanPoint.x,point.y-humanPoint.y) : 0;
         const from=speed<4.5 ? humanPoint||point : point;
-        const brush=point?{from,to:point,radius:input.touch?1.52:1.25,
-          strength:Math.min(1.,.87+speed*.22+(seconds-firstBrushTime)*.08)}:null;
+        const brush=point?{from,to:point,radius:input.touch?1.49:1.25,
+          strength:Math.min(1.,.94+speed*.22+(seconds-firstBrushTime)*.08)}:null;
         humanPoint=point;
         const dt=Math.min(.35,Math.max(.013,seconds-previousDraw));
         previousDraw=seconds;
@@ -237,11 +251,11 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         const warmth=THREE.MathUtils.smoothstep(progress,.65,.84);
         field.backdrop.copy(day).lerp(finalWarmth,warmth*.64).lerp(evening,night);
         const drift=Math.sin(seconds*.43);
-        const lightX=-.54+.12*drift+.38*night;
-        const lightY=.59+.08*Math.sin(seconds*.39);
-        field.lightVector.value.set(lightX,lightY);
-        direction.value.set(lightX,lightY,1).transformDirection(camera.matrixWorldInverse);
-        field.shadows(scene);
+        const lightX=-.79+.105*drift+.38*night;
+        const lightY=.61+.072*Math.sin(seconds*.39);
+        field.lightVector.value.set(lightX/.88,lightY/.88);
+        direction.value.set(lightX,lightY,.88).transformDirection(camera.matrixWorldInverse);
+        field.shadows();
         renderer.render(scene,camera);
         return {camera:[camera.position.x,camera.position.y,camera.position.z],resolution:[canvas.width,canvas.height],
           triangles:renderer.info.render.triangles,trace:brush ? (input.touch?'touch':'mouse') : ambient ? 'auto' : 'decay'};

@@ -3,30 +3,40 @@
   --relief-ink: #383732;
   --relief-muted: #625e53;
   --relief-rule: #50483a42;
-  --relief-height: calc(100svh - var(--gallery-header));
 }
 
 .app-shell[data-page="home"] {
   --relief-ink: #282823;
-  background: #eaeae7;
+  --relief-height: 100dvh;
+  --relief-nav-height: calc(var(--gallery-header) + env(safe-area-inset-top,0px));
+  height: var(--relief-height);
+  grid-template-rows: minmax(0,1fr);
+  background: #eae8e2;
   color: var(--relief-ink);
 }
-.app-shell[data-page="home"] .site-header {
+.app-shell[data-page="home"] > header.site-header {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--relief-nav-height);
+  padding-top: env(safe-area-inset-top,0px);
   color: var(--relief-ink);
-  border-color: var(--relief-rule);
-  background: #f3f2ee;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
 }
+.app-shell[data-page="home"] .site-header > :is(.brand,.glass-nav,.header-actions) { pointer-events: auto; }
+.app-shell[data-page="home"] .site-header .brand { justify-self: start; }
 .app-shell[data-page="home"] .glass-nav button:not([aria-selected="true"]) { color: var(--relief-muted); }
 .app-shell[data-page="home"] .home-panel {
   display: block;
   overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #7c74635e transparent;
+  scrollbar-width: none;
   overscroll-behavior: contain;
   overflow-anchor: none;
   touch-action: pan-y pinch-zoom;
   animation: none;
 }
+.app-shell[data-page="home"] .home-panel::-webkit-scrollbar { display: none; }
 .relief-rail { position: relative; isolation: isolate; }
 .relief-stage {
   position: sticky;
@@ -35,7 +45,7 @@
   height: var(--relief-height);
   margin-bottom: calc(var(--relief-height) * -1);
   overflow: hidden;
-  background: #eaeae7;
+  background: #eae8e2;
   pointer-events: none;
 }
 .relief-stage :is(picture,img,canvas) {
@@ -46,9 +56,8 @@
   height: 100%;
 }
 .relief-stage img { object-fit: cover; object-position: 50% 49%; }
-.relief-stage canvas { visibility: hidden; transform: translateZ(0); }
-.relief-rail[data-sculpture="live"] .relief-stage canvas { visibility: visible; }
-.relief-rail[data-sculpture="live"] .relief-stage picture { visibility: hidden; }
+.relief-stage canvas { opacity: 0; transition: opacity 280ms ease-out; }
+.relief-rail[data-sculpture="live"] .relief-stage canvas { opacity: 1; }
 .app-shell[data-living-time="night"] .relief-rail:not([data-sculpture="live"]) .relief-stage img {
   filter: brightness(.92) saturate(.5);
 }
@@ -58,7 +67,7 @@
   align-items: center;
   justify-items: center;
   position: relative;
-  padding: 26px var(--gallery-edge) clamp(63px,8svh,108px);
+  padding: calc(var(--relief-nav-height) + 14px) var(--gallery-edge) clamp(63px,8svh,108px);
 }
 .relief-chapters { position: relative; }
 .relief-scroll-track { display: none; }
@@ -179,9 +188,9 @@
   display:block;
   object-fit:contain;
 }
-.relief-print img:not([src]) { display:none; }
-.relief-print img[src] + .relief-photo-empty { display:none; }
-.relief-photo-empty {
+.relief-print:enabled { cursor: zoom-in; }
+.relief-print[data-photo-state="error"] img { visibility: hidden; }
+.relief-photo-error {
   position:absolute;
   inset:0;
   display:grid;
@@ -300,7 +309,7 @@
 .relief-diagnostics {
   position:fixed;
   z-index:12;
-  top:calc(var(--gallery-header) + 10px);
+  top:calc(var(--relief-nav-height) + 10px);
   right:max(10px,env(safe-area-inset-right));
   width:min(380px,calc(100vw - 20px));
   max-height:42svh;
@@ -328,14 +337,17 @@
   color:var(--relief-ink);
   font:.78rem/1.5 var(--sans);
 }
+@media (orientation: portrait) {
+  .relief-title { width:min(100%,550px,76vw); }
+}
 @media (max-width: 600px) {
-  .relief-panel { padding-top:16px; padding-bottom:78px; }
+  .relief-panel { padding-top:calc(var(--relief-nav-height) + 10px); padding-bottom:78px; }
   .relief-title { width:min(324px,88vw); }
   .relief-landscape-content h2, .relief-moment-content h2 { margin-bottom:14px; }
   .relief-postscript { gap:13px; margin-top:12px; }
 }
 @media (orientation: landscape) and (max-height: 610px) {
-  .relief-panel { padding:10px var(--gallery-edge) 45px; }
+  .relief-panel { padding:calc(var(--relief-nav-height) + 8px) var(--gallery-edge) 45px; }
   .relief-poem { margin-top:5px; font-size:1.05rem; }
   .relief-title { width:min(530px,55vw); }
   .relief-for-you { font-size:2.3rem; }
