@@ -148,7 +148,11 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     if(event?.type==='scroll'&&next!==goal)lastInput=seconds;
     goal=next;
     if(wall&&rail.dataset.sculpture==='live')updateChapters(goal);
-    else if(!wallStudy)exhibits.projectFlow(scroller.clientHeight);
+    else {
+      const coverTravel=scroller.scrollTop/Math.max(1,scroller.clientHeight);
+      stage.style.setProperty('--garden-poster',(1-fade(coverTravel,.04,.78)).toFixed(3));
+      if(!wallStudy)exhibits.projectFlow(scroller.clientHeight);
+    }
     if(!wall)diagnose();
     wake();
   }
@@ -199,7 +203,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=quiet-plaster').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=secret-winter-garden').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail

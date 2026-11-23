@@ -1,8 +1,9 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
 import { createReliefField, maxBrushSegments, plasterLight, sampledHeight } from './winter-relief-field.js?v=quiet-plaster';
+import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=secret-winter-garden';
 
-const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=full-plaster-wall', import.meta.url);
+const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=photographic-acts', import.meta.url);
 const coverDistance = 13.7;
 const positions = [
   [0, 0, coverDistance], [.38,-3.4,12.4], [.59,-7.4,11.8],
@@ -104,7 +105,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
   const viewBounds = new THREE.Frustum();
   const viewProjection = new THREE.Matrix4();
   const meshBounds = new THREE.Box3();
-  let inscription, cancelled=false, resizePending=true, observer;
+  let inscription, garden, cancelled=false, resizePending=true, observer;
   let width=0,height=0,spread=1;
   let density = lean ? .69 : Math.min(1.7,devicePixelRatio||1);
   let lastContact = null, nextGhost = firstBrushDelay, ghost = null, previousGhost = null, ghostIndex = 0;
@@ -115,6 +116,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     cancelled = true;
     observer?.disconnect();
     for(const mesh of scene.children)mesh.geometry?.dispose();
+    garden?.dispose();
     flowers.dispose();lettering.dispose();
     field.dispose();
     renderer.dispose();
@@ -139,6 +141,9 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     const ratio=Math.min(density,Math.sqrt((lean?1080000:3300000)/(width*height)));
     renderer.setDrawingBufferSize(width,height,ratio);
     for(const motif of motifs)motif.mesh.position.x=motif.x*spread;
+    const compositionScale=Math.min(1,aspect/1.05);
+    garden.mesh.scale.setScalar(compositionScale);
+    garden.mesh.position.y=.94*(1-compositionScale);
     const box=title.getBoundingClientRect();
     const stageTop=host.getBoundingClientRect().top;
     const distance=2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*coverDistance/height;
@@ -155,15 +160,21 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
   }
 
   function motifPoints() {
-    return motifs.flatMap(({mesh,crest})=>{
+    const landmarks=gardenLandmarks.map(({name,point})=>({mesh:garden.mesh,crest:point,name}));
+    return [...landmarks,...motifs].flatMap(({mesh,crest,name=mesh.name})=>{
       if(!mesh.visible)return [];
       projected.copy(crest).applyMatrix4(mesh.matrixWorld);
       const x=projected.x,y=projected.y;
       projected.z=0;
       projected.project(camera);
       if(Math.abs(projected.x)>.94||Math.abs(projected.y)>.94)return [];
-      return [{name:mesh.name,x,y,screen:[(projected.x+1)/2,(1-projected.y)/2]}];
+      return [{name,x,y,screen:[(projected.x+1)/2,(1-projected.y)/2]}];
     });
+  }
+
+  function isInFrame(mesh){
+    meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld).expandByScalar(.7);
+    return viewBounds.intersectsBox(meshBounds);
   }
 
   function ambientTrail(seconds,lastInput,hasContact) {
@@ -190,7 +201,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     return {from,to:point,radius:.72,strength:.67*Math.sin(Math.PI*.13+along*Math.PI*.73)};
   }
 
-  function contactTrail(contacts,input) {
+  function contactTrail(contacts,input,reach) {
     const segments=[];
     const samples=contacts.length?contacts:input?[{...input,point:null,join:true}]:[];
     for(const sample of samples){
@@ -203,12 +214,12 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     const touch=Boolean(lastContact?.touch);
     if(!input)lastContact=null;
     if(!segments.length)return null;
-    return {segments:segments.slice(-maxBrushSegments),touch,radius:touch?1.12:1.07,strength:.96};
+    return {segments:segments.slice(-maxBrushSegments),touch,radius:touch?reach:reach*.955,strength:.96};
   }
 
   try {
     report({model:'loading',textures:'正在建立 256 × 256 位移场'});
-    const response=await fetch(modelURL,{signal});
+    const [response,gardenData]=await Promise.all([fetch(modelURL,{signal}),loadSecretGarden(signal)]);
     if(!response.ok)throw new Error('浮雕模型 HTTP '+response.status);
     const glb=await new GLTFLoader().parseAsync(await response.arrayBuffer(),new URL('.',modelURL).href);
     if(cancelled){
@@ -236,11 +247,15 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     }
     originalMaterials.forEach(material=>material.dispose());
     if(!inscription || !motifs.length)throw new Error('模型未包含浮雕和刻字');
+    garden=sculptGarden(gardenData,field);
+    scene.add(garden.mesh);
+    field.add(garden.mesh,0);
     host.append(canvas);
     fit();
     observer=new ResizeObserver(()=>{resizePending=true;});
     observer.observe(host);
-    report({model:`${motifs.length} 组原创实体浮雕及 WINTER 刻字`,textures:'256 × 256 GPU 双缓冲场及动态投影已建立'});
+    report({model:`A Secret Winter Garden · ${motifs.length} 组后续实体浮雕及 WINTER 刻字`,
+      textures:'Cycles 法线与环境遮蔽 · 256 × 256 GPU 双缓冲场及动态投影'});
 
     return {
       resize(){resizePending=true;},
@@ -255,11 +270,10 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         scene.updateMatrixWorld();
         viewProjection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);
         viewBounds.setFromProjectionMatrix(viewProjection);
-        for(const {mesh} of motifs){
-          meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(mesh.matrixWorld).expandByScalar(.7);
-          mesh.visible=viewBounds.intersectsBox(meshBounds);
-        }
-        const brush=contactTrail(contacts,input);
+        garden.mesh.visible=isInFrame(garden.mesh);
+        for(const {mesh} of motifs)mesh.visible=isInFrame(mesh);
+        const reach=progress<.25 ? 1.36*Math.max(.77,garden.mesh.scale.x) : 1.12;
+        const brush=contactTrail(contacts,input,reach);
         const ambient=ambientTrail(seconds,lastInput,Boolean(brush));
         const dt=Math.min(.35,Math.max(.013,seconds-previousDraw));
         previousDraw=seconds;

@@ -2,9 +2,9 @@
 
 python tools/winter-v2/letter-solid.py cormorant-static.ttf letters.json
 blender -b -t 6 -P tools/winter-v2/render-plaster.py -- letters.json output-directory
-Produces lit plaster plus registered height passes for the browser, and
-transparent raised typography. Use `wall` to export the connected glTF relief.
-Home fallback plates are rendered by render-wall-posters.py.
+Produces lit plaster plus registered height passes and transparent raised typography.
+Use `wall` to export the inscription and the photographic acts' wall relief.
+Home act I is sculpted and baked by render-secret-garden.py.
 """
 import json
 import math
@@ -249,7 +249,7 @@ def letter_model():
 
 
 def wall_export():
-    """Sculpt one continuous panel from the top of Home to the last photograph."""
+    """Preserve the relief below the first act and export the raised inscription."""
     panels = []
 
     def place(name, center, depth, budget, draw):
@@ -317,20 +317,7 @@ def wall_export():
         blade((-.94*facing,-.14,.12),1.51,1.07,.28,.31,veins=True)
         blade((.22*facing,.25,.17),-.59,.79,.16,.23,veins=True)
 
-    # Each section overlaps the next as the camera follows the wall downwards.
-    place("Ivy at the upper left edge", (-4.75, 3.18), 1.95, 4000, lambda: wreath(1,1.22,-.42))
-    place("Fine branches under the north light", (-1.05, 3.67), 1.42, 2100, lambda: frond(.15,4.32,-.43,9))
-    place("First ice crystal", (2.46, 3.49), 1.76, 1300, lambda: crystal(0,0,.67,.19))
-    place("Christmas rose at the upper right", (4.31, 2.27), 2.20, 4100, lambda: wreath(-1,1.24,3.46))
-    place("Small rowan on the left", (-5.35, .48), 1.77, 2000, lambda: winter_berries(1))
-    place("Flake above the lettering", (.18, 1.96), 1.48, 1100, lambda: crystal(0,0,.55,.08))
-    place("Frosted bracken at the right edge", (5.23, -.34), 1.80, 2200, lambda: frond(2.42,4.68,.54,9))
-    place("Winter hellebore below the left verse", (-3.97, -1.44), 2.34, 4200, lambda: wreath(1,1.32,.26))
-    place("Three branches beneath the verse", (-.57, -2.52), 1.91, 2800, lambda: frond(-.30,4.81,.43,9))
-    place("Porcelain snowflake on the right", (2.91, -1.65), 1.67, 1400, lambda: crystal(0,0,.75,.34))
-    place("Large flower at the lower right", (4.45, -3.53), 2.30, 3900, lambda: wreath(-1,1.19,2.75))
-    place("Small ice lace on the lower seam", (-1.97, -4.52), 1.44, 1100, lambda: crystal(0,0,.54,.51))
-    place("Ferns across the lower left seam", (-4.84, -5.22), 1.77, 2400, lambda: frond(.39,5.62,.64,10))
+    # Act I comes from a single registered sculpture above these photographs.
     place("Bough before the photographic bay", (2.73, -6.40), 2.06, 3900, lambda: wreath(-1,1.30,3.58))
     place("Central etched rowan", (-.51, -8.02), 1.66, 2200, lambda: winter_berries(-1))
     place("Ivy around the east side of the bay", (5.17, -9.16), 2.00, 3700, lambda: wreath(-1,1.19,2.55))

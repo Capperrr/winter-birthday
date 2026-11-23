@@ -149,7 +149,8 @@ async function run(browser, name, viewport, touch) {
     assert.match(info,/WebGL WebGL 2/);
     assert.match(info,/Shader 无编译错误/);
     assert.match(info,/256 × 256 GPU 双缓冲/);
-    assert.match(info,/33 组原创实体浮雕/);
+    assert.match(info,/A Secret Winter Garden · 20 组后续实体浮雕/);
+    assert.match(info,/Cycles 法线与环境遮蔽/);
     const fullScreen=()=>canvas.evaluate(canvas=>{
       const {left,top,right,bottom}=canvas.getBoundingClientRect();
       const style=getComputedStyle(document.querySelector('.site-header'));
@@ -172,13 +173,11 @@ async function run(browser, name, viewport, touch) {
     const ambient=await shot('study-auto');
     assert.notDeepEqual(rest,ambient);
     const idle=await read();
-    assert.ok(motifs.length>=9,'Original sculptures fill the first viewport');
-    assert.ok(motifs.some(({screen:[x]})=>x<.24)&&motifs.some(({screen:[x]})=>x>.77));
-    assert.ok(motifs.some(({screen:[,y]})=>y<.24)&&motifs.some(({screen:[,y]})=>y>.74));
-    const center=motifs.find(motif=>motif.name.startsWith('Three_branches'));
-    assert.ok(center && center.screen[0]>.35 && center.screen[0]<.65);
-    const point=motifs.find(motif=>motif.name.startsWith('Winter_hellebore')).screen;
-    const control=motifs.find(motif=>motif.name.startsWith('Christmas_rose')).screen;
+    const point=motifs.find(motif=>motif.name==='Bird_on_the_branch').screen;
+    const control=motifs.find(motif=>motif.name==='The_arriving_bird').screen;
+    const feathers=motifs.find(motif=>motif.name==='Primary_flight_feathers').screen;
+    assert.ok(point[0]>.2&&point[0]<.49&&control[0]>.51&&control[0]<.8,'Both birds stay in the frame');
+    assert.ok(feathers[1]<control[1]-.10,'The high wing is in frame above the arriving bird');
     const before=await sample(point);
     const otherBefore=await sample(control);
     const position=await canvas.boundingBox();
@@ -199,8 +198,8 @@ async function run(browser, name, viewport, touch) {
     assert.equal(before.shadow,0);
     assert.ok(lifted.height>before.height+.38,name+' GPU height: '+JSON.stringify({before,lifted}));
     assert.ok(lifted.shadow>before.shadow+.08,name+' projected shadow: '+JSON.stringify({before,lifted}));
-    assert.equal(otherAfter.height,otherBefore.height,'The untouched right flower stays flat');
-    assert.equal(otherAfter.shadow,otherBefore.shadow,'The untouched right flower casts no new shadow');
+    assert.equal(otherAfter.height,otherBefore.height,'The untouched arriving bird stays flat');
+    assert.equal(otherAfter.shadow,otherBefore.shadow,'The untouched arriving bird casts no new shadow');
     await shot('study-lift');
     if(!touch)await page.mouse.move(end.x,4);
     await page.waitForTimeout(2350);

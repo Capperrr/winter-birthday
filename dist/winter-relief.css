@@ -56,6 +56,7 @@
   height: 100%;
 }
 .relief-stage img { object-fit: cover; object-position: 50% 49%; }
+.relief-garden-poster { opacity:var(--garden-poster,1); }
 .relief-stage canvas { opacity: 0; transition: opacity 280ms ease-out; transform: translateZ(0); }
 .relief-rail[data-sculpture="live"] .relief-stage canvas { opacity: 1; }
 .app-shell[data-living-time="night"] .relief-rail:not([data-sculpture="live"]) .relief-stage img {
@@ -100,6 +101,17 @@
 .relief-cover-content,
 .relief-landscape-content,
 .relief-moment-content { width: min(100%,1000px); text-align:center; color:var(--relief-ink); }
+.relief-cover-content { align-self:end; }
+.relief-cover .relief-title { width:min(100%,464px,62vw); }
+.relief-cover .relief-for-you { font-size:clamp(2.3rem,3.65vw,3.75rem); }
+.relief-artwork-title {
+  margin:9px 0 0;
+  color:var(--relief-muted);
+  font:500 clamp(.85rem,1.65vw,1.28rem)/1.2 var(--serif);
+  letter-spacing:.065em;
+}
+.relief-cover .relief-poem { margin-top:clamp(10px,1.65vh,18px); }
+.relief-cover .relief-next { margin-top:clamp(6px,1.65vh,19px); }
 .relief-for-you {
   margin: 0 0 6px;
   font: 400 clamp(2.7rem,4.5vw,4.7rem)/.94 'Allura',cursive;

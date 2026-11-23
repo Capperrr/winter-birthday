@@ -1,0 +1,124 @@
+import * as THREE from './assets/vendor/three/three.module.min.js';
+import {plasterLight, sampledHeight} from './winter-relief-field.js?v=quiet-plaster';
+
+const depthURL = new URL('./assets/home/secret-garden-depth.bin', import.meta.url);
+const lightingURL = new URL('./assets/home/secret-garden-light.png', import.meta.url);
+const columns = 293;
+const rows = 195;
+const width = 13.6;
+const height = 9;
+const maximumDepth = 1.12;
+
+export const gardenLandmarks = [
+  ['Open_hellebore', -3.65, -.75],
+  ['Bird_on_the_branch', -1.75, .63],
+  ['The_arriving_bird', 1.39, 1.32],
+  ['Primary_flight_feathers', 3.19, 3.37],
+  ['Camellia_crown', 2.96, -.48],
+  ['Bough_and_leaf_veins', -4.29, -1.73]
+].map(([name,x,y])=>({name, point:new THREE.Vector3(x,y,0)}));
+
+async function request(url, signal) {
+  const response = await fetch(url,{signal});
+  if(!response.ok)throw new Error(`${url.pathname} HTTP ${response.status}`);
+  return response;
+}
+
+export async function loadSecretGarden(signal) {
+  const [depth, light] = await Promise.all([
+    request(depthURL,signal).then(response=>response.arrayBuffer()),
+    request(lightingURL,signal).then(response=>response.blob())
+  ]);
+  if(depth.byteLength!==columns*rows*Uint16Array.BYTES_PER_ELEMENT)
+    throw new Error('冬日秘境高度图尺寸不符');
+  const url = URL.createObjectURL(light);
+  const image = new Image();
+  try {
+    image.src = url;
+    await image.decode();
+    if(image.naturalWidth!==1360||image.naturalHeight!==900)
+      throw new Error('冬日秘境光影贴图尺寸不符');
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+  return {depth:new Uint16Array(depth), image};
+}
+
+export function sculptGarden({depth,image}, field) {
+  // Physical relief scanned from Blender. Remove flat cells shared with the continuous wall.
+  const geometry = new THREE.PlaneGeometry(width,height,columns-1,rows-1);
+  const position = geometry.getAttribute('position');
+  for(let i=0;i<depth.length;i++)position.setZ(i,depth[i]*maximumDepth/65535);
+  const faces = [];
+  const index = geometry.index.array;
+  for(let i=0;i<index.length;i+=3){
+    const a=index[i], b=index[i+1], c=index[i+2];
+    if(Math.max(depth[a],depth[b],depth[c])>242)faces.push(a,b,c);
+  }
+  geometry.setIndex(faces);
+  geometry.deleteAttribute('normal');
+  geometry.computeBoundingBox();
+  const lighting = new THREE.Texture(image);
+  lighting.colorSpace = THREE.NoColorSpace;
+  lighting.needsUpdate = true;
+  const material = new THREE.ShaderMaterial({
+    uniforms:{...field.wall.uniforms, liftMap:field.map,fixedDepth:{value:0},
+      lighting:{value:lighting}, lightVector:field.lightVector},
+    vertexShader:sampledHeight + `
+      varying vec2 castUV;
+      varying vec2 wallPoint;
+      varying vec2 liftSlope;
+      varying float scale;
+      varying float awake;
+      void main() {
+        vec4 stone = modelMatrix * vec4(position,1.);
+        wallPoint = stone.xy;
+        castUV = uv;
+        awake = reliefAmount(wallPoint);
+        scale = reliefScale(awake);
+        vec2 difference = vec2(reliefScale(reliefAmount(wallPoint+vec2(.12,0.))),
+          reliefScale(reliefAmount(wallPoint+vec2(0.,.12)))) - vec2(scale);
+        liftSlope = difference * (stone.z/.12);
+        stone.z = displacedDepth(stone.z,scale) + .001;
+        gl_Position = projectionMatrix * viewMatrix * stone;
+      }
+    `,
+    fragmentShader:plasterLight + `
+      uniform vec3 plaster;
+      uniform vec2 lightVector;
+      uniform vec2 wallOrigin;
+      uniform vec2 wallExtent;
+      uniform vec2 texel;
+      uniform sampler2D lighting;
+      uniform sampler2D shadowAtlas;
+      varying vec2 castUV;
+      varying vec2 wallPoint;
+      varying vec2 liftSlope;
+      varying float scale;
+      varying float awake;
+      void main() {
+        vec3 bake = texture2D(lighting,castUV).rgb;
+        vec2 vane = (bake.rg*255. - vec2(128.))/127.;
+        float nz = sqrt(max(.014,1.-dot(vane,vane)));
+        vec3 normal = normalize(vec3(vane*scale - liftSlope*nz,nz));
+        vec3 light = normalize(vec3(lightVector,1.));
+        float rakingLight = (max(0.,dot(light,normal))-light.z)*.47;
+        float engraving = dot(vane,vec2(-.57,.48))*.018*(1.-awake);
+        float contact = (1.-bake.b)*(.035+.25*smoothstep(.04,.85,awake));
+        vec2 p = (wallPoint-wallOrigin)/wallExtent;
+        float projectedShade = texture2D(shadowAtlas,p).r*.32;
+        projectedShade += (texture2D(shadowAtlas,p+vec2(1.45,0.)*texel).r +
+                 texture2D(shadowAtlas,p-vec2(1.45,0.)*texel).r +
+                 texture2D(shadowAtlas,p+vec2(0.,1.2)*texel).r +
+                 texture2D(shadowAtlas,p-vec2(0.,1.2)*texel).r)*.17;
+        float value = plasterWash(wallPoint) + rakingLight + engraving - contact - projectedShade*.27;
+        gl_FragColor = vec4(plaster*value,1.);
+        #include <colorspace_fragment>
+      }
+    `
+  });
+  const mesh = new THREE.Mesh(geometry,material);
+  mesh.name = 'A Secret Winter Garden';
+  mesh.frustumCulled = false;
+  return {mesh, dispose(){ material.dispose(); lighting.dispose(); }};
+}
