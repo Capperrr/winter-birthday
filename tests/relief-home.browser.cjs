@@ -173,7 +173,7 @@ async function run(browser, name, viewport, touch) {
     assert.match(info,/WebGL WebGL 2/);
     assert.match(info,/Shader 无编译错误/);
     assert.match(info,/256 × 256 GPU 双缓冲/);
-    assert.match(info,/A Secret Winter Garden · 28 组实体浮雕贯穿 Home/);
+    assert.match(info,/A Secret Winter Garden · 33 组实体浮雕贯穿 Home/);
     assert.match(info,/2720 × 1800 Cycles 法线与环境遮蔽/);
     assert.match(info,/896 × 704 局部投影/);
     const fullScreen=()=>canvas.evaluate(canvas=>{
@@ -191,6 +191,8 @@ async function run(browser, name, viewport, touch) {
     const motifs=await getMotifs();
     assert.ok(motifs.some(({name})=>name==='Hellebore_below_the_wagtails'));
     assert.ok(motifs.some(({name})=>name==='Winter_crystal_between_the_wings'));
+    assert.ok(motifs.some(({name})=>name==='Snow_above_the_left_bird'));
+    assert.ok(motifs.some(({name})=>name==='Small_snowflake_between_the_birds'));
     const quiet=await page.evaluate(motifs=>motifs.map(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen)),motifs);
     assert.ok(quiet.every(({height,shadow})=>height===0&&shadow===0),'The initial wall has no raised motifs or cast shadows');
     await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().trace==='auto');

@@ -174,21 +174,29 @@ def cluster(start, angle, length, bend, count=6, needle=False):
             blade(root,direction,size*2.0,size*.46,size*.45,False,.12*side,True)
     return path(1)
 
-def crystal(x,y,r,angle=.0):
+def crystal(x,y,r,angle=.0,solid=False):
+    spine_width = r * (.076 if solid else .031)
+    fork_width = r * (.046 if solid else .020)
+    forks = ((.32,.20),(.57,.24),(.78,.16)) if solid else ((.35,.18),(.59,.22),(.81,.15))
     for n in range(6):
         a=angle+n*math.pi/3
         def point(t,s=0,z=.09):
             return (x+r*(math.cos(a)*t-math.sin(a)*s),y+r*(math.sin(a)*t+math.cos(a)*s),z)
-        trace("Snow crystal spine",[point(0),point(.53,0,.16),point(1)],r*.031,.53)
-        for tip,width in ((.35,.18),(.59,.22),(.81,.15)):
+        ridge = .205 if solid else .16
+        trace("Snow crystal spine",[point(0,0,.166 if solid else .09),point(.53,0,ridge),point(1)],spine_width,.53)
+        for tip,width in forks:
             for sign in (-1,1):
-                trace("Snow crystal arm",[point(tip,0,.14),point(tip+.12,width*.51*sign,.12),point(tip+.20,width*sign,.075)],r*.020)
-    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=r*.087,location=(x,y,.11))
+                trace("Snow crystal arm",[point(tip,0,.14),point(tip+.12,width*.51*sign,.12),point(tip+.20,width*sign,.075)],fork_width,.67 if solid else .87)
+    if solid:
+        bpy.ops.mesh.primitive_cone_add(vertices=6,radius1=r*.162,radius2=r*.116,
+                                        depth=.082+r*.043,location=(x,y,.166),rotation=(0,0,angle))
+    else:
+        bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2,radius=r*.087,location=(x,y,.11))
     keep(bpy.context.object)
 
-def twig_stars(values):
+def twig_stars(values, solid=False):
     for i,(x,y,r) in enumerate(values):
-        crystal(x,y,r,.27+i*.58)
+        crystal(x,y,r,.27+i*.58,solid=solid)
 
 def cover():
     tip=cluster((-10.2,4.8),-.22,7.1,-1.65,8)
@@ -330,24 +338,34 @@ def wall_export():
         flower(0, 0, .76, .22)
         bud(.57,.31,.37,.57)
 
-    def winter_stem(points, leaves, blooms, frost_marks):
+    def winter_stem(points, leaves, blooms, frost_marks, solid_frost=False):
         trace("Continuous winter stem", points, .071, .64)
         for index, direction, length, width in leaves:
             blade(points[index],direction,length,width,.24+width*.34,skew=.12,veins=True)
         for index, size, turn in blooms:
             flower(*points[index][:2],size,turn)
-        twig_stars(frost_marks)
+        twig_stars(frost_marks,solid=solid_frost)
 
     # The first flowers sit between the birds' established silhouette and the inscription.
     place("Hellebore below the wagtails",(-.58,-1.82),1.49,2250,opening_flowers,cover=True)
-    place("Winter crystal between the wings",(-.20,2.17),1.54,1450,
-          lambda: crystal(0,0,.72,.21),cover=True)
-    place("Ice on the upper branch",(-3.24,2.10),1.44,1650,
-          lambda: twig_stars([(0,0,.42),(-.79,.50,.24),(.05,.72,.17)]),cover=True)
+    place("Winter crystal between the wings",(-.20,2.17),1.54,1850,
+          lambda: crystal(0,0,.83,.21,solid=True),cover=True)
+    place("Ice on the upper branch",(-3.40,2.06),1.44,2800,
+          lambda: twig_stars([(0,0,.55),(-.87,.58,.28),(-.27,.91,.19)],solid=True),cover=True)
+    place("Snow above the left bird",(-1.94,2.76),1.45,2450,
+          lambda: twig_stars([(0,0,.55),(.73,.32,.22)],solid=True),cover=True)
+    place("Snow above the right bird",(1.78,2.58),1.48,2450,
+          lambda: twig_stars([(0,0,.57),(-.84,.42,.22)],solid=True),cover=True)
+    place("Snow at the top of the mural",(.64,4.19),1.42,2750,
+          lambda: twig_stars([(0,0,.42),(-1.49,.44,.26),(1.02,-.13,.24)],solid=True),cover=True)
+    place("Small snowflake between the birds",(.24,.78),1.40,1150,
+          lambda: crystal(0,0,.34,.52,solid=True),cover=True)
+    place("Snow beneath the long bough",(-2.55,-2.07),1.44,2800,
+          lambda: twig_stars([(0,0,.43),(-.79,-.55,.26),(.38,-.78,.18)],solid=True),cover=True)
     place("Frost leaf beneath the arrival",(2.10,-2.64),1.56,2150,
           lambda: winter_stem([(-1.70,-.78,.034),(-.93,-.45,.10),(-.10,.02,.15),(.62,.30,.13),(1.15,.44,.08)],
                               [(1,2.28,.88,.16),(2,-.81,.78,.18),(3,1.19,.79,.19)],
-                              [(4,.45,1.05)], [(-1.1,.36,.28)]),cover=True)
+                              [(4,.45,1.05)], [(-1.1,.36,.28)],solid_frost=True),cover=True)
 
     # Larger stems carry the composition across the different camera heights.
     place("Winter branch entering the bay",(.05,-5.06),1.69,3900,

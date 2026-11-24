@@ -207,7 +207,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=continuous-relief').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=carved-snow').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail

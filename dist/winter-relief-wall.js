@@ -3,7 +3,7 @@ import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
 import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=continuous-relief';
 import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=continuous-relief';
 
-const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=continuous-relief', import.meta.url);
+const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=carved-snow', import.meta.url);
 const coverDistance = 9.6;
 const coverX = .14;
 const coverY = .46;
