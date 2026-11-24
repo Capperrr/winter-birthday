@@ -4,7 +4,8 @@ python tools/winter-v2/letter-solid.py cormorant-static.ttf letters.json
 blender -b -t 6 -P tools/winter-v2/render-plaster.py -- letters.json output-directory
 Produces lit plaster plus registered height passes and transparent raised typography.
 Use `wall` to export the inscription and the photographic acts' wall relief.
-Home act I is sculpted and baked by render-secret-garden.py.
+The baked birds remain in the separate Secret Garden sculpture. The web export
+adds hand-placed frost and flowers and continues their stems past the photographs.
 """
 import json
 import math
@@ -249,10 +250,10 @@ def letter_model():
 
 
 def wall_export():
-    """Preserve the relief below the first act and export the raised inscription."""
+    """Export the connected cast that runs from the birds to the last photograph."""
     panels = []
 
-    def place(name, center, depth, budget, draw):
+    def place(name, center, depth, budget, draw, cover=False, span=False):
         models.clear()
         draw()
         bpy.ops.object.select_all(action="DESELECT")
@@ -264,6 +265,10 @@ def wall_export():
         bpy.ops.object.join()
         item = bpy.context.object
         item.name = name
+        if cover:
+            item["home_cover"] = True
+        if span:
+            item["home_span"] = True
         item.location.x, item.location.y = center
         item.location.z = -.051 * depth
         item.scale.z = depth
@@ -317,7 +322,51 @@ def wall_export():
         blade((-.94*facing,-.14,.12),1.51,1.07,.28,.31,veins=True)
         blade((.22*facing,.25,.17),-.59,.79,.16,.23,veins=True)
 
-    # Act I comes from a single registered sculpture above these photographs.
+    def opening_flowers():
+        stem = [(-1.35,-.36,.029),(-.78,-.23,.11),(-.27,-.09,.163),(0,0,.16),(.57,.31,.092)]
+        trace("Hellebore growing across the lower bough", stem, .063, .61)
+        blade(stem[1], 1.68, .99, .23, .27, veins=True)
+        blade(stem[2], -.8, .82, .21, .22, veins=True)
+        flower(0, 0, .76, .22)
+        bud(.57,.31,.37,.57)
+
+    def winter_stem(points, leaves, blooms, frost_marks):
+        trace("Continuous winter stem", points, .071, .64)
+        for index, direction, length, width in leaves:
+            blade(points[index],direction,length,width,.24+width*.34,skew=.12,veins=True)
+        for index, size, turn in blooms:
+            flower(*points[index][:2],size,turn)
+        twig_stars(frost_marks)
+
+    # The first flowers sit between the birds' established silhouette and the inscription.
+    place("Hellebore below the wagtails",(-.58,-1.82),1.49,2250,opening_flowers,cover=True)
+    place("Winter crystal between the wings",(-.20,2.17),1.54,1450,
+          lambda: crystal(0,0,.72,.21),cover=True)
+    place("Ice on the upper branch",(-3.24,2.10),1.44,1650,
+          lambda: twig_stars([(0,0,.42),(-.79,.50,.24),(.05,.72,.17)]),cover=True)
+    place("Frost leaf beneath the arrival",(2.10,-2.64),1.56,2150,
+          lambda: winter_stem([(-1.70,-.78,.034),(-.93,-.45,.10),(-.10,.02,.15),(.62,.30,.13),(1.15,.44,.08)],
+                              [(1,2.28,.88,.16),(2,-.81,.78,.18),(3,1.19,.79,.19)],
+                              [(4,.45,1.05)], [(-1.1,.36,.28)]),cover=True)
+
+    # Larger stems carry the composition across the different camera heights.
+    place("Winter branch entering the bay",(.05,-5.06),1.69,3900,
+          lambda: winter_stem([(-4.9,2.12,.043),(-3.69,1.44,.12),(-2.15,.60,.22),(-.68,.13,.20),(1.76,-.74,.15),(3.65,-2.12,.067)],
+                              [(1,2.12,1.19,.24),(2,-1.75,.96,.22),(3,1.05,1.37,.25),(4,-.52,1.23,.22)],
+                              [(2,.66,.45)], [(1.81,.87,.46),(-.70,-1.57,.23)]),span=True)
+    place("Hellebore spreading below the bay",(-.30,-10.46),1.78,4200,
+          lambda: winter_stem([(-5.63,3.8,.032),(-4.08,2.13,.13),(-2.44,1.11,.20),(-.93,.28,.184),(.34,-.91,.16),(1.03,-2.54,.14),(2.96,-3.57,.067)],
+                              [(1,2.15,.99,.25),(2,-1.55,1.18,.25),(3,1.64,.83,.2),(4,-.46,1.2,.23),(5,-2.0,.98,.24)],
+                              [(2,.93,.50),(5,.53,1.15)], [(1.6,2.09,.52)]),span=True)
+    place("Frost on the winter road",(.42,-16.90),1.74,4200,
+          lambda: winter_stem([(4.86,3.27,.047),(3.67,2.04,.125),(2.25,.82,.20),(1.05,-.67,.18),(-.24,-1.45,.18),(-2.16,-2.15,.15),(-4.86,-3.21,.041)],
+                              [(1,.27,1.06,.20),(2,-.30,1.12,.25),(3,1.62,.96,.22),(4,-1.27,1.01,.24),(5,2.2,1.14,.21)],
+                              [(2,.72,-.44)], [(-1.8,1.18,.63),(1.8,-2.31,.28)]),span=True)
+    place("Engraved winter stem beside the last print",(.30,-23.51),1.83,4650,
+          lambda: winter_stem([(-4.97,3.3,.04),(-3.63,2.69,.13),(-1.35,1.31,.22),(-.11,.54,.17),(1.44,-.52,.149),(2.18,-1.62,.16),(3.7,-3.8,.048)],
+                              [(1,1.76,1.31,.25),(2,-1.99,1.09,.23),(3,.86,1.10,.21),(4,-.65,1.14,.26),(5,2.72,1.32,.25)],
+                              [(2,.78,.61),(4,.60,-.23)], [(2.71,1.53,.60),(-1.73,-1.76,.44)]),span=True)
+
     place("Bough before the photographic bay", (2.73, -6.40), 2.06, 3900, lambda: wreath(-1,1.30,3.58))
     place("Central etched rowan", (-.51, -8.02), 1.66, 2200, lambda: winter_berries(-1))
     place("Ivy around the east side of the bay", (5.17, -9.16), 2.00, 3700, lambda: wreath(-1,1.19,2.55))
@@ -354,7 +403,7 @@ def wall_export():
         item.select_set(True)
     bpy.ops.export_scene.gltf(filepath=str(OUT / "winter-herbarium.glb"), export_format="GLB",
                              use_selection=True, export_yup=False, export_texcoords=False,
-                             export_lights=False, export_cameras=False, export_materials="NONE")
+                             export_lights=False, export_cameras=False, export_materials="NONE", export_extras=True)
 
 if export_wall:
     wall_export()

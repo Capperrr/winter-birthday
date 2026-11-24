@@ -173,7 +173,7 @@ async function run(browser, name, viewport, touch) {
     assert.match(info,/WebGL WebGL 2/);
     assert.match(info,/Shader 无编译错误/);
     assert.match(info,/256 × 256 GPU 双缓冲/);
-    assert.match(info,/A Secret Winter Garden · 20 组后续实体浮雕/);
+    assert.match(info,/A Secret Winter Garden · 28 组实体浮雕贯穿 Home/);
     assert.match(info,/2720 × 1800 Cycles 法线与环境遮蔽/);
     assert.match(info,/896 × 704 局部投影/);
     const fullScreen=()=>canvas.evaluate(canvas=>{
@@ -189,6 +189,8 @@ async function run(browser, name, viewport, touch) {
     await page.evaluate(()=>document.getElementById('relief-debug').style.visibility='hidden');
     const rest=await shot('study-rest');
     const motifs=await getMotifs();
+    assert.ok(motifs.some(({name})=>name==='Hellebore_below_the_wagtails'));
+    assert.ok(motifs.some(({name})=>name==='Winter_crystal_between_the_wings'));
     const quiet=await page.evaluate(motifs=>motifs.map(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen)),motifs);
     assert.ok(quiet.every(({height,shadow})=>height===0&&shadow===0),'The initial wall has no raised motifs or cast shadows');
     await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().trace==='auto');
@@ -196,7 +198,7 @@ async function run(browser, name, viewport, touch) {
     assert.ok(firstAuto.seconds>=5,'The first automatic stroke follows five quiet seconds');
     await page.waitForFunction(motifs=>motifs.some(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen).height>.10),motifs);
     const animated=await page.evaluate(motifs=>motifs.filter(({screen})=>window.WINTER_RELIEF_PROBE.sample(...screen).height>.10).length,motifs);
-    assert.ok(animated>0&&animated<=2,'The automatic stroke stays local');
+    assert.ok(animated>0&&animated<motifs.length/2,'The automatic stroke stays local');
     const ambient=await shot('study-auto');
     assert.notDeepEqual(rest,ambient);
     const idle=await read();
@@ -228,10 +230,15 @@ async function run(browser, name, viewport, touch) {
       await page.waitForTimeout(580);
     }
     const lifted=await sample(point);
+    const aspect=viewport.width/viewport.height;
+    const wallWidth=2*Math.tan(19*Math.PI/180)*(await read()).camera[2]*aspect;
+    const previousRadius=1.36*Math.max(.77,Math.min(1,aspect/1.05));
+    const wider=await sample([point[0]+previousRadius/wallWidth,point[1]]);
     const otherAfter=await sample(control);
     assert.equal(before.shadow,0);
     assert.ok(lifted.height>before.height+.38,name+' GPU height: '+JSON.stringify({before,lifted}));
     assert.ok(lifted.shadow>before.shadow+.08,name+' projected shadow: '+JSON.stringify({before,lifted}));
+    assert.ok(wider.height>.18,'The wider brush lifts the plaster at the previous stroke radius');
     assert.equal(otherAfter.height,otherBefore.height,'The untouched arriving bird stays flat');
     assert.equal(otherAfter.shadow,otherBefore.shadow,'The untouched arriving bird casts no new shadow');
     await shot('study-lift');
@@ -242,9 +249,13 @@ async function run(browser, name, viewport, touch) {
     assert.ok(released.shadow<.035,JSON.stringify({lifted,released}));
     await shot('study-release');
     if(send){
+      await page.waitForFunction(p=>{
+        const probe=window.WINTER_RELIEF_PROBE;
+        return probe.frame().trace==='decay'&&probe.sample(...p).height<.08;
+      },point,{polling:100});
       await page.touchscreen.tap(position.width*control[0],position.height*control[1]);
       await page.waitForFunction(p=>window.WINTER_RELIEF_PROBE.sample(...p).height>.18,control,{polling:100});
-      assert.ok((await sample(point)).height<=released.height,'A tap on the right leaves the left flower at rest');
+      assert.ok((await sample(point)).height<.10,'A tap on the right leaves the left bird at rest');
       await swipe(send,{x:position.x+position.width*.66,y:position.y+position.height*.80},
         {x:position.x+position.width*.66,y:position.y+position.height*.24},2);
       if(!wpe)await page.waitForFunction(()=>document.getElementById('panel-home').scrollTop>40);
@@ -291,6 +302,14 @@ async function run(browser, name, viewport, touch) {
       assert.deepEqual(await fullScreen(),wall);
       assert.equal(await page.locator('#relief-rail').getAttribute('data-relief-chapter'),String(act));
       assert.equal(await page.locator('.relief-panel[data-current="true"]').count(),1);
+      assert.ok((await getMotifs()).length>=2,`The stone cast persists under ${key}`);
+      if(at===.38||at===.74){
+        const start=(await read()).renderedFrames;
+        await page.waitForFunction(({p,start})=>{
+          const frame=window.WINTER_RELIEF_PROBE.frame();
+          return Math.abs(frame.progress-p)<.012 && frame.renderedFrames>start && frame.automaticStroke;
+        },{p:at,start});
+      }
       const photo=page.locator('[data-photo="'+key+'"]');
       const exhibit=await photo.evaluate(node=>{
         const img=node.querySelector('img'), box=node.getBoundingClientRect();
@@ -348,7 +367,7 @@ async function run(browser, name, viewport, touch) {
     assert.equal(await debug.count(),0);
     assert.deepEqual(errors,[]);
     fs.writeFileSync(out+'/'+name+'.json',JSON.stringify({engine,viewport,info,wall,nightContrast,captions,responses,poses,idle,
-      quiet,firstAuto,animated,brush:{before,lifted,released,otherBefore,otherAfter},native,errors},null,2));
+      quiet,firstAuto,animated,brush:{before,lifted,wider,released,otherBefore,otherAfter},native,errors},null,2));
     console.log(name,'PASS');
   } finally{await context.close();}
 }
@@ -397,6 +416,15 @@ async function fallback(browser, flag, expected) {
     if(flag==='context'){
       const home=page.locator('#panel-home');
       const gallery=page.locator('.relief-window');
+      const plates=await page.locator('.relief-archive-wall').evaluateAll(elements=>Promise.all(
+        elements.flatMap(el=>['::before','::after'].map(async side=>{
+          const src=getComputedStyle(el,side).backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1];
+          const img=new Image();
+          img.src=src;
+          await img.decode();
+          return img.naturalWidth;
+        }))));
+      assert.ok(plates.every(width=>width>=1170),'Morning and Night retain a rendered wall across all three acts');
       const pose=async delta=>{
         await home.evaluate(async (el,offset)=>{
           el.scrollTo({top:el.scrollTop+el.querySelector('#relief-landscapes').getBoundingClientRect().top+offset,

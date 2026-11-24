@@ -1,9 +1,9 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
-import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=plaster-light';
-import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=plaster-light';
+import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=continuous-relief';
+import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=continuous-relief';
 
-const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=photographic-acts', import.meta.url);
+const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=continuous-relief', import.meta.url);
 const coverDistance = 9.6;
 const coverX = .14;
 const coverY = .46;
@@ -18,7 +18,8 @@ const day = new THREE.Color(0xf0ebe3);
 const evening = new THREE.Color(0x283646);
 const finalWarmth = new THREE.Color(0xece6dd);
 const firstBrushDelay = 5;
-const idleBrushDelay = 8;
+const idleBrushDelay = 2.8;
+const inkLifetime = 6.4;
 const maxCanvasPixels = 6_200_000;
 const shadowDepth = 1.12;
 
@@ -44,7 +45,7 @@ function reliefMaterial(field, direction, text) {
           reliefScale(reliefAmount(wallPoint+vec2(.12,0.)))-lift,
           reliefScale(reliefAmount(wallPoint+vec2(0.,.12)))-lift
         ) / .12;
-        vec3 bent = vec3(normal.xy,normal.z/lift);
+        vec3 bent = vec3(normal.xy,normal.z/max(lift,.26));
         bent.xy -= bent.z * (max(0.,stone.z)/scaleZ) * gradient * vec2(scaleX,scaleY);
         vec3 normalInView = normalize(normalMatrix * bent);
         illumination = clamp(dot(normalInView,direction)*.57 + .43,0.,1.);
@@ -63,7 +64,8 @@ function reliefMaterial(field, direction, text) {
       varying vec2 wallPoint;
       void main() {
         float shaped = .62 + .49 * illumination - occlusion;
-        float detail = mix(.012, 1., smoothstep(.025,.77,raised));
+        float engraving = mix(.45,.53,nightAmount);
+        float detail = mix(engraving, 1., smoothstep(.025,.77,raised));
         vec3 color = roomPlaster(wallPoint) * mix(1.,shaped,detail);
         if (inscription) {
           vec3 etched = color * vec3(.95,.89,.80) * (.122+.108*illumination);
@@ -115,10 +117,11 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
   const viewProjection = new THREE.Matrix4();
   const meshBounds = new THREE.Box3();
   const strokeBounds = new THREE.Box2();
+  const recentStrokes = [];
   const projectedBounds = new THREE.Box2();
   let inscription, garden, cancelled=false, resizePending=true, observer;
   let width=0,height=0,spread=1;
-  let lastContact = null, nextGhost = firstBrushDelay, ghost = null, previousGhost = null, ghostIndex = 0;
+  let lastContact = null, nextGhost = firstBrushDelay, ghost = null, ghostIndex = 0;
   let previousDraw = -Infinity, previousProgress=-1, previousNight=-1, previousView;
   let lastInk=-Infinity, inkVisible=false;
 
@@ -151,10 +154,20 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     camera.updateProjectionMatrix();
     const ratio=Math.min(devicePixelRatio||1,3,Math.sqrt(maxCanvasPixels/(width*height)));
     renderer.setDrawingBufferSize(width,height,ratio);
-    for(const motif of motifs)motif.mesh.position.x=motif.x*spread;
     const compositionScale=Math.min(1,aspect/1.05);
     garden.mesh.scale.setScalar(compositionScale);
-    garden.mesh.position.y=.94*(1-compositionScale);
+    const openingRise=.94*(1-compositionScale);
+    garden.mesh.position.y=openingRise;
+    for(const {mesh,position,scale} of motifs){
+      if(mesh.userData.home_cover){
+        mesh.position.copy(position).multiplyScalar(compositionScale);
+        mesh.position.y+=openingRise;
+        mesh.scale.copy(scale).multiplyScalar(compositionScale);
+      }else{
+        mesh.position.x=position.x*spread;
+        if(mesh.userData.home_span)mesh.scale.x=scale.x*spread;
+      }
+    }
     const box=title.getBoundingClientRect();
     const stageBox=host.getBoundingClientRect();
     const distance=2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*coverDistance/height;
@@ -189,28 +202,36 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     return viewBounds.intersectsBox(meshBounds);
   }
 
+  function chooseTraceTarget() {
+    const box=host.getBoundingClientRect();
+    return motifPoints().filter(({screen:[x,y]})=>{
+      const print=document.elementFromPoint(box.left+x*width,box.top+y*height);
+      return !print?.closest('button,a,dialog');
+    });
+  }
+
   function ambientTrail(seconds,lastInput,hasContact) {
-    if(hasContact||seconds-lastInput<idleBrushDelay) {ghost=null;previousGhost=null;return null;}
+    if(hasContact||seconds-lastInput<idleBrushDelay) {ghost=null;return null;}
     if(!ghost && seconds>=nextGhost){
-      const options=motifPoints();
+      const options=chooseTraceTarget();
       if(!options.length){nextGhost=seconds+.63;return null;}
-      const choice=options[ghostIndex++%options.length];
-      ghost={x:choice.x,y:choice.y,started:seconds,flip:ghostIndex%2 ? 1 : -1};
-      previousGhost=null;
+      const choice=options[ghostIndex%options.length];
+      ghostIndex++;
+      const tilt=.54*Math.sin(ghostIndex*1.81);
+      ghost={...choice,started:seconds,last:null,duration:1.28+.25*Math.sin(ghostIndex*2.09),
+        dx:(ghostIndex%2===0?1:-1)*1.96*Math.cos(tilt),dy:1.96*Math.sin(tilt)};
+      nextGhost=seconds+2.48+.49*Math.sin(ghostIndex*1.37);
     }
     if(!ghost)return null;
-    const along=(seconds-ghost.started)/1.55;
-    if(along>=1){
-      ghost=null;
-      nextGhost=seconds+9+Math.sin(ghostIndex*1.37)*.95;
-      return null;
-    }
+    const along=Math.min(1,(seconds-ghost.started)/ghost.duration);
     const eased=along*along*(3-2*along);
-    const point={x:ghost.x+(eased-.5)*.78*ghost.flip,
-      y:ghost.y + Math.sin(eased*Math.PI*1.18)*.15 + .06*Math.sin(eased*9)};
-    const from=previousGhost || point;
-    previousGhost=point;
-    return {from,to:point,radius:.72,strength:.67*Math.sin(Math.PI*.13+along*Math.PI*.73)};
+    const point={x:ghost.x+(eased-.5)*ghost.dx,
+      y:ghost.y+(eased-.5)*ghost.dy+.21*Math.sin(eased*Math.PI)+.055*Math.sin(eased*9)};
+    const pressure=Math.sin(Math.PI*along);
+    const stroke={name:ghost.name,from:ghost.last||point,to:point,radius:.73+.20*pressure,strength:.33+.55*pressure};
+    ghost.last=point;
+    if(along===1)ghost=null;
+    return stroke;
   }
 
   function contactTrail(contacts,input,reach) {
@@ -229,11 +250,26 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     return {segments:segments.slice(-maxBrushSegments),touch,radius:touch?reach:reach*.955,strength:.96};
   }
 
-  function markStroke({from,to},radius) {
-    strokeBounds.min.x=Math.min(strokeBounds.min.x,from.x-radius,to.x-radius);
-    strokeBounds.min.y=Math.min(strokeBounds.min.y,from.y-radius,to.y-radius);
-    strokeBounds.max.x=Math.max(strokeBounds.max.x,from.x+radius,to.x+radius);
-    strokeBounds.max.y=Math.max(strokeBounds.max.y,from.y+radius,to.y+radius);
+  function markStroke({from,to},radius,seconds) {
+    let patch=recentStrokes.at(-1);
+    if(!patch || seconds-patch.started>=.24){
+      patch={started:seconds,seen:seconds,bounds:new THREE.Box2()};
+      recentStrokes.push(patch);
+    }
+    const {min,max}=patch.bounds;
+    min.x=Math.min(min.x,from.x-radius,to.x-radius);
+    min.y=Math.min(min.y,from.y-radius,to.y-radius);
+    max.x=Math.max(max.x,from.x+radius,to.x+radius);
+    max.y=Math.max(max.y,from.y+radius,to.y+radius);
+    patch.seen=seconds;
+  }
+
+  function gatherStrokeBounds(seconds) {
+    strokeBounds.makeEmpty();
+    // Repaint an expired patch once so its last cast shadow is erased from the persistent canvas.
+    while(recentStrokes.length && seconds-recentStrokes[0].seen>=inkLifetime)
+      strokeBounds.union(recentStrokes.shift().bounds);
+    for(const {bounds} of recentStrokes)strokeBounds.union(bounds);
   }
 
   // With a fixed camera and light, repaint only the stroke, its perspective expansion and cast shadow.
@@ -290,7 +326,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
       let high=0;
       for(let i=1;i<points.count;i++)if(points.getZ(i)>points.getZ(high))high=i;
       const crest=new THREE.Vector3().fromBufferAttribute(points,high);
-      motifs.push({mesh,crest,x:mesh.position.x});
+      motifs.push({mesh,crest,position:mesh.position.clone(),scale:mesh.scale.clone()});
     }
     originalMaterials.forEach(material=>material.dispose());
     if(!inscription || !motifs.length)throw new Error('模型未包含浮雕和刻字');
@@ -301,7 +337,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     fit();
     observer=new ResizeObserver(()=>{resizePending=true;});
     observer.observe(host);
-    report({model:`A Secret Winter Garden · ${motifs.length} 组后续实体浮雕及 WINTER 刻字`,
+    report({model:`A Secret Winter Garden · ${motifs.length} 组实体浮雕贯穿 Home 及 WINTER 刻字`,
       textures:'2720 × 1800 Cycles 法线与环境遮蔽 · 3 档晨光 / 月光烘焙 · 256 × 256 GPU 双缓冲 · 896 × 704 局部投影'});
 
     return {
@@ -327,14 +363,15 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         viewBounds.setFromProjectionMatrix(viewProjection);
         garden.mesh.visible=isInFrame(garden.mesh);
         for(const {mesh} of motifs)mesh.visible=isInFrame(mesh);
-        const reach=progress<.25 ? 1.36*Math.max(.77,garden.mesh.scale.x) : 1.12;
+        const reach=progress<.25 ? 2.04*Math.max(.76,garden.mesh.scale.x) : 1.85*Math.max(.76,Math.min(1,spread));
         const brush=contactTrail(contacts,input,reach);
         const ambient=ambientTrail(seconds,lastInput,Boolean(brush));
         const dt=Math.min(.35,Math.max(.013,seconds-previousDraw));
         if(brush||ambient)lastInk=seconds;
-        if(brush)brush.segments.forEach(segment=>markStroke(segment,brush.radius));
-        if(ambient)markStroke(ambient,ambient.radius);
-        const fading=seconds-lastInk<6.4;
+        if(brush)brush.segments.forEach(segment=>markStroke(segment,brush.radius,seconds));
+        if(ambient)markStroke(ambient,ambient.radius,seconds);
+        gatherStrokeBounds(seconds);
+        const fading=seconds-lastInk<inkLifetime;
         if(fading)field.step(dt,brush,ambient);
         else if(inkVisible)field.resetInk();
         inkVisible=fading;
@@ -348,6 +385,8 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         const lightY=THREE.MathUtils.lerp(.61,.81,night);
         const lightZ=THREE.MathUtils.lerp(.88,.60,night);
         field.light.nightAmount.value=night;
+        // Carry the aperture down the wall once the camera leaves the birds' opening composition.
+        field.light.moonWallY.value=(cameraPoint.y-coverY)*THREE.MathUtils.smoothstep(progress,.05,.20);
         field.lightVector.value.set(lightX/lightZ,lightY/lightZ);
         direction.value.set(lightX,lightY,lightZ).transformDirection(camera.matrixWorldInverse);
         const wallHeight=2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*cameraPoint.z;
@@ -356,10 +395,10 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         if(!changed&&!strokeBounds.isEmpty())clipToStroke();
         renderer.render(scene,camera);
         renderer.setScissorTest(false);
-        if(!fading)strokeBounds.makeEmpty();
         return {camera:[camera.position.x,camera.position.y,camera.position.z],resolution:[canvas.width,canvas.height],
           night,light:[lightX,lightY,lightZ],
-          triangles:renderer.info.render.triangles,trace:brush ? (brush.touch?'touch':'mouse') : ambient ? 'auto' : 'decay'};
+          triangles:renderer.info.render.triangles,trace:brush ? (brush.touch?'touch':'mouse') : ambient ? 'auto' : 'decay',
+          brushRadius:brush?.radius??0, automaticStroke:ambient?{name:ambient.name,...ambient.to}:null};
       },
       probe(x,y){
         const point=worldAt(x,y);

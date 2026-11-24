@@ -43,7 +43,9 @@ export const galleryLight = plasterLight + `
   uniform vec3 plaster;
   uniform vec3 moonColor;
   uniform float nightAmount;
+  uniform float moonWallY;
   float moonFootprint(vec2 p) {
+    p.y -= moonWallY;
     vec2 offset = p - vec2(.84,.92);
     float across = dot(offset,vec2(-.64,.77));
     float along = dot(offset,vec2(-.77,-.64));
@@ -54,7 +56,7 @@ export const galleryLight = plasterLight + `
   vec3 roomPlaster(vec2 p) {
     vec3 room = plaster * plasterWash(p);
     if (nightAmount <= 0.) return room;
-    vec2 spill = (p-vec2(-2.24,.41))*vec2(.51,.55);
+    vec2 spill = (p-vec2(-2.24,.41+moonWallY))*vec2(.51,.55);
     float reflected = .076 * exp(-dot(spill,spill));
     return room + moonColor * nightAmount * (.078 + reflected + .39 * moonFootprint(p));
   }
@@ -83,7 +85,8 @@ export function createReliefField(renderer) {
   const shadow = {shadowOrigin:{value:new THREE.Vector2()},shadowExtent:{value:new THREE.Vector2(1,1)}};
   const lightVector = {value:new THREE.Vector2(-.48, .60)};
   const backdrop = new THREE.Color(0xe9e9e6);
-  const light = {plaster:{value:backdrop}, moonColor:{value:new THREE.Color(0xaec4e1)}, nightAmount:{value:0}};
+  const light = {plaster:{value:backdrop}, moonColor:{value:new THREE.Color(0xaec4e1)},
+    nightAmount:{value:0},moonWallY:{value:0}};
   const buffers = new Map();
   const projectedShadows = new THREE.Scene();
   const flatCamera = new THREE.Camera();
@@ -119,7 +122,7 @@ export function createReliefField(renderer) {
         vec2 edge = line.zw - line.xy;
         float t = clamp(dot(p - line.xy, edge) / max(dot(edge,edge), .0001), 0., 1.);
         float d = length(p - line.xy - edge * t);
-        return (1. - smoothstep(shape.x * .16, max(.001,shape.x),d)) * shape.y;
+        return (1. - smoothstep(shape.x * .22, max(.001,shape.x),d)) * shape.y;
       }
       void main() {
         vec2 p = wallOrigin + tracedUV * wallExtent;

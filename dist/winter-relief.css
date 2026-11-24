@@ -68,7 +68,36 @@
 .relief-stage img { object-fit: cover; object-position: 50% 49%; }
 .relief-garden-poster img { object-position:center; }
 .relief-fallback-night { background:#43536a; opacity:var(--home-night,0); }
-.relief-garden-poster { opacity:var(--garden-poster,1); }
+/* Morning and Night captures of the live cast at the two photographic acts. */
+.relief-archive-wall { position:absolute; inset:0; }
+.relief-archive-wall::before, .relief-archive-wall::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:center / cover no-repeat;
+}
+.relief-archive-wall::before { background-image:var(--archive-morning); }
+.relief-archive-wall::after { background-image:var(--archive-night); opacity:var(--home-night,0); }
+.relief-archive-gallery {
+  --archive-morning:url("assets/home/relief-gallery-morning.webp");
+  --archive-night:url("assets/home/relief-gallery-night.webp");
+  opacity:var(--gallery-poster,0);
+}
+.relief-archive-moment {
+  --archive-morning:url("assets/home/relief-moment-morning.webp");
+  --archive-night:url("assets/home/relief-moment-night.webp");
+  opacity:var(--moment-poster,0);
+}
+@media (max-aspect-ratio: 4/5) {
+  .relief-archive-gallery {
+    --archive-morning:url("assets/home/relief-gallery-morning-portrait.webp");
+    --archive-night:url("assets/home/relief-gallery-night-portrait.webp");
+  }
+  .relief-archive-moment {
+    --archive-morning:url("assets/home/relief-moment-morning-portrait.webp");
+    --archive-night:url("assets/home/relief-moment-night-portrait.webp");
+  }
+}
 .relief-stage canvas { opacity: 0; transition: opacity 280ms ease-out; transform: translateZ(0); }
 .relief-rail[data-sculpture="live"] .relief-stage canvas { opacity: 1; }
 .relief-panel {

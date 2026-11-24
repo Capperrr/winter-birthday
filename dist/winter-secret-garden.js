@@ -1,5 +1,5 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
-import {galleryLight, projectedShadow, sampledHeight} from './winter-relief-field.js?v=plaster-light';
+import {galleryLight, projectedShadow, sampledHeight} from './winter-relief-field.js?v=continuous-relief';
 
 const depthURL = new URL('./assets/home/secret-garden-depth.bin?v=wagtails', import.meta.url);
 const normalURL = new URL('./assets/home/secret-garden-light.webp?v=plaster-light', import.meta.url);

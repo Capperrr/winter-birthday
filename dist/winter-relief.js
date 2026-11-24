@@ -156,7 +156,8 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     if(wall&&rail.dataset.sculpture==='live')updateChapters(goal);
     else {
       const coverTravel=scroller.scrollTop/Math.max(1,scroller.clientHeight);
-      stage.style.setProperty('--garden-poster',(1-fade(coverTravel,.04,.78)).toFixed(3));
+      stage.style.setProperty('--gallery-poster',fade(coverTravel,.04,.78).toFixed(3));
+      stage.style.setProperty('--moment-poster',fade(coverTravel,1.16,1.97).toFixed(3));
       if(!wallStudy)exhibits.projectFlow(scroller.clientHeight);
     }
     if(!wall)diagnose();
@@ -206,7 +207,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=plaster-light').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=continuous-relief').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail
@@ -298,6 +299,11 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
   viewer.querySelector('button').addEventListener('click',()=>viewer.close());
   viewer.addEventListener('close',sync);
   scroller.addEventListener('scroll',scroll,{passive:true});
+  scroller.addEventListener('pointerdown',event=>{
+    if(event.pointerType==='touch'||event.button!==0||event.isPrimary===false||
+      event.target.closest?.('button,a,dialog,[data-print-surface]'))return;
+    contact(event.clientX,event.clientY,false,true);
+  },{passive:true});
   scroller.addEventListener('pointermove',event=>{
     if(event.target.closest?.('[data-print-surface]'))return;
     if(event.pointerType==='mouse'&&!input?.touch)contact(event.clientX,event.clientY,false);
