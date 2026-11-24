@@ -49,13 +49,6 @@
 .journey-write svg { flex-shrink:0; width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
 .journey-saved-preview { flex-shrink:0; margin:9px 0 0; color:#90947d; font-size:9px; line-height:1.8; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
 .journey-navigation { grid-area:rail; min-width:0; padding-top:19px; }
-.journey-navigation-top { display:flex; justify-content:space-between; align-items:center; gap:15px; }
-.journey-arrows { display:flex; align-items:center; gap:12px; }.journey-arrows > span { color:#a4b89d; font-size:8px; letter-spacing:1.3px; white-space:nowrap; }
-.journey-arrows button { width:44px; min-height:44px; padding:6px; border:1px solid #a1b69a38; border-radius:50%; background:transparent; color:#d8dfca; font-size:16px; line-height:1; transition:background 180ms ease,translate 180ms ease; }
-.journey-arrows button:hover:not(:disabled) { background:#c9d6b812; }.journey-arrows button:active:not(:disabled) { translate:1px 0; }.journey-arrows button:disabled { opacity:.28; cursor:default; }
-.journey-stops { position:relative; height:43px; margin-top:-2px; }
-.journey-stops button { position:absolute; left:calc((100% - 44px)*var(--stop-position) + 22px); top:0; translate:-50% 0; display:flex; flex-direction:column; align-items:center; justify-content:start; gap:5px; min-width:44px; max-width:20%; min-height:42px; padding:0 2px 4px; border:0; border-radius:0; background:transparent; color:#99ae97; font-size:9px; letter-spacing:.4px; white-space:nowrap; }
-.journey-stops button > span { color:#748e7c; font-size:6px; letter-spacing:1px; }.journey-stops button[aria-current='step'] { color:#e4e7d3; }.journey-stops button[aria-current='step'] > span { color:#becba7; }
 .journey-bottomline { display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 20px; margin-top:8px; padding-top:12px; border-top:1px solid #9bb0941f; color:#8fa58e; font-size:8px; letter-spacing:.4px; line-height:1.7; }
 .journey-bottomline > button { min-height:28px; margin-top:-5px; padding:5px 0; border:0; border-radius:0; background:transparent; color:#8fa58e; font-size:7px; letter-spacing:.15px; text-align:left; }.journey-bottomline > button:hover { color:#dbe0c9; }
 .journey-note-dialog, .journey-credit-dialog { width:min(510px,calc(100% - 36px)); max-height:calc(100svh - 40px); padding:27px 30px; overflow:auto; border:1px solid #fff8e6; border-radius:8px; background:url('assets/paper/note-08.svg') center / 100% 100%,#eee8d8; color:#58644d; box-shadow:0 15px 60px #102a2540; }
@@ -83,7 +76,7 @@
   .journey-invitation { flex-direction:column; align-items:start; gap:18px; margin-top:20px; padding:23px 22px; }.journey-invitation h3 { font-size:17px; }.journey-invitation p:last-child { font-size:9px; }.journey-invitation > button { align-self:end; font-size:10px; }
   .journey-note-dialog, .journey-credit-dialog { padding:22px; }.journey-note-top > span { font-size:6px; letter-spacing:1px; }.journey-note-dialog h3 { font-size:23px; }#journey-note-input { min-height:165px; font-size:16px; }.journey-note-meta { font-size:7px; }
 }
-@media (max-width:350px) { .journey-page { padding-inline:14px; }.journey-heading h2 { font-size:17px; }.journey-eyebrow { letter-spacing:1px; font-size:6px; }.journey-layout { grid-template-rows:210px auto auto; }.journey-letter { padding:25px 22px; }.journey-stops button { font-size:7px; }.journey-photo-caption { left:16px; right:16px; }.journey-swipe-hint { font-size:6px; } }
+@media (max-width:350px) { .journey-page { padding-inline:14px; }.journey-heading h2 { font-size:17px; }.journey-eyebrow { letter-spacing:1px; font-size:6px; }.journey-layout { grid-template-rows:210px auto auto; }.journey-letter { padding:25px 22px; }.journey-photo-caption { left:16px; right:16px; }.journey-swipe-hint { font-size:6px; } }
 @media (max-height:700px) and (min-width:761px) { .journey-page { padding-top:7px; gap:15px; padding-bottom:19px; }.journey-letter { padding:23px 28px; }.journey-chapter { margin-bottom:12px; }.journey-letter h3 { font-size:26px; }.journey-question { margin-top:15px; }.journey-signature { margin-top:11px; }.journey-navigation { padding-top:13px; } }
 @media (prefers-reduced-motion:reduce) { .journey-page *, .journey-invitation * { animation:none!important; transition:none!important; } }
 
@@ -104,14 +97,6 @@
 .journey-write {color:#536b81}
 .journey-write:hover {color:#29455f}
 .journey-signature {color:#7c8fa0}
-.journey-navigation-top p {color:#596b7a}
-.journey-arrows > span {color:#64788c}
-.journey-arrows button {color:#41566b;border-color:#8a9cac88;background:#ffffff61}
-.journey-arrows button:hover:not(:disabled) {background:#e3e9eea6}
-.journey-stops button {color:#778898}
-.journey-stops button > span {color:#8898a6}
-.journey-stops button[aria-current='step'] {color:#30485d;font-weight:600}
-.journey-stops button[aria-current='step'] > span {color:#4f687c}
 .journey-bottomline {color:#788997;border-top-color:#8d9fac52}
 .journey-bottomline > button {color:#657b8d}
 .journey-bottomline > button:hover {color:#314c65}
@@ -310,17 +295,6 @@
   backdrop-filter:blur(30px) brightness(1.29) saturate(100%);
   box-shadow:0 12px 24px rgba(5,28,37,.11),inset 0 1px rgba(255,255,255,.41);
 }
-.about-panel .journey-navigation-top p{color:#153844;font-weight:600}
-.about-panel .journey-arrows > span{color:#173e4c;font-weight:600}
-.about-panel .journey-arrows button{
-  color:#2d505f;
-  background:rgba(253,255,255,.37);
-  border-color:rgba(85,122,129,.36);
-}
-.about-panel .journey-stops button{color:#1d4450;font-weight:500}
-.about-panel .journey-stops button > span{color:#244a56}
-.about-panel .journey-stops button[aria-current='step']{color:#1d525e}
-.about-panel .journey-stops button[aria-current='step'] > span{color:#3f7480}
 .about-panel .journey-bottomline{color:#173c49;border-top-color:#6a939b37}
 .about-panel .journey-bottomline>button{color:#1a4250}
 .about-panel .journey-bottomline>button:hover{color:#183e4f}
@@ -389,7 +363,6 @@
     padding:16px 13px 12px;
     border-radius:16px;
   }
-  .about-panel .journey-stops button{font-size:8px}
 }
 @media(max-width:350px){
   .about-panel .journey-layout{

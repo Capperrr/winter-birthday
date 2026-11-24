@@ -19,10 +19,10 @@
   <link rel="stylesheet" href="memory-notes.css?v=three-pages-1">
   <link rel="stylesheet" href="nature-atlas.css?v=cake-scene-stable">
   <link rel="stylesheet" href="keepsake.css?v=art-touch-20261116">
-  <link rel="stylesheet" href="journey.css?v=about-journey">
+  <link rel="stylesheet" href="journey.css?v=journey-text-nav">
   <link rel="stylesheet" href="music.css?v=gentle-eight-1">
   <link rel="stylesheet" href="personal-album.css?v=living-gallery-20261122">
-  <link rel="stylesheet" href="interactive-finale.css?v=winter-world">
+  <link rel="stylesheet" href="interactive-finale.css?v=journey-text-nav">
   <link rel="stylesheet" href="portrait-coverflow.css?v=coverflow-3d-20261118-2">
   <link rel="stylesheet" href="gwen-handwriting-phone.css?v=living-gallery-20261122">
   <link rel="stylesheet" href="cosmos-chapter.css?v=art-touch-20261116">
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="living-water.css?v=depth-20261122">
   <link rel="stylesheet" href="cake-five-candles.css?v=cake-scene-stable">
   <link rel="stylesheet" href="journey-coverflow.css?v=about-journey">
-  <link rel="stylesheet" href="journey-sticky-story.css?v=about-journey">
+  <link rel="stylesheet" href="journey-sticky-story.css?v=journey-text-nav">
   <link rel="stylesheet" href="about-entry.css?v=about-journey">
   <link rel="stylesheet" href="cosmos-glass-album.css?v=depth-20261122">
   <link rel="stylesheet" href="gallery.css?v=living-gallery-20261122">
@@ -39,7 +39,7 @@
   <script src="app.js?v=about-journey" defer></script>
   <script src="cake-scene.js?v=cake-scene-stable-2" defer></script>
   <script src="memory-notes.js?v=three-pages-1" defer></script>
-  <script src="journey.js?v=about-journey" defer></script>
+  <script src="journey.js?v=journey-text-nav" defer></script>
   <script src="journey-coverflow.js?v=about-journey" defer></script>
   <script src="motion.js?v=three-tier-1" defer></script>
   <script src="living-home.js?v=moonlit-mural" defer></script>
@@ -58,7 +58,7 @@
   <link rel="stylesheet" href="cinematic-scenes.css?v=winter-world-1">
   <script src="cinematic-scenes.js?v=winter-world-1" defer></script>
   <link rel="stylesheet" href="winter-film.css?v=cake-scene-stable">
-  <link rel="stylesheet" href="winter-relief.css?v=plaster-light">
+  <link rel="stylesheet" href="winter-relief.css?v=journey-text-nav">
   <script src="winter-film.js?v=cake-scene-stable" defer></script>
   <script type="module" src="winter-relief.js?v=plaster-light"></script>
 </head>
@@ -317,8 +317,18 @@
               <figcaption class="journey-photo-caption"><p id="journey-photo-caption">达州 · 城市资料影像</p></figcaption>
             </figure>
             <section class="journey-navigation" aria-label="沿着时光探索五段旅程">
-              <div class="journey-navigation-top"><div class="journey-arrows"><button type="button" id="journey-previous" aria-label="上一站" disabled>←</button><span id="journey-count">01 / 05</span><button type="button" id="journey-next" aria-label="下一站">→</button></div></div>
-              <div class="journey-stops" id="journey-stops"><button type="button" data-journey-stop="0" style="--stop-position:0" aria-current="step"><span>01</span>四川达州</button><button type="button" data-journey-stop="1" style="--stop-position:.25"><span>02</span>初中和高中</button><button type="button" data-journey-stop="2" style="--stop-position:.5"><span>03</span>南岸</button><button type="button" data-journey-stop="3" style="--stop-position:.75"><span>04</span>南安普顿</button><button type="button" data-journey-stop="4" style="--stop-position:1"><span>05</span>相遇</button></div>
+              <div class="journey-arrows">
+                <button type="button" id="journey-previous" disabled><span aria-hidden="true">←</span> 上一站</button>
+                <span id="journey-count">01 / 05</span>
+                <button type="button" id="journey-next"><span id="journey-next-label">下一站</span> <span aria-hidden="true">→</span></button>
+              </div>
+              <div class="journey-stops" id="journey-stops" role="group" aria-label="选择地点">
+                <button type="button" data-journey-stop="0" aria-current="step">四川达州</button>
+                <button type="button" data-journey-stop="1">初中和高中</button>
+                <button type="button" data-journey-stop="2" aria-label="重庆工商大学南岸校区">南岸</button>
+                <button type="button" data-journey-stop="3">南安普顿</button>
+                <button type="button" data-journey-stop="4" aria-label="在深圳相遇">相遇</button>
+              </div>
               <div class="journey-bottomline"><span id="journey-ending">那些我还没参与的日子，想听你慢慢讲。</span><button type="button" id="journey-credits-open" aria-haspopup="dialog">影像：Nyx Ning · CC BY-SA 3.0</button></div>
             </section>
             </div>

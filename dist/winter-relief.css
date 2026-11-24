@@ -529,7 +529,7 @@
 }
 .app-shell[data-film-scene="letter"] .puppy-parade { border-color: #8580719c; }
 
-.about-panel :is(.journey-heading h2,.journey-eyebrow,.journey-return,.journey-next-message,.journey-afterword-trigger,.journey-stops button,.journey-arrows button,#journey-count,#journey-credits-open) {
+.about-panel :is(.journey-heading h2,.journey-eyebrow,.journey-return,.journey-next-message,.journey-afterword-trigger,#journey-credits-open) {
   color: var(--relief-ink);
 }
 .about-panel .journey-heading { border-color: var(--relief-rule); }
@@ -544,7 +544,6 @@
 }
 .about-panel .journey-photo-caption { text-shadow: none; }
 .about-panel #journey-photo-caption { color: #504739; font: .83rem/1.55 var(--cn-serif); }
-.about-panel .journey-stops button { font-size: clamp(.75rem,.95vw,.9rem); }
 .about-panel #journey-credits-open { font-size: .75rem; }
 
 .app-shell[data-film-scene="afterword"] .afterword-copy {

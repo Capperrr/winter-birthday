@@ -1,6 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const code=fs.readFileSync(require('node:path').join(__dirname,'../dist/journey.js'),'utf8');
 const markup=fs.readFileSync(require('node:path').join(__dirname,'../dist/index.html'),'utf8');
+const legacyPage=fs.readFileSync(require('node:path').join(__dirname,'../dist/journey.html'),'utf8');
 function start({active=true,reduced=false,storage={},rejectSave=false,width=600}={}){
  const elements=new Map(),frames=new Map(),observers=[],animations=[];let t=0,nextId=0,focused=null,reads=0;
  class Node{
@@ -39,12 +40,15 @@ a.stops[2].fire('click');a.animate(2);a.stops[3].fire('click');a.animate(160);as
 a.stops[4].fire('click');
 assert.equal(a.el('journey-place-title').textContent,'天利名城 · 启德');
 assert.equal(a.el('journey-next-chapter').hidden,false);
+assert.equal(a.el('journey-next-label').textContent,'返回');
 assert.equal(a.el('journey-next').attributes['aria-label'],'回到 About Me');
 let ended=false;
 a.document.addEventListener('winter:journey-end',()=>{ended=true});
 a.el('journey-next').fire('click');
 assert.equal(ended,true);
 assert.ok(!markup.includes('id="journey-position"'));
+assert.match(legacyPage, /http-equiv="refresh" content="0; url=\.\/#journey"/);
+assert.doesNotMatch(legacyPage, /journey-position|type="range"/);
 a.stops[0].fire('click');a.animate(150);a.el('journey-write').fire('click');assert.equal(a.el('journey-note-dialog').open,true);assert.equal(a.el('journey-note-title').textContent,'从你熟悉的街区开始。');
 a.el('journey-note-input').value='<img src=x onerror=oops> 这是我的日常。';a.el('journey-note-input').fire('input');a.el('journey-note-form').fire('submit');assert.equal(a.el('journey-note-dialog').open,false);assert.equal(a.focused(),a.el('journey-write'));assert.ok(a.el('journey-saved-preview').textContent.includes('<img'));
 const saved=JSON.parse(a.storage['winter-journey-notes-v1']);assert.ok(saved.dazhou.includes('<img'));assert.equal(saved['dazhou-tianfu'],undefined);assert.equal(a.storage['winter-about-notes-v1'],undefined);

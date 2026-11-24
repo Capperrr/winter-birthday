@@ -175,9 +175,11 @@
     setText('journey-count',String(index+1).padStart(2,'0') + ' / 05');
     setText('journey-ending',index === stops.length-1 ? '后来还有很多路，想和你一起走。' : '那些我还没参与的日子，想听你慢慢讲。');
     setText('journey-credits-open','影像：' + stop.credit);
+    const atLastStop = index === stops.length-1;
     previous.disabled = index === 0;
     next.disabled = false;
-    next.setAttribute('aria-label',index===stops.length-1?'回到 About Me':'前往下一站');
+    setText('journey-next-label',atLastStop?'返回':'下一站');
+    next.setAttribute('aria-label',atLastStop?'回到 About Me':'前往下一站');
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
     photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected && page.dataset.journeyCoverflow !== 'on')); });
     updatePhotoFallback(); updateNotePreview();
