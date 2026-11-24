@@ -1,10 +1,10 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
-import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=moonlit-mural';
-import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=moonlit-mural';
+import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=retina-wagtails';
+import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=retina-wagtails';
 
 const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=photographic-acts', import.meta.url);
-const coverDistance = 8.9;
+const coverDistance = 9.6;
 const coverX = .14;
 const coverY = .46;
 const positions = [
@@ -14,10 +14,12 @@ const positions = [
 ];
 const rail = new THREE.CatmullRomCurve3(positions.map(point=>new THREE.Vector3(...point)));
 const day = new THREE.Color(0xf0ebe3);
-const evening = new THREE.Color(0x202b3a);
+const evening = new THREE.Color(0x283646);
 const finalWarmth = new THREE.Color(0xece6dd);
 const firstBrushDelay = 5;
 const idleBrushDelay = 8;
+const maxCanvasPixels = 6_200_000;
+const shadowDepth = 1.12;
 
 function reliefMaterial(field, direction, text) {
   return new THREE.ShaderMaterial({
@@ -77,12 +79,12 @@ function reliefMaterial(field, direction, text) {
 export async function mountReliefWall(host, {signal,report,onContextLost,title}) {
   if (signal.aborted) return null;
   const canvas = document.createElement('canvas');
-  const gl = canvas.getContext('webgl2', {alpha:true,antialias:false,powerPreference:'high-performance'});
+  const gl = canvas.getContext('webgl2', {
+    alpha:true,antialias:false,powerPreference:'high-performance',preserveDrawingBuffer:true
+  });
   if (!gl) throw new Error('无法创建 WebGL 2 context');
   const gpu = gl.getExtension('WEBGL_debug_renderer_info');
   const device = gpu ? gl.getParameter(gpu.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-  const software = /llvmpipe|softpipe|swiftshader|software/i.test(device);
-  const lean = software || (navigator.hardwareConcurrency ?? 8) <= 4 || (navigator.deviceMemory ?? 8) <= 2;
   report({webgl:'WebGL 2', device});
   const renderer = new THREE.WebGLRenderer({canvas,context:gl,alpha:true,antialias:false});
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -111,11 +113,13 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
   const viewBounds = new THREE.Frustum();
   const viewProjection = new THREE.Matrix4();
   const meshBounds = new THREE.Box3();
+  const strokeBounds = new THREE.Box2();
+  const projectedBounds = new THREE.Box2();
   let inscription, garden, cancelled=false, resizePending=true, observer;
   let width=0,height=0,spread=1;
-  let density = lean ? .69 : Math.min(1.7,devicePixelRatio||1);
   let lastContact = null, nextGhost = firstBrushDelay, ghost = null, previousGhost = null, ghostIndex = 0;
-  let previousDraw = 0;
+  let previousDraw = -Infinity, previousProgress=-1, previousNight=-1, previousView;
+  let lastInk=-Infinity, inkVisible=false;
 
   function dispose() {
     if (cancelled)return;
@@ -144,7 +148,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     spread=THREE.MathUtils.clamp(aspect / 1.38, .46, 1.64);
     camera.aspect=aspect;
     camera.updateProjectionMatrix();
-    const ratio=Math.min(density,Math.sqrt((lean?1080000:3300000)/(width*height)));
+    const ratio=Math.min(devicePixelRatio||1,3,Math.sqrt(maxCanvasPixels/(width*height)));
     renderer.setDrawingBufferSize(width,height,ratio);
     for(const motif of motifs)motif.mesh.position.x=motif.x*spread;
     const compositionScale=Math.min(1,aspect/1.05);
@@ -224,6 +228,41 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     return {segments:segments.slice(-maxBrushSegments),touch,radius:touch?reach:reach*.955,strength:.96};
   }
 
+  function markStroke({from,to},radius) {
+    strokeBounds.min.x=Math.min(strokeBounds.min.x,from.x-radius,to.x-radius);
+    strokeBounds.min.y=Math.min(strokeBounds.min.y,from.y-radius,to.y-radius);
+    strokeBounds.max.x=Math.max(strokeBounds.max.x,from.x+radius,to.x+radius);
+    strokeBounds.max.y=Math.max(strokeBounds.max.y,from.y+radius,to.y+radius);
+  }
+
+  // With a fixed camera and light, repaint only the stroke, its perspective expansion and cast shadow.
+  function clipToStroke() {
+    const {x,y}=field.lightVector.value;
+    const left=strokeBounds.min.x-Math.max(0,x)*shadowDepth-.18;
+    const right=strokeBounds.max.x-Math.min(0,x)*shadowDepth+.18;
+    const bottom=strokeBounds.min.y-Math.max(0,y)*shadowDepth-.18;
+    const top=strokeBounds.max.y-Math.min(0,y)*shadowDepth+.18;
+    projectedBounds.makeEmpty();
+    for(const x of [left,right]){
+      for(const y of [bottom,top]){
+        for(const z of [0,shadowDepth]){
+          projected.set(x,y,z).project(camera);
+          projectedBounds.expandByPoint(projected);
+        }
+      }
+    }
+    const px=n=>(Math.max(-1,Math.min(1,n))+1)*width/2;
+    const py=n=>(Math.max(-1,Math.min(1,n))+1)*height/2;
+    const x0=Math.floor(px(projectedBounds.min.x));
+    const x1=Math.ceil(px(projectedBounds.max.x));
+    const y0=Math.floor(py(projectedBounds.min.y));
+    const y1=Math.ceil(py(projectedBounds.max.y));
+    if(x1>x0&&y1>y0){
+      renderer.setScissor(x0,y0,x1-x0,y1-y0);
+      renderer.setScissorTest(true);
+    }
+  }
+
   try {
     report({model:'loading',textures:'正在建立 256 × 256 位移场'});
     const [response,gardenData]=await Promise.all([fetch(modelURL,{signal}),loadSecretGarden(signal)]);
@@ -262,13 +301,17 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     observer=new ResizeObserver(()=>{resizePending=true;});
     observer.observe(host);
     report({model:`A Secret Winter Garden · ${motifs.length} 组后续实体浮雕及 WINTER 刻字`,
-      textures:'Cycles 法线与环境遮蔽 · 256 × 256 GPU 双缓冲场及动态投影'});
+      textures:'2720 × 1800 Cycles 法线与环境遮蔽 · 256 × 256 GPU 双缓冲 · 896 × 704 局部投影'});
 
     return {
       resize(){resizePending=true;},
       draw({progress,seconds,night,input,contacts,lastInput,view}) {
         if(cancelled)return null;
-        if(resizePending&&!fit())return null;
+        const resized=resizePending;
+        if(resized&&!fit())return null;
+        const changed=resized||progress!==previousProgress||night!==previousNight||view!==previousView;
+        if(!changed&&!input&&!contacts.length&&!inkVisible&&!ghost&&
+          (seconds<nextGhost||seconds-lastInput<idleBrushDelay))return null;
         rail.getPoint(progress,cameraPoint);
         const horizontalScale=THREE.MathUtils.lerp(1,spread,THREE.MathUtils.smoothstep(progress,0,.15));
         camera.position.set(cameraPoint.x*horizontalScale,cameraPoint.y,cameraPoint.z);
@@ -284,30 +327,35 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         const brush=contactTrail(contacts,input,reach);
         const ambient=ambientTrail(seconds,lastInput,Boolean(brush));
         const dt=Math.min(.35,Math.max(.013,seconds-previousDraw));
+        if(brush||ambient)lastInk=seconds;
+        if(brush)brush.segments.forEach(segment=>markStroke(segment,brush.radius));
+        if(ambient)markStroke(ambient,ambient.radius);
+        const fading=seconds-lastInk<6.4;
+        if(fading)field.step(dt,brush,ambient);
+        else if(inkVisible)field.resetInk();
+        inkVisible=fading;
         previousDraw=seconds;
-        field.step(dt,brush,ambient);
+        previousProgress=progress;
+        previousNight=night;
+        previousView=view;
         const warmth=THREE.MathUtils.smoothstep(progress,.65,.84);
         field.backdrop.copy(day).lerp(finalWarmth,warmth*.64).lerp(evening,night);
-        const drift=Math.sin(seconds*.43);
-        const lightX=THREE.MathUtils.lerp(-.79+.085*drift,.91+.025*drift,night);
-        const lightY=THREE.MathUtils.lerp(.61+.058*Math.sin(seconds*.39),.81,night);
+        const lightX=THREE.MathUtils.lerp(-.79,.91,night);
+        const lightY=THREE.MathUtils.lerp(.61,.81,night);
         const lightZ=THREE.MathUtils.lerp(.88,.60,night);
         field.light.nightAmount.value=night;
         field.lightVector.value.set(lightX/lightZ,lightY/lightZ);
         direction.value.set(lightX,lightY,lightZ).transformDirection(camera.matrixWorldInverse);
-        field.shadows();
+        const wallHeight=2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*cameraPoint.z;
+        field.shadows(camera.position.x,camera.position.y,wallHeight*camera.aspect+1.05,wallHeight+1.05,inkVisible);
         renderer.setClearAlpha(0);
+        if(!changed&&!strokeBounds.isEmpty())clipToStroke();
         renderer.render(scene,camera);
+        renderer.setScissorTest(false);
+        if(!fading)strokeBounds.makeEmpty();
         return {camera:[camera.position.x,camera.position.y,camera.position.z],resolution:[canvas.width,canvas.height],
           night,light:[lightX,lightY,lightZ],
           triangles:renderer.info.render.triangles,trace:brush ? (brush.touch?'touch':'mouse') : ambient ? 'auto' : 'decay'};
-      },
-      scaleResolution(factor){
-        const next=THREE.MathUtils.clamp(density*factor,lean?.51:.65,lean?.96:Math.min(1.7,devicePixelRatio||1));
-        if(Math.abs(next-density)<.026)return false;
-        density=next;
-        resizePending=true;
-        return true;
       },
       probe(x,y){
         const point=worldAt(x,y);

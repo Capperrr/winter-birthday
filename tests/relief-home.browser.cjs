@@ -26,6 +26,30 @@ async function swipe(send, start, end, id) {
   await send('touchEnd',wpe?[point(end.x,end.y)]:[]);
 }
 
+function coverContrast(canvas) {
+  const poem=document.querySelector('.relief-poem');
+  const area=poem.getBoundingClientRect(), stage=canvas.getBoundingClientRect();
+  const scale=canvas.width/stage.width;
+  const x=Math.floor((area.left-stage.left)*scale);
+  const y=Math.floor((stage.bottom-area.bottom)*scale);
+  const width=Math.floor(area.width*scale), height=Math.floor(area.height*scale);
+  const pixels=new Uint8Array(width*height*4);
+  const gl=canvas.getContext('webgl2');
+  gl.readPixels(x,y,width,height,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
+  const color=document.createElement('canvas').getContext('2d');
+  color.fillStyle=getComputedStyle(poem).color;
+  color.fillRect(0,0,1,1);
+  const ink=color.getImageData(0,0,1,1).data;
+  const linear=Array.from({length:256},(_,i)=>i<11 ? i/3294.6 : ((i/255+.055)/1.055)**2.4);
+  const luma=(r,g,b)=>.2126*linear[r]+.7152*linear[g]+.0722*linear[b];
+  let brightest=0;
+  for(let i=0;i<pixels.length;i+=4){
+    if(pixels[i+3]!==255)throw new Error('Missing pixels behind the cover text');
+    brightest=Math.max(brightest,luma(pixels[i],pixels[i+1],pixels[i+2]));
+  }
+  return (luma(...ink)+.05)/(brightest+.05);
+}
+
 async function checkPrintMotion(page, send, viewport) {
   const home=page.locator('#panel-home');
   const gallery=home.locator('.relief-window');
@@ -150,7 +174,8 @@ async function run(browser, name, viewport, touch) {
     assert.match(info,/Shader 无编译错误/);
     assert.match(info,/256 × 256 GPU 双缓冲/);
     assert.match(info,/A Secret Winter Garden · 20 组后续实体浮雕/);
-    assert.match(info,/Cycles 法线与环境遮蔽/);
+    assert.match(info,/2720 × 1800 Cycles 法线与环境遮蔽/);
+    assert.match(info,/896 × 704 局部投影/);
     const fullScreen=()=>canvas.evaluate(canvas=>{
       const {left,top,right,bottom}=canvas.getBoundingClientRect();
       const style=getComputedStyle(document.querySelector('.site-header'));
@@ -159,6 +184,8 @@ async function run(browser, name, viewport, touch) {
     const wall=await fullScreen();
     assert.deepEqual(wall,{left:0,top:0,right:viewport.width,bottom:viewport.height,
       width:viewport.width,height:viewport.height,header:'rgba(0, 0, 0, 0)'});
+    const resolution=[viewport.width,viewport.height].map(size=>size*(wpe?2:1));
+    assert.deepEqual((await read()).resolution,resolution,'The drawing buffer starts at display pixel density');
     await page.evaluate(()=>document.getElementById('relief-debug').style.visibility='hidden');
     const rest=await shot('study-rest');
     const motifs=await getMotifs();
@@ -242,6 +269,19 @@ async function run(browser, name, viewport, touch) {
     assert.equal(await page.locator('.relief-panel[data-current="true"] .relief-print').count(),0);
     assert.deepEqual(await page.locator('.relief-poem span').allTextContents(),['像阵风掠过就无踪影','像束光温暖地照耀你']);
     const navigate=locator=>touch?locator.tap():locator.click();
+    await navigate(page.locator('#living-night'));
+    assert.equal(await page.locator('#main').getAttribute('data-living-time'),'night');
+    await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().night===1);
+    assert.ok((await read()).light[0]>.8,'Moonlight reverses the direction of the key light');
+    assert.deepEqual((await read()).resolution,resolution,'Night and touch keep the same sharp drawing buffer');
+    const nightContrast=await canvas.evaluate(coverContrast);
+    assert.ok(nightContrast>=4.5,`Night cover text needs a 4.5:1 contrast ratio, received ${nightContrast}`);
+    assert.deepEqual(await home.locator('.relief-print img').evaluateAll(images=>images.map(image=>getComputedStyle(image).filter)),
+      ['none','none','none','none'],'Night lighting never tints the original photographs');
+    await shot('cover-night');
+    await navigate(page.locator('#living-morning'));
+    await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().night===0);
+    assert.ok((await read()).light[0]<-.65);
     await navigate(page.locator('.relief-next'));
     await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().goal>.30);
     await checkPrintMotion(page,send,viewport);
@@ -284,15 +324,6 @@ async function run(browser, name, viewport, touch) {
     }
     for(const key of Object.keys(originals))assert.ok([200,304].includes(responses[key]),'Photo HTTP response '+key);
     assert.ok(Math.abs(poses[3][1]-poses[0][1])>12,'Camera travels along the continuous wall');
-    await navigate(page.locator('#living-night'));
-    assert.equal(await page.locator('#main').getAttribute('data-living-time'),'night');
-    await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().night===1);
-    assert.ok((await read()).light[0]>.8,'Moonlight reverses the direction of the key light');
-    assert.deepEqual(await home.locator('.relief-print img').evaluateAll(images=>images.map(image=>getComputedStyle(image).filter)),
-      ['none','none','none','none'],'Night lighting never tints the original photographs');
-    await navigate(page.locator('#living-morning'));
-    await page.waitForFunction(()=>window.WINTER_RELIEF_PROBE.frame().night===0);
-    assert.ok((await read()).light[0]<-.65);
     await navigate(page.locator('#view-toggle'));
     assert.equal(await page.locator('#main').getAttribute('data-view'),'scenery');
     await navigate(page.locator('#view-toggle'));
@@ -316,14 +347,15 @@ async function run(browser, name, viewport, touch) {
     assert.equal(await canvas.count(),0);
     assert.equal(await debug.count(),0);
     assert.deepEqual(errors,[]);
-    fs.writeFileSync(out+'/'+name+'.json',JSON.stringify({engine,viewport,info,wall,captions,responses,poses,idle,
+    fs.writeFileSync(out+'/'+name+'.json',JSON.stringify({engine,viewport,info,wall,nightContrast,captions,responses,poses,idle,
       quiet,firstAuto,animated,brush:{before,lifted,released,otherBefore,otherAfter},native,errors},null,2));
     console.log(name,'PASS');
   } finally{await context.close();}
 }
 
 async function fallback(browser, flag, expected) {
-  const context=await browser.newContext({viewport:{width:1150,height:830},ignoreHTTPSErrors:true});
+  const context=await browser.newContext({viewport:{width:1150,height:830},deviceScaleFactor:flag==='context'?2:1,
+    ignoreHTTPSErrors:true});
   try {
     await context.addInitScript(flag=>{
       if(flag==='save')Object.defineProperty(navigator,'connection',{value:{saveData:true}});
@@ -350,6 +382,16 @@ async function fallback(browser, flag, expected) {
     await page.locator('#relief-rail[data-sculpture="still"]').waitFor({timeout:35000});
     assert.match(await page.locator('#relief-debug').textContent(),expected);
     assert.equal(await page.locator('.relief-fallback-status').isVisible(),flag!=='save'&&flag!=='photo');
+    if(flag==='context'){
+      const dimensions=await page.locator('.relief-garden-poster img').evaluateAll(images=>Promise.all(images.map(async img=>{
+        await img.decode();
+        const full=new Image();
+        full.src=img.currentSrc;
+        await full.decode();
+        return [full.naturalWidth,full.naturalHeight];
+      })));
+      assert.deepEqual(dimensions,[[3840,2160],[3840,2160]],'Both resting modes load the Retina posters');
+    }
     await page.locator('.relief-next').click();
     await page.waitForFunction(()=>document.getElementById('panel-home').scrollTop>40);
     if(flag==='context'){

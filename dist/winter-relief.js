@@ -42,7 +42,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
   const pendingContacts=[];
   let active=false,failure='',reason='',controller=null,wall=null,frame=null,input=null;
   let progress=0,goal=0,lastInput=-Infinity,seconds=0,previousTime=0,raf=0;
-  let fps=0,startSample=0,samples=0,slow=0,fast=0,lastReport=0;
+  let fps=0,startSample=0,samples=0,lastReport=0;
   let chapter=-1;
   const exhibits=setupReliefPrints(rail,{
     reducedMotion:()=>Boolean(blocked()),
@@ -98,7 +98,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
   }
 
   function resetFrameStats(){
-    previousTime=fps=startSample=samples=slow=fast=0;
+    previousTime=fps=startSample=samples=0;
   }
   function stop(why){
     const wasLive=rail.dataset.sculpture==='live';
@@ -160,33 +160,30 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
   function paint(now){
     raf=0;
     if(!active||!wall||!canPlay())return;
-    const elapsed=previousTime?clamp(now-previousTime,1,350):16.67;
+    const elapsed=previousTime?Math.max(1,now-previousTime):16.67;
     previousTime=now;
     seconds+=elapsed*.001;
     progress=Math.abs(goal-progress)<.00025?goal:progress+(goal-progress)*(1-Math.exp(-elapsed/76));
     const night=Number(shell.style.getPropertyValue('--home-night'))||0;
     const held=input&&(input.touch||seconds-lastInput<.4)?input:null;
-    frame=wall.draw({progress,seconds,night,input:held,contacts:pendingContacts,lastInput,
+    const drawn=wall.draw({progress,seconds,night,input:held,contacts:pendingContacts,lastInput,
       view:wallStudy?'scenery':shell.dataset.view});
-    if(frame)pendingContacts.length=0;
+    if(drawn){frame=drawn;pendingContacts.length=0;}
     if(resources.shaderError){fail('Shader 编译失败');return;}
-    if(frame&&rail.dataset.sculpture==='loading'){
+    if(drawn&&rail.dataset.sculpture==='loading'){
       const previousProgress=goal;
       setStatus('live');
       scroller.scrollTop=previousProgress*scrollRange();
       scroll();
       wall.resize();
     }
-    if(frame){
+    if(drawn){
       if(!startSample)startSample=now;
       samples++;
       const windowTime=now-startSample;
       if(windowTime>1120){
         fps=(samples-1)*1000/windowTime;
         startSample=now;samples=1;
-        slow=fps<47?slow+1:0;fast=fps>56?fast+1:0;
-        if(slow===2){wall.scaleResolution(fps<28?.81:.92);slow=0;}
-        if(fast===5){wall.scaleResolution(1.075);fast=0;}
       }
     }
     if(debug&&now-lastReport>240){lastReport=now;diagnose();}
@@ -203,7 +200,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=moonlit-mural').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=retina-wagtails').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail

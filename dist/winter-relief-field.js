@@ -3,7 +3,7 @@ import * as THREE from './assets/vendor/three/three.module.min.js';
 const origin = new THREE.Vector2(-13.5, -34);
 const extent = new THREE.Vector2(27, 45);
 const fieldSize = 256;
-const shadowSize = [384, 512];
+const shadowSize = [896, 704];
 const restingDepth = .04;
 export const maxBrushSegments = 24;
 
@@ -32,12 +32,9 @@ export const sampledHeight = `
   }
 `;
 
-export const plasterLight = `
+const plasterLight = `
   float plasterWash(vec2 p) {
-    vec2 pore = fract(floor(p * 118.) * vec2(.1031,.11369));
-    pore += dot(pore,pore.yx+19.19);
-    float grain = fract(pore.x*pore.y) - .5;
-    return .978 + sin(p.x * .26 + p.y * .071 + .84) * .038 + grain * .018;
+    return .982 + sin(p.x * .26 + p.y * .071 + .84) * .027;
   }
 `;
 
@@ -46,29 +43,43 @@ export const galleryLight = plasterLight + `
   uniform vec3 moonColor;
   uniform float nightAmount;
   float moonFootprint(vec2 p) {
-    vec2 offset = p - vec2(.72,.68);
+    vec2 offset = p - vec2(.84,.92);
     float across = dot(offset,vec2(-.64,.77));
     float along = dot(offset,vec2(-.77,-.64));
-    float aperture = 1.45 + clamp(along + 3.6, 0., 8.) * .112;
-    float beam = (1. - smoothstep(aperture * .62, aperture, abs(across + .14)));
-    return beam * (.74 + .26 * (1. - smoothstep(-5.,4.,along))) * smoothstep(-12.,-3.4,p.y);
+    float aperture = 1.75 + clamp(along + 3.6, 0., 8.) * .13;
+    float beam = 1. - smoothstep(aperture * .28, aperture, abs(across + .12));
+    return beam * (.68 + .32 * (1. - smoothstep(-5.,4.,along))) * smoothstep(-2.8,-.24,p.y);
   }
   vec3 roomPlaster(vec2 p) {
-    vec3 bounce = moonColor * nightAmount * (.045 + .54 * moonFootprint(p));
-    return plaster * plasterWash(p) + bounce;
+    vec3 room = plaster * plasterWash(p);
+    if (nightAmount <= 0.) return room;
+    vec2 spill = (p-vec2(-2.24,.41))*vec2(.51,.55);
+    float reflected = .076 * exp(-dot(spill,spill));
+    return room + moonColor * nightAmount * (.078 + reflected + .39 * moonFootprint(p));
   }
   vec3 sculptedShadow(vec3 color, float strength) {
     vec3 hue = mix(vec3(.70,.83,1.),vec3(1.04,1.01,.88),nightAmount);
-    return color * (1. - hue * strength * mix(.34,.53,nightAmount));
+    return color * (1. - hue * strength * mix(.34,.40,nightAmount));
+  }
+`;
+
+export const projectedShadow = `
+  uniform sampler2D shadowAtlas;
+  uniform vec2 shadowOrigin;
+  uniform vec2 shadowExtent;
+  float shadowAt(vec2 p) {
+    return texture2D(shadowAtlas,(p-shadowOrigin)/shadowExtent).r;
   }
 `;
 
 export function createReliefField(renderer) {
   let read = textureTarget(fieldSize, fieldSize);
   let write = textureTarget(fieldSize, fieldSize);
+  const hardShade = textureTarget(...shadowSize);
   const shade = textureTarget(...shadowSize);
   const map = {value:read.texture};
   const room = {wallOrigin:{value:origin},wallExtent:{value:extent}};
+  const shadow = {shadowOrigin:{value:new THREE.Vector2()},shadowExtent:{value:new THREE.Vector2(1,1)}};
   const lightVector = {value:new THREE.Vector2(-.48, .60)};
   const backdrop = new THREE.Color(0xe9e9e6);
   const light = {plaster:{value:backdrop}, moonColor:{value:new THREE.Color(0xaec4e1)}, nightAmount:{value:0}};
@@ -130,10 +141,33 @@ export function createReliefField(renderer) {
   const pass = new THREE.Mesh(quad, ink);
   pass.frustumCulled = false;
   paint.add(pass);
+  const penumbra = new THREE.ShaderMaterial({
+    depthTest:false,depthWrite:false,
+    uniforms:{source:{value:hardShade.texture},texel:{value:new THREE.Vector2(1/shadowSize[0],1/shadowSize[1])}},
+    vertexShader:`
+      varying vec2 p;
+      void main() { p = uv; gl_Position = vec4(position.xy,0.,1.); }
+    `,
+    fragmentShader:`
+      uniform sampler2D source;
+      uniform vec2 texel;
+      varying vec2 p;
+      void main() {
+        vec2 x = vec2(1.48*texel.x,0.);
+        vec2 y = vec2(0.,1.32*texel.y);
+        float shade = texture2D(source,p).r*.32 + .17*(texture2D(source,p+x).r +
+          texture2D(source,p-x).r + texture2D(source,p+y).r + texture2D(source,p-y).r);
+        gl_FragColor = vec4(shade,0.,0.,1.);
+      }
+    `
+  });
+  const soften = new THREE.Scene();
+  const filter = new THREE.Mesh(quad,penumbra);
+  filter.frustumCulled = false;
+  soften.add(filter);
   const wall = new THREE.ShaderMaterial({
     depthWrite:true,
-    uniforms:{...room,...light,shadowAtlas:{value:shade.texture},
-      texel:{value:new THREE.Vector2(1/shadowSize[0],1/shadowSize[1])}},
+    uniforms:{...shadow,...light,shadowAtlas:{value:shade.texture}},
     vertexShader:`
       varying vec2 wallPoint;
       void main() {
@@ -141,20 +175,10 @@ export function createReliefField(renderer) {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
       }
     `,
-    fragmentShader:galleryLight + `
-      uniform sampler2D shadowAtlas;
-      uniform vec2 wallOrigin;
-      uniform vec2 wallExtent;
-      uniform vec2 texel;
+    fragmentShader:galleryLight + projectedShadow + `
       varying vec2 wallPoint;
       void main() {
-        vec2 p = (wallPoint - wallOrigin) / wallExtent;
-        float shade = texture2D(shadowAtlas,p).r * .32;
-        shade += (texture2D(shadowAtlas,p+vec2(1.45,0.)*texel).r +
-                  texture2D(shadowAtlas,p-vec2(1.45,0.)*texel).r +
-                  texture2D(shadowAtlas,p+vec2(0.,1.2)*texel).r +
-                  texture2D(shadowAtlas,p-vec2(0.,1.2)*texel).r) * .17;
-        gl_FragColor = vec4(sculptedShadow(roomPlaster(wallPoint),shade),1.);
+        gl_FragColor = vec4(sculptedShadow(roomPlaster(wallPoint),shadowAt(wallPoint)),1.);
         #include <colorspace_fragment>
       }
     `
@@ -162,12 +186,14 @@ export function createReliefField(renderer) {
 
   function casterFor(fixedDepth) {
     return new THREE.ShaderMaterial({
-      uniforms:{...room,liftMap:map,fixedDepth:{value:fixedDepth},lightVector},
+      uniforms:{...room,...shadow,liftMap:map,fixedDepth:{value:fixedDepth},lightVector},
       side:THREE.DoubleSide,transparent:true,depthTest:false,depthWrite:false,
       blending:THREE.CustomBlending,blendEquation:THREE.MaxEquation,
       blendSrc:THREE.OneFactor,blendDst:THREE.OneFactor,
       vertexShader: sampledHeight + `
         uniform vec2 lightVector;
+        uniform vec2 shadowOrigin;
+        uniform vec2 shadowExtent;
         varying float shadeValue;
         void main() {
           vec3 stone = (modelMatrix * vec4(position,1.)).xyz;
@@ -175,7 +201,7 @@ export function createReliefField(renderer) {
           float z = max(0.,displacedDepth(stone.z,reliefScale(amount)));
           vec2 projected = stone.xy - z * lightVector;
           shadeValue = smoothstep(.012,.48,z) * smoothstep(.015,.70,amount);
-          gl_Position = vec4((projected - wallOrigin) / wallExtent * 2. - 1., 0.,1.);
+          gl_Position = vec4((projected - shadowOrigin) / shadowExtent * 2. - 1., 0.,1.);
         }
       `,
       fragmentShader:`
@@ -204,10 +230,12 @@ export function createReliefField(renderer) {
     renderer.setClearColor(0x000000);
     renderer.clear(true,false,false);
   }
-  clear(read);
-  clear(write);
-  clear(shade);
-  renderer.setRenderTarget(null);
+  function resetInk() {
+    clear(read);
+    clear(write);
+    renderer.setRenderTarget(null);
+  }
+  resetInk();
 
   function step(dt, brush, ghost) {
     ink.uniforms.dt.value = dt;
@@ -223,22 +251,27 @@ export function createReliefField(renderer) {
     map.value = read.texture;
   }
 
-  function shadows() {
+  function shadows(x,y,width,height,hasInk) {
+    shadow.shadowOrigin.value.set(x-width/2,y-height/2);
+    shadow.shadowExtent.value.set(width,height);
     for (const [mesh,caster] of buffers) {
-      caster.visible = mesh.visible;
+      caster.visible = mesh.visible && (hasInk || caster.material.uniforms.fixedDepth.value>0);
+      if(!caster.visible)continue;
       caster.matrix.copy(mesh.matrixWorld);
       caster.matrixWorldNeedsUpdate = true;
     }
     renderer.setClearColor(0x000000);
-    renderer.setRenderTarget(shade);
+    renderer.setRenderTarget(hardShade);
     renderer.render(projectedShadows, flatCamera);
+    renderer.setRenderTarget(shade);
+    renderer.render(soften,flatCamera);
     renderer.setRenderTarget(null);
   }
 
-  function sample(target, point, channel, size = 1) {
+  function sample(target, point, channel, size = 1, start=origin, span=extent) {
     const half = Math.floor(size/2);
-    const x = Math.round((point.x-origin.x)/extent.x*(target.width-1)) - half;
-    const y = Math.round((point.y-origin.y)/extent.y*(target.height-1)) - half;
+    const x = Math.round((point.x-start.x)/span.x*(target.width-1)) - half;
+    const y = Math.round((point.y-start.y)/span.y*(target.height-1)) - half;
     if(x<0 || y<0 || x+size>target.width || y+size>target.height)return null;
     const pixels = new Uint8Array(size*size*4);
     renderer.readRenderTargetPixels(target,x,y,size,size,pixels);
@@ -247,14 +280,18 @@ export function createReliefField(renderer) {
     return sum/(size*size);
   }
 
+  // Compile the touch shader during loading so the first stroke does not have to wait for it.
+  step(.016,null,null);
+  renderer.setRenderTarget(null);
+
   return {
-    room,map,wall,backdrop,light,lightVector,add,step,shadows,
+    room,map,wall,backdrop,light,lightVector,add,step,resetInk,shadows,
     probe(point) {
-      return {height:sample(read,point,1),shadow:sample(shade,point,0,9)};
+      return {height:sample(read,point,1),shadow:sample(shade,point,0,9,shadow.shadowOrigin.value,shadow.shadowExtent.value)};
     },
     dispose() {
-      read.dispose(); write.dispose(); shade.dispose();
-      quad.dispose(); ink.dispose(); wall.dispose();
+      read.dispose(); write.dispose(); shade.dispose(); hardShade.dispose();
+      quad.dispose(); ink.dispose(); wall.dispose(); penumbra.dispose();
       for (const caster of buffers.values()) caster.material.dispose();
     }
   };

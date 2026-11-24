@@ -67,7 +67,7 @@
 }
 .relief-stage img { object-fit: cover; object-position: 50% 49%; }
 .relief-garden-poster img { object-position:center; }
-.relief-fallback-night { background:#323e4d; opacity:var(--home-night,0); }
+.relief-fallback-night { background:#43536a; opacity:var(--home-night,0); }
 .relief-garden-poster { opacity:var(--garden-poster,1); }
 .relief-stage canvas { opacity: 0; transition: opacity 280ms ease-out; transform: translateZ(0); }
 .relief-rail[data-sculpture="live"] .relief-stage canvas { opacity: 1; }

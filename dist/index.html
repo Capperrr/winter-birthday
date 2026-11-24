@@ -58,9 +58,9 @@
   <link rel="stylesheet" href="cinematic-scenes.css?v=winter-world-1">
   <script src="cinematic-scenes.js?v=winter-world-1" defer></script>
   <link rel="stylesheet" href="winter-film.css?v=cake-scene-stable">
-  <link rel="stylesheet" href="winter-relief.css?v=moonlit-mural">
+  <link rel="stylesheet" href="winter-relief.css?v=retina-wagtails">
   <script src="winter-film.js?v=cake-scene-stable" defer></script>
-  <script type="module" src="winter-relief.js?v=moonlit-mural"></script>
+  <script type="module" src="winter-relief.js?v=retina-wagtails"></script>
 </head>
 <body>
   <a class="skip-link" href="#page-content">跳到主要内容</a>
@@ -139,16 +139,20 @@
                 <img src="assets/home/wall-wide.webp?v=quiet-plaster" width="1680" height="1120" alt="" decoding="async">
               </picture>
               <picture class="relief-garden-poster">
-                <source media="(max-aspect-ratio: 11/20)" srcset="assets/home/secret-garden-phone.webp?v=mural">
-                <source media="(orientation: portrait)" srcset="assets/home/secret-garden-portrait.webp?v=mural">
-                <img src="assets/home/secret-garden-wide.webp?v=mural" width="1800" height="900" alt="" fetchpriority="high" decoding="async">
+                <source media="(max-aspect-ratio: 11/20)" srcset="assets/home/secret-garden-phone.webp?v=wagtails">
+                <source media="(orientation: portrait)" srcset="assets/home/secret-garden-portrait.webp?v=wagtails 1x, assets/home/secret-garden-portrait-2x.webp 2x">
+                <img src="assets/home/secret-garden-wide.webp?v=wagtails"
+                  srcset="assets/home/secret-garden-wide.webp?v=wagtails 1x, assets/home/secret-garden-wide-2x.webp 2x"
+                  width="1920" height="1080" alt="" fetchpriority="high" decoding="async">
               </picture>
             </div>
             <div class="relief-fallback relief-fallback-night">
               <picture class="relief-garden-poster">
-                <source media="(max-aspect-ratio: 11/20)" srcset="assets/home/secret-garden-night-phone.webp">
-                <source media="(orientation: portrait)" srcset="assets/home/secret-garden-night-portrait.webp">
-                <img src="assets/home/secret-garden-night-wide.webp" width="1800" height="900" alt="" decoding="async">
+                <source media="(max-aspect-ratio: 11/20)" srcset="assets/home/secret-garden-night-phone.webp?v=wagtails">
+                <source media="(orientation: portrait)" srcset="assets/home/secret-garden-night-portrait.webp?v=wagtails 1x, assets/home/secret-garden-night-portrait-2x.webp 2x">
+                <img src="assets/home/secret-garden-night-wide.webp?v=wagtails"
+                  srcset="assets/home/secret-garden-night-wide.webp?v=wagtails 1x, assets/home/secret-garden-night-wide-2x.webp 2x"
+                  width="1920" height="1080" alt="" fetchpriority="low" decoding="async">
               </picture>
             </div>
           </div>
