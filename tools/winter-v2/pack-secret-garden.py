@@ -1,8 +1,9 @@
 """Pack the registered Cycles materials and responsive opening stills.
 
-python tools/winter-v2/pack-secret-garden.py CYCLES_PASSES_DIR dist/assets/home
+python tools/winter-v2/pack-secret-garden.py CYCLES_PASSES_DIR dist/assets/home LIGHT_PASSES_DIR
 Inputs are garden-height-16.png and garden-surface.png, registered at 2720 × 1800.
 The surface stores world XY normals in red/green and ambient occlusion in blue.
+The optional light-passes directory holds the three shots from bake-garden-light-levels.py.
 """
 import math
 import sys
@@ -32,7 +33,6 @@ surface = np.array(Image.merge("RGB", (red, green, occlusion.filter(ImageFilter.
 # The stationary wall uses its own plaster shader. Pad the geometry mask for bilinear texture sampling.
 footprint = Image.fromarray(np.uint8(depth > 62) * 255).filter(ImageFilter.MaxFilter(9))
 surface[np.asarray(footprint) == 0] = (128, 128, 255)
-Image.fromarray(surface).save(target / "secret-garden-light.webp", lossless=True, method=6)
 normal_ao = surface.astype(np.float32) / 255
 
 # Keep the resting posters registered to the browser camera and its day/night light field.
@@ -49,6 +49,26 @@ def smooth(start, end, values):
     return t*t*(3-2*t)
 
 
+coverage = smooth(65, 1130, depth)
+rgba = np.dstack((surface, np.uint8(np.rint(coverage * 255))))
+Image.fromarray(rgba).save(target / "secret-garden-light.webp", lossless=True, method=6, exact=True)
+
+if len(sys.argv) > 3:
+    levels_dir = Path(sys.argv[3])
+    tiles = []
+    for level in ("raised", "middle", "rest"):
+        light = Image.open(levels_dir / f"garden-light-{level}.png").convert("RGB")
+        if light.size != (1920, 1272):
+            raise ValueError("Use the registered 1920 × 1272 Cycles light passes")
+        # Smooth only the irradiance and occlusion sample noise. The full-size normal texture retains the engraving.
+        pixels = np.asarray(light.filter(ImageFilter.GaussianBlur(2.4)), dtype=np.float32)
+        flat_plane = np.median(pixels[36:100, 820:1100, :2], axis=(0,1))
+        pixels[:,:,:2] *= 163 / flat_plane
+        tile = np.uint8(np.rint(np.clip(pixels,0,255)))
+        tiles.append(np.pad(tile, ((4,4), (0,0), (0,0)), mode="edge"))
+    Image.fromarray(np.vstack(tiles)).save(target / "secret-garden-light-levels.webp", quality=96, method=6)
+
+
 def plaster_row(x, y, scale, rise, night):
     u = np.clip((x/(13.6*scale) + .5) * (pass_size[0]-1), 0, pass_size[0]-1.001)
     v = np.clip((.5-(y-rise)/(9*scale)) * (pass_size[1]-1), 0, pass_size[1]-1.001)
@@ -62,7 +82,7 @@ def plaster_row(x, y, scale, rise, night):
     normal /= np.linalg.norm(normal,axis=2,keepdims=True)
     key = np.array((.91,.81,.60) if night else (-.79,.61,.88))
     key /= np.linalg.norm(key)
-    wash = .982 + np.sin(x*.26+y*.071+.84)*.027
+    wash = .982 + np.sin(x*.26+y*.071+.84)*.027 + .0035*np.sin(x*116+y*27)*np.sin(y*143-x*34)
     pigment = linear((40,54,70) if night else (240,235,227))
     base = pigment*wash[:,:,None]
     footprint = 0
@@ -79,7 +99,7 @@ def plaster_row(x, y, scale, rise, night):
         reflected = .13*(np.maximum(0,normal@fill)-fill[2])
     response = (np.maximum(0,normal@key)-key[2]) * ((.65+.18*footprint) if night else .46)
     engraving = (vane@key[:2])*(.164 if night else .068)
-    value = np.maximum(.36,1+response+reflected+engraving-(1-cast[:,:,2])*.041)
+    value = 1 + coverage[iy,ix] * (response + reflected + engraving - (1-cast[:,:,2])*.041)
     linear_pixels = base*value[:,:,None]
     pixels = (1.055*np.maximum(linear_pixels,0)**(1/2.4)-.055)*255
     return np.uint8(np.rint(np.clip(pixels,0,255)))

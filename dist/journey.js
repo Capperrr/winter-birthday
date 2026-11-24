@@ -4,8 +4,9 @@
   if (!page || page.dataset.journeyReady === 'true') return;
   page.dataset.journeyReady = 'true';
   const byId = id => document.getElementById(id);
-  const range = byId('journey-position');
+  const scroller = byId('panel-about');
   const frame = byId('journey-frame');
+  const visual = page.querySelector('.journey-visual');
   const body = byId('journey-letter-body');
   const previous = byId('journey-previous');
   const next = byId('journey-next');
@@ -16,8 +17,6 @@
   const noteButton = byId('journey-write');
   const credits = byId('journey-credit-dialog');
   const stopButtons = Array.from(page.querySelectorAll('[data-journey-stop]'));
-  const afterwordTrigger = byId('journey-afterword-trigger');
-  const nextChapter = byId('journey-next-chapter');
   const photos = Array.from(page.querySelectorAll('[data-photo-key]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const storageKey = 'winter-journey-notes-v1';
@@ -37,11 +36,6 @@
   let active = false;
   let disposed = false;
   let index = 0;
-  let position = 0;
-  let goal = 0;
-  let velocity = 0;
-  let springFrame = null;
-  let lastSpring = null;
   let swipeFrame = null;
   let swipe = null;
   let textAnimation = null;
@@ -90,44 +84,50 @@
   let storyNavigationUntil=0;
   let storyScrollFrame=0;
   let storyEdges=[];
+  let storyStart=0;
   function measureStory(){
-    if(page.hidden){storyEdges=[];return;}
-    const top=page.getBoundingClientRect().top;
-    const scrolled=page.scrollTop;
+    if(!active){storyEdges=[];return;}
+    if(compactStory.matches && visual?.offsetHeight) {
+      page.style.setProperty('--journey-rail-height', `${visual.offsetHeight}px`);
+    }
+    const top=scroller.getBoundingClientRect().top;
+    const scrolled=scroller.scrollTop;
+    storyStart=story.getBoundingClientRect().top-top+scrolled;
     storyEdges=storyPanels.map(({section})=>section.getBoundingClientRect().bottom-top+scrolled);
   }
   if(typeof ResizeObserver==='function'){
     const storyObserver=new ResizeObserver(measureStory);
-    [page,story,...storyPanels.map(({section})=>section)].forEach(section=>storyObserver.observe(section));
+    [scroller,byId('about-journey-bridge'),page,visual,story].filter(Boolean).forEach(section=>storyObserver.observe(section));
     removers.push(()=>storyObserver.disconnect());
   }
-  function canStory(){return !page.hidden&&active&&!disposed;}
+  function canStory(){return active&&!disposed;}
   function moveToStory(i,smooth){
     if(!canStory())return;
-    const viewport=page.getBoundingClientRect();
+    const viewport=scroller.getBoundingClientRect();
     const rect=storyPanels[i].section.getBoundingClientRect();
     if(!viewport.height||!rect.height)return;
-    const offset=Math.min(96,viewport.height*.16);
-    const target=page.scrollTop+rect.top-viewport.top-offset;
+    const offset=compactStory.matches && visual ? visual.offsetHeight+24 : Math.min(96,viewport.height*.16);
+    const target=scroller.scrollTop+rect.top-viewport.top-offset;
     const animated=smooth&&!calm();
     storyNavigationUntil=performance.now()+(animated?750:100);
-    page.scrollTo({top:Math.max(0,target),behavior:animated?'smooth':'auto'});
+    scroller.scrollTo({top:Math.max(0,target),behavior:animated?'smooth':'auto'});
   }
   function watchStoryScroll(){
     storyScrollFrame=0;
     if(!canStory()||noteDialog.open||credits.open||performance.now()<storyNavigationUntil)return;
     if(!storyEdges.length)measureStory();
-    const readingLine=page.scrollTop+page.clientHeight*(compactStory.matches?.48:.52);
+    const readingLine=scroller.scrollTop+scroller.clientHeight*(compactStory.matches?.68:.52);
+    if(readingLine<storyStart)return;
     const firstBelow=storyEdges.findIndex(edge=>edge>readingLine);
     const nearest=firstBelow<0?stops.length-1:firstBelow;
     if(nearest!==index)selectStop(nearest,true,'story');
   }
-  listen(page,'scroll',()=>{
+  listen(scroller,'scroll',()=>{
     if(!storyScrollFrame)storyScrollFrame=requestAnimationFrame(watchStoryScroll);
   },{passive:true});
   listen(story,'pointerdown',()=>{storyNavigationUntil=0},{passive:true});
   listen(story,'touchstart',()=>{storyNavigationUntil=0},{passive:true});
-  listen(page,'wheel',()=>{storyNavigationUntil=0},{passive:true});
+  listen(scroller,'wheel',()=>{storyNavigationUntil=0},{passive:true});
 
 
 
@@ -177,43 +177,20 @@
     setText('journey-credits-open','影像：' + stop.credit);
     previous.disabled = index === 0;
     next.disabled = false;
-    next.setAttribute('aria-label',index===stops.length-1?'继续阅读相遇之后的后记':'前往下一站');
-    nextChapter.hidden = index !== stops.length-1;
+    next.setAttribute('aria-label',index===stops.length-1?'回到 About Me':'前往下一站');
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
     photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected && page.dataset.journeyCoverflow !== 'on')); });
-    range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
     updatePhotoFallback(); updateNotePreview();
     if (announce) status.textContent = '第' + (index+1) + '站，共5站。' + stop.period + '，' + stop.title + '。';
     page.dispatchEvent(new CustomEvent('winter:journey-stop',{detail:{index,animate}}));
     if (!canStory() && animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
   }
-  function paint(value) {
-    position = Math.max(0,Math.min(stops.length-1,value));
-    page.style.setProperty('--journey-progress',String(position/(stops.length-1)));
-    range.value = String(position*100);
-  }
-  function cancelSpring() { if (springFrame !== null) cancelAnimationFrame(springFrame); springFrame = null; lastSpring = null; }
-  function spring(now) {
-    springFrame = null;
-    if (!active || disposed || document.hidden) { lastSpring = null; return; }
-    if (calm()) { paint(goal); velocity = 0; return; }
-    const dt = lastSpring === null ? 1/60 : Math.min(.032,Math.max(.001,(now-lastSpring)/1000));
-    lastSpring = now;
-    velocity += ((goal-position)*190-velocity*28)*dt;
-    paint(position+velocity*dt);
-    if (Math.abs(goal-position) < .0006 && Math.abs(velocity) < .006) { paint(goal); velocity = 0; lastSpring = null; return; }
-    springFrame = requestAnimationFrame(spring);
-  }
   function selectStop(value, animate = true, source='controls') {
     if (!active || disposed || noteDialog.open || credits.open) return;
     releaseSwipe();
     const target = Math.max(0,Math.min(stops.length-1,Math.round(value)));
-    cancelSpring();
     if (target !== index) renderStop(target,animate);
-    goal = target;
     if(source!=='story')moveToStory(target,animate);
-    if (!animate || calm() || document.hidden || Math.abs(position-goal) < .0001) { paint(goal); velocity = 0; return; }
-    springFrame = requestAnimationFrame(spring);
   }
   function releaseSwipe() {
     const previousSwipe = swipe; swipe = null;
@@ -223,10 +200,9 @@
     page.style.setProperty('--journey-photo-x','0px');
     try { if (previousSwipe && frame.hasPointerCapture?.(previousSwipe.id)) frame.releasePointerCapture(previousSwipe.id); } catch (_) {}
   }
-  function stopMotion() { cancelSpring(); releaseSwipe(); cancelText(); velocity = 0; goal = index; paint(index); }
+  function stopMotion() { releaseSwipe(); cancelText(); }
   function swipeStart(event) {
     if (page.dataset.journeyCoverflow === 'on' || !active || disposed || swipe || noteDialog.open || credits.open || event.isPrimary === false || (event.button !== undefined && event.button !== 0) || event.target.closest?.('a,button,input,textarea')) return;
-    cancelSpring(); goal = index; paint(index);
     swipe = { id:event.pointerId, x:event.clientX, y:event.clientY, lastX:event.clientX, width:frame.getBoundingClientRect().width, horizontal:false };
   }
   function swipeMove(event) {
@@ -254,7 +230,7 @@
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     stopMotion();
-    if (active) { renderStop(index,false,false); storyNavigationUntil=0; }
+    if (active) { renderStop(index,false,false); storyNavigationUntil=0; measureStory(); }
     else {
       if(storyScrollFrame){cancelAnimationFrame(storyScrollFrame);storyScrollFrame=0;}
       editing = null; closeNotes(); closeCredits();
@@ -268,31 +244,8 @@
   stopButtons.forEach(button => listen(button,'click',() => selectStop(Number(button.dataset.journeyStop))));
   listen(previous,'click',() => selectStop(index-1));
   listen(next,'click',() => {
-    if(index === stops.length-1) {if(active && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));}
+    if(index === stops.length-1) {if(active && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-end'));}
     else selectStop(index+1);
-  });
-  listen(afterwordTrigger,'click',() => {
-    if(active && index===stops.length-1 && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));
-  });
-  listen(range,'input',() => {
-    if (!active || disposed || noteDialog.open || credits.open) return;
-    cancelSpring(); releaseSwipe(); velocity = 0;
-    const value = Number(range.value)/100;
-    if (!Number.isFinite(value)) return;
-    paint(value); goal = Math.round(position);
-    if (Math.abs(position-index) > .58) renderStop(goal,true,false);
-  });
-  listen(range,'change',() => selectStop(Math.round(position)));
-  listen(range,'pointercancel',() => { if (active) selectStop(Math.round(position)); });
-  listen(range,'keydown',event => {
-    if (!active || noteDialog.open || credits.open) return;
-    let target;
-    if (['ArrowRight','ArrowUp','PageDown'].includes(event.key)) target = index+1;
-    else if (['ArrowLeft','ArrowDown','PageUp'].includes(event.key)) target = index-1;
-    else if (event.key === 'Home') target = 0;
-    else if (event.key === 'End') target = stops.length-1;
-    else return;
-    event.preventDefault(); selectStop(target);
   });
   listen(frame,'pointerdown',swipeStart);
   listen(window,'pointermove',swipeMove,{passive:true});
@@ -356,6 +309,6 @@
     stopMotion();
     if (!event.persisted) { active = false; disposed = true; editing = null; closeNotes(); closeCredits(); motionObserver?.disconnect(); removers.forEach(remove => remove()); }
   });
-  listen(window,'pageshow',() => { if (active) { paint(index); updatePhotoFallback(); } });
-  if (shell.dataset.destination === 'journey') activate(true);
+  listen(window,'pageshow',() => { if (active) { measureStory(); updatePhotoFallback(); } });
+  if (shell.dataset.page === 'about') activate(true);
 })();

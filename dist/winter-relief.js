@@ -43,6 +43,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
   let active=false,failure='',reason='',controller=null,wall=null,frame=null,input=null;
   let progress=0,goal=0,lastInput=-Infinity,seconds=0,previousTime=0,raf=0;
   let fps=0,startSample=0,samples=0,lastReport=0;
+  let renderedFrames=0;
   let chapter=-1;
   const exhibits=setupReliefPrints(rail,{
     reducedMotion:()=>Boolean(blocked()),
@@ -85,7 +86,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     window.WINTER_RELIEF_PROBE={
       motifs:()=>wall?.visibleMotifs() || [],
       sample:(x,y)=>wall?.probe(x,y)??null,
-      frame:()=>({progress,goal,seconds,fps,...frame})
+      frame:()=>({progress,goal,seconds,fps,renderedFrames,...frame})
     };
   }
 
@@ -109,7 +110,8 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     pendingContacts.length=0;
     resetFrameStats();
     chapter=-1;
-    panels.forEach(panel=>{panel.inert=wallStudy;panel.removeAttribute('data-current');});
+    panels.forEach(panel=>{panel.inert=wallStudy;panel.removeAttribute('data-current');panel.removeAttribute('data-in-view');});
+    rail.style.removeProperty('--cover-travel');
     if(wasLive||!active)exhibits.reset();
     enter.inert=postscript.inert=false;
     if(!failure)Object.assign(resources,{webgl:'未启动',device:'—',model:'未请求',textures:'未建立'});
@@ -130,9 +132,13 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
       rail.dataset.reliefChapter=String(index);
       chapter=index;
     }
-    const actOpacity=index===0 ? 1-fade(p,.241,.30) :
-      index===1 ? fade(p,.30,.345)*(1-fade(p,.611,.65)) : fade(p,.65,.705);
-    rail.style.setProperty('--act-opacity',actOpacity.toFixed(3));
+    const handoff=fade(p,.262,.336);
+    const reunion=fade(p,.616,.694);
+    [1-handoff,handoff*(1-reunion),reunion].forEach((opacity,i)=>{
+      panels[i].style.setProperty('--act-opacity',opacity.toFixed(3));
+      panels[i].toggleAttribute('data-in-view',opacity>.002);
+    });
+    rail.style.setProperty('--cover-travel',`${(-26*handoff).toFixed(2)}px`);
     exhibits.project(p,index,scroller.clientHeight);
     const details=fade(p,.783,.887);
     rail.style.setProperty('--postscript',details.toFixed(3));
@@ -168,7 +174,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     const held=input&&(input.touch||seconds-lastInput<.4)?input:null;
     const drawn=wall.draw({progress,seconds,night,input:held,contacts:pendingContacts,lastInput,
       view:wallStudy?'scenery':shell.dataset.view});
-    if(drawn){frame=drawn;pendingContacts.length=0;}
+    if(drawn){frame=drawn;renderedFrames++;pendingContacts.length=0;}
     if(resources.shaderError){fail('Shader 编译失败');return;}
     if(drawn&&rail.dataset.sculpture==='loading'){
       const previousProgress=goal;
@@ -200,7 +206,7 @@ import { setupReliefPrints } from './winter-relief-prints.js?v=photographic-flow
     lastInput=-Infinity;
     Object.assign(resources,{webgl:'正在启动',device:'—',model:'未请求',textures:'未建立',shaderError:'',error:''});
     setStatus('loading');
-    import('./winter-relief-wall.js?v=retina-wagtails').then(({mountReliefWall})=>mountReliefWall(stage,{
+    import('./winter-relief-wall.js?v=plaster-light').then(({mountReliefWall})=>mountReliefWall(stage,{
       signal:run.signal,title,
       report(data){if(!run.signal.aborted){Object.assign(resources,data);diagnose();}},
       onContextLost:fail

@@ -19,11 +19,12 @@ function start({ hash = '', storage = {}, session = {}, rejectSave = false, redu
     showModal() { this.open = true; }
     close() { this.open = false; this.fire('close'); }
     setSelectionRange() {}
+    scrollIntoView() { this.scrolledIntoView = true; }
     getBoundingClientRect() { if (this.id === 'envelope-letter') return { left: 355, top: 210, width: 446, height: 301 }; return this.id === 'gift-envelope' ? { left: 310, top: 260, width: 540, height: 342 } : { left: 16, top: 16, width: 1200, height: 800 }; }
     animate(keyframes, options) { const animation = { cancelled: false, cancel() { this.cancelled = true; } }; animations.push({ target: this, keyframes, options, animation }); return animation; }
   }
   let focused;
-  for (const id of ['main', 'page-tabs', 'view-toggle', 'view-label', 'view-status', 'scene-footer', 'scene-photo', 'dream-photo', 'note-editor', 'note-status', 'note-input', 'editor-title', 'character-count', 'editor-close', 'editor-cancel', 'note-form', 'birthday-dialog', 'envelope-stage', 'open-envelope', 'letter-page', 'letter-page-title', 'memory-wall', 'memory-china', 'memory-uk', 'birthday-okay-one', 'back-to-envelope', 'gift-envelope', 'envelope-letter', 'unfold-sheet', 'unlock-page', 'unlock-page-title', 'birthday-word', 'unlock-error', 'cake-dialog', 'birthday-cake', 'birthday-unlock-form', 'cake-dialog-close', 'cake-page', 'journey-page', 'journey-title', 'open-journey', 'journey-return', 'journey-afterword', 'afterword-back', 'afterword-home', 'afterword-continue', 'birthday-finale', 'finale-back', 'finale-home']) new Element(id);
+  for (const id of ['main', 'page-tabs', 'view-toggle', 'view-label', 'view-status', 'scene-footer', 'scene-photo', 'dream-photo', 'note-editor', 'note-status', 'note-input', 'editor-title', 'character-count', 'editor-close', 'editor-cancel', 'note-form', 'birthday-dialog', 'envelope-stage', 'open-envelope', 'letter-page', 'letter-page-title', 'memory-wall', 'memory-china', 'memory-uk', 'birthday-okay-one', 'back-to-envelope', 'gift-envelope', 'envelope-letter', 'unfold-sheet', 'unlock-page', 'unlock-page-title', 'birthday-word', 'unlock-error', 'cake-dialog', 'birthday-cake', 'birthday-unlock-form', 'cake-dialog-close', 'cake-page', 'journey-page', 'journey-title', 'open-journey', 'journey-return', 'journey-end', 'letter-next', 'journey-afterword', 'afterword-back', 'afterword-home', 'afterword-continue', 'birthday-finale', 'finale-back', 'finale-home']) new Element(id);
   const tabs = ['about', 'home', 'destination'].map(page => { const e = new Element('tab-' + page); e.dataset.page = page; return e; });
   const panels = ['about', 'home', 'destination'].map(page => new Element('panel-' + page));
   const notes = Array.from({ length: 22 }, (_, i) => { const e = new Element(); e.dataset.noteId = String(i + 1); e.classes = ['sticky-note', i % 2 ? 'sage' : 'butter']; e.noteText = new Element(); e.querySelector = () => e.noteText; return e; });
@@ -169,35 +170,51 @@ assert.match(blocked.elements.get('note-status').textContent, /无法保存/);
 assert.equal(start({ hash: '#unexpected' }).elements.get('main').dataset.page, 'home');
 console.log('PASS: Single birthday thank-you confirmation; knot untying, flap and expanding paper; case-insensitive puzzle and guarded routes; cake blessing; default China and UK switching; cancellation at every phase; reduced motion; original note storage. DOM logic, not browser rendering.');
 
-const travel = start({hash:'#letter',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});
-const routes=[];travel.document.addEventListener('winter:journey-route',event=>routes.push(event.detail.active));
-travel.elements.get('open-journey').fire('click');
-assert.equal(travel.location.hash,'#journey');assert.equal(travel.elements.get('main').dataset.destination,'journey');assert.equal(travel.elements.get('main').dataset.page,'destination');assert.equal(travel.elements.get('journey-page').hidden,false);assert.equal(travel.elements.get('letter-page').hidden,true);assert.equal(travel.focused(),travel.elements.get('journey-title'));
-travel.window.fire('hashchange');assert.deepEqual(routes,[true],'Duplicate route does not restart journey');
-travel.elements.get('journey-return').fire('click');assert.equal(travel.location.hash,'#letter');assert.equal(travel.elements.get('memory-china').hidden,false);assert.deepEqual(routes,[true,false]);assert.equal(travel.focused(),travel.elements.get('open-journey'));
-travel.document.fire('winter:journey-afterword');
-assert.equal(travel.location.hash,'#afterword');
-assert.equal(travel.elements.get('main').dataset.destination,'afterword');
-assert.equal(travel.elements.get('journey-afterword').hidden,false);
-assert.equal(travel.elements.get('journey-page').hidden,true);
-travel.elements.get('afterword-back').fire('click');
+const travel = start({hash:'#about'});
+const travelElement = id => travel.elements.get(id);
+const routes=[];
+travel.document.addEventListener('winter:journey-route',event=>routes.push(event.detail.active));
+travelElement('open-journey').fire('click');
 assert.equal(travel.location.hash,'#journey');
-travel.document.fire('winter:journey-afterword');
-travel.elements.get('afterword-continue').fire('click');
-assert.equal(travel.location.hash,'#finale');
-assert.equal(travel.elements.get('birthday-finale').hidden,false);
-assert.equal(travel.elements.get('journey-afterword').hidden,true);
-travel.elements.get('finale-back').fire('click');
-assert.equal(travel.location.hash,'#afterword');
-travel.elements.get('afterword-home').fire('click');
-assert.equal(travel.location.hash,'#home');
-const finaleLocked=start({hash:'#finale'});assert.equal(finaleLocked.location.hash,'#unlock');
-const finaleRestored=start({hash:'#finale',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});assert.equal(finaleRestored.elements.get('main').dataset.destination,'finale');
-const afterwordLocked=start({hash:'#afterword'});
-assert.equal(afterwordLocked.location.hash,'#unlock');
-const afterwordRestored=start({hash:'#afterword',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});
-assert.equal(afterwordRestored.elements.get('main').dataset.destination,'afterword');
-const travelLocked=start({hash:'#journey'});assert.equal(travelLocked.location.hash,'#unlock');
-const travelCake=start({hash:'#journey',session:{'winter-birthday-word-solved':'true'}});assert.equal(travelCake.location.hash,'#cake');
-const travelRestored=start({hash:'#journey',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});assert.equal(travelRestored.elements.get('main').dataset.destination,'journey');travelRestored.tabs[1].fire('click');assert.equal(travelRestored.elements.get('journey-page').hidden,true);
-console.log('PASS: Journey entry/return, inherited birthday gates, restored deep link, focus and single activation/deactivation events.');
+assert.equal(travelElement('main').dataset.destination,'idle');
+assert.equal(travelElement('main').dataset.page,'about');
+assert.equal(travel.tabs[0].attributes['aria-selected'],'true');
+assert.equal(travelElement('panel-about').hidden,false);
+assert.equal(travelElement('journey-page').scrolledIntoView,true);
+assert.equal(travelElement('letter-page').hidden,true);
+assert.equal(travel.focused(),travelElement('journey-title'));
+travel.window.fire('hashchange');
+assert.deepEqual(routes,[],'Same-tab journey navigation does not reinitialize the five stops');
+travelElement('journey-return').fire('click');
+assert.equal(travel.location.hash,'#about');
+assert.equal(travel.focused(),travelElement('panel-about'));
+travelElement('open-journey').fire('click');
+travel.document.fire('winter:journey-end');
+assert.equal(travel.location.hash,'#about');
+travel.tabs[1].fire('click');
+assert.deepEqual(routes,[false]);
+const direct = start({hash:'#journey'});
+assert.equal(direct.location.hash,'#journey');
+assert.equal(direct.elements.get('main').dataset.page,'about');
+assert.equal(direct.elements.get('panel-about').hidden,false);
+assert.equal(direct.elements.get('journey-page').scrolledIntoView,true);
+
+const story = start({hash:'#letter',session:{'winter-birthday-word-solved':'true','winter-birthday-celebrated':'true'}});
+const storyElement = id => story.elements.get(id);
+storyElement('letter-next').fire('click');
+assert.equal(story.location.hash,'#afterword');
+assert.equal(storyElement('journey-afterword').hidden,false);
+assert.equal(storyElement('panel-about').hidden,true);
+storyElement('afterword-back').fire('click');
+assert.equal(story.location.hash,'#letter');
+storyElement('letter-next').fire('click');
+storyElement('afterword-continue').fire('click');
+assert.equal(story.location.hash,'#finale');
+assert.equal(storyElement('birthday-finale').hidden,false);
+storyElement('finale-back').fire('click');
+assert.equal(story.location.hash,'#afterword');
+for(const chapter of ['afterword','finale']){
+  assert.equal(start({hash:'#'+chapter}).location.hash,'#unlock');
+  assert.equal(start({hash:'#'+chapter,session:{'winter-birthday-word-solved':'true'}}).location.hash,'#cake');
+}
+console.log('PASS: Embedded About Journey links and focus, independent deep link, and gated two-country letter → afterword → finale.');

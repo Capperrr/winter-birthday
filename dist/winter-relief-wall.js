@@ -1,7 +1,7 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
 import { GLTFLoader } from './assets/vendor/three/loaders/GLTFLoader.js';
-import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=retina-wagtails';
-import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=retina-wagtails';
+import { createReliefField, maxBrushSegments, galleryLight, sampledHeight } from './winter-relief-field.js?v=plaster-light';
+import { gardenLandmarks, loadSecretGarden, sculptGarden } from './winter-secret-garden.js?v=plaster-light';
 
 const modelURL = new URL('./assets/winter-v2/plaster/winter-herbarium.glb?v=photographic-acts', import.meta.url);
 const coverDistance = 9.6;
@@ -13,6 +13,7 @@ const positions = [
   [-.34,-20.75,12.05], [.27,-22.75,12.42], [.1,-25.01,13.15]
 ];
 const rail = new THREE.CatmullRomCurve3(positions.map(point=>new THREE.Vector3(...point)));
+rail.arcLengthDivisions = 360;
 const day = new THREE.Color(0xf0ebe3);
 const evening = new THREE.Color(0x283646);
 const finalWarmth = new THREE.Color(0xece6dd);
@@ -301,7 +302,7 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
     observer=new ResizeObserver(()=>{resizePending=true;});
     observer.observe(host);
     report({model:`A Secret Winter Garden · ${motifs.length} 组后续实体浮雕及 WINTER 刻字`,
-      textures:'2720 × 1800 Cycles 法线与环境遮蔽 · 256 × 256 GPU 双缓冲 · 896 × 704 局部投影'});
+      textures:'2720 × 1800 Cycles 法线与环境遮蔽 · 3 档晨光 / 月光烘焙 · 256 × 256 GPU 双缓冲 · 896 × 704 局部投影'});
 
     return {
       resize(){resizePending=true;},
@@ -312,7 +313,10 @@ export async function mountReliefWall(host, {signal,report,onContextLost,title})
         const changed=resized||progress!==previousProgress||night!==previousNight||view!==previousView;
         if(!changed&&!input&&!contacts.length&&!inkVisible&&!ghost&&
           (seconds<nextGhost||seconds-lastInput<idleBrushDelay))return null;
-        rail.getPoint(progress,cameraPoint);
+        // Preserve the opening composition, then keep wall travel even across the photographs.
+        const cameraProgress=THREE.MathUtils.lerp(progress,rail.getUtoTmapping(progress),
+          THREE.MathUtils.smoothstep(progress,.07,.28));
+        rail.getPoint(cameraProgress,cameraPoint);
         const horizontalScale=THREE.MathUtils.lerp(1,spread,THREE.MathUtils.smoothstep(progress,0,.15));
         camera.position.set(cameraPoint.x*horizontalScale,cameraPoint.y,cameraPoint.z);
         camera.lookAt(cameraPoint.x*horizontalScale,cameraPoint.y,0);

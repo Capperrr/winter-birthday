@@ -64,15 +64,16 @@
   compact.addEventListener('change',sync);
 
   const journey = document.getElementById('journey-page');
+  const about = document.getElementById('panel-about');
   if (journey && 'IntersectionObserver' in window) {
     const reader = new IntersectionObserver(entries => {
       entries.forEach(({target,isIntersecting}) => {
-        if (!isIntersecting || journey.hidden) return;
+        if (!isIntersecting || about.hidden) return;
         target.dataset.arrived = 'true';
         reader.unobserve(target);
       });
-    }, {root:journey, threshold:.18});
-    journey.querySelectorAll('.journey-story-card').forEach(chapter => reader.observe(chapter));
+    }, {root:about, threshold:.18});
+    journey.querySelectorAll('.journey-story-card, .journey-heading, .journey-visual').forEach(chapter => reader.observe(chapter));
   }
   sync();
 })();

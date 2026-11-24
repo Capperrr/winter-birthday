@@ -1,8 +1,9 @@
 import * as THREE from './assets/vendor/three/three.module.min.js';
-import {galleryLight, projectedShadow, sampledHeight} from './winter-relief-field.js?v=retina-wagtails';
+import {galleryLight, projectedShadow, sampledHeight} from './winter-relief-field.js?v=plaster-light';
 
 const depthURL = new URL('./assets/home/secret-garden-depth.bin?v=wagtails', import.meta.url);
-const lightingURL = new URL('./assets/home/secret-garden-light.webp?v=wagtails', import.meta.url);
+const normalURL = new URL('./assets/home/secret-garden-light.webp?v=plaster-light', import.meta.url);
+const lightLevelsURL = new URL('./assets/home/secret-garden-light-levels.webp', import.meta.url);
 const columns = 521;
 const rows = 345;
 const width = 13.6;
@@ -24,27 +25,33 @@ async function request(url, signal) {
   return response;
 }
 
-export async function loadSecretGarden(signal) {
-  const [depth, light] = await Promise.all([
-    request(depthURL,signal).then(response=>response.arrayBuffer()),
-    request(lightingURL,signal).then(response=>response.blob())
-  ]);
-  if(depth.byteLength!==columns*rows*Uint16Array.BYTES_PER_ELEMENT)
-    throw new Error('冬日秘境高度图尺寸不符');
-  const url = URL.createObjectURL(light);
+async function decodePass(source, width, height, signal) {
+  const response = await request(source, signal);
+  const url = URL.createObjectURL(await response.blob());
   const image = new Image();
   try {
     image.src = url;
     await image.decode();
-    if(image.naturalWidth!==2720||image.naturalHeight!==1800)
-      throw new Error('冬日秘境光影贴图尺寸不符');
+    if(image.naturalWidth!==width||image.naturalHeight!==height)
+      throw new Error(`${source.pathname} 光影贴图尺寸不符`);
   } finally {
     URL.revokeObjectURL(url);
   }
-  return {depth:new Uint16Array(depth), image};
+  return image;
 }
 
-export function sculptGarden({depth,image}, field) {
+export async function loadSecretGarden(signal) {
+  const [depth, surface, levels] = await Promise.all([
+    request(depthURL,signal).then(response=>response.arrayBuffer()),
+    decodePass(normalURL,2720,1800,signal),
+    decodePass(lightLevelsURL,1920,3840,signal)
+  ]);
+  if(depth.byteLength!==columns*rows*Uint16Array.BYTES_PER_ELEMENT)
+    throw new Error('冬日秘境高度图尺寸不符');
+  return {depth:new Uint16Array(depth),surface,levels};
+}
+
+export function sculptGarden({depth,surface,levels}, field) {
   // Physical relief scanned from Blender. Remove flat cells shared with the continuous wall.
   const geometry = new THREE.PlaneGeometry(width,height,columns-1,rows-1);
   const position = geometry.getAttribute('position');
@@ -58,12 +65,17 @@ export function sculptGarden({depth,image}, field) {
   geometry.setIndex(faces);
   geometry.deleteAttribute('normal');
   geometry.computeBoundingBox();
-  const lighting = new THREE.Texture(image);
+  const lighting = new THREE.Texture(surface);
   lighting.colorSpace = THREE.NoColorSpace;
   lighting.needsUpdate = true;
+  const casts = new THREE.Texture(levels);
+  casts.colorSpace = THREE.NoColorSpace;
+  casts.generateMipmaps = false;
+  casts.minFilter = THREE.LinearFilter;
+  casts.needsUpdate = true;
   const material = new THREE.ShaderMaterial({
     uniforms:{...field.wall.uniforms,...field.room,liftMap:field.map,fixedDepth:{value:0},
-      lighting:{value:lighting}, lightVector:field.lightVector},
+      lighting:{value:lighting},casts:{value:casts}, lightVector:field.lightVector},
     vertexShader:sampledHeight + `
       varying vec2 castUV;
       varying vec2 wallPoint;
@@ -86,13 +98,19 @@ export function sculptGarden({depth,image}, field) {
     fragmentShader:galleryLight + projectedShadow + `
       uniform vec2 lightVector;
       uniform sampler2D lighting;
+      uniform sampler2D casts;
       varying vec2 castUV;
       varying vec2 wallPoint;
       varying vec2 liftSlope;
       varying float scale;
       varying float awake;
+      vec3 castAt(float tile) {
+        // Four replicated scanlines on either end isolate the three Cycles passes.
+        vec2 texel = vec2(castUV.x * 1919. + .5, tile * 1280. + 4.5 + castUV.y * 1271.);
+        return texture2D(casts,texel / vec2(1920.,3840.)).rgb;
+      }
       void main() {
-        vec3 bake = texture2D(lighting,castUV).rgb;
+        vec4 bake = texture2D(lighting,castUV);
         vec2 vane = (bake.rg*255. - vec2(128.))/127.;
         float nz = sqrt(max(.014,1.-dot(vane,vane)));
         vec3 normal = normalize(vec3(vane*scale - liftSlope*nz,nz));
@@ -103,11 +121,22 @@ export function sculptGarden({depth,image}, field) {
         vec3 fill = vec3(-.49,.23,.841);
         float reflected = (max(0.,dot(fill,normal))-fill.z)*.13*nightAmount;
         float engraving = dot(vane,light.xy)*mix(.068,.164,nightAmount)*(1.-awake);
-        float contact = (1.-bake.b)*(.041+.175*smoothstep(.04,.85,awake));
+        float contact = (1.-bake.b)*(.041+.095*awake);
+        if (awake > .025) {
+          float level = 2. * awake;
+          float tile = min(1.,floor(level));
+          vec3 illumination = mix(castAt(tile),castAt(tile + 1.),smoothstep(0.,1.,level - tile));
+          float bakedLight = clamp(mix(illumination.r,illumination.g,nightAmount) * (255. / 163.) - 1.,-.92,.62);
+          float influence = smoothstep(.025,.76,awake);
+          rakingLight = mix(rakingLight,bakedLight * mix(.45,.56,nightAmount),.57*influence);
+          contact += (1.-illumination.b) * .19 * influence;
+        }
         float value = max(.36,1. + rakingLight + reflected + engraving - contact);
         float rim = (1. - normal.z) * (1. - normal.z) * facing;
         vec3 silver = moonColor * (nightAmount * awake * rim * (.08 + .22*footprint));
-        gl_FragColor = vec4(sculptedShadow(roomPlaster(wallPoint)*value + silver,shadowAt(wallPoint)),1.);
+        vec3 plasterBase = roomPlaster(wallPoint);
+        vec3 stone = mix(plasterBase,plasterBase*value + silver,bake.a);
+        gl_FragColor = vec4(sculptedShadow(stone,shadowAt(wallPoint)),1.);
         #include <colorspace_fragment>
       }
     `
@@ -115,5 +144,5 @@ export function sculptGarden({depth,image}, field) {
   const mesh = new THREE.Mesh(geometry,material);
   mesh.name = 'A Secret Winter Garden';
   mesh.frustumCulled = false;
-  return {mesh, dispose(){ material.dispose(); lighting.dispose(); }};
+  return {mesh, dispose(){ material.dispose(); lighting.dispose(); casts.dispose(); }};
 }

@@ -48,13 +48,13 @@
 }
 
 /* Journey's rail stays fixed. Only the photo field and a heading respond to chapter arrivals. */
-.app-shell[data-entrance="journey"] .journey-heading h2 { animation: print-from-baseline 1.02s .21s var(--entrance-ease) both; }
-.app-shell[data-entrance="journey"] .journey-photographs { animation: travelling-frame 1.23s .07s var(--entrance-ease) both; }
+.about-panel .journey-heading[data-arrived="true"] h2 { animation: print-from-baseline 1.02s .21s var(--entrance-ease) both; }
+.about-panel .journey-visual[data-arrived="true"] .journey-photographs { animation: travelling-frame 1.23s .07s var(--entrance-ease) both; }
 @keyframes travelling-frame {
   from { translate: -13px 0; opacity: .25; }
   to { translate: 0; opacity: 1; }
 }
-.app-shell[data-destination="journey"][data-ambient="on"] .journey-story-card[data-arrived="true"] .journey-period {
+.app-shell[data-ambient="on"] .about-panel .journey-story-card[data-arrived="true"] .journey-period {
   animation: print-from-baseline .64s var(--entrance-ease) both;
 }
 /* Gather the picture planes on entrance. Their inner prints float independently of expansion. */

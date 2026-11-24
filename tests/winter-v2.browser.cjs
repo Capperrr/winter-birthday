@@ -75,6 +75,30 @@ fs.mkdirSync(out,{recursive:true});
  await tap('.winter-about-to-notes');assert.equal(await p.locator('[data-note-id]').count(),22);
  await p.waitForTimeout(1500);
  await p.screenshot({path:out+'/notes-'+run+(wpe?'-webkit':'')+'.jpg',quality:89});
+ await tap('#open-journey');
+ await p.waitForURL('**/#journey');
+ assert.equal(await p.locator('#tab-about').getAttribute('aria-selected'),'true');
+ assert.equal(await p.locator('#panel-about .journey-story-card').count(),5);
+ assert.equal(await p.locator('#journey-position').count(),0);
+ const sticky=p.locator('.journey-visual');
+ await tap('[data-journey-stop="2"]');
+ await p.locator('.journey-photo[data-photo-key="chongqing"][data-active="true"]').waitFor();
+ await p.waitForTimeout(950);
+ const first=await sticky.boundingBox();
+ await p.evaluate(()=>document.getElementById('panel-about').scrollTop+=140);
+ await p.waitForTimeout(130);
+ const next=await sticky.boundingBox();
+ assert.ok(first.y>=0 && Math.abs(first.y-next.y)<4,'Sticky rail moved from '+first.y+' to '+next.y);
+ for (const sel of ['.journey-story-card','.journey-frame','.journey-navigation']){
+   const visualStyle=await p.locator(sel).first().evaluate(el=>{
+     const s=getComputedStyle(el);
+     return [s.backgroundColor,s.backgroundImage,s.backdropFilter||s.webkitBackdropFilter||'none'];
+   });
+   assert.deepEqual(visualStyle,['rgba(0, 0, 0, 0)','none','none'],sel+' has no backing panel');
+ }
+ await p.screenshot({path:out+'/journey-'+run+(wpe?'-webkit':'')+'.jpg',quality:89});
+ await tap('#journey-return');
+ await p.waitForURL('**/#about');
  await tap('#tab-destination');await tap('#birthday-okay-one');await shot('envelope');
  await p.evaluate(()=>{
    const shell=document.getElementById('main');
@@ -107,27 +131,9 @@ fs.mkdirSync(out,{recursive:true});
  assert.equal(visibleWicks, 5);
  await go('letter');await shot('letter');await tap('#country-china');await tap('#memory-china');
  assert.match(await p.locator('#china-note-counter').textContent(),/2 \/ 3/);
- await tap('#open-journey');await shot('journey');
- assert.equal(await p.locator('.journey-story-card').count(),5);
- for (const sel of ['.journey-story-card','.journey-visual','.journey-frame','.journey-navigation']){
-   const visualStyle=await p.locator(sel).first().evaluate(el=>{
-     const s=getComputedStyle(el);
-     return [s.backgroundColor,s.backgroundImage,s.backdropFilter||s.webkitBackdropFilter||'none'];
-   });
-   assert.deepEqual(visualStyle,['rgba(0, 0, 0, 0)','none','none'],sel+' has no backing panel');
- }
- await tap('[data-journey-stop="2"]');
- await p.locator('.journey-photo[data-photo-key="chongqing"][data-active="true"]').waitFor();
- const visual=p.locator('.journey-visual');
- await p.waitForFunction(()=>document.getElementById('journey-page').scrollTop>600);
- await p.waitForTimeout(960);
- const first=await visual.boundingBox();
- await p.evaluate(()=>document.getElementById('journey-page').scrollTop+=140);
- await p.waitForTimeout(100);
- const next=await visual.boundingBox();
- if(run!=='phone')assert.ok(Math.abs(first.y-next.y)<4,'Sticky rail moved from '+first.y+' to '+next.y);
- await go('afterword');await shot('afterword');
- await go('finale');await shot('finale');
+ await tap('#letter-next');await shot('afterword');
+ await tap('#afterword-back');await p.waitForURL('**/#letter');
+ await tap('#letter-next');await tap('#afterword-continue');await shot('finale');
  await tap('#finale-piece-left');await tap('#finale-piece-right');
  assert.equal(await p.locator('.finale-newspaper').getAttribute('data-joined'),'true');
  await p.evaluate(()=>document.dispatchEvent(new CustomEvent('winter:cosmos-open')));

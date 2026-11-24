@@ -163,7 +163,7 @@
 html{height:auto;-webkit-overflow-scrolling:touch}
 body{height:auto;min-height:100dvh;overscroll-behavior-y:auto}
 .app-shell{height:calc(100dvh - 32px);min-height:min(590px,calc(100dvh - 32px));}
-.letter-page,.journey-page,.birthday-finale,.journey-afterword{
+.letter-page,.birthday-finale,.journey-afterword{
   overflow-y:auto!important;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior-y:auto;

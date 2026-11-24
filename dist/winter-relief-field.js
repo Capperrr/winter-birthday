@@ -34,7 +34,8 @@ export const sampledHeight = `
 
 const plasterLight = `
   float plasterWash(vec2 p) {
-    return .982 + sin(p.x * .26 + p.y * .071 + .84) * .027;
+    float grain = sin(p.x * 116. + p.y * 27.) * sin(p.y * 143. - p.x * 34.);
+    return .982 + sin(p.x * .26 + p.y * .071 + .84) * .027 + .0035 * grain;
   }
 `;
 
@@ -59,7 +60,7 @@ export const galleryLight = plasterLight + `
   }
   vec3 sculptedShadow(vec3 color, float strength) {
     vec3 hue = mix(vec3(.70,.83,1.),vec3(1.04,1.01,.88),nightAmount);
-    return color * (1. - hue * strength * mix(.34,.40,nightAmount));
+    return color * (1. - hue * strength * .24);
   }
 `;
 
@@ -155,8 +156,13 @@ export function createReliefField(renderer) {
       void main() {
         vec2 x = vec2(1.48*texel.x,0.);
         vec2 y = vec2(0.,1.32*texel.y);
-        float shade = texture2D(source,p).r*.32 + .17*(texture2D(source,p+x).r +
+        float contact = texture2D(source,p).r*.32 + .17*(texture2D(source,p+x).r +
           texture2D(source,p-x).r + texture2D(source,p+y).r + texture2D(source,p-y).r);
+        vec2 dx = texel * vec2(6.2,1.65);
+        vec2 dy = texel * vec2(-1.4,5.3);
+        float wideShadow = .25 * (texture2D(source,p+dx).r + texture2D(source,p-dx).r +
+          texture2D(source,p+dy).r + texture2D(source,p-dy).r);
+        float shade = mix(contact,wideShadow,.52);
         gl_FragColor = vec4(shade,0.,0.,1.);
       }
     `

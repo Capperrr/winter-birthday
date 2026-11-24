@@ -276,25 +276,33 @@
     about.scrollTop=0;
     setCardPositions();
   }
-  function showNotes(){
+  function showNotes(focusHeading = true){
     stopSettle();
     about.dataset.aboutMode='notes';
     shell.dataset.aboutTheme='paper';
+    if (!focusHeading) return;
     about.scrollTop=0;
     const heading=notesHeading.querySelector('h2');
     heading?.setAttribute('tabindex','-1');
     requestAnimationFrame(()=>heading?.focus({preventScroll:true}));
   }
-  toNotes.addEventListener('click',showNotes);
-  document.getElementById('tab-about')?.addEventListener('click',()=>{
-    // Tapping About me again should return to the photo opening.
-    if(shell.dataset.page==='about'&&!about.hidden&&about.dataset.aboutMode==='notes')showIntro(true);
+  toNotes.addEventListener('click',()=>showNotes());
+  about.addEventListener('winter:about-journey-enter',()=>{
+    if (about.dataset.aboutMode !== 'notes') showNotes(false);
   });
+  about.addEventListener('winter:about-start',()=>showIntro(false));
   back.addEventListener('click',()=>{showIntro(false);requestAnimationFrame(()=>intro.querySelector('h2')?.focus({preventScroll:true}))});
   let wasAbout=false;
   function syncRoute(){
     const now=shell.dataset.page==='about'&&!about.hidden;
-    if(now&&!wasAbout)showIntro(true);
+    if(now&&!wasAbout){
+      if(location.hash==='#journey'){
+        showNotes(false);
+        requestAnimationFrame(()=>{
+          if(location.hash==='#journey'&&!about.hidden)document.getElementById('journey-page').scrollIntoView({block:'start',behavior:'instant'});
+        });
+      }else showIntro(true);
+    }
     else if(!now)stopSettle();
     wasAbout=now;
   }
@@ -302,4 +310,48 @@
   window.addEventListener('resize',()=>{if(!about.hidden)setCardPositions()},{passive:true});
   if(reduce.addEventListener)reduce.addEventListener('change',()=>{if(!about.hidden)choose(selected)});
   syncRoute();
+
+  const bridge=document.getElementById('about-journey-bridge');
+  const emblem=bridge.querySelector('.about-idea-emblem');
+  const invitation=bridge.querySelector('.about-idea-copy p');
+  const sentence=invitation.textContent;
+  const readable=document.createElement('span');
+  readable.className='sr-only';
+  readable.textContent=sentence;
+  invitation.replaceChildren(readable,...Array.from(sentence,(letter,index)=>{
+    const mark=document.createElement('span');
+    mark.className='about-idea-letter';
+    mark.textContent=letter;
+    mark.setAttribute('aria-hidden','true');
+    mark.style.setProperty('--letter-delay',index*18+'ms');
+    return mark;
+  }));
+  if ('IntersectionObserver' in window) {
+    const reveal=new IntersectionObserver(entries=>{
+      if (!entries.some(entry=>entry.isIntersecting)) return;
+      bridge.dataset.arrived='true';
+      reveal.disconnect();
+    },{root:about,threshold:.35});
+    reveal.observe(bridge);
+  }
+  let magnetBounds;
+  emblem.addEventListener('pointerenter',()=>{ magnetBounds=emblem.getBoundingClientRect(); });
+  emblem.addEventListener('pointermove',event=>{
+    if (!magnetBounds || event.pointerType === 'touch' || reduce.matches || shell.dataset.motion === 'off') return;
+    const x=(event.clientX-magnetBounds.left)/magnetBounds.width-.5;
+    const y=(event.clientY-magnetBounds.top)/magnetBounds.height-.5;
+    emblem.style.setProperty('--idea-x',x*12+'px');
+    emblem.style.setProperty('--idea-y',y*9+'px');
+  },{passive:true});
+  emblem.addEventListener('pointerleave',()=>{
+    magnetBounds=null;
+    emblem.style.removeProperty('--idea-x');
+    emblem.style.removeProperty('--idea-y');
+  });
+  let switchOff;
+  emblem.addEventListener('pointerdown',()=>{
+    bridge.dataset.lit='true';
+    clearTimeout(switchOff);
+    switchOff=setTimeout(()=>{ delete bridge.dataset.lit; },1200);
+  },{passive:true});
 })();

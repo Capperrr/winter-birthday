@@ -1,16 +1,18 @@
 /* B's travelling book. One native scroll surface, with an independent sticky photograph rail. */
-.app-shell[data-destination="journey"] { background: #f5f1e7; color: #25364a; }
-.app-shell[data-destination="journey"] .journey-page {
-  padding: clamp(22px,4svh,53px) var(--gallery-edge) 30px;
+
+.about-panel .journey-page {
+  flex: none;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  padding: clamp(24px,5svh,58px) clamp(4px,2vw,30px) 30px;
   gap: clamp(16px,2.6vh,32px);
-  overscroll-behavior-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #8497a354 transparent;
+  color: #25364a;
 }
-.app-shell[data-destination="journey"] .journey-page::before,
-.app-shell[data-destination="journey"] .journey-heading::before { content: none; }
+.about-panel .journey-page::before,
+.about-panel .journey-heading::before { content: none; }
 .journey-page[data-sticky-story="on"] .journey-heading,
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout { width: min(1320px,100%); }
+.about-panel .journey-page[data-sticky-story="on"] .journey-layout { width: min(1320px,100%); }
 .journey-page[data-sticky-story="on"] .journey-heading {
   align-items: end;
   flex: none;
@@ -19,14 +21,15 @@
   color: #243950;
 }
 .journey-page[data-sticky-story="on"] .journey-eyebrow { color: #3f5978; font: 600 .7rem/1.4 var(--sans); letter-spacing: .12em; }
-.app-shell[data-destination="journey"] .journey-heading h2 {
+.about-panel .journey-heading h2 {
   color: #243950;
   font: 500 clamp(1.65rem,3.55vw,3.55rem)/1.42 var(--cn-serif);
   text-shadow: none;
   letter-spacing: -.045em;
 }
-.app-shell[data-destination="journey"] .journey-return { color: #3e5a71; border-color: #4d6b8247; font-size: .81rem; }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout {
+.journey-prologue { margin: 12px 0 0; color: #4f5757; font: .92rem/1.65 var(--cn-serif); }
+.about-panel .journey-return { color: #3e5a71; border-color: #4d6b8247; font-size: .81rem; }
+.about-panel .journey-page[data-sticky-story="on"] .journey-layout {
   display: grid;
   flex: 0 0 auto;
   height: auto;
@@ -47,7 +50,7 @@
   padding: 0 0 10px;
   background: none;
 }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-frame {
+.about-panel .journey-page[data-sticky-story="on"] .journey-frame {
   position: relative;
   width: 100%;
   height: clamp(252px,min(48svh,35vw),526px);
@@ -56,18 +59,18 @@
   overflow: clip;
   background: none;
 }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-photo {
+.about-panel .journey-page[data-sticky-story="on"] .journey-photo {
   width: clamp(140px,72%,490px);
   height: 87%;
   filter: none;
   transition: transform .76s cubic-bezier(.18,.81,.21,1),opacity .56s cubic-bezier(.23,.65,.37,1);
 }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-photo img {
+.about-panel .journey-page[data-sticky-story="on"] .journey-photo img {
   border-radius: 0;
   box-shadow: none;
   object-fit: contain;
 }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-photo-caption {
+.about-panel .journey-page[data-sticky-story="on"] .journey-photo-caption {
   inset: auto 0 0;
   color: #3d5263;
   border-radius: 0;
@@ -78,7 +81,7 @@
   text-align: left;
 }
 .journey-page[data-sticky-story="on"] .journey-photo-number { display: none; }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter {
+.about-panel .journey-page[data-sticky-story="on"] .journey-letter {
   grid-area: letter;
   display: block;
   width: 100%;
@@ -137,7 +140,7 @@
   text-align: left;
 }
 .journey-story-saved { color: #394f66; font: .92rem/1.75 var(--cn-serif); overflow-wrap: anywhere; }
-.app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-navigation {
+.about-panel .journey-page[data-sticky-story="on"] .journey-navigation {
   position: relative;
   width: 100%;
   padding: 2px 0 0;
@@ -153,9 +156,6 @@
 .journey-visual .journey-navigation-top > p, .journey-visual #journey-ending { display: none; }
 .journey-visual .journey-arrows { margin-left: auto; }
 .journey-visual .journey-arrows button { color: #2b4f72; border-color: #35557236; }
-.journey-visual .journey-track { margin: -44px 105px 0 0; width: auto; max-width: none; }
-.journey-visual .journey-track-base { background: #4b698339; box-shadow: none; }
-.journey-visual .journey-track-ink { background: #456485; }
 .journey-visual .journey-stops { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px; margin: 0; width: 100%; border-top: 1px solid #3859753b; }
 .journey-visual .journey-stops button { position: relative; inset: auto; translate: none; min-height: 44px; color: #46637b; padding: 5px 3px; }
 .journey-visual .journey-stops button > span { display: none; }
@@ -165,7 +165,7 @@
 .journey-next-chapter { padding: clamp(38px,6vh,95px) 10px; text-align: center; }
 .journey-next-overline { display: none; }
 .journey-next-message { margin: 0 0 13px; color: #253950; font: 500 clamp(1.5rem,3.25vw,3.25rem)/1.4 var(--cn-serif); }
-.app-shell[data-destination="journey"] .journey-afterword-trigger {
+.about-panel .journey-next-chapter .journey-return {
   min-height: 44px;
   margin: 0;
   padding: 0 8px;
@@ -179,12 +179,25 @@
 }
 
 @media (max-width: 760px) {
-  .journey-visual { position: relative; }
-  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-layout { grid-template: "photo" auto "letter" auto / minmax(0,1fr); gap: 20px; }
-  .journey-visual { top: 0; padding: 7px 0 5px; border-bottom: 1px solid #35557235; }
-  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-frame { height: clamp(148px,24svh,310px); }
-  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-photo { height: 82%; }
+  .about-panel .journey-page[data-sticky-story="on"] .journey-layout { grid-template: "rail" auto / minmax(0,1fr); gap: 0; }
+  .about-panel .journey-page[data-sticky-story="on"] .journey-letter {
+    grid-area: rail;
+    padding-top: calc(var(--journey-rail-height, 38svh) + 17px);
+    z-index: 1;
+  }
+  .journey-visual {
+    grid-area: rail;
+    top: 0;
+    padding: 5px 0 1px;
+    background: #efebe2;
+    z-index: 6;
+    border-bottom: 1px solid #35557235;
+  }
+  .about-panel .journey-page[data-sticky-story="on"] .journey-frame { height: clamp(148px,24svh,310px); }
+  .about-panel .journey-page[data-sticky-story="on"] .journey-photo { height: 82%; }
   .journey-story-card { border-left-width: 0; border-top: 1px solid var(--story-border); min-height: min(41svh,400px); padding-left: 0; }
+  .about-panel .journey-heading { flex-wrap: wrap; gap: 3px 12px; }
+  .journey-visual #journey-credits-open { min-height: 34px; }
 }
 @media (max-width: 600px) {
   .journey-visual .journey-stops button { font-size: clamp(.61rem,2.65vw,.73rem); }
@@ -194,5 +207,5 @@
   .journey-visual { position: relative; top: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-photo { transition: none; }
+  .about-panel .journey-page[data-sticky-story="on"] .journey-photo { transition: none; }
 }

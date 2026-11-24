@@ -98,9 +98,11 @@
   visibility: hidden;
   pointer-events: none;
 }
-.relief-rail[data-sculpture="live"] .relief-panel[data-current="true"] {
+.relief-rail[data-sculpture="live"] .relief-panel[data-in-view] {
   opacity: var(--act-opacity,1);
   visibility: visible;
+}
+.relief-rail[data-sculpture="live"] .relief-panel[data-current="true"] {
   pointer-events: auto;
 }
 .home-panel[data-wall-study="true"] .relief-rail[data-sculpture] :is(.relief-panel,.relief-panel .scene-copy) {
@@ -116,6 +118,7 @@
   width:min(100%,365px);
   margin-right:clamp(10px,4.8vw,85px);
   text-align:left;
+  transform: translate3d(0,var(--cover-travel,0px),0);
 }
 .relief-cover .relief-title { width:min(100%,335px,62vw); margin-inline:0; }
 .relief-cover .relief-for-you { font-size:clamp(2.1rem,3.1vw,3.2rem); }
@@ -467,7 +470,6 @@
 .app-shell[data-film-scene="about"] { --chapter-relief: url("assets/winter-v2/plaster/prints.webp"); }
 .app-shell[data-film-scene="envelope"] { --chapter-relief: url("assets/winter-v2/plaster/dedication.webp"); }
 .app-shell[data-film-scene="letter"] { --chapter-relief: url("assets/winter-v2/plaster/cover.webp"); }
-.app-shell[data-film-scene="journey"] { --chapter-relief: url("assets/winter-v2/plaster/prints.webp"); }
 .app-shell[data-film-scene="afterword"] { --chapter-relief: url("assets/winter-v2/plaster/dedication.webp"); }
 .app-shell[data-film-scene="finale"] { --chapter-relief: url("assets/winter-v2/plaster/cover.webp"); }
 
@@ -527,25 +529,23 @@
 }
 .app-shell[data-film-scene="letter"] .puppy-parade { border-color: #8580719c; }
 
-.app-shell[data-film-scene="journey"] :is(.journey-heading h2,.journey-eyebrow,.journey-return,.journey-next-message,.journey-afterword-trigger,.journey-stops button,.journey-arrows button,#journey-count,#journey-credits-open) {
+.about-panel :is(.journey-heading h2,.journey-eyebrow,.journey-return,.journey-next-message,.journey-afterword-trigger,.journey-stops button,.journey-arrows button,#journey-count,#journey-credits-open) {
   color: var(--relief-ink);
 }
-.app-shell[data-film-scene="journey"] .journey-heading { border-color: var(--relief-rule); }
-.app-shell[data-film-scene="journey"] .journey-story-card { --story-border: var(--relief-rule); }
-.app-shell[data-film-scene="journey"] .journey-story-card[data-active="true"] { --story-border: #71614b9c; }
-.app-shell[data-film-scene="journey"] .journey-story-card :is(h3,.journey-prose,.journey-question p) {
+.about-panel .journey-heading { border-color: var(--relief-rule); }
+.about-panel .journey-story-card { --story-border: var(--relief-rule); }
+.about-panel .journey-story-card[data-active="true"] { --story-border: #71614b9c; }
+.about-panel .journey-story-card :is(h3,.journey-prose,.journey-question p) {
   color: #333229;
   text-shadow: none;
 }
-.app-shell[data-film-scene="journey"] .journey-story-card :is(.journey-fact,.journey-story-saved,.journey-period,.journey-question>span,.journey-signature,.journey-story-write) {
+.about-panel .journey-story-card :is(.journey-fact,.journey-story-saved,.journey-period,.journey-question>span,.journey-signature,.journey-story-write) {
   color: #625848;
 }
-.app-shell[data-film-scene="journey"] .journey-track-base { background: #7c746459; }
-.app-shell[data-film-scene="journey"] .journey-track-ink { background: #776754; }
-.app-shell[data-film-scene="journey"] .journey-photo-caption { text-shadow: none; }
-.app-shell[data-film-scene="journey"] #journey-photo-caption { color: #504739; font: .83rem/1.55 var(--cn-serif); }
-.app-shell[data-film-scene="journey"] .journey-stops button { font-size: clamp(.75rem,.95vw,.9rem); }
-.app-shell[data-film-scene="journey"] #journey-credits-open { font-size: .75rem; }
+.about-panel .journey-photo-caption { text-shadow: none; }
+.about-panel #journey-photo-caption { color: #504739; font: .83rem/1.55 var(--cn-serif); }
+.about-panel .journey-stops button { font-size: clamp(.75rem,.95vw,.9rem); }
+.about-panel #journey-credits-open { font-size: .75rem; }
 
 .app-shell[data-film-scene="afterword"] .afterword-copy {
   background: transparent;

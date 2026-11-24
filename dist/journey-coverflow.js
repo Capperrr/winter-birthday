@@ -1,6 +1,6 @@
 /* WINTER Journey: five actual photos as a swipeable 3D Coverflow.
    It only requests stop changes from journey.js, so every letter, note,
-   slider, credit and afterword keeps its original single source of truth. */
+   and photo credit keeps its original single source of truth. */
 (()=>{
   'use strict';
   const page=document.getElementById('journey-page');
@@ -53,7 +53,7 @@
   });
 
   function isActive(){
-    return shell.dataset.destination==='journey'&&!page.hidden&&!document.hidden;
+    return shell.dataset.page==='about'&&!page.closest('[hidden]')&&!document.hidden;
   }
   function step(){
     return Math.min(167,Math.max(89,frame.clientWidth*.325));
@@ -214,7 +214,7 @@
 
   window.addEventListener('resize',()=>{if(!drag)render()},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden){drag=null;frame.dataset.dragging='false'}});
-  new MutationObserver(()=>{if(!isActive()){drag=null;frame.dataset.dragging='false'}else render();}).observe(shell,{attributes:true,attributeFilter:['data-destination']});
+  new MutationObserver(()=>{if(!isActive()){drag=null;frame.dataset.dragging='false'}else render();}).observe(shell,{attributes:true,attributeFilter:['data-page']});
   if(quiet.addEventListener)quiet.addEventListener('change',()=>{render()});
   render();
 })();
