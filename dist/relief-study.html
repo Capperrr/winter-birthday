@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>WINTER — Living Paper | 3D study</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%;margin:0;overflow:hidden}body{background:#eae2d3;color:#52483b;font-family:Georgia,"Times New Roman",serif;transition:background .5s,color .5s}body.night{background:#283340;color:#e4dfd3}#stage{position:fixed;inset:0;touch-action:none;overscroll-behavior:none;cursor:crosshair}canvas{display:block;width:100%;height:100%}.ui{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding:max(20px,env(safe-area-inset-top)) 22px max(18px,env(safe-area-inset-bottom))}.top{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;font:11px system-ui;letter-spacing:.18em}.top button,.bottom button,.top a{pointer-events:auto;color:inherit;border:1px solid currentColor;background:transparent;padding:11px 15px;border-radius:40px;text-decoration:none;font:11px system-ui;letter-spacing:.07em;cursor:pointer}.controls{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.title{position:absolute;top:43%;left:50%;transform:translate(-50%,-50%);text-align:center;width:90%;user-select:none}h1{font-weight:400;font-size:clamp(48px,10vw,148px);letter-spacing:.12em;margin:0;text-shadow:0 1px 0 #fff5}small{font-size:clamp(10px,1.5vw,14px);letter-spacing:.34em}.bottom{margin-top:auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;font:12px system-ui;text-align:center;letter-spacing:.08em}.status{position:absolute;top:16%;max-width:80%;font:13px system-ui;text-align:center}.error{background:#fff8e8;color:#5d473b;padding:14px;border-radius:8px}.night .title{text-shadow:0 0 24px #d4c3a955}@media(max-width:600px){.top{align-items:flex-start}.top span{max-width:110px}.top button,.top a{padding:10px 12px}.title{top:44%}h1{letter-spacing:.09em}.bottom{font-size:11px}}
+</style></head><body><main id="stage" aria-label="可触摸的三维浮雕纸面"></main><div class="ui"><div class="top"><span>WINTER / MATERIAL STUDY</span><div class="controls"><button id="mode">Night</button><button id="reset">复位</button><a href="./#home">原 Home</a></div></div><p class="status" id="status">正在建立三维纸面…</p><div class="title"><small>FOR YOU</small><h1>WINTER</h1><small>THE SECRET OF WINTER</small></div><div class="bottom">轻轻划过纸面 · 让冬日从纸中生长 <button id="full" aria-pressed="false">欣赏全幅</button></div></div>
+<script type="module">
+import * as THREE from './assets/vendor/three/three.module.min.js';
+import {createReliefField,sampledHeight,galleryLight,projectedShadow,maxBrushSegments} from './winter-relief-field.js';
+const stage=document.getElementById('stage'),status=document.getElementById('status');
+const W=1440,H=810, CW=20,CH=11.25;
+function heightArtwork(){
+ const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+ const layer=document.createElement('canvas');layer.width=W;layer.height=H;const g=layer.getContext('2d');g.lineCap='round';g.lineJoin='round';
+ const gray=v=>'rgb('+v+','+v+','+v+')';
+ function merge(blur=0){ctx.save();ctx.globalCompositeOperation='lighten';ctx.filter=blur?'blur('+blur+'px)':'none';ctx.drawImage(layer,0,0);ctx.restore();g.clearRect(0,0,W,H)}
+ function path(points){g.beginPath();g.moveTo(...points[0]);for(let i=1;i<points.length;i++)g.lineTo(...points[i])}
+ function ridge(points,w,h){for(let k=0;k<7;k++){path(points);g.lineWidth=w*(1-k*.124);g.strokeStyle=gray(Math.round(h*(k+1)/7));g.stroke()}}
+ function ellipse(x,y,rx,ry,a,h){g.save();g.translate(x,y);g.rotate(a);g.scale(rx,ry);const gr=g.createRadialGradient(0,0,.02,0,0,1);gr.addColorStop(0,gray(h));gr.addColorStop(.55,gray(Math.round(h*.74)));gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.beginPath();g.arc(0,0,1,0,Math.PI*2);g.fill();g.restore()}
+ // Fine classical arch mouldings.
+ for(const [rx,ry,ww,hh] of [[655,560,22,110],[628,536,12,155],[612,520,5,88]]){const p=[];for(let t=Math.PI;t<=Math.PI*2+.015;t+=.012)p.push([720+rx*Math.cos(t),640+ry*Math.sin(t)]);ridge(p,ww,hh);merge(1.2)}
+ // Sculptural crescent, carved into the same substrate.
+ const moon=document.createElement('canvas');moon.width=W;moon.height=H;const m=moon.getContext('2d');const grad=m.createRadialGradient(1030,205,12,1090,180,146);grad.addColorStop(0,'#e8e8e8');grad.addColorStop(.73,'#b5b5b5');grad.addColorStop(1,'#5c5c5c');m.fillStyle=grad;m.beginPath();m.arc(1080,200,136,0,Math.PI*2);m.fill();m.globalCompositeOperation='destination-out';m.beginPath();m.arc(1013,156,127,0,Math.PI*2);m.fill();g.drawImage(moon,0,0);merge(2.8);
+ // Layered mountain relief, each ridge divided into chiseled facets.
+ const mountains=[[[130,695],[260,561],[320,594],[413,491],[490,560],[560,505],[648,635],[740,685]],[[570,700],[716,550],[807,605],[915,478],[975,550],[1056,516],[1160,613],[1310,700]],[[0,770],[200,688],[310,714],[460,643],[565,722],[735,755],[905,674],[1095,720],[1280,657],[1440,735]]];
+ for(let n=0;n<mountains.length;n++){const p=mountains[n];g.beginPath();g.moveTo(p[0][0],810);p.forEach(v=>g.lineTo(...v));g.lineTo(p.at(-1)[0],810);g.closePath();const fill=g.createLinearGradient(0,490,0,810);fill.addColorStop(0,gray(115+n*15));fill.addColorStop(1,gray(18));g.fillStyle=fill;g.fill();merge(2);for(let i=1;i<p.length-1;i++){const [x,y]=p[i];if(y>p[i-1][1]||y>p[i+1][1])continue;ridge([[x,y],[x-20,y+55],[x+9,y+87],[x-40,790]],12,150-n*18);merge(1.6);ridge([[x,y],[x+38,y+65],[x+25,y+115],[x+82,790]],8,102);merge(1.3);for(let q=1;q<4;q++){ridge([[x-q*12,y+q*21],[x-q*39,y+q*53+40]],3.5,80);merge(.8)}}}
+ // Dendritic sixfold frost crystals, not star icons.
+ function crystal(x,y,r,rotation){for(let i=0;i<6;i++){const a=rotation+i*Math.PI/3,dx=Math.cos(a),dy=Math.sin(a);ridge([[x,y],[x+r*dx,y+r*dy]],Math.max(3,r*.065),154);for(const f of [.40,.64,.82]){const px=x+r*f*dx,py=y+r*f*dy;for(const side of [-1,1]){const aa=a+side*Math.PI/3,sz=r*(.23*(1.2-f));ridge([[px,py],[px+sz*Math.cos(aa),py+sz*Math.sin(aa)]],Math.max(2.4,r*.038),140)}}}merge(.95)}
+ crystal(490,150,78,.22);crystal(812,130,43,.1);crystal(1260,390,53,.3);crystal(345,420,31,.04);crystal(910,388,29,.35);
+ // Curved botanical branches, rounded leaves and fine ribs.
+ function branch(points,side){ridge(points,19,147);merge(1.5);for(let i=1;i<points.length-1;i++){const [x,y]=points[i];const [xx,yy]=points[i+1];const a=Math.atan2(yy-y,xx-x);for(const s of [-1,1]){const b=a+s*.96,len=42+15*Math.sin(i*1.63);const ex=x+Math.cos(b)*len,ey=y+Math.sin(b)*len;ridge([[x,y],[ex,ey]],5,120);ellipse(ex,ey,len*.62,13,b,188);merge(1.1);ridge([[ex-Math.cos(b)*len*.4,ey-Math.sin(b)*len*.4],[ex+Math.cos(b)*len*.45,ey+Math.sin(b)*len*.45]],2.2,205);merge(.7)}if(i%3===0){for(let j=0;j<3;j++)ellipse(x+side*(18+j*12),y-12-j*6,10,10,0,205);merge(1)}}}
+ const left=[];for(let t=0;t<=1.001;t+=.055)left.push([55+460*t,750-630*t+105*t*t]);branch(left,1);
+ const right=[];for(let t=0;t<=1.001;t+=.07)right.push([1395-230*t,780-405*t+55*t*t]);branch(right,-1);
+ function pine(x,y,ht){ridge([[x,y],[x,y-ht]],7,122);for(let i=1;i<=9;i++){const f=i/10,yy=y-ht+ht*f,ww=ht*.22*f;for(const s of [-1,1]){ridge([[x,yy-ht*.045],[x+s*ww,yy+ht*.07],[x+s*ww*.78,yy+ht*.035]],Math.max(3,ht*.065*f),105+Math.round(36*f));for(let q=1;q<=3;q++){const xx=x+s*ww*q/4;ridge([[xx,yy+ht*.02],[xx+s*ww*.18,yy+ht*.06]],2.2,120)}}}merge(.85)}
+ for(const [x,y,h] of [[205,794,120],[295,780,75],[390,810,100],[1050,804,104],[1125,780,88],[1220,806,150],[1320,794,106]])pine(x,y,h);
+ return ctx.getImageData(0,0,W,H).data;
+}
+try{
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});renderer.outputColorSpace=THREE.SRGBColorSpace;stage.append(renderer.domElement);const field=createReliefField(renderer);const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-10,10,5.625,-5.625,.1,100);camera.position.set(0,0,20);camera.lookAt(0,0,0);
+ const data=heightArtwork(),geometry=new THREE.PlaneGeometry(CW,CH,480,270),pos=geometry.attributes.position,uv=geometry.attributes.uv;
+ for(let i=0;i<pos.count;i++){let x=Math.min(W-1,Math.floor(uv.getX(i)*(W-1))),y=Math.min(H-1,Math.floor((1-uv.getY(i))*(H-1)));pos.setZ(i,data[(y*W+x)*4]/255*.43)}geometry.computeVertexNormals();geometry.computeBoundingSphere();
+ const full={value:0};const paper=field.light.plaster.value;paper.setHex(0xe7dfd0);
+ const lightDir={value:new THREE.Vector3(-.56,.65,.72).normalize()};
+ const mat=new THREE.ShaderMaterial({uniforms:{...field.room,...field.light,...field.wall.uniforms,liftMap:field.map,fixedDepth:full,lightDir},
+ vertexShader:sampledHeight+`
+ varying vec3 vWorld; varying float vLift;
+ void main(){vec3 p=position;float a=reliefAmount(p.xy);vLift=a;p.z*=a;vWorld=(modelMatrix*vec4(p,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vWorld,1.);}
+ `,fragmentShader:galleryLight+projectedShadow+`
+ varying vec3 vWorld; varying float vLift; uniform vec3 lightDir;
+ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+ void main(){vec3 n=normalize(cross(dFdx(vWorld),dFdy(vWorld))); if(n.z<0.)n=-n;
+ float diff=dot(n,lightDir)-lightDir.z;float grain=(hash(floor(vWorld.xy*190.))-.5)*.024;
+ vec3 col=roomPlaster(vWorld.xy)*(1.+diff*.74+grain);col=sculptedShadow(col,shadowAt(vWorld.xy)*vLift*.72);
+ gl_FragColor=vec4(col,1.); #include <colorspace_fragment>
+ }
+ `.replace(' #include','\n #include')});
+ const surface=new THREE.Mesh(geometry,mat);surface.frustumCulled=false;scene.add(surface);field.add(surface,0);
+ const ground=new THREE.Mesh(new THREE.PlaneGeometry(68,63),field.wall);ground.position.z=-.03;scene.add(ground);
+ let night=false,showAll=false,dirty=true,lastPoint=null,activePointer=null,held=null,queue=[],prev=performance.now(),lastStroke=-1e5,frame=0;
+ function fit(){const w=stage.clientWidth,h=stage.clientHeight,aspect=w/h;let hw=Math.max(CW/2,CH/2*aspect),hh=hw/aspect;camera.left=-hw;camera.right=hw;camera.top=hh;camera.bottom=-hh;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75,Math.sqrt(3300000/(w*h))));renderer.setSize(w,h,false);dirty=true}
+ function point(e){const r=stage.getBoundingClientRect();return {x:camera.left+(e.clientX-r.left)/r.width*(camera.right-camera.left),y:camera.top-(e.clientY-r.top)/r.height*(camera.top-camera.bottom)}}
+ function contact(e,begin=false){const p=point(e);queue.push({from:begin||!lastPoint?p:lastPoint,to:p});if(queue.length>maxBrushSegments)queue.shift();lastPoint=p;held=p;lastStroke=performance.now();dirty=true}
+ stage.addEventListener('pointerdown',e=>{if(!e.isPrimary)return;activePointer=e.pointerId;stage.setPointerCapture(e.pointerId);contact(e,true)});
+ stage.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.pointerId===activePointer)contact(e)});
+ function release(){activePointer=null;held=null;lastPoint=null}
+ stage.addEventListener('pointerup',release);stage.addEventListener('pointercancel',release);stage.addEventListener('pointerleave',release);
+ document.getElementById('mode').onclick=()=>{night=!night;document.body.classList.toggle('night',night);document.getElementById('mode').textContent=night?'Morning':'Night';dirty=true};
+ document.getElementById('reset').onclick=()=>{showAll=false;full.value=0;document.getElementById('full').setAttribute('aria-pressed','false');document.getElementById('full').textContent='欣赏全幅';release();queue=[];field.resetInk();lastStroke=-1e5;dirty=true};
+ document.getElementById('full').onclick=()=>{showAll=!showAll;document.getElementById('full').setAttribute('aria-pressed',String(showAll));document.getElementById('full').textContent=showAll?'恢复纸面':'欣赏全幅';dirty=true};
+ new ResizeObserver(fit).observe(stage);fit();
+ const day=new THREE.Color(0xe7dfd0),dusk=new THREE.Color(0x344351);
+ function tick(now){frame=requestAnimationFrame(tick);const dt=Math.min(.08,Math.max(.001,(now-prev)/1000));prev=now;if(document.hidden)return;
+ const brush=queue.length?{segments:queue.splice(0),radius:1.7,strength:.99}:activePointer!==null&&held?{segments:[{from:held,to:held}],radius:1.7,strength:.99}:null;
+ if(brush)lastStroke=now;const fading=now-lastStroke<6200;
+ if(fading||dirty)field.step(dt,brush,null);
+ const target=showAll?1:0,old=full.value;full.value=THREE.MathUtils.lerp(old,target,1-Math.exp(-dt/0.32));if(Math.abs(full.value-target)<.001)full.value=target;
+ const nv=field.light.nightAmount.value,nt=night?1:0;field.light.nightAmount.value=THREE.MathUtils.lerp(nv,nt,1-Math.exp(-dt/.35));if(Math.abs(field.light.nightAmount.value-nt)<.001)field.light.nightAmount.value=nt;
+ paper.copy(day).lerp(dusk,field.light.nightAmount.value);
+ if(dirty||fading||old!==full.value||nv!==field.light.nightAmount.value){field.shadows(0,0,camera.right-camera.left,camera.top-camera.bottom,fading);renderer.setRenderTarget(null);renderer.render(scene,camera);dirty=false}
+ }
+ renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();cancelAnimationFrame(frame);status.textContent='当前设备的 WebGL 上下文已丢失。请刷新重试。';status.className='status error'});
+ status.hidden=true;frame=requestAnimationFrame(tick);
+}catch(e){status.textContent='无法启动三维浮雕：'+e.message+'。请使用支持 WebGL 2 的浏览器。';status.className='status error';console.error(e)}
+</script></body></html>
