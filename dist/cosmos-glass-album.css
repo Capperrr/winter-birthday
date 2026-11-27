@@ -1,0 +1,130 @@
+/* The C constellation uses the original photos and lightbox. Only the card planes move. */
+#cosmos-gallery.cosmos-constellation-album {
+  background: #162741;
+  padding: clamp(64px,9svh,100px) clamp(21px,5vw,84px) 38px;
+}
+#cosmos-gallery .cosmos-gallery-head {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: end;
+  gap: 10px 20px;
+  max-width: 1320px;
+  width: 100%;
+  border-bottom: 1px solid #c1d3e74f;
+  padding-bottom: 12px;
+  margin: 0 auto 16px;
+  text-align: left;
+}
+#cosmos-gallery h2 {
+  margin: 0;
+  color: #f7f8f9;
+  font: 500 clamp(1.8rem,3.55vw,3.5rem)/1.4 var(--cn-serif);
+  letter-spacing: -.045em;
+}
+#cosmos-gallery .cosmos-overline, #cosmos-gallery .cosmos-gallery-bottom { display: none; }
+#cosmos-gallery .cosmos-gallery-head p { margin: 0 0 4px; }
+#cosmos-gallery .photo-wall {
+  --open-unit: .087cqw;
+  --stack-scale: 2.17;
+  container-type: size;
+  display: block;
+  position: relative;
+  width: min(1320px,100%);
+  height: clamp(425px,59svh,660px);
+  margin: 18px auto 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+#cosmos-gallery .photo-wall::before, #cosmos-gallery .photo-wall::after { display: none; }
+#cosmos-gallery .photo-memory {
+  position: absolute;
+  display: block;
+  left: 50%;
+  top: 50%;
+  width: clamp(44px,calc(var(--photo-area) * var(--open-unit)),15cqw);
+  min-height: 44px;
+  aspect-ratio: var(--photo-ratio);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+  transform: translate3d(calc(var(--stack-x) + var(--memory-pan-x,0px)),calc(var(--stack-y) + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--stack-angle)) scale(calc(var(--stack-scale) * var(--memory-fit,1)));
+  transition: transform .74s cubic-bezier(.22,.78,.23,1);
+  cursor: pointer;
+  z-index: var(--stack-depth);
+}
+#cosmos-gallery .photo-memory::before, #cosmos-gallery .photo-memory::after { display: none; }
+#cosmos-gallery .photo-memory-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: none;
+  box-shadow: 0 6px 18px #050d1c65;
+  pointer-events: none;
+}
+#cosmos-gallery .photo-memory-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #15243a;
+}
+#cosmos-gallery .photo-memory-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid #fbfcff25;
+  border-radius: inherit;
+  pointer-events: none;
+}
+#cosmos-gallery .photo-memory-title, #cosmos-gallery .photo-memory-caption { display: none; }
+#cosmos-gallery .photo-wall[data-expanded="true"] .photo-memory {
+  transform: translate3d(calc(var(--arc-x) * 1cqw + var(--memory-pan-x,0px)),calc(var(--arc-y) * 1cqh + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--arc-angle)) scale(var(--memory-fit,1));
+  cursor: zoom-in;
+  transition-delay: var(--open-delay);
+}
+#cosmos-gallery .photo-wall[data-expanded="true"] .photo-memory:focus-visible,
+#cosmos-gallery .photo-wall[data-expanded="true"] .photo-memory:hover { z-index: 25; }
+#cosmos-gallery .memory-expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin: 3px auto 12px;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 1px solid #e9b4d25a;
+  background: transparent;
+  color: #efc2db;
+  font: .9rem/1.5 var(--cn-serif);
+}
+#winter-cosmos-dialog img.cosmos-lightbox-photo { border: 0; border-radius: 8px; }
+@media (max-width: 950px) and (orientation: portrait) {
+  #cosmos-gallery .cosmos-gallery-head { grid-template-columns: 1fr; }
+  #cosmos-gallery .photo-wall { --open-unit: .122cqw; height: clamp(480px,57svh,680px); }
+}
+@media (max-width: 600px) {
+  #cosmos-gallery .cosmos-gallery-head { grid-template-columns: 1fr; }
+  #cosmos-gallery .photo-wall { --open-unit: .193cqw; --stack-scale: 1.56; height: clamp(445px,60svh,550px); }
+  #cosmos-gallery .photo-wall .photo-memory { max-width: 21cqw; }
+  #cosmos-gallery .photo-wall[data-expanded="true"] .photo-memory {
+    transform: translate3d(calc(var(--phone-x) * 1cqw + var(--memory-pan-x,0px)),calc(var(--phone-y) * 1cqh + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--arc-angle)) scale(var(--memory-fit,1));
+  }
+  #cosmos-gallery .photo-wall:not([data-expanded="true"]) .photo-memory {
+    transform: translate3d(calc(var(--stack-x) * .66 + var(--memory-pan-x,0px)),calc(var(--stack-y) * .72 + var(--memory-pan-y,0px)),var(--memory-z,0px)) translate(-50%,-50%) rotate(var(--stack-angle)) scale(calc(var(--stack-scale) * var(--memory-fit,1)));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #cosmos-gallery .photo-memory { transition: none !important; }
+}

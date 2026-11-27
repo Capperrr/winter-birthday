@@ -17,7 +17,7 @@
   const balloonLayer = document.getElementById('finale-balloons');
   const bits = [
     ['Free spirit','自由的灵魂','海边的风和背影'],
-    ['Gentle gaze','温柔的目光','暖光下的日常'],
+    ['Gentle gaze','温柔的目光','山坡上的你'],
     ['Quiet glow','安静发光','夜晚暖色里的你'],
     ['Open heart','清澈真诚','蓝色海天的草坡'],
     ['Radiance','明媚耀眼','鲜花与蝴蝶'],
@@ -54,6 +54,7 @@
     if(!dialog||!large)return;
     portraitIndex=(i+bits.length)%bits.length;
     const [en,zh,alt]=bits[portraitIndex],x=((portraitIndex%4)/3*100).toFixed(4)+'%',y=portraitIndex<4?'0%':'100%';
+    dialog.dataset.portrait=String(portraitIndex);
     large.style.setProperty('--tile-x',x);
     large.style.setProperty('--tile-y',y);
     large.setAttribute('aria-label',alt);
@@ -64,6 +65,9 @@
       dialog.showModal();
       document.getElementById('portrait-close')?.focus({preventScroll:true});
     }
+    // Notify the optional 3D viewer without replacing the original
+    // caption, counter, keyboard and focus-restoration logic.
+    dialog.dispatchEvent(new CustomEvent('winter:portrait-index',{detail:{index:portraitIndex}}));
   }
   pins.forEach(pin=>pin.addEventListener('click',()=>openPortrait(Number(pin.dataset.portrait),pin)));
   function closePortrait(){

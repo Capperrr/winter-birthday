@@ -1,0 +1,303 @@
+/* WINTER Journey / independent 3D photographic Coverflow + transparent letter.
+   Existing five-stop prose, notes and back/next actions remain.
+   Keep the photos as PHOTOS: no polaroid mat, frame, tape, or combined panel. */
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+  position:relative;
+  perspective:1150px;
+  perspective-origin:50% 50%;
+  overflow:visible;
+  touch-action:pan-y pinch-zoom;
+  transform:translateY(-4px) rotate(-.6deg);
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  isolation:isolate;
+  cursor:grab;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame[data-dragging="true"]{cursor:grabbing}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photographs{
+  position:absolute;
+  inset:0;
+  overflow:visible;
+  translate:none!important;
+  transform-style:preserve-3d;
+  transform:none;
+  transition:none;
+  perspective:1150px;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  top:50%;left:50%;
+  inset:auto;
+  width:clamp(148px,67%,390px);
+  height:clamp(195px,91%,480px);
+  box-sizing:border-box;
+  overflow:visible;
+  margin:0;
+  opacity:var(--jcf-opacity,1);
+  visibility:visible;
+  transform:var(--jcf-transform,translate3d(-50%,-50%,0));
+  transform-origin:center;
+  z-index:var(--jcf-z,1);
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:transparent;
+  pointer-events:var(--jcf-hit,auto);
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transition:
+    transform 800ms cubic-bezier(.2,1.08,.22,1),
+    opacity 410ms ease;
+  will-change:transform;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame[data-dragging="true"] .journey-photo{
+  transition:none!important;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo[data-active="true"]{
+  opacity:var(--jcf-opacity,1);
+  visibility:visible;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo img,
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame .journey-photo img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  margin:auto;
+  object-fit:contain;
+  object-position:50% 50%;
+  transform:none;
+  scale:1;
+  border:none;
+  border-radius:clamp(6px,.9vw,11px);
+  box-shadow:0 18px 35px rgba(7,31,40,.24),0 3px 11px rgba(7,28,42,.20);
+  filter:none;
+  background:transparent;
+  -webkit-user-drag:none;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo[data-active="true"] img{
+  box-shadow:0 22px 45px rgba(7,31,42,.32),0 7px 14px rgba(7,28,42,.19);
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame::before,
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame::after{
+  display:none!important;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption{
+  position:absolute;
+  z-index:102;
+  left:5px;right:0;bottom:-27px;
+  text-align:center;
+  display:block;
+  pointer-events:none;
+  color:#fff9ea;
+  text-shadow:0 2px 8px rgba(11,31,42,.90),0 0 16px rgba(11,31,42,.7);
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption p{
+  margin:0;
+  max-width:100%;
+  font:500 clamp(9px,.9vw,12px)/1.6 var(--cn-serif);
+  letter-spacing:.07em;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame:focus-visible,
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo:focus-visible{
+  outline:2px solid #f0e7d2;
+  outline-offset:4px;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-fallback{
+  z-index:101;
+  inset:21% 10%;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.36);
+  background:rgba(32,64,74,.82);
+  pointer-events:none;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-letter-body,
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-write,
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-saved-preview{
+  position:relative;
+  z-index:1;
+}
+/* Preserve legibility on top of alpine photographs and a very thin glass. */
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-letter-body h3{color:#082934}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-letter-body .journey-prose{color:#0b2e3b}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-letter-body .journey-question p{color:#0a2d3a}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-navigation{
+  background:linear-gradient(110deg,rgba(244,248,246,.20),rgba(243,251,248,.13));
+}
+@media(min-width:761px) and (max-width:1040px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-layout{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    column-gap:clamp(22px,3.3vw,34px);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    width:clamp(140px,66%,300px);
+    height:clamp(185px,87%,410px);
+  }
+}
+@media(max-width:760px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-layout{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:clamp(245px,38svh,365px) auto auto;
+    grid-template-areas:'photo' 'letter' 'rail';
+    row-gap:clamp(35px,5vh,44px);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+    margin:0 11px 9px;
+    transform:rotate(-.4deg);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    width:clamp(143px,60%,245px);
+    height:clamp(185px,89%,318px);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption{bottom:-24px}
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-letter{
+    margin-top:0;
+    transform:rotate(.65deg);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-navigation{margin-top:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo,
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-letter{transition:none!important}
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-letter::after{display:none}
+}
+
+
+/* 2026-11-18 iPad readability repair:
+   The side cards must NEVER extend over the separate letter.
+   Preserve the 3D depth inside the image column, not outside it. */
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-layout{
+  isolation:isolate;
+  column-gap:clamp(43px,6.8vw,92px);
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+  z-index:0;
+  overflow:hidden!important;
+  clip-path:inset(0 0 0 0);
+  background:transparent!important;
+  border:0!important;
+  touch-action:pan-y pinch-zoom;
+  -webkit-touch-callout:none;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photographs{
+  inset:0;
+  overflow:visible;
+  pointer-events:auto;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-letter{
+  position:relative;
+  z-index:5;
+  isolation:isolate;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+  width:clamp(142px,59%,335px);
+  height:clamp(180px,82%,400px);
+  pointer-events:var(--jcf-hit,auto);
+  -webkit-touch-callout:none;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption{
+  bottom:4px;
+  left:4px;
+  right:4px;
+}
+@media (min-width:761px) and (max-width:1040px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-layout{
+    column-gap:clamp(28px,4vw,50px);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    width:clamp(135px,60%,285px);
+    height:clamp(170px,80%,355px);
+  }
+}
+@media(max-width:760px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+    margin:0 8px 8px;
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    width:clamp(138px,58%,225px);
+    height:clamp(182px,81%,291px);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption{bottom:3px}
+}
+
+
+/* 2026-11-19 — Give all five journey photos room and lower the stack.
+   Previous styles pinned the stack to the upper-left visually.
+   This final override keeps whole photographs visible and lettering clear. */
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+  transform:translateY(clamp(12px,2.3svh,24px)) rotate(-.3deg);
+  padding:0;
+  margin-bottom:clamp(5px,1svh,12px);
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+  top:54.5%;
+  left:50%;
+  width:min(53%,315px);
+  height:min(72%,350px);
+  max-width:100%;
+  max-height:100%;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo img{
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain!important;
+  object-position:center center!important;
+  scale:1!important;
+  transform:none!important;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-number{
+  top:14px;left:14px;
+  font-size:clamp(21px,2.3vw,32px);
+  opacity:.85;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption{
+  bottom:8px;
+  left:9px;right:9px;
+}
+.about-panel .journey-page[data-journey-coverflow="on"] .journey-layout{
+  align-items:stretch;
+}
+@media (min-width:761px) and (max-width:1040px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+    transform:translateY(18px) rotate(-.2deg);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    top:55%;
+    width:min(51%,265px);
+    height:min(70%,315px);
+  }
+}
+@media (max-width:760px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+    margin:10px 8px 14px;
+    transform:translateY(8px) rotate(-.2deg);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    top:54%;
+    width:min(54%,212px);
+    height:min(72%,270px);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo-caption{
+    bottom:7px;
+  }
+}
+@media(max-height:660px) and (min-width:761px){
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-frame{
+    transform:translateY(9px) rotate(-.2deg);
+  }
+  .about-panel .journey-page[data-journey-coverflow="on"] .journey-photo{
+    top:53%;
+    height:min(66%,278px);
+  }
+}

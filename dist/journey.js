@@ -4,8 +4,9 @@
   if (!page || page.dataset.journeyReady === 'true') return;
   page.dataset.journeyReady = 'true';
   const byId = id => document.getElementById(id);
-  const range = byId('journey-position');
+  const scroller = byId('panel-about');
   const frame = byId('journey-frame');
+  const visual = page.querySelector('.journey-visual');
   const body = byId('journey-letter-body');
   const previous = byId('journey-previous');
   const next = byId('journey-next');
@@ -16,17 +17,17 @@
   const noteButton = byId('journey-write');
   const credits = byId('journey-credit-dialog');
   const stopButtons = Array.from(page.querySelectorAll('[data-journey-stop]'));
-  const afterwordTrigger = byId('journey-afterword-trigger');
   const photos = Array.from(page.querySelectorAll('[data-photo-key]'));
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const storageKey = 'winter-journey-notes-v1';
   const stops = [
-    { key:'dazhou', label:'达州日常', chapter:'FAMILIAR DAYS', period:'熟悉的日常 · 四川达州', title:'从你的熟悉街区开始', fact:'四川达州', photo:'dazhou', caption:'达州 · 城市资料影像（非具体街区）', credit:'Nyx Ning · CC BY-SA 3.0', prose:'在认识你以前，这座城就已经陪着你。我想有一天能够跟着你走一走，听你在那儿讲熟悉的日常。', question:'如果有一天带我走走，你最想从哪里开始？', english:'I wish I could have walked beside you.' },
-    { key:'school', label:'初中和高中', chapter:'BEFORE WE MET', period:'初中和高中 · 四川达州', title:'新达一中（达州一中）', fact:'你读过初中和高中的地方', photo:'school', caption:'达州一中 · 校门', credit:'珍藏影像', prose:'这段路我没有陪你走过，等你愿意的时候，带我认识那时的你。那些很小、却一直记得的事，我也想听你分享。你的故事，我一直都想了解。', question:'如果能回到初中或高中的某一天，你最想讲给我听什么？', english:'I would love to know the girl you were.' },
-    { key:'chongqing', label:'南岸', chapter:'A WIDER WORLD', period:'本科 · 重庆', title:'重庆工商大学', fact:'南岸校区', photo:'chongqing', caption:'重庆工商大学 · 南岸校区正门', credit:'不可思议的诚 · CC BY-SA 4.0', prose:'我好像也不太了解这个时期的你。那个还没有遇见我的你，会是什么样的呢？在我眼里，你一直是明媚而向上的。如果现在的我回到那时候认识你，我想，我也一定会欣赏你吧。', question:'大学四年的日子里，有没有一段路，或者一家你和好朋友们去过的餐厅，你想讲给我听？', english:'I think I would have admired you even then.' },
-    { key:'southampton', label:'南安普顿', chapter:'ACROSS THE SEA', period:'硕士 · 英国南安普顿', title:'南安普顿大学', fact:'University of Southampton', photo:'southampton', caption:'南安普顿大学 · Highfield 校区影像', credit:'Roger Davies · CC BY-SA 2.0', prose:'后来，你走到了南安普顿。在今年，我跟你一起也走到了南安普顿。读书之外的日子，你热爱生活，带着好奇心去探索这个世界。我想听你慢慢讲。我总在你的照片里看见充满了生命力的你，这让我很是喜欢。', question:'在南安普顿，哪一片天空、哪一个平常的日子，最让你想念？', english:'Somehow, our paths led us here together.' },
+    { key:'dazhou', label:'四川达州', chapter:'FAMILIAR DAYS', period:'四川达州', title:'从你熟悉的街区开始。', fact:'', photo:'dazhou', caption:'达州 · 城市资料影像（非具体街区）', credit:'Nyx Ning · CC BY-SA 3.0', prose:'在你的小时候，这座城市就已经在陪着你。我非常期待有一天能够跟着你走到四川达州，听你分享你曾经在那里的生活。', question:'如果有一天我和你一起到了四川达州，你想带我从哪里开始走？', english:'I wish I could have walked beside you.' },
+    { key:'school', label:'初中和高中', chapter:'BEFORE WE MET', period:'初中和高中 · 四川达州', title:'新达一中（达州一中）', fact:'', photo:'school', caption:'达州一中 · 校门', credit:'珍藏影像', prose:'感谢张琪茹的陪伴，感谢身边所有人对你的陪伴。感谢你的坚韧与勇敢，也感谢呈现在我面前那个有生命力、保持积极乐观、阳光明媚的你。', question:'如果回到初中或高中的某一天，你最想给我讲什么故事？放学要跟我一起散步吗？', english:'I would love to know the girl you were.' },
+    { key:'chongqing', label:'南岸', chapter:'A WIDER WORLD', period:'本科 · 重庆', title:'重庆工商大学', fact:'南岸校区', photo:'chongqing', caption:'重庆工商大学 · 南岸校区正门', credit:'不可思议的诚 · CC BY-SA 4.0', prose:'我好像也不太了解这个时期的你。那个还没有遇见我的你，会是什么样的呢？在我眼里，你一直是明媚而向上的。如果现在的我回到那时候认识你，我想，我也一定会欣赏你吧。', question:'大学四年的日子里，有没有一段路你想和我一起走？', english:'I think I would have admired you even then.' },
+    { key:'southampton', label:'南安普顿', chapter:'ACROSS THE SEA', period:'硕士 · 英国南安普顿', title:'南安普顿大学', fact:'University of Southampton', photo:'southampton', caption:'南安普顿大学 · Highfield 校区影像', credit:'Roger Davies · CC BY-SA 2.0', prose:'后来，你走到了南安普顿。在今年，我跟你一起也走到了南安普顿。读书之外的日子，你热爱生活，带着好奇心去探索这个世界。我想听你慢慢讲。我总在你的照片里看见充满了生命力的你，这让我很是喜欢。', question:'在南安普顿，哪一片、哪一天的天空最让你想念？', english:'Somehow, our paths led us here together.' },
     { key:'qide', label:'相遇', chapter:'WHERE OUR STORY BEGAN', period:'相遇 · 深圳南山', title:'天利名城 · 启德', fact:'你来到深圳工作的地方，也是我认识你的地方', photo:'together', caption:'深圳 · 夜色里的街景', credit:'珍藏影像', prose:'走到这里，终于也是我在场的一页。毕业后的这两年，你来到深圳工作，也是在这里我认识了你。从相遇这一页开始，想和你一起走到 destination。', question:'如果把我们相遇的日子留在这一页，你最想写下哪一个瞬间？', english:'Of all the places, I am glad I met you here.' }
   ];
+
   // Retain legacy note IDs so previous browser notes are not discarded.
   const allowedKeys = ['dazhou','dazhou-tianfu','dazhou-luofu','school','chongqing','southampton','qide'];
   const notes = Object.create(null);
@@ -35,15 +36,100 @@
   let active = false;
   let disposed = false;
   let index = 0;
-  let position = 0;
-  let goal = 0;
-  let velocity = 0;
-  let springFrame = null;
-  let lastSpring = null;
   let swipeFrame = null;
   let swipe = null;
   let textAnimation = null;
   let editing = null;
+  // Use the same stops, notes and controls for the continuous reading view.
+  const story=document.createElement('div');
+  story.className='journey-sticky-story';
+  story.setAttribute('aria-label','五段旅程的滚动来信');
+  const storyPanels=stops.map((stop,i)=>{
+    const section=document.createElement('section');
+    section.className='journey-story-card';
+    section.dataset.storyStop=String(i);
+    const headingId='journey-story-heading-'+i;
+    section.setAttribute('aria-labelledby',headingId);
+    function add(tag,cls,txt,parent=section){
+      const el=document.createElement(tag);el.className=cls;el.textContent=txt;parent.append(el);return el;
+    }
+    add('p','journey-chapter',String(i+1).padStart(2,'0')+' / 05 · '+stop.chapter);
+    add('p','journey-period',stop.period);
+    const heading=add('h3','',stop.title);heading.id=headingId;
+    if(stop.fact)add('p','journey-fact',stop.fact);
+    add('p','journey-prose',stop.prose);
+    const question=document.createElement('div');
+    question.className='journey-question';add('span','', '我想知道',question);
+    add('p','',stop.question,question);section.append(question);
+    const signature=document.createElement('p');
+    signature.className='journey-signature';
+    const line=document.createElement('span');line.textContent=stop.english;
+    const signed=document.createElement('span');signed.textContent=' — Gwen';
+    signature.append(line,signed);section.append(signature);
+    const write=add('button','journey-story-write','把这一段，慢慢讲给 Gwen');
+    write.type='button';
+    write.setAttribute('aria-label','为'+stop.period+'这一站留言');
+    write.addEventListener('click',()=>{
+      selectStop(i,false,'story');
+      noteButton.click();
+    });
+    const saved=add('p','journey-story-saved','');
+    saved.hidden=true;
+    story.append(section);
+    return {section,saved};
+  });
+  body.before(story);
+  page.dataset.stickyStory='on';
+  const compactStory=window.matchMedia('(max-width: 760px)');
+  let storyNavigationUntil=0;
+  let storyScrollFrame=0;
+  let storyEdges=[];
+  let storyStart=0;
+  function measureStory(){
+    if(!active){storyEdges=[];return;}
+    if(compactStory.matches && visual?.offsetHeight) {
+      page.style.setProperty('--journey-rail-height', `${visual.offsetHeight}px`);
+    }
+    const top=scroller.getBoundingClientRect().top;
+    const scrolled=scroller.scrollTop;
+    storyStart=story.getBoundingClientRect().top-top+scrolled;
+    storyEdges=storyPanels.map(({section})=>section.getBoundingClientRect().bottom-top+scrolled);
+  }
+  if(typeof ResizeObserver==='function'){
+    const storyObserver=new ResizeObserver(measureStory);
+    [scroller,byId('about-journey-bridge'),page,visual,story].filter(Boolean).forEach(section=>storyObserver.observe(section));
+    removers.push(()=>storyObserver.disconnect());
+  }
+  function canStory(){return active&&!disposed;}
+  function moveToStory(i,smooth){
+    if(!canStory())return;
+    const viewport=scroller.getBoundingClientRect();
+    const rect=storyPanels[i].section.getBoundingClientRect();
+    if(!viewport.height||!rect.height)return;
+    const offset=compactStory.matches && visual ? visual.offsetHeight+24 : Math.min(96,viewport.height*.16);
+    const target=scroller.scrollTop+rect.top-viewport.top-offset;
+    const animated=smooth&&!calm();
+    storyNavigationUntil=performance.now()+(animated?750:100);
+    scroller.scrollTo({top:Math.max(0,target),behavior:animated?'smooth':'auto'});
+  }
+  function watchStoryScroll(){
+    storyScrollFrame=0;
+    if(!canStory()||noteDialog.open||credits.open||performance.now()<storyNavigationUntil)return;
+    if(!storyEdges.length)measureStory();
+    const readingLine=scroller.scrollTop+scroller.clientHeight*(compactStory.matches?.68:.52);
+    if(readingLine<storyStart)return;
+    const firstBelow=storyEdges.findIndex(edge=>edge>readingLine);
+    const nearest=firstBelow<0?stops.length-1:firstBelow;
+    if(nearest!==index)selectStop(nearest,true,'story');
+  }
+  listen(scroller,'scroll',()=>{
+    if(!storyScrollFrame)storyScrollFrame=requestAnimationFrame(watchStoryScroll);
+  },{passive:true});
+  listen(story,'pointerdown',()=>{storyNavigationUntil=0},{passive:true});
+  listen(story,'touchstart',()=>{storyNavigationUntil=0},{passive:true});
+  listen(scroller,'wheel',()=>{storyNavigationUntil=0},{passive:true});
+
+
 
   try {
     const stored = JSON.parse(localStorage.getItem(storageKey) || '{}');
@@ -63,11 +149,17 @@
     const preview = byId('journey-saved-preview');
     preview.hidden = !answer;
     preview.textContent = answer ? '你留在这里的话：' + answer.replace(/\s+/g,' ').slice(0,42) + (answer.length > 42 ? '…' : '') : '';
+    storyPanels.forEach(({saved},i)=>{
+      const note=notes[stops[i].key]||'';
+      saved.hidden=!note;
+      saved.textContent=note?'你留在这里的话：'+note:'';
+    });
   }
   function updatePhotoFallback() { byId('journey-photo-fallback').hidden = !brokenPhotos.has(stops[index].photo); }
   function renderStop(value, animate = true, announce = true) {
     index = Math.max(0,Math.min(stops.length - 1,Math.round(value)));
     const stop = stops[index];
+    storyPanels.forEach(({section},i)=>{section.dataset.active=String(i===index)});
     cancelText();
     body.scrollTop = 0;
     page.dataset.stop = String(index);
@@ -83,43 +175,24 @@
     setText('journey-count',String(index+1).padStart(2,'0') + ' / 05');
     setText('journey-ending',index === stops.length-1 ? '后来还有很多路，想和你一起走。' : '那些我还没参与的日子，想听你慢慢讲。');
     setText('journey-credits-open','影像：' + stop.credit);
+    const atLastStop = index === stops.length-1;
     previous.disabled = index === 0;
     next.disabled = false;
-    next.setAttribute('aria-label',index===stops.length-1?'继续阅读相遇之后的后记':'前往下一站');
-    afterwordTrigger.hidden = index !== stops.length-1;
+    setText('journey-next-label',atLastStop?'返回':'下一站');
+    next.setAttribute('aria-label',atLastStop?'回到 About Me':'前往下一站');
     stopButtons.forEach((button,i) => { if (i === index) button.setAttribute('aria-current','step'); else button.removeAttribute('aria-current'); });
-    photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected)); });
-    range.setAttribute('aria-valuetext','第' + (index+1) + '站，' + stop.label + '，' + stop.title);
+    photos.forEach(photo => { const selected = photo.dataset.photoKey === stop.photo; photo.dataset.active = String(selected); photo.setAttribute('aria-hidden',String(!selected && page.dataset.journeyCoverflow !== 'on')); });
     updatePhotoFallback(); updateNotePreview();
     if (announce) status.textContent = '第' + (index+1) + '站，共5站。' + stop.period + '，' + stop.title + '。';
-    if (animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
+    page.dispatchEvent(new CustomEvent('winter:journey-stop',{detail:{index,animate}}));
+    if (!canStory() && animate && !calm() && !document.hidden && typeof body.animate === 'function') textAnimation = body.animate([{ opacity:.45, translate:'0 5px' },{ opacity:1, translate:'0 0' }],{ duration:320, easing:'cubic-bezier(.22,.72,.22,1)' });
   }
-  function paint(value) {
-    position = Math.max(0,Math.min(stops.length-1,value));
-    page.style.setProperty('--journey-progress',String(position/(stops.length-1)));
-    range.value = String(position*100);
-  }
-  function cancelSpring() { if (springFrame !== null) cancelAnimationFrame(springFrame); springFrame = null; lastSpring = null; }
-  function spring(now) {
-    springFrame = null;
-    if (!active || disposed || document.hidden) { lastSpring = null; return; }
-    if (calm()) { paint(goal); velocity = 0; return; }
-    const dt = lastSpring === null ? 1/60 : Math.min(.032,Math.max(.001,(now-lastSpring)/1000));
-    lastSpring = now;
-    velocity += ((goal-position)*190-velocity*28)*dt;
-    paint(position+velocity*dt);
-    if (Math.abs(goal-position) < .0006 && Math.abs(velocity) < .006) { paint(goal); velocity = 0; lastSpring = null; return; }
-    springFrame = requestAnimationFrame(spring);
-  }
-  function selectStop(value, animate = true) {
+  function selectStop(value, animate = true, source='controls') {
     if (!active || disposed || noteDialog.open || credits.open) return;
     releaseSwipe();
     const target = Math.max(0,Math.min(stops.length-1,Math.round(value)));
-    cancelSpring();
     if (target !== index) renderStop(target,animate);
-    goal = target;
-    if (!animate || calm() || document.hidden || Math.abs(position-goal) < .0001) { paint(goal); velocity = 0; return; }
-    springFrame = requestAnimationFrame(spring);
+    if(source!=='story')moveToStory(target,animate);
   }
   function releaseSwipe() {
     const previousSwipe = swipe; swipe = null;
@@ -129,10 +202,9 @@
     page.style.setProperty('--journey-photo-x','0px');
     try { if (previousSwipe && frame.hasPointerCapture?.(previousSwipe.id)) frame.releasePointerCapture(previousSwipe.id); } catch (_) {}
   }
-  function stopMotion() { cancelSpring(); releaseSwipe(); cancelText(); velocity = 0; goal = index; paint(index); }
+  function stopMotion() { releaseSwipe(); cancelText(); }
   function swipeStart(event) {
-    if (!active || disposed || swipe || noteDialog.open || credits.open || event.isPrimary === false || (event.button !== undefined && event.button !== 0) || event.target.closest?.('a,button,input,textarea')) return;
-    cancelSpring(); goal = index; paint(index);
+    if (page.dataset.journeyCoverflow === 'on' || !active || disposed || swipe || noteDialog.open || credits.open || event.isPrimary === false || (event.button !== undefined && event.button !== 0) || event.target.closest?.('a,button,input,textarea')) return;
     swipe = { id:event.pointerId, x:event.clientX, y:event.clientY, lastX:event.clientX, width:frame.getBoundingClientRect().width, horizontal:false };
   }
   function swipeMove(event) {
@@ -160,38 +232,22 @@
     if (disposed || Boolean(value) === active) return;
     active = Boolean(value);
     stopMotion();
-    if (active) renderStop(index,false,false);
-    else { editing = null; closeNotes(); closeCredits(); }
+    if (active) { renderStop(index,false,false); storyNavigationUntil=0; measureStory(); }
+    else {
+      if(storyScrollFrame){cancelAnimationFrame(storyScrollFrame);storyScrollFrame=0;}
+      editing = null; closeNotes(); closeCredits();
+    }
   }
 
+  listen(page,'winter:journey-select-stop',event => {
+    const target=Number(event.detail?.index);
+    if (Number.isFinite(target)) selectStop(target);
+  });
   stopButtons.forEach(button => listen(button,'click',() => selectStop(Number(button.dataset.journeyStop))));
   listen(previous,'click',() => selectStop(index-1));
   listen(next,'click',() => {
-    if(index === stops.length-1) {if(active && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));}
+    if(index === stops.length-1) {if(active && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-end'));}
     else selectStop(index+1);
-  });
-  listen(afterwordTrigger,'click',() => {
-    if(active && index===stops.length-1 && !noteDialog.open && !credits.open) document.dispatchEvent(new CustomEvent('winter:journey-afterword'));
-  });
-  listen(range,'input',() => {
-    if (!active || disposed || noteDialog.open || credits.open) return;
-    cancelSpring(); releaseSwipe(); velocity = 0;
-    const value = Number(range.value)/100;
-    if (!Number.isFinite(value)) return;
-    paint(value); goal = Math.round(position);
-    if (Math.abs(position-index) > .58) renderStop(goal,true,false);
-  });
-  listen(range,'change',() => selectStop(Math.round(position)));
-  listen(range,'pointercancel',() => { if (active) selectStop(Math.round(position)); });
-  listen(range,'keydown',event => {
-    if (!active || noteDialog.open || credits.open) return;
-    let target;
-    if (['ArrowRight','ArrowUp','PageDown'].includes(event.key)) target = index+1;
-    else if (['ArrowLeft','ArrowDown','PageUp'].includes(event.key)) target = index-1;
-    else if (event.key === 'Home') target = 0;
-    else if (event.key === 'End') target = stops.length-1;
-    else return;
-    event.preventDefault(); selectStop(target);
   });
   listen(frame,'pointerdown',swipeStart);
   listen(window,'pointermove',swipeMove,{passive:true});
@@ -246,7 +302,7 @@
   });
   listen(document,'winter:journey-route',event => activate(Boolean(event.detail?.active)));
   listen(document,'visibilitychange',() => { if (document.hidden && active) stopMotion(); });
-  listen(window,'resize',() => { if (active) stopMotion(); },{passive:true});
+  listen(window,'resize',() => { if (active) { stopMotion(); measureStory(); requestAnimationFrame(watchStoryScroll); } },{passive:true});
   const preferenceChanged = () => { if (active && calm()) stopMotion(); };
   listen(reduced,'change',preferenceChanged);
   const motionObserver = typeof MutationObserver === 'function' ? new MutationObserver(preferenceChanged) : null;
@@ -255,6 +311,6 @@
     stopMotion();
     if (!event.persisted) { active = false; disposed = true; editing = null; closeNotes(); closeCredits(); motionObserver?.disconnect(); removers.forEach(remove => remove()); }
   });
-  listen(window,'pageshow',() => { if (active) { paint(index); updatePhotoFallback(); } });
-  if (shell.dataset.destination === 'journey') activate(true);
+  listen(window,'pageshow',() => { if (active) { measureStory(); updatePhotoFallback(); } });
+  if (shell.dataset.page === 'about') activate(true);
 })();

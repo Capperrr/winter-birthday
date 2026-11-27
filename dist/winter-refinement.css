@@ -1,48 +1,26 @@
 /* WINTER design refinement: real scenery, restrained serif typography and gentle interaction. */
-/* 1. The meeting letter: a real nature photograph instead of polygon mountains. */
-.app-shell[data-destination='afterword']{
- background:#17272a;
- --nav-material:#263d3988;--nav-border:#f4e9d254;--nav-ink:#eee8d8;--nav-active:#fff5e3;
+/* The optional live preview has its own fixed footprint above the gesture controls. */
+.winter-cake-live {
+ position:absolute;
+ z-index:5;
+ left:var(--gallery-edge,4%);
+ bottom:calc(clamp(35px,7.8%,92px) + 46px);
+ width:clamp(98px,13vw,175px);
+ aspect-ratio:4 / 3;
+ overflow:hidden;
+ border:3px solid #e9e3d6;
+ border-radius:2px;
+ background:#091820;
+ box-shadow:0 12px 28px #060a0d6b;
+ opacity:0;
+ pointer-events:none;
 }
-.journey-afterword{
- background:
-  linear-gradient(180deg,rgba(13,28,33,.53),rgba(14,26,32,.64) 45%,rgba(12,27,31,.77)),
-  url('assets/swiss-alps.webp') center 48%/cover no-repeat;
-}
-.journey-afterword::before,.journey-afterword::after{display:none!important;content:none!important}
-.journey-afterword .afterword-stars{opacity:.08;background:radial-gradient(circle at 76% 13%,#fff9df 1px,transparent 2px)}
-.afterword-copy{max-width:770px;padding:clamp(30px,5vh,75px) clamp(8px,2vw,25px) 40px}
-.afterword-copy h2{font-size:clamp(28px,3.1vw,42px);letter-spacing:.8px;text-shadow:0 3px 18px #0008}
-.afterword-line{font-size:clamp(13px,1.3vw,17px);line-height:1.95;color:#faf7ee;text-shadow:0 2px 12px #081923cc}
-.afterword-line.afterword-emphasis{color:#f6d9a8}
-.afterword-final span{color:#f2dfc1}.afterword-final strong{color:#ffefdc}
-.afterword-continue,.afterword-home{backdrop-filter:blur(8px);background:#19393d99;border-color:#f0e1c777}
-@media(max-width:760px){
- .journey-afterword{background-image:linear-gradient(180deg,#101f24a6,#142933bc),url('assets/swiss-alps-small.webp');background-position:center 40%}
- .afterword-copy h2{font-size:27px}
- .afterword-line{line-height:2.05;letter-spacing:.45px}
-}
-/* Camera foreground: native-resolution cake, Blender slate and silver lighter. */
-.winter-cake-live{position:absolute;inset:0;z-index:0;overflow:hidden;background:#091820;opacity:0;transition:opacity 850ms ease;pointer-events:none}
-.winter-cake-live video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);filter:brightness(.89) saturate(.96)}
-.winter-cake-live::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#071c2c66,transparent 28%,transparent 65%,#071b2c66)}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .winter-cake-live{opacity:1}
-.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-cutout='ready'] :is(.cake-backdrop,.grand-cake-photograph){opacity:0}
-.grand-cake-cutout{position:absolute;inset:0;z-index:2;width:100%;height:100%;display:block;opacity:0;transition:opacity 850ms ease;pointer-events:none}
-.app-shell[data-destination='cake'][data-cake-camera='on'][data-cake-cutout='ready'] .grand-cake-cutout{opacity:1}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .grand-candles-overlay{z-index:3}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .candles-wide{transform:translateX(22%)}
-.app-shell[data-destination='cake'][data-cake-camera='on'] .candles-tall{transform:translateX(21%)}
-.grand-cake-photograph{transition:opacity 850ms ease}
-.grand-candles-overlay{transition:transform 850ms ease}
-.cake-page .grand-cake-tableau{z-index:1}.cake-page .cake-thanks{z-index:4}
-.cake-page[data-cake-state='unlit'] .grand-lighter{opacity:0;pointer-events:none;touch-action:pan-y;transition:opacity 400ms ease}
-.app-shell[data-cake-camera='on'] .cake-page[data-cake-state='unlit'] .grand-lighter{opacity:1;z-index:6;cursor:default}
-.app-shell[data-destination='cake'] .candle-ignition-target{pointer-events:none;opacity:0}
-.app-shell[data-destination='cake'] .lighter-instructions{display:none}
+.winter-cake-live video { display:block; width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+.cake-page[data-cake-state='unlit'] .winter-cake-live[data-visible='true'] { opacity:1; }
 .winter-cake-camera-enable{position:absolute;z-index:8;top:clamp(104px,12%,132px);right:clamp(15px,4vw,52px);max-width:245px;min-height:44px;padding:10px 16px;border:1px solid #faf5e8a0;border-radius:28px;background:#112536b8;color:#f4eee5;font:400 11px/1.6 var(--cn-serif);letter-spacing:.2px;backdrop-filter:blur(10px);cursor:pointer}
 .winter-cake-camera-enable:active{scale:.98}.winter-cake-camera-enable span{margin-left:8px}
-.app-shell[data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable{display:none}
+.app-shell[data-cake-camera='on'][data-cake-hand-ready='true'] .winter-cake-camera-enable,
+.cake-page:not([data-cake-state='unlit']) .winter-cake-camera-enable{display:none}
 .winter-cake-camera-note{position:absolute;z-index:9;top:clamp(155px,19%,190px);right:clamp(15px,4vw,52px);max-width:240px;color:#f0e9df;font:11px/1.7 var(--cn-serif);text-shadow:0 1px 4px #071321;pointer-events:none}
 .winter-cake-camera-note:empty{display:none}
 @media(max-width:760px){
@@ -134,6 +112,7 @@
 .gesture-panel .gesture-instructions,.gesture-panel .gesture-privacy{display:none!important}
 .gesture-panel{padding:12px!important;max-width:min(275px,calc(100vw - 24px))!important}
 .gesture-panel .gesture-mode-row{margin:9px 0 4px}
+.gesture-dock[data-cake-locked='true'] #winter-gesture-video { display:none; }
 .gesture-dock[data-cake-locked='true'] #winter-touch-mode{opacity:.35;pointer-events:none}
 .gesture-panel-head{letter-spacing:.06em}
 #main[data-destination='cake'] .winter-gesture-status{font-size:10px}
@@ -184,7 +163,7 @@
 html{height:auto;-webkit-overflow-scrolling:touch}
 body{height:auto;min-height:100dvh;overscroll-behavior-y:auto}
 .app-shell{height:calc(100dvh - 32px);min-height:min(590px,calc(100dvh - 32px));}
-.letter-page,.journey-page,.birthday-finale,.journey-afterword{
+.letter-page,.birthday-finale,.journey-afterword{
   overflow-y:auto!important;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior-y:auto;

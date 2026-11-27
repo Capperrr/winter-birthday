@@ -1,0 +1,21 @@
+/* Camera input for the portrait stage and the original photo constellation. */
+.winter-about-stage[data-depth-mode="full"] {
+  perspective-origin: calc(50% + var(--depth-camera-x,0px) * 1.8) calc(50% + var(--depth-camera-y,0px));
+}
+
+/* Each original memory photo has a separate plane, and its front is still the real photograph. */
+#cosmos-gallery .photo-wall { touch-action: pan-y pinch-zoom; }
+#cosmos-gallery .photo-wall:is([data-depth-mode="quiet"],[data-depth-mode="full"]) {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+}
+#cosmos-gallery .photo-wall:is([data-depth-mode="quiet"],[data-depth-mode="full"]) .photo-memory {
+  --memory-z: var(--camera-photo-z,0px);
+  --memory-fit: var(--camera-photo-fit,1);
+  --memory-pan-x: calc(var(--depth-camera-x,0px) * var(--camera-photo-pan,.5));
+  --memory-pan-y: calc(var(--depth-camera-y,0px) * var(--camera-photo-pan,.5));
+}
+#cosmos-gallery .photo-wall[data-depth-mode="quiet"] .photo-memory {
+  --memory-z: 0px;
+  --memory-fit: 1;
+}

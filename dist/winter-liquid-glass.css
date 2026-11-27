@@ -1,0 +1,293 @@
+/* WINTER — restrained liquid glass, 2026-11-21
+ *
+ * Scope: existing top navigation pill + Journey's right-hand prose glass.
+ * No new large card backdrop, no photo/image changes, no scroll/gesture changes.
+ * Refraction-inspired edge lighting is progressive CSS shading, not a claim
+ * of true browser-wide optical background displacement.
+ *
+ * Material: ~2px backdrop blur + saturation/brightness, layered thin tint,
+ * 1px specular border, inset rim, very faint warm/cool edge dispersion.
+ */
+
+/* ═══ TOP NAVIGATION: preserve the tab dimensions, animation and hit targets ═══ */
+.app-shell .glass-nav{
+  --wg-wash:rgba(15,40,46,.21);
+  --wg-selection:rgba(234,249,248,.15);
+  --wg-edge-top:rgba(248,255,251,.66);
+  --wg-edge-bottom:rgba(188,224,228,.25);
+  --wg-reflect:rgba(255,255,255,.27);
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid rgba(241,249,243,.31);
+  border-radius:999px;
+  background:
+    linear-gradient(152deg,rgba(255,255,255,.075) 0%,transparent 36%,rgba(255,255,255,.025) 64%,rgba(190,222,229,.065) 100%),
+    var(--wg-wash);
+  -webkit-backdrop-filter:blur(2px) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(2px) saturate(180%) brightness(1.06);
+  box-shadow:
+    0 8px 27px rgba(5,22,28,.105),
+    0 1px 6px rgba(6,26,30,.055),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(12,40,46,.12);
+  transition:
+    background-color .4s ease,
+    box-shadow .4s ease,
+    border-color .4s ease;
+}
+/* A one-pixel spectral rim, rather than a large opaque outer glass plate. */
+.app-shell .glass-nav::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  padding:1px;
+  border-radius:inherit;
+  pointer-events:none;
+  background:
+    linear-gradient(137deg,
+      var(--wg-edge-top) 2%,
+      rgba(255,243,228,.32) 15%,
+      rgba(255,255,255,.035) 37%,
+      rgba(161,215,230,.12) 61%,
+      var(--wg-edge-bottom) 84%,
+      rgba(241,255,250,.52) 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite:exclude;
+}
+/* Internal reflection sits inside the pill without clouding the scenery. */
+.app-shell .glass-nav::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  z-index:2;
+  border-radius:inherit;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 53% 90% at 7% -24%,var(--wg-reflect),transparent 78%),
+    radial-gradient(ellipse 45% 82% at 98% 116%,rgba(172,222,243,.14),transparent 77%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(255,255,255,.075);
+}
+.app-shell .glass-nav .glass-lens{
+  z-index:1;
+  border:1px solid rgba(249,255,250,.21);
+  border-radius:999px;
+  background:
+    linear-gradient(152deg,rgba(255,255,255,.17),rgba(255,255,255,.045) 53%,rgba(188,224,236,.07)),
+    var(--wg-selection);
+  -webkit-backdrop-filter:blur(1px) saturate(160%);
+  backdrop-filter:blur(1px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -1px 0 rgba(24,54,61,.085),
+    0 1px 4px rgba(8,32,41,.065);
+}
+.app-shell .glass-nav button{
+  z-index:3;
+  text-shadow:0 1px 2px rgba(3,23,29,.14);
+}
+.app-shell .glass-nav button:focus-visible{
+  outline:2px solid currentColor;
+  outline-offset:-4px;
+}
+/* Readable ink over softly lit scenery and the warm About Me paper state. */
+.app-shell[data-page="about"]:not([data-about-theme="night"]) .glass-nav,
+.app-shell[data-page="destination"]:not([data-destination="cake"]) .glass-nav{
+  --wg-wash:rgba(249,253,247,.23);
+  --wg-selection:rgba(248,252,249,.26);
+  --wg-edge-top:rgba(255,255,255,.92);
+  --wg-edge-bottom:rgba(225,247,249,.51);
+  --wg-reflect:rgba(255,255,255,.23);
+  border-color:rgba(250,255,251,.45);
+  box-shadow:
+    0 8px 25px rgba(12,37,42,.10),
+    0 1px 5px rgba(13,42,46,.035),
+    inset 0 1px rgba(255,255,255,.53),
+    inset 0 -1px rgba(21,52,54,.085);
+}
+.app-shell[data-page="about"]:not([data-about-theme="night"]) .glass-nav button,
+.app-shell[data-page="destination"]:not([data-destination="cake"]) .glass-nav button{
+  text-shadow:0 1px 1px rgba(255,255,255,.36);
+}
+/* Dark-mode material for the approved midnight About Me entrance and cake. */
+.app-shell[data-page="about"][data-about-theme="night"] .glass-nav,
+.app-shell[data-destination="cake"] .glass-nav{
+  --wg-wash:rgba(20,24,34,.31);
+  --wg-selection:rgba(230,243,247,.13);
+  --wg-edge-top:rgba(252,252,255,.55);
+  --wg-edge-bottom:rgba(130,172,200,.39);
+  --wg-reflect:rgba(240,244,255,.12);
+  border-color:rgba(229,239,248,.25);
+  -webkit-backdrop-filter:blur(2px) saturate(160%) brightness(.91);
+  backdrop-filter:blur(2px) saturate(160%) brightness(.91);
+}
+.app-shell[data-page="about"][data-about-theme="night"] .glass-nav button,
+.app-shell[data-destination="cake"] .glass-nav button{
+  text-shadow:0 1px 3px rgba(0,7,16,.26);
+}
+
+/* ═══ JOURNEY: SAME MATERIAL ON TWO RESPONSIVE RENDER PATHS ═══
+ * Wide iPad/Desktop: JS-generated five .journey-story-card prose chapters.
+ * Narrow iPad/Phone: pre-existing single .journey-letter pane.
+ * Never restyle .journey-navigation or .journey-next-chapter.
+ */
+@media(min-width:761px){
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card{
+    position:relative;
+    isolation:isolate;
+    border:1px solid rgba(246,255,254,.42);
+    border-radius:24px 21px 26px 21px;
+    background:
+      linear-gradient(146deg,
+        rgba(255,255,255,.20) 0%,
+        rgba(255,255,255,.075) 30%,
+        rgba(240,251,247,.045) 62%,
+        rgba(244,253,255,.16) 100%),
+      rgba(242,251,249,.21);
+    -webkit-backdrop-filter:blur(2px) saturate(180%) brightness(1.06);
+    backdrop-filter:blur(2px) saturate(180%) brightness(1.06);
+    box-shadow:
+      0 19px 38px rgba(2,24,35,.16),
+      0 4px 11px rgba(3,31,39,.085),
+      inset 0 1px 0 rgba(255,255,255,.62),
+      inset 0 -1px 0 rgba(6,46,58,.075);
+    transition:border-color .48s ease,box-shadow .48s ease;
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card[data-active="true"]{
+    border-color:rgba(255,255,255,.67);
+    box-shadow:
+      0 22px 46px rgba(2,25,34,.18),
+      0 5px 13px rgba(3,29,38,.085),
+      inset 0 1px 0 rgba(255,255,255,.69),
+      inset 0 -1px 0 rgba(10,47,58,.065);
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    padding:1.25px;
+    border-radius:inherit;
+    pointer-events:none;
+    background:linear-gradient(
+      146deg,
+      rgba(255,255,255,.79) 0%,
+      rgba(255,239,219,.25) 19%,
+      rgba(255,255,255,.015) 40%,
+      rgba(171,222,232,.20) 73%,
+      rgba(244,253,255,.69) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite:exclude;
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card::after{
+    content:"";
+    position:absolute;
+    inset:3px;
+    z-index:0;
+    border-radius:inherit;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 76% 22% at 12% 0%,rgba(255,255,255,.23),transparent 89%),
+      radial-gradient(ellipse 46% 50% at 106% 110%,rgba(174,222,232,.105),transparent 85%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.17);
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card>*{
+    position:relative;
+    z-index:1;
+  }
+  /* Text stays dark, with a small local reflective edge; no darkening of photo. */
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card h3,
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-prose,
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card .journey-question p{
+    color:#0a2c38;
+    text-shadow:0 1px 1px rgba(255,255,255,.34);
+  }
+}
+/* The original single-letter component remains active below 761px. */
+@media(max-width:760px){
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter{
+    position:relative;
+    isolation:isolate;
+    border:1px solid rgba(247,255,253,.43);
+    border-radius:24px 20px 25px 20px;
+    background:
+      linear-gradient(149deg,
+        rgba(255,255,255,.19),
+        rgba(255,255,255,.065) 41%,
+        rgba(244,253,255,.14) 100%),
+      rgba(240,251,249,.23);
+    -webkit-backdrop-filter:blur(2px) saturate(180%) brightness(1.06);
+    backdrop-filter:blur(2px) saturate(180%) brightness(1.06);
+    box-shadow:
+      0 18px 32px rgba(2,24,35,.15),
+      0 4px 10px rgba(3,31,39,.08),
+      inset 0 1px 0 rgba(255,255,255,.59),
+      inset 0 -1px 0 rgba(6,46,58,.07);
+  }
+  /* Preserve .journey-letter::after: it is the existing mouse spotlight. */
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    height:auto;
+    padding:1px;
+    border-radius:inherit;
+    pointer-events:none;
+    background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(255,237,213,.21) 24%,transparent 44%,rgba(166,224,237,.20) 78%,rgba(255,255,255,.59));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    mask-composite:exclude;
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter-body,
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-write,
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-saved-preview{
+    position:relative;
+    z-index:1;
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-prose{
+    color:#0a2c38;
+    text-shadow:0 1px 1px rgba(255,255,255,.34);
+  }
+}
+/* Readable, graceful fallback in browsers without backdrop filtering. */
+@supports not ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){
+  .app-shell .glass-nav{
+    background:rgba(33,58,63,.77);
+  }
+  .app-shell[data-page="about"]:not([data-about-theme="night"]) .glass-nav,
+  .app-shell[data-page="destination"]:not([data-destination="cake"]) .glass-nav{
+    background:rgba(232,242,239,.89);
+  }
+  .app-shell[data-page="about"][data-about-theme="night"] .glass-nav,
+  .app-shell[data-destination="cake"] .glass-nav{
+    background:rgba(17,29,44,.88);
+  }
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card,
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-letter{
+    background:rgba(231,241,240,.90);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .app-shell .glass-nav,
+  .app-shell .glass-nav .glass-lens,
+  .app-shell[data-destination="journey"] .journey-page[data-sticky-story="on"] .journey-story-card{
+    transition:none!important;
+  }
+}

@@ -15,13 +15,13 @@ fs.mkdirSync(output,{recursive:true});
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  const screenshot=name=>page.screenshot({path:path.join(output,name+'.png'),timeout:45000});
  const goto=async route=>{await page.goto(base+'/#'+route,{waitUntil:'domcontentloaded',timeout:60000});await page.waitForTimeout(1100);};
- await goto('cake');await page.waitForFunction(()=>document.querySelector('#main').dataset.cakeCutout==='ready');
+ await goto('cake');await page.waitForFunction(()=>document.querySelector('#cake-page').dataset.sceneReady==='true');
  await page.locator('#winter-cake-camera-enable').click();
  await page.waitForFunction(()=>document.querySelector('#main').dataset.cakeCamera==='on');
  await page.waitForTimeout(1000);await page.locator('#grand-lighter').dispatchEvent('click');await page.evaluate(()=>document.querySelectorAll('video').forEach(video=>video.pause()));
  for(const [name,width,height] of [['desktop',1440,1000],['ipad',1180,820],['phone',390,844],['small',320,568]]){
-  await page.setViewportSize({width,height});await page.waitForFunction(()=>document.querySelector('#main').dataset.cakeCutout==='ready');await page.waitForTimeout(250);
-  const geometry=await page.evaluate(()=>{const r=s=>document.querySelector(s).getBoundingClientRect().toJSON();return{bodyWidth:document.body.scrollWidth,viewport:innerWidth,nav:r('.glass-nav'),button:r('#winter-cake-camera-enable'),canvas:r('.grand-cake-cutout'),resolution:[document.querySelector('.grand-cake-cutout').width,document.querySelector('.grand-cake-cutout').height],phase:document.querySelector('#cake-page').dataset.cakeState,progress:document.querySelector('.winter-candle-progress').textContent}});
+  await page.setViewportSize({width,height});await page.waitForFunction(()=>document.querySelector('#cake-page').dataset.sceneReady==='true');await page.waitForTimeout(250);
+  const geometry=await page.evaluate(()=>{const r=s=>document.querySelector(s).getBoundingClientRect().toJSON();return{bodyWidth:document.body.scrollWidth,viewport:innerWidth,nav:r('.glass-nav'),button:r('#winter-cake-camera-enable'),scene:r('#cake-art-slot'),resolution:['width','height'].map(key=>document.querySelector('#cake-art-slot').viewBox.baseVal[key]),phase:document.querySelector('#cake-page').dataset.cakeState,progress:document.querySelector('.winter-candle-progress').textContent}});
   assert.ok(geometry.bodyWidth<=width+1,'No horizontal document overflow: '+name);
   // When model loading has completed the camera button is hidden, so inspect its placement on the initial view below.
   assert.equal(geometry.phase,'unlit');assert.equal(geometry.progress.trim(),'0 / 5');
@@ -70,6 +70,6 @@ fs.mkdirSync(output,{recursive:true});
  await page.locator('#creator-tools-toggle').click();await screenshot('phone-drawing');
  await page.setViewportSize({width:1440,height:1000});assert.equal(await page.locator('#creator-tools-panel').isVisible(),true);await screenshot('desktop-drawing');
  assert.deepEqual(errors,[]);fs.writeFileSync(path.join(output,'report.json'),JSON.stringify({checks,errors},null,2));
- console.log('PASS: Native-resolution camera layers, four viewport budgets, no touch ignition shortcut, phone navigation clearance, 22 editable/persisted notes, author ink clearance, Gwen notification, side-key target and transition, retake cancellation, 19 photos, responsive tool drawer, real canvas drawing and PNG export. Camera input uses a synthetic test video, not real hands.');
+ console.log('PASS: Shared cake scene geometry, four viewport budgets, no touch ignition shortcut, phone navigation clearance, 22 editable/persisted notes, author ink clearance, Gwen notification, side-key target and transition, retake cancellation, 19 photos, responsive tool drawer, real canvas drawing and PNG export. Camera input uses a synthetic test video, not real hands.');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

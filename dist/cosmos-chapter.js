@@ -6,7 +6,7 @@
  const canvas=document.getElementById('cosmos-stars');
  const ctx=canvas.getContext('2d',{alpha:true});
  const reduced=window.matchMedia?.('(prefers-reduced-motion:reduce)');
- const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery','cosmos-creator'].map(id=>document.getElementById(id));
+ const stages=['cosmos-intro','cosmos-blessings','cosmos-apod','cosmos-gallery','cosmos-creator','cosmos-closing'].map(id=>document.getElementById(id));
  const wishes=[
    '蜡烛会灭，你会有黑夜，但我会为你点灯。',
    '希望比起过去的时间，未来的日子里能够更幸福。',
@@ -39,7 +39,7 @@
  const previewPhoto=document.getElementById('cosmos-lightbox-photo');
  const previewCaption=document.getElementById('cosmos-lightbox-caption');
  const closeButton=document.getElementById('cosmos-close');
- let current=0,selected=-1,lastFocus=null,introTimer=0;
+ let current=0,selected=-1,returnFocus=null,photoFocus=null,introTimer=0;
  let raf=0,last=0,w=0,h=0,dpr=1,twinkles=[],shooting=[];
  const between=(a,b)=>a+Math.random()*(b-a);
  function tileStyle(el,i){
@@ -64,10 +64,11 @@
    previewPhoto.alt='照片 '+(selected+1)+'：'+photos[selected][1];
    for(const delta of [-1,1]){const neighbor=new Image();neighbor.src='assets/memory-wall/memory-'+String((selected+delta+photos.length)%photos.length+1).padStart(2,'0')+'.webp';}
    previewCaption.textContent=photos[selected][0]+' · '+photos[selected][1];
-   lastFocus=document.activeElement;preview.hidden=false;
+   if(preview.hidden)photoFocus=document.activeElement;
+   preview.hidden=false;
    document.getElementById('cosmos-lightbox-close').focus({preventScroll:true});
  }
- function closePhoto(){preview.hidden=true;selected=-1;lastFocus?.focus?.({preventScroll:true})}
+ function closePhoto(){preview.hidden=true;selected=-1;photoFocus?.focus?.({preventScroll:true});photoFocus=null}
  document.getElementById('cosmos-lightbox-close').addEventListener('click',closePhoto);
  document.getElementById('cosmos-lightbox-prev').addEventListener('click',()=>openPhoto(selected-1));
  document.getElementById('cosmos-lightbox-next').addEventListener('click',()=>openPhoto(selected+1));
@@ -75,6 +76,7 @@
  function showStage(n){
    clearTimeout(introTimer);
     current=n;
+    dialog.dataset.filmScene=n===3?'gallery':n===4?'creator':n===5?'closing':'universe';
     const intro=document.getElementById('cosmos-intro');
     intro.classList.remove('is-complete');
     if(n===0){void intro.offsetWidth;introTimer=setTimeout(()=>{if(dialog.open&&current===0)intro.classList.add('is-complete')},reduced?.matches?0:10900);}
@@ -82,21 +84,29 @@
    if(n===1){const wish=document.getElementById('cosmos-wish-text');wish.textContent='选一颗星星，让祝福慢慢亮起来。'}
    root.scrollTop=0;dialog.scrollTop=0;
     document.dispatchEvent(new CustomEvent('winter:cosmos-stage',{detail:{stage:stages[n].id}}));
+   syncSky();
    const title=stages[n].querySelector('h2')||stages[n].querySelector('button');
    if(title){title.setAttribute('tabindex','-1');title.focus({preventScroll:true})}
  }
  function resize(){
-   dpr=Math.min(window.devicePixelRatio||1,2);
+   dpr=Math.min(window.devicePixelRatio||1,1.5);
    w=window.innerWidth;h=window.innerHeight;
    canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
    ctx.setTransform(dpr,0,0,dpr,0,0);
-   twinkles=Array.from({length:Math.min(190,Math.round(w*h/8500))},()=>({
+   twinkles=Array.from({length:Math.min(110,Math.round(w*h/11500))},()=>({
       x:Math.random()*w,y:Math.random()*h,r:between(.3,1.6),phase:between(0,6.283),alpha:between(.27,.8),speed:between(.2,.7)
    }));
  }
+ function skyActive(){return dialog.open&&current<3&&!document.hidden&&dialog.dataset.motion!=='off'&&!reduced?.matches}
+ function syncSky(){
+   if(raf){cancelAnimationFrame(raf);raf=0}
+   if(!skyActive()){if(ctx)ctx.clearRect(0,0,w,h);return}
+   resize();last=0;shooting=[];
+   raf=requestAnimationFrame(starLoop);
+ }
  function starLoop(t){
-   if(!dialog.open){raf=0;return}
-   if(!ctx){raf=0;return}
+   if(!ctx||!skyActive()){raf=0;return}
+   if(last&&t-last<29){raf=requestAnimationFrame(starLoop);return}
    const dt=Math.min(2.8,(t-(last||t-16))/16);last=t;
    ctx.clearRect(0,0,w,h);
    for(const dot of twinkles){
@@ -117,9 +127,8 @@
  }
  function open(){
    if(dialog.open)return;
-   preview.hidden=true;selected=-1;lastFocus=document.activeElement;
-   dialog.showModal();showStage(0);resize();last=0;shooting=[];
-   if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(starLoop);
+   preview.hidden=true;selected=-1;returnFocus=document.activeElement;
+   dialog.showModal();showStage(0);
  }
  function close(){
    if(!preview.hidden){closePhoto();return}
@@ -128,7 +137,7 @@
  closeButton.addEventListener('click',close);
  dialog.addEventListener('close',()=>{
    clearTimeout(introTimer);
-    if(raf){cancelAnimationFrame(raf);raf=0}shooting=[];lastFocus?.focus?.({preventScroll:true});
+    if(raf){cancelAnimationFrame(raf);raf=0}shooting=[];returnFocus?.focus?.({preventScroll:true});
  });
  dialog.addEventListener('cancel',e=>{if(!preview.hidden){e.preventDefault();closePhoto()}});
  document.addEventListener('keydown',e=>{
@@ -136,7 +145,11 @@
    if(e.key==='ArrowRight'){e.preventDefault();openPhoto(selected+1)}
    if(e.key==='ArrowLeft'){e.preventDefault();openPhoto(selected-1)}
  });
- window.addEventListener('resize',()=>{if(dialog.open)resize()},{passive:true});
+ window.addEventListener('resize',()=>{if(skyActive())resize()},{passive:true});
+ document.addEventListener('visibilitychange',syncSky);
+ reduced?.addEventListener('change',syncSky);
+ new MutationObserver(syncSky).observe(dialog,{attributes:true,attributeFilter:['data-motion']});
+
  document.getElementById('cosmos-to-stars').addEventListener('click',()=>showStage(1));
  document.getElementById('cosmos-to-apod').addEventListener('click',()=>showStage(2));
  document.getElementById('cosmos-to-gallery').addEventListener('click',()=>showStage(3));
@@ -145,6 +158,9 @@
   document.getElementById('cosmos-gallery-home').addEventListener('click',()=>{
    dialog.close();location.hash='#home';
  });
+ document.getElementById('cosmos-to-closing').addEventListener('click',()=>showStage(5));
+ document.getElementById('cosmos-closing-back').addEventListener('click',()=>showStage(4));
+ document.getElementById('cosmos-closing-home').addEventListener('click',()=>{dialog.close();location.hash='#home';});
  document.querySelectorAll('[data-wish]').forEach(button=>button.addEventListener('click',()=>{
    const index=Number(button.dataset.wish);
    button.classList.add('is-lit');
